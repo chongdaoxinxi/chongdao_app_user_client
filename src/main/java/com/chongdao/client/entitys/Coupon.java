@@ -12,12 +12,17 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @Author onlineS
+ * @Description 配送券
+ * @Date 17:34 2019/4/18
+ */
+@Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @DynamicUpdate
-@Entity
 @Table(name="coupon")
 public class Coupon implements Serializable {
     private static final long serialVersionUID = 1L;

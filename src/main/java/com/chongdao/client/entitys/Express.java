@@ -10,14 +10,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the express database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 配送员
+ * @Date 17:36 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="express")
 public class Express extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;

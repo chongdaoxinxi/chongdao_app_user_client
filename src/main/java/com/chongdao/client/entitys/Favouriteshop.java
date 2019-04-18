@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the favouriteshop database table.
- * 
+ * @Author onlineS
+ * @Description 收藏的商店
+ * @Date 17:38 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="favouriteshop")
 public class Favouriteshop implements Serializable {
 	private static final long serialVersionUID = 1L;

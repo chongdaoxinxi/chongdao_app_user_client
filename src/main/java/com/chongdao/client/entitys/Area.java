@@ -9,13 +9,14 @@ import java.io.Serializable;
 
 
 /**
- * The persistent class for the area database table.
- * 
+ * @Author onlineS
+ * @Description 区域
+ * @Date 17:19 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="area")
 public class Area implements Serializable {
 	private static final long serialVersionUID = 1L;

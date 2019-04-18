@@ -9,15 +9,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-
 /**
- * The persistent class for the adtorder database table.
- *
+ * @Author onlineS
+ * @Description 追加订单
+ * @Date 17:18 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="adtorder")
 public class Adtorder implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,44 +25,26 @@ public class Adtorder implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private String adtorderno;
-
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
 	private Double discount;
-
 	private BigDecimal discountmoney;
-
 	private BigDecimal goodsprice;
-
 	private String note;
-
 	private Integer orderid;
-
 	private String payuser;
-
 	@Column(name="shop_id")
 	private Integer shopId;
-
 	private Integer status;
-
 	private BigDecimal totalprice;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
 	@Column(name="user_id")
 	private Integer userId;
-
 	private Integer version;
-
-
 
 	@Override
 	public String toString() {
@@ -72,5 +54,4 @@ public class Adtorder implements Serializable {
 				+ ", status=" + status + ", totalprice=" + totalprice + ", updateby=" + updateby + ", updatedate="
 				+ updatedate + ", userId=" + userId + ", version=" + version + "]";
 	}
-
 }

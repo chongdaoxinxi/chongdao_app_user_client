@@ -8,14 +8,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 
-/**
- * The persistent class for the dic_info database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 优惠规则等
+ * @Date 17:35 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="dic_info")
 public class DicInfo implements Serializable {
 	private static final long serialVersionUID = 1L;

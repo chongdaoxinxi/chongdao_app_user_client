@@ -9,14 +9,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the eventcard database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description
+ * @Date 17:36 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="eventcard")
 public class Eventcard implements Serializable {
 	private static final long serialVersionUID = 1L;

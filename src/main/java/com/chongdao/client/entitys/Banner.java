@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the banner database table.
- * 
+ * @Author onlineS
+ * @Description 轮播图
+ * @Date 17:20 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="banner")
 public class Banner implements Serializable {
 	private static final long serialVersionUID = 1L;

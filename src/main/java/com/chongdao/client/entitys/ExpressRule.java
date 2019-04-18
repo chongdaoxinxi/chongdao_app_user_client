@@ -10,10 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+/**
+ * @Author onlineS
+ * @Description 配送员规则
+ * @Date 17:37 2019/4/18
+ */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="express_rule")
 public class ExpressRule implements Serializable {
     private static final long serialVersionUID = 1L;

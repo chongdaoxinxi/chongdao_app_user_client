@@ -10,15 +10,16 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 关联优惠券中间表
+/** 
+ * @Author onlineS
+ * @Description 配送券用户关联表
+ * @Date 17:35 2019/4/18
  */
-
+@Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @DynamicUpdate
 @Table(name="coupon_user")
 public class CouponUser implements Serializable {

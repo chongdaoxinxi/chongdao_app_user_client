@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the carduser database table.
- * 
+ * @Author onlineS
+ * @Description 优惠券用户关联表
+ * @Date 17:21 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="carduser")
 public class Carduser implements Serializable {
 	private static final long serialVersionUID = 1L;

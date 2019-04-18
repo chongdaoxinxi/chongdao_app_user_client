@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class combination implements Serializable {
     private static final long serialVersionUID = 1L;
 

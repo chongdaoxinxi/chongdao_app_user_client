@@ -11,8 +11,9 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the adtorderdetail database table.
- * 
+ * @Author onlineS
+ * @Description 追加订单明细
+ * @Date 17:18 2019/4/18
  */
 @Entity
 @Setter

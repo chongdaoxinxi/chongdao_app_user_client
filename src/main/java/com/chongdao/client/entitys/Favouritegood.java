@@ -9,14 +9,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the favouritegood database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 收藏的商品
+ * @Date 17:37 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="favouritegood")
 public class Favouritegood implements Serializable {
 	private static final long serialVersionUID = 1L;
