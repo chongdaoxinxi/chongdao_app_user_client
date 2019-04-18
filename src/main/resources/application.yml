@@ -1,1 +1,6 @@
-
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta
+    username: pet
+    password: ABcd12#$
