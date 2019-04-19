@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import com.chongdao.client.enums.ResultEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,21 +35,21 @@ public class User {
     private String openId;
 
     /** 用户余额（充值） */
-    private BigDecimal money;
+    private BigDecimal money = BigDecimal.ZERO;
 
     /** 集分 */
-    private Integer points;
+    private Integer points = 0;
 
     private Integer status; //待明确
 
     /** 用户类型（1:app用户,2:微信用户） */
-    private Integer type;
+    private Integer type = ResultEnum.USER_TYPE_APP.getCode();
 
     /** 用户创建时间 */
-    private Date createTime;
+    private Date createTime = new Date();
 
     /** 更新时间 */
-    private Date updateTime;
+    private Date updateTime = new Date();
 
     /** 最后一次登录时间（token鉴别有效期使用） */
     private Date lastLoginTime;

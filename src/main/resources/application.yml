@@ -4,3 +4,13 @@ spring:
     url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta
     username: pet
     password: ABcd12#$
+
+
+
+#创蓝短信服务
+sms:
+  url: http://smssh1.253.com/msg/variable/json
+  account: N2434702
+  password: Ryh6TxCW0Ycbc3
+  enable: 1
+  SmsIdentifyCode: 【养宠有道】您的登陆验证码为:{$var}
