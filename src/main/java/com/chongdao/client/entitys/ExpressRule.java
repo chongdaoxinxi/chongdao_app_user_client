@@ -26,12 +26,9 @@ public class ExpressRule implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
-    private String areaCode;
-
-    private String startTime;
-
-    private String endTime;
+    private String areaCode;//区域码
+    private String startTime;//工作开始时间
+    private String endTime;//工作结束时间
 
     @Override
     public String toString() {

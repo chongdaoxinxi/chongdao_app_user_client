@@ -30,39 +30,20 @@ public class Coupon implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private Integer shopId;
-
-    private String couponName;
-
     private Integer categoryId;
-
-    private BigDecimal fullPrice;
-
-    //减金额
-    private BigDecimal decreasePrice;
-
+    private String couponName;
+    private BigDecimal fullPrice;//起效金额
+    private BigDecimal decreasePrice;//减免金额
+    private Integer type;//0:满减券(店铺活动),3:优惠券,2满减优惠券
+    private Integer usedCouponCount;//优惠券数量
+    private Integer receiveCouponCount;//已领取优惠券数量
     //满减优惠券状态 -1删除，0上架，1下架（默认为0）
     private Integer status = ResponseCode.UP_COUPON.getStatus();
-
-    //有效时间
-    private String activeTime;
-
-    //失效时间
-    private String missTime;
-
+    private String activeTime;//有效时间
+    private String missTime;//失效时间
     private Date createTime;
-
     private Date updateTime;
-
-    //0:满减券(店铺活动),3:优惠券,2满减优惠券
-    private Integer type;
-
-    //优惠券数量
-    private Integer usedCouponCount;
-
-    //已领取优惠券数量
-    private Integer receiveCouponCount;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

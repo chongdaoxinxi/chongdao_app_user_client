@@ -11,13 +11,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the transaction database table.
- * 
+ * @Author onlineS
+ * @Description 订单交易记录(充值)
+ * @Date 9:25 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="transaction")
 public class Transaction implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,42 +26,31 @@ public class Transaction implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private BigDecimal amount;
-
-	private String comment;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
+	@Column(name="user_id")
+	private Integer userId;
 	@Column(name="order_id")
 	private Integer orderId;
-
 	private String orderno;
+	@Column(name="shop_id")
+	private Integer shopId;
+	private Integer type;
 
+	private String transactionid;//交易id
+	private String comment;
 	private String result;
-
 	@Column(name="result_code")
 	private String resultCode;
 
-	@Column(name="shop_id")
-	private Integer shopId;
-
-	private String transactionid;
-
-	private Integer type;
-
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
 
-	@Column(name="user_id")
-	private Integer userId;
-
-	private Integer version;
+	//废弃字段
+	private BigDecimal amount;
 
 	@Override
 	public String toString() {

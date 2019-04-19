@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the inventory database table.
- * 
+ * @Author onlineS
+ * @Description 库存(暂时废弃)
+ * @Date 17:41 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "inventory")
 public class Inventory implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,32 +25,20 @@ public class Inventory implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
+	private String name;
+	private Integer shopid;
+	private Integer type;
+	private Integer status;
 	private Integer available;
-
 	private String comment;
-
+	private Integer stock;
+	private Integer version;
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
-	private String name;
-
-	private Integer shopid;
-
-	private Integer status;
-
-	private Integer stock;
-
-	private Integer type;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer version;
 
 	@Override
 	public String toString() {

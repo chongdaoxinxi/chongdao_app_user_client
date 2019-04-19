@@ -9,14 +9,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the goodscategory database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 商品分类
+ * @Date 17:40 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="goodscategory")
 public class Goodscategory implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,26 +25,17 @@ public class Goodscategory implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	
-	private Integer board;
-	
-	private Integer inventorytype;
-
+	private String name;
 	private String comment;
-
+	private Integer board;//不详
+	private Integer inventorytype;//不详
+	private Integer version;
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
-	private String name;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer version;
 
 	@Override
 	public String toString() {

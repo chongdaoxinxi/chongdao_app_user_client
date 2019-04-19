@@ -11,10 +11,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/** 
+ * @Author onlineS
+ * @Description (暂时废弃)
+ * @Date 17:45 2019/4/18
+ */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "log_recharge")
 public class LogRecharge extends PageParams implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -22,31 +27,18 @@ public class LogRecharge extends PageParams implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private Integer payType;
-
     private BigDecimal rechargeMoney;
-
     private BigDecimal receiveMoney;
-
     private Integer userId;
-
     private Integer connId;
-
     private Integer connPid;
-
     private Integer connType;
-
     private String orderCode;
-
     private String payNo;
-
     private Date createTime;
-
     private Date payTime;
-
     private Integer status;
-
     @Transient
     private String userName;
     @Transient

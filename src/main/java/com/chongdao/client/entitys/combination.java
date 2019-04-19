@@ -7,6 +7,11 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/** 
+ * @Author onlineS
+ * @Description
+ * @Date 12:44 2019/4/19
+ */
 @Setter
 @Getter
 @NoArgsConstructor

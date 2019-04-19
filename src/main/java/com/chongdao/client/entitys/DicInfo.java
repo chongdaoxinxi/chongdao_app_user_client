@@ -24,14 +24,10 @@ public class DicInfo implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private String code;
-
 	private String note;
-
 	private Integer status;
-
-	private String val;
+	private String val;//值
 
 	@Override
 	public String toString() {

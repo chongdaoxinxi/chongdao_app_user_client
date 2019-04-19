@@ -11,9 +11,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * @author 杨荣富
- * @date 2018/07/26
+/** 
+ * @Author onlineS
+ * @Description 充值规则(暂时废弃)
+ * @Date 9:05 2019/4/19
  */
 @Entity
 @Setter
@@ -26,31 +27,18 @@ public class RechargeRule extends PageParams implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private BigDecimal rechargeMoney;
-
     private BigDecimal giveMoney;
-
     private String startTime;
-
     private String endTime;
-
     private Integer userNum;
-
     private Integer status;
-
     private String areaCode;
-
     private String note;
-
     private Integer pid;
-
     private String title;
-
     private String subTitle;
-
     private String activityImg;
-
     @Transient
     private String areaName;
 

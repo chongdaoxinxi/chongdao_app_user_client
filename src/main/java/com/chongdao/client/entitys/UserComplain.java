@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the usercomplain database table.
- * 
+ * @Author onlineS
+ * @Description 订单投诉
+ * @Date 9:30 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="usercomplain")
 public class UserComplain implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,26 +25,19 @@ public class UserComplain implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private int id;
-
-	private int createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private String note;
-
-	@Column(name="order_id")
-	private int orderId;
-
-	private int updateby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-
 	@Column(name="user_id")
 	private int userId;
-	
+	@Column(name="order_id")
+	private int orderId;
+	private String note;
+
 	private int version;
+	private int updateby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedate;
+	private int createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 
 	@Override
 	public String toString() {

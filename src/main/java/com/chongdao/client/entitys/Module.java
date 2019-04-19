@@ -7,16 +7,18 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
- * The persistent class for the module database table.
- * 
+ * @Author onlineS
+ * @Description 模块
+ * @Date 17:43 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "module")
 public class Module implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,19 +26,20 @@ public class Module implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String icon;
-
 	private String name;
-
+	private String icon;
+	private Integer sort;
+	private Integer status;//0||1
 	@Column(name="service_money")
 	private BigDecimal serviceMoney;
-
-	private Integer sort;
-
-	private Integer status;
-
 	private Integer type;
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
+	private Integer updateby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedate;
 
 	@Override
 	public String toString() {

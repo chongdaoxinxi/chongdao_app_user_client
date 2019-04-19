@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the message database table.
- * 
+ * @Author onlineS
+ * @Description 信息(暂时废弃)
+ * @Date 17:42 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "message")
 public class Message implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,29 +25,18 @@ public class Message implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private String content;
-
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
 	private Integer receiverid;
-
 	private Integer receivertype;
-
 	private Integer status;
-
 	private String title;
-	
 	private Integer type;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
 	private Integer version;
 
 	@Override

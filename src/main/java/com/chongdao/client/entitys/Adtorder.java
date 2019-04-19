@@ -25,25 +25,25 @@ public class Adtorder implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	private String adtorderno;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
+	private Integer orderid;//订单id, order_info.id
+	private String adtorderno;//追加订单号
+	@Column(name="shop_id")
+	private Integer shopId;//商店id
+	@Column(name="user_id")
+	private Integer userId;//用户id
+	private String payuser;
 	private Double discount;
 	private BigDecimal discountmoney;
 	private BigDecimal goodsprice;
-	private String note;
-	private Integer orderid;
-	private String payuser;
-	@Column(name="shop_id")
-	private Integer shopId;
-	private Integer status;
 	private BigDecimal totalprice;
-	private Integer updateby;
+	private String note;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
+	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	@Column(name="user_id")
-	private Integer userId;
+	private Integer updateby;
+	private Integer status;
 	private Integer version;
 
 	@Override

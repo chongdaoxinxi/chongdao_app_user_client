@@ -11,10 +11,15 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * @Author onlineS
+ * @Description 用户账户
+ * @Date 9:27 2019/4/19
+ */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="user_account")
 public class UserAccount implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -22,24 +27,11 @@ public class UserAccount implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private Integer userId;
-
     private BigDecimal money;
-
     private Integer type;
-
     private Integer status;
-
     private String areaCode;
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode == null ? null : areaCode.trim();
-    }
 
     @Override
     public String toString() {

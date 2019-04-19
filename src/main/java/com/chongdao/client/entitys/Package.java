@@ -10,14 +10,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 
-/**
- * The persistent class for the package database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 礼包
+ * @Date 9:03 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "package")
 public class Package implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,44 +26,28 @@ public class Package implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String comment;
-
-	private String content;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private String description;
-
-	private BigDecimal displayprice;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date enddate;
-
-	private Integer goodsid;
-
 	private String name;
-
 	private String note;
-
-	private BigDecimal price;
-
+	private String comment;
+	private String content;
+	private Integer goodsid;//商品id
+	private String description;
+	private BigDecimal displayprice;//例如360元得510元礼包, 这个值就是510
+	private BigDecimal price;//价格
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startdate;
-
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date enddate;
 	private Integer status;
-
 	private Integer type;
 
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer version;
 
 	@Override
 	public String toString() {

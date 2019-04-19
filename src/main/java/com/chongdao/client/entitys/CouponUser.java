@@ -28,20 +28,23 @@ public class CouponUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    /**  优惠券id */
-    private Integer couponId;
-
-    /**  商店id */
-    private Integer shopId;
-
-    /**  用户id */
-    private Integer userId;
-
-    /** 领取状态：0代表未领取，1代表已领取 */
-    private Integer receiveStatus;
-
+    private Integer couponId;/**  优惠券id */
+    private Integer shopId;/**  商店id */
+    private Integer userId;/**  用户id */
+    private Integer receiveStatus; /** 领取状态：0代表未领取，1代表已领取 */
     private Date createTime;
-
     private Date updateTime;
+
+    @Override
+    public String toString() {
+        return "CouponUser{" +
+                "id=" + id +
+                ", couponId=" + couponId +
+                ", shopId=" + shopId +
+                ", userId=" + userId +
+                ", receiveStatus=" + receiveStatus +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

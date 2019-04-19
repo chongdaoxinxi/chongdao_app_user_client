@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the order_log database table.
- * 
+ * @Author onlineS
+ * @Description 订单日志
+ * @Date 17:45 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "order_log")
 public class OrderLog implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,27 +25,19 @@ public class OrderLog implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private String note;
-
 	@Column(name="order_id")
-	private Integer orderId;
-
+	private Integer orderId;//订单id
+	private String note;//日志信息
 	@Column(name="order_status")
-	private Integer orderStatus;
-	
-	private Integer createby;
-
-	private Integer updateby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
+	private Integer orderStatus;//订单所处状态
 
 	private Integer version;
-
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
+	private Integer createby;
+	private Integer updateby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedate;
 
 	@Override
 	public String toString() {

@@ -26,53 +26,27 @@ public class Card implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String comment;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date enddate;
-
 	private String name;
-
-	private String note;
-
-	private String shopids;
-	
-	private String areaids;
-
+	private String note;//优惠券详情
+	private String comment;
+	private String shopids;//支持商店(以,连接的字符串)
+	private String areaids;//支持区域id(以,连接的字符串)
+	private Integer type;
+	private BigDecimal displayprice;//优惠金额
+	private BigDecimal price;//触发价格(例如满100减10, 触发价格为100)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startdate;
-	
-	private BigDecimal price;
-	
-	private BigDecimal displayprice;
-
-	private Integer status;
-	
-	private Integer type;
-
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date enddate;
+	private Integer couponId;//配送券id(不能重复使用的??)
+	private Integer status;//-1删除，0上架，1下架（默认为0）
+	private Integer version;//版本控制
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer version;
-
-	private Integer couponId;
-
-	public Integer getCouponId() {
-		return couponId;
-	}
-
-	public void setCouponId(Integer couponId) {
-		this.couponId = couponId;
-	}
-
 
 	@Override
 	public String toString() {

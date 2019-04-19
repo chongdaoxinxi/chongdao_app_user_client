@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the order_refund database table.
- * 
+ * @Author onlineS
+ * @Description 退款信息
+ * @Date 9:00 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "order_refund")
 public class OrderRefund implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,16 +25,12 @@ public class OrderRefund implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
+	@Column(name="order_id")
+	private Integer orderId;//订单id
+	private String note;//退款信息
+	private Integer type;//1: 用户, 2:商家
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
-	private String note;
-
-	@Column(name="order_id")
-	private Integer orderId;
-
-	private Integer type;
 
 	@Override
 	public String toString() {

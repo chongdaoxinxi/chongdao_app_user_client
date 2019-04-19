@@ -25,25 +25,16 @@ public class Eventcard implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private Integer cardid;
-
 	private Integer count;
-
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
 	private Integer eventid;
-
 	private Integer status;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
 	private Integer version;
 
 	@Override

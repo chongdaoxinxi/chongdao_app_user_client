@@ -11,8 +11,9 @@ import java.util.Date;
 
 
 /**
- * 充值记录
- * 
+ * @Author onlineS
+ * @Description 用户金额交易记录
+ * @Date 9:33 2019/4/19
  */
 @Entity
 @Setter
@@ -25,34 +26,22 @@ public class Usertransaction implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String comment;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private BigDecimal money;
-	
+	private Integer userid;
 	private String payuser;
-
 	private Integer orderid;
-
 	private String orderno;
-
+	private String comment;//注释
+	private BigDecimal money;
+	private Integer type;//1:用户充值, 2:用户消费, 3:拒单退还
 	private Integer status;
 
-	private Integer type;
-
+	private Integer version;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer userid;
-
-	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 
 	@Override
 	public String toString() {

@@ -25,39 +25,24 @@ public class Event implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private String comment;
-
 	private String content;
-
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
 	private String description;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date enddate;
-
 	private String name;
-
 	private String note;
-
 	private String shopids;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startdate;
-
 	private Integer status;
-
 	private Integer type;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
 	private Integer version;
 
 	@Override

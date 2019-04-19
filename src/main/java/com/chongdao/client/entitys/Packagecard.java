@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the packagecard database table.
- * 
+ * @Author onlineS
+ * @Description 礼包券
+ * @Date 9:04 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "packagecard")
 public class Packagecard implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,25 +25,17 @@ public class Packagecard implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private Integer amount;
-
-	private Integer cardid;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private Integer packageid;
-
+	private Integer packageid;//礼包id
+	private Integer cardid;//优惠券id
+	private Integer amount;//数量
 	private Integer status;
 
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
 	private Integer version;
 
 	@Override

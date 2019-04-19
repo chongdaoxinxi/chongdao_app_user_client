@@ -25,24 +25,16 @@ public class Favouritegood implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
+	private Integer goodsid;//商品id
+	private Integer userid;//用户id
+	private Integer status;//0||1
+	private Integer version;
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
-	private Integer goodsid;
-
-	private Integer status;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer userid;
-
-	private Integer version;
 
 	@Override
 	public String toString() {
