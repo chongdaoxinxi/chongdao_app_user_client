@@ -27,9 +27,6 @@ public class Adtorderdetail implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
 	private Integer adtorderid;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private Double discount;
 	private BigDecimal discountprice;
 	private Integer goodsamount;
@@ -38,10 +35,14 @@ public class Adtorderdetail implements Serializable {
 	private String note;
 	private BigDecimal price;
 	private Integer shopid;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

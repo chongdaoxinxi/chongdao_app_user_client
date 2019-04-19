@@ -32,6 +32,7 @@ public class Inventory implements Serializable {
 	private Integer available;
 	private String comment;
 	private Integer stock;
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

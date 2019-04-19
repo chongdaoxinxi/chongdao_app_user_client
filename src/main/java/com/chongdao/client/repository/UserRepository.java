@@ -20,4 +20,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Transactional
     @Query(value = "update user set last_login_time = ?1 where name=?2",nativeQuery = true)
     void updateLastLoginTimeByName(Date lastLoginTime, String username);
+
+
+    @Query(value = "select count(1) from user where name= ?1",nativeQuery = true)
+    int checkUserName(String str);
 }

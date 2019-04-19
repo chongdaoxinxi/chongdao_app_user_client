@@ -33,6 +33,7 @@ public class GoodsType implements Serializable {
 	private Integer board;//所属分类id
 	private String sort;
 	private Integer status;
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

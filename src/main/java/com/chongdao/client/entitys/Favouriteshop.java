@@ -28,6 +28,7 @@ public class Favouriteshop implements Serializable {
 	private Integer shopid;//商店id
 	private Integer userid;//用户id
 	private Integer status;//0||1
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

@@ -37,14 +37,15 @@ public class Adtorder implements Serializable {
 	private BigDecimal goodsprice;
 	private BigDecimal totalprice;
 	private String note;
+	private Integer status;
+
+	private Integer version;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
 	private Integer updateby;
-	private Integer status;
-	private Integer version;
 
 	@Override
 	public String toString() {

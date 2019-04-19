@@ -29,6 +29,7 @@ public class Carduser implements Serializable {
 	private Integer userid;//用户id
 	private Integer count;
 	private Integer status;
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

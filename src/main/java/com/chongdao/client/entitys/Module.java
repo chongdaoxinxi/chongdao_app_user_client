@@ -33,6 +33,7 @@ public class Module implements Serializable {
 	@Column(name="service_money")
 	private BigDecimal serviceMoney;
 	private Integer type;
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

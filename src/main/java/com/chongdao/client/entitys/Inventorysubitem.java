@@ -26,19 +26,20 @@ public class Inventorysubitem implements Serializable {
 	private Integer id;
 	private Integer available;
 	private String comment;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private Integer inventoryid;
 	private String name;
 	private Integer shopid;
 	private Integer status;
 	private Integer stock;
 	private Integer type;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

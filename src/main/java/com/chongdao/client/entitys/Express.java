@@ -37,6 +37,7 @@ public class Express extends PageParams implements Serializable {
 	private String areaName;//区域名称
 	private Double lastLng;
 	private Double lastLat;
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -44,6 +45,7 @@ public class Express extends PageParams implements Serializable {
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
+
 	//暂时废弃
 	private String headImg;
 	private String openId;

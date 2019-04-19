@@ -25,16 +25,17 @@ public class Adtorderlog implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private String note;
 	private Integer adtorderid;
 	private Integer orderstatus;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

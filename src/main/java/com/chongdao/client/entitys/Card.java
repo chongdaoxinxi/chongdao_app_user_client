@@ -40,6 +40,7 @@ public class Card implements Serializable {
 	private Date enddate;
 	private Integer couponId;//配送券id(不能重复使用的??)
 	private Integer status;//-1删除，0上架，1下架（默认为0）
+
 	private Integer version;//版本控制
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

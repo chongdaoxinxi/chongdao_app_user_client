@@ -28,6 +28,7 @@ public class Favouritegood implements Serializable {
 	private Integer goodsid;//商品id
 	private Integer userid;//用户id
 	private Integer status;//0||1
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

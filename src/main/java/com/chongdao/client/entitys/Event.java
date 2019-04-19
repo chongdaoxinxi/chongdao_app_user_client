@@ -27,9 +27,6 @@ public class Event implements Serializable {
 	private Integer id;
 	private String comment;
 	private String content;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private String description;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date enddate;
@@ -40,10 +37,14 @@ public class Event implements Serializable {
 	private Date startdate;
 	private Integer status;
 	private Integer type;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

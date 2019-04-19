@@ -29,6 +29,7 @@ public class Goodscategory implements Serializable {
 	private String comment;
 	private Integer board;//不详
 	private Integer inventorytype;//不详
+
 	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)

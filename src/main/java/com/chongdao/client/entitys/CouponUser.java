@@ -20,7 +20,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicUpdate
 @Table(name="coupon_user")
 public class CouponUser implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -26,18 +26,19 @@ public class Message implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
 	private String content;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private Integer receiverid;
 	private Integer receivertype;
 	private Integer status;
 	private String title;
 	private Integer type;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {
