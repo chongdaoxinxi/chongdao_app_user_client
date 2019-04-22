@@ -193,4 +193,22 @@ public class UserAppController {
     public ResultResponse<UserLoginVO> getOpenAreaList() {
         return null;
     }
+
+    /**
+     * 保存用户配置
+     * @return
+     */
+    @RequestMapping("/saveUserSetting")
+    public ResultResponse<UserLoginVO> saveUserSetting() {
+        return null;
+    }
+
+    /**
+     * 保存用户的宠物卡片
+     * @return
+     */
+    @RequestMapping("/savePetCard")
+    public ResultResponse<UserLoginVO> savePetCard() {
+        return null;
+    }
 }
