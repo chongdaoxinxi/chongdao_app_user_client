@@ -12,13 +12,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the shop_bill database table.
- * 
+ * @Author onlineS
+ * @Description 商家金额交易
+ * @Date 9:11 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="shop_bill")
 public class ShopBill extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,24 +27,17 @@ public class ShopBill extends PageParams implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private String note;
-
-	@Column(name="order_id")
-	private Integer orderId;
-
-	private BigDecimal price;
-
-	@Column(name="shop_id")
-	private Integer shopId;
-
-	private Integer type;
-
 	@Column(name="user_id")
 	private Integer userId;
+	@Column(name="shop_id")
+	private Integer shopId;
+	@Column(name="order_id")
+	private Integer orderId;
+	private BigDecimal price;
+	private String note;
+	private Integer type;//1:客户订单, 2:, 3:店铺提现
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 
 	@Override
 	public String toString() {

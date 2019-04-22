@@ -9,14 +9,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the eventcard database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description
+ * @Date 17:36 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="eventcard")
 public class Eventcard implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,26 +25,18 @@ public class Eventcard implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private Integer cardid;
-
 	private Integer count;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
 	private Integer eventid;
-
 	private Integer status;
 
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer version;
 
 	@Override
 	public String toString() {

@@ -11,6 +11,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/** 
+ * @Author onlineS
+ * @Description 
+ * @Date 17:45 2019/4/18
+ */
 @Entity
 @Setter
 @Getter
@@ -22,19 +27,12 @@ public class OrderInfoRe implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private Integer orderId;
-
     private String payUser;
-
     private Date createTime;
-
     private Date payTime;
-
     private Integer status;
-
     private String orderNo;
-
     private String oldOrderNo;
 
     @Override

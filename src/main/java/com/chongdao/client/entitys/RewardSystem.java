@@ -6,9 +6,14 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/**
+ * @Author onlineS
+ * @Description 订单奖励
+ * @Date 9:06 2019/4/19
+ */
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class RewardSystem implements Serializable {
    private static final long serialVersionUID = 1L;
 

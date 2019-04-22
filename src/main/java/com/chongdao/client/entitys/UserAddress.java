@@ -9,13 +9,14 @@ import java.io.Serializable;
 
 
 /**
- * The persistent class for the user_address database table.
- * 
+ * @Author onlineS
+ * @Description 用户地址
+ * @Date 9:28 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="user_address")
 public class UserAddress implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -23,27 +24,18 @@ public class UserAddress implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String address;
-
-	private Double lat;
-
-	private Double lng;
-
-	private String location;
-
-	private String phone;
-
-	private Integer status;
-
 	@Column(name="user_id")
 	private Integer userId;
-
 	@Column(name="user_name")
 	private String userName;
-
+	private String address;
+	private String phone;
+	private String location;
+	private Double lat;
+	private Double lng;
 	@Column(name = "default_address")
 	private Integer defaultAddress;
+	private Integer status;
 
 	@Override
 	public String toString() {

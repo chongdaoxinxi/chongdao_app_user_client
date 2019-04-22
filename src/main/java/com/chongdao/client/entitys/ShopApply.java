@@ -12,13 +12,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the shop_apply database table.
- * 
+ * @Author onlineS
+ * @Description 商家提现
+ * @Date 9:10 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="shop_apply")
 public class ShopApply extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,39 +27,28 @@ public class ShopApply extends PageParams implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	@Column(name="apply_money")
-	private BigDecimal applyMoney;
-
-	@Column(name="apply_note")
-	private String applyNote;
-
-	@Column(name="check_note")
-	private String checkNote;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="check_time")
-	private Date checkTime;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	@Column(name="realy_money")
-	private BigDecimal realyMoney;
-
 	@Column(name="shop_id")
 	private Integer shopId;
-
-	private Integer status;
-	
-    @Transient
-    private String shopName;
-    
-    @Transient
+	@Transient
+	private String shopName;
+	@Column(name="apply_money")
+	private BigDecimal applyMoney;//申请提现金额
+	@Column(name="apply_note")
+	private String applyNote;//申请备注
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="check_time")
+	private Date checkTime;//审核时间
+	@Column(name="check_note")
+	private String checkNote;//审核备注
+	@Column(name="realy_money")
+	private BigDecimal realyMoney;//真实提现金额
+	@Transient
     private String wxNo;
-    
-    @Transient
+	@Transient
     private String zfbNo;
+	private Integer status;//
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;//申请创建时间
 
 	@Override
 	public String toString() {

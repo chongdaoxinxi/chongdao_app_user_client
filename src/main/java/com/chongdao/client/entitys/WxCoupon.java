@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the wx_coupon database table.
- * 
+ * @Author onlineS
+ * @Description 微信分享活动
+ * @Date 9:38 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="wx_coupon")
 public class WxCoupon implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,20 +26,21 @@ public class WxCoupon implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	@Column(name="coupon_id")
 	private Integer couponId;
+	private String name;
 	private String content;
 	@Column(name="max_mun")
-	private Integer maxMun;
-	private String name;
-	private Integer status;
+	private Integer maxMun;//分享次数
 	private String image;
-	private Integer cardid;
+	private Integer status;
+	private Integer cardid;//优惠券id
+
+	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

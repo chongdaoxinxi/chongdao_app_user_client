@@ -9,13 +9,14 @@ import java.io.Serializable;
 
 
 /**
- * The persistent class for the area database table.
- * 
+ * @Author onlineS
+ * @Description 区域
+ * @Date 17:19 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="area")
 public class Area implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -23,23 +24,15 @@ public class Area implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String code;
-
-	@Column(name="is_open")
-	private Integer isOpen;
-
-	private Integer level;
-
 	private String name;
-
-	private Integer pid;
-
-	private Integer rate;
-	
+	private String code;
+	private Integer pid;//上级区域id(例如:上海市为嘉定区的上级)
 	private Double lat;
-
 	private Double lng;
+	private Integer level;//层级关系
+	@Column(name="is_open")
+	private Integer isOpen;//该地区是否开放
+	private Integer rate;
 
 	@Override
 	public String toString() {

@@ -11,14 +11,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 
-/**
- * The persistent class for the goods database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 商品
+ * @Date 17:39 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "goods")
 public class Good extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,40 +27,26 @@ public class Good extends PageParams implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	@Lob
-	private String des;
-
-	private Double discount = 0.0D;
-
-	private String icon;
-
-	@Column(name="module_id")
-	private Integer moduleId;
-
 	private String name;
-
+	private String icon;//图片
+	@Lob
+	private String des;//商品介绍
+	private Double discount = 0.0D;
 	private BigDecimal price;
-
+	private String unit;//计量单位
 	@Column(name="shop_id")
-	private Integer shopId;
-
-	private Integer status;
-
-	@Column(name="type_id")
-	private Integer typeId;
-
-	private String unit;
-	
-    @Transient
-    private Integer goodsType;
-
+	private Integer shopId;//商店id
+	@Column(name="module_id")
+	private Integer moduleId;//所属模块id
 	@Transient
-	private String areaCode;
-
+	private Integer goodsType;//所属分类id
+	@Column(name="type_id")
+	private Integer typeId;//所属类别id
+	private Integer status;//-1: 删除, 0:下架, 1:上架
+	@Transient
+	private String areaCode;//区域码
     //提高系数默认为1
     private Double ratio = 1.0D;
-
     private BigDecimal ratioPrice;
 
 	@Override

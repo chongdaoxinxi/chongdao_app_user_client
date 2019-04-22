@@ -11,8 +11,9 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the wiki database table.
- * 
+ * @Author onlineS
+ * @Description 维基(暂时废弃)
+ * @Date 9:38 2019/4/19
  */
 @Entity
 @Setter
@@ -26,31 +27,22 @@ public class Wiki implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	@Lob
 	private String content;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
 	@Lob
 	private String Integerro;
-
 	private String picture;
-
 	private Integer pid;
-
 	@Lob
 	private String title;
 
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer version;
 
 	@Override
 	public String toString() {

@@ -10,14 +10,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the express database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 配送员
+ * @Date 17:36 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="express")
 public class Express extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,42 +26,29 @@ public class Express extends PageParams implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
+	private String username;//用户名
+	private String password;
+	private String name;//姓名
+	private String tel;
+	private Integer type;//1||2
+	private Integer status;//0||1
+	private String description;
+	private String areaCode;//区域码
+	private String areaName;//区域名称
+	private Double lastLng;
+	private Double lastLat;
 
+	private Integer version;
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
-	private String description;
-
-	private String name;
-
-	private String password;
-
-	private Integer status;
-	
-	private Integer type;
-
-	private String tel;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
 
-	private String username;
-
-	private Integer version;
-
-	private String areaCode;
-	private Double lastLng;
-
-	private Double lastLat;
+	//暂时废弃
 	private String headImg;
-
 	private String openId;
-
-	private String areaName;
 
 	@Override
 	public String toString() {

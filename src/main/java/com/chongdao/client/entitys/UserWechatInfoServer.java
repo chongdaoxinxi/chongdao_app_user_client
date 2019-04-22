@@ -13,6 +13,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @Author onlineS
+ * @Description 用户微信信息
+ * @Date 9:37 2019/4/19
+ */
 @Entity
 @Setter
 @Getter
@@ -25,39 +30,22 @@ public class UserWechatInfoServer extends PageParams implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private String openid;
-
-    private String nickname;
-
-    private Integer sex;
-
-    private String city;
-
-    private String country;
-
-    private String province;
-
-    private String language;
-
-    private String headimgurl;
-
-    private String subscribeTime;
-
     private String unionid;
-
+    private String nickname;
+    private Integer sex;
+    private String headimgurl;
+    private String city;
+    private String country;
+    private String province;
+    private String language;
+    private String subscribeTime;
     private String remark;
-
     private Integer groupid;
-
     private String subscribe;
-
     private String gender;
-
     private String privilege;
-
     private String appOpenid;
-
     private Date createTime;
 
     @Override

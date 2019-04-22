@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the adtorderlog database table.
- * 
+ * @Author onlineS
+ * @Description 追加订单日志
+ * @Date 17:18 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="adtorderlog")
 public class Adtorderlog implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,16 +25,17 @@ public class Adtorderlog implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private String note;
 	private Integer adtorderid;
 	private Integer orderstatus;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

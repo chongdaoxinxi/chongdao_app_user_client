@@ -8,14 +8,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 
-/**
- * The persistent class for the recomm database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description
+ * @Date 9:27 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "recomm")
 public class Recomm implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -23,12 +24,9 @@ public class Recomm implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	@Column(name="conn_id")
 	private Integer connId;
-
 	private Integer sort;
-
 	private Integer type;
 
 	@Override

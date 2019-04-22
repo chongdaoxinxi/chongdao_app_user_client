@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the packageuser database table.
- * 
+ * @Author onlineS
+ * @Description 礼包用户关联表
+ * @Date 9:04 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "packageuser")
 public class Packageuser implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,28 +25,21 @@ public class Packageuser implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private Integer count;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private Integer eventid;
-
+	private Integer userid;
 	private Integer packageid;
-
+	private Integer count;
 	private Integer status;
 
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	private Integer userid;
-
 	private Integer version;
+
+	//废弃字段
+	private Integer eventid;
 
 	@Override
 	public String toString() {

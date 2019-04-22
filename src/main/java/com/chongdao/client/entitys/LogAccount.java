@@ -12,10 +12,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/** 
+ * @Author onlineS
+ * @Description 账单日志(暂时废弃)
+ * @Date 17:45 2019/4/18
+ */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "log_account")
 public class LogAccount implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -23,15 +28,10 @@ public class LogAccount implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private Integer userId;
-
     private BigDecimal money;
-
     private Integer accountId;
-
     private String note;
-
     private Date createTime;
     private Integer type;
     private Integer connId;

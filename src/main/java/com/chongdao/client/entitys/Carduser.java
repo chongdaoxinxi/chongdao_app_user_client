@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the carduser database table.
- * 
+ * @Author onlineS
+ * @Description 优惠券用户关联表
+ * @Date 17:21 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="carduser")
 public class Carduser implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,32 +25,24 @@ public class Carduser implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private Integer cardid;
-	
-	private Integer eventid;
-
+	private Integer cardid;//优惠券id
+	private Integer userid;//用户id
 	private Integer count;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
 	private Integer status;
 
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
 
-	private Integer userid;
-
-	private Integer version;
-
+	//暂时没使用
 	private Integer shopId;
-
 	private Integer couponId;
+	private Integer eventid;
+
 
 	@Override
 	public String toString() {
@@ -57,5 +50,4 @@ public class Carduser implements Serializable {
 				+ createby + ", createdate=" + createdate + ", status=" + status + ", updateby=" + updateby
 				+ ", updatedate=" + updatedate + ", userid=" + userid + ", version=" + version + "]";
 	}
-	
 }

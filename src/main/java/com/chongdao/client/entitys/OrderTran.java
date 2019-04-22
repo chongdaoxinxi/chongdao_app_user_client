@@ -10,13 +10,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * The persistent class for the ordertrans database table.
- * 
+ * @Author onlineS
+ * @Description 订单金额明细
+ * @Date 9:01 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name = "ordertrans")
 public class OrderTran implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,59 +25,38 @@ public class OrderTran implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	
-	private Integer adtorderid;
-
-	private BigDecimal amount;
-
-	private String comment;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private BigDecimal goodsprice;
-
-	@Column(name="order_id")
-	private Integer orderId;
-
-	private BigDecimal platamount;
-
-	private BigDecimal payoffamount;
-
-	private BigDecimal purseamount;
-	
-	private BigDecimal goodsdiscount;
-	
-	private BigDecimal servicediscount;
-	
-	private Integer rate;
-
-	private BigDecimal serviceprice;
-
-	@Column(name="shop_id")
-	private int shopId;
-
-	private BigDecimal shopamount;
-
-	private Integer status;
-
-	private BigDecimal totalprice;
-	
-	private BigDecimal totaldiscount;
-
-	private Integer type;
-
-	private Integer updateby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-
 	@Column(name="user_id")
 	private Integer userId;
+	@Column(name="shop_id")
+	private int shopId;
+	@Column(name="order_id")
+	private Integer orderId;
+	private Integer adtorderid;
+	private String comment;
+	private Integer rate;
+	private Integer type;
+	private Integer status;
+
+	private BigDecimal amount;
+	private BigDecimal goodsprice;
+	private BigDecimal goodsdiscount;
+	private BigDecimal serviceprice;
+	private BigDecimal servicediscount;
+	private BigDecimal totalprice;
+	private BigDecimal totaldiscount;
+
+	private BigDecimal purseamount;
+	private BigDecimal shopamount;
+	private BigDecimal platamount;
+	private BigDecimal payoffamount;
 
 	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
+	private Integer updateby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedate;
 
 	@Override
 	public String toString() {

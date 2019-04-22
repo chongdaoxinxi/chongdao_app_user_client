@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the user_share database table.
- * 
+ * @Author onlineS
+ * @Description 用户分享记录
+ * @Date 9:32 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="user_share")
 public class UserShare implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,22 +25,23 @@ public class UserShare implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	@Column(name="coupon_id")
-	private Integer couponId;
-	@Column(name="max_mun")
-	private Integer maxMun;
-	@Column(name="share_code")
-	private String shareCode;
 	@Column(name="user_id")
 	private Integer userId;
-	private Integer cardid;
+	@Column(name="share_code")
+	private String shareCode;//分享码
+	@Column(name="max_mun")
+	private Integer maxMun;//分享次数
+	@Column(name="coupon_id")
+	private Integer couponId;//配送券id
+	private Integer cardid;//优惠券id
+
+	private Integer version;
 	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {

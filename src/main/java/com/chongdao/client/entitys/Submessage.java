@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the submessage database table.
- * 
+ * @Author onlineS
+ * @Description (暂时废弃)
+ * @Date 9:21 2019/4/19
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="submessage")
 public class Submessage implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,25 +25,16 @@ public class Submessage implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
 	private String content;
-
 	private Integer createby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
-
 	private Integer messageid;
-
 	private Integer receiverid;
-
 	private Integer status;
-
 	private Integer updateby;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
 	private Integer version;
 
 	@Override

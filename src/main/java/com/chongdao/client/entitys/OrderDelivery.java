@@ -11,6 +11,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/** 
+ * @Author onlineS
+ * @Description 订单服务信息
+ * @Date 17:43 2019/4/18
+ */
 @Entity
 @Setter
 @Getter
@@ -22,15 +27,10 @@ public class OrderDelivery implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
     private Integer orderId;
-
     private Integer courierId;
-
     private Date createTime;
-
     private String note;
-
     private Integer type;
 
     @Override

@@ -9,15 +9,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-
 /**
- * The persistent class for the adtorder database table.
- *
+ * @Author onlineS
+ * @Description 追加订单
+ * @Date 17:18 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="adtorder")
 public class Adtorder implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,44 +25,27 @@ public class Adtorder implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private String adtorderno;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private Double discount;
-
-	private BigDecimal discountmoney;
-
-	private BigDecimal goodsprice;
-
-	private String note;
-
-	private Integer orderid;
-
-	private String payuser;
-
+	private Integer orderid;//订单id, order_info.id
+	private String adtorderno;//追加订单号
 	@Column(name="shop_id")
-	private Integer shopId;
-
+	private Integer shopId;//商店id
+	@Column(name="user_id")
+	private Integer userId;//用户id
+	private String payuser;
+	private Double discount;
+	private BigDecimal discountmoney;
+	private BigDecimal goodsprice;
+	private BigDecimal totalprice;
+	private String note;
 	private Integer status;
 
-	private BigDecimal totalprice;
-
-	private Integer updateby;
-
+	private Integer version;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
+	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-
-	@Column(name="user_id")
-	private Integer userId;
-
-	private Integer version;
-
-
+	private Integer updateby;
 
 	@Override
 	public String toString() {
@@ -72,5 +55,4 @@ public class Adtorder implements Serializable {
 				+ ", status=" + status + ", totalprice=" + totalprice + ", updateby=" + updateby + ", updatedate="
 				+ updatedate + ", userId=" + userId + ", version=" + version + "]";
 	}
-
 }

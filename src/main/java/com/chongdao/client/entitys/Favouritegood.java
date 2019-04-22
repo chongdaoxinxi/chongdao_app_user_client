@@ -9,14 +9,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- * The persistent class for the favouritegood database table.
- * 
+/** 
+ * @Author onlineS
+ * @Description 收藏的商品
+ * @Date 17:37 2019/4/18
  */
 @Entity
 @Setter
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @Table(name="favouritegood")
 public class Favouritegood implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,24 +25,17 @@ public class Favouritegood implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-
-	private Integer createby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	private Integer goodsid;
-
-	private Integer status;
-
-	private Integer updateby;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-
-	private Integer userid;
+	private Integer goodsid;//商品id
+	private Integer userid;//用户id
+	private Integer status;//0||1
 
 	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
+	private Integer updateby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedate;
 
 	@Override
 	public String toString() {

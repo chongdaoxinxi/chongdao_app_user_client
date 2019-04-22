@@ -11,8 +11,9 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the adtorderdetail database table.
- * 
+ * @Author onlineS
+ * @Description 追加订单明细
+ * @Date 17:18 2019/4/18
  */
 @Entity
 @Setter
@@ -26,9 +27,6 @@ public class Adtorderdetail implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
 	private Integer adtorderid;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
 	private Double discount;
 	private BigDecimal discountprice;
 	private Integer goodsamount;
@@ -37,10 +35,14 @@ public class Adtorderdetail implements Serializable {
 	private String note;
 	private BigDecimal price;
 	private Integer shopid;
+
+	private Integer version;
+	private Integer createby;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdate;
 	private Integer updateby;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
-	private Integer version;
 
 	@Override
 	public String toString() {
