@@ -9,7 +9,7 @@ public interface UserService {
      * 用户登录接口
      * @return
      */
-    ResultResponse<UserLoginVO> login(UserLoginVO userLoginVO);
+    ResultResponse<UserLoginVO> login(String phone, String code);
 
-    ResultResponse<String> register(UserLoginVO userLoginVO);
+    //ResultResponse<String> register(UserLoginVO userLoginVO);
 }

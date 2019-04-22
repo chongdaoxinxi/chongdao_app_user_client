@@ -20,6 +20,9 @@ public class UserLoginVO {
     @JsonIgnore
     private String password;
 
+    /** 验证码 */
+    private String code;
+
     private Integer type;
     /** 头像 */
     private String icon;
@@ -31,4 +34,6 @@ public class UserLoginVO {
     private Integer points = 0;
 
     private Date lastLoginTime;
+
+
 }
