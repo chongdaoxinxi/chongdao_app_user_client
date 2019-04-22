@@ -70,7 +70,7 @@ public class OrderInfo implements Serializable {
 	private Date receiveTime;
 
 	@Column(name="is_service")
-	private Integer isService;
+	private Integer isService;//0: 服务;1: 商品;
 	@Column(name="refuse_note")
 	private String refuseNote;
 	@Column(name="shop_note")
