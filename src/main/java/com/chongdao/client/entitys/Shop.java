@@ -86,7 +86,7 @@ public class Shop extends PageParams implements Serializable {
 
 	//废弃字段
 	@Transient
-	private Integer isRecom;
+	private Integer isRecom;//也是是否热门商家
 	@Transient
 	private Integer showType;
 

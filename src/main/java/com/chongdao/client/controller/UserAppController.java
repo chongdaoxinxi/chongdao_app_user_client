@@ -1,8 +1,13 @@
 package com.chongdao.client.controller;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Banner;
+import com.chongdao.client.service.BannerService;
 import com.chongdao.client.vo.UserLoginVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Description TODO
@@ -13,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/userApp")
 public class UserAppController {
-
+    @Autowired
+    private BannerService bannerService;
     /**
      * 获取商家列表
      * @return
@@ -28,8 +34,8 @@ public class UserAppController {
      * @return
      */
     @RequestMapping("/getBanner")
-    public ResultResponse<UserLoginVO> getBanner(){
-        return null;
+    public ResultResponse<List<Banner>> getBanner(String areaCode){
+        return bannerService.getBannerByAreaCode(areaCode);
     }
 
     /**
