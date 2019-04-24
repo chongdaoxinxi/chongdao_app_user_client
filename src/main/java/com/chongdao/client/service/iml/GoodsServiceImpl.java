@@ -63,7 +63,7 @@ public class GoodsServiceImpl implements GoodsService {
             }
         }
         //查询所有上架商品
-        List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword, orderBy,categoryId);
+        List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword, orderBy,StringUtils.isBlank(categoryId) ? null : keyword);
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         goodList.forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();
