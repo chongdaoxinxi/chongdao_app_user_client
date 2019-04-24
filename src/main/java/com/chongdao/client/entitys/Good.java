@@ -1,14 +1,16 @@
 package com.chongdao.client.entitys;
 
 
-import com.chongdao.client.common.PageParams;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.type.UUIDBinaryType;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /** 
@@ -16,38 +18,75 @@ import java.math.BigDecimal;
  * @Description 商品
  * @Date 17:39 2019/4/18
  */
-@Entity
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "goods")
-public class Good extends PageParams implements Serializable {
-	private static final long serialVersionUID = 1L;
+@Entity
+public class Good {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
+
 	private String name;
-	private String icon;//图片
-	@Lob
-	private String des;//商品介绍
-	private Double discount = 0.0D;
+
+	private String icon; //图片
+
 	private BigDecimal price;
-	private String unit;//计量单位
-	@Column(name="shop_id")
-	private Integer shopId;//商店id
-	@Column(name="module_id")
-	private Integer moduleId;//所属模块id
+
+	private Double discount = 0.0D;
+
+	private String unit; //计量单位
+
+	private String des; //商品介绍
+
+	private Integer goodTypeId; //所属分类id
+
+	private Integer shopId;
+
+	//提高系数默认为1
+	private Double ratio = 1.0D;
+
+	private BigDecimal ratioPrice;
+
+	private Integer stock;
+
+	private Date createTime;
+
+	private Date updateTime;
+
+	private Byte status; //-1: 删除, 0:下架, 1:上架
+
+	private Integer moduleId; //所属模块id
+
+	private Integer categoryId; //所属类别id
+
 	@Transient
-	private Integer goodsType;//所属分类id
-	@Column(name="type_id")
-	private Integer typeId;//所属类别id
-	private Integer status;//-1: 删除, 0:下架, 1:上架
+	private Integer sales;
+
 	@Transient
-	private String areaCode;//区域码
-    //提高系数默认为1
-    private Double ratio = 1.0D;
-    private BigDecimal ratioPrice;
+	private String categoryName;
+
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodTypeId,
+				Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId) {
+		this.id = id;
+		this.name = name;
+		this.icon = icon;
+		this.price = price;
+		this.discount = discount;
+		this.unit = unit;
+		this.des = des;
+		this.goodTypeId = goodTypeId;
+		this.shopId = shopId;
+		this.ratio = ratio;
+		this.ratioPrice = ratioPrice;
+		this.stock = stock;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
+		this.status = status;
+		this.moduleId = moduleId;
+		this.categoryId = categoryId;
+	}
 
 	@Override
 	public String toString() {
@@ -61,10 +100,9 @@ public class Good extends PageParams implements Serializable {
 				", price=" + price +
 				", shopId=" + shopId +
 				", status=" + status +
-				", typeId=" + typeId +
+				", categoryId=" + categoryId +
 				", unit='" + unit + '\'' +
-				", goodsType=" + goodsType +
-				", areaCode='" + areaCode + '\'' +
+				", goodsType=" + goodTypeId +
 				", ratio=" + ratio +
 				", ratioPrice=" + ratioPrice +
 				'}';

@@ -2,6 +2,8 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.exception.PetException;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.sms.SMSUtil;
 import com.chongdao.client.utils.sms.SmsSender253;
@@ -64,7 +66,7 @@ public class SmsServiceImpl implements SmsService {
             GuavaCache.setKey(SMS_CODE_CONTENT_PREFIX + telephone, code);
             return ResultResponse.createBySuccess(code);
         } else {
-            return  ResultResponse.createByErrorMessage( "服务忙，请稍后重试");
+            throw new PetException(ResultEnum.ERROR);
         }
     }
 

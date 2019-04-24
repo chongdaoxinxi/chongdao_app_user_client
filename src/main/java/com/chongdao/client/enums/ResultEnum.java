@@ -17,7 +17,7 @@ public enum ResultEnum {
     USER_LOGIN_ALREADY(416,"已在别处登录"),
     USERNAME_OR_CODE_EMPTY(417,"手机号码或验证码不能为空"),
 
-    ERROR(500,"服务器错误"),
+    ERROR(500,"服务忙，请稍后重试"),
     PARAM_ERROR(501, "参数不正确"),
 
     USER_TYPE_APP(1,"app用户"),

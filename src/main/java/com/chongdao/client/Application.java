@@ -1,13 +1,15 @@
 package com.chongdao.client;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChongdaoAppUserClientApplication {
+@MapperScan("com.chongdao.client.mapper")
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(ChongdaoAppUserClientApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }
