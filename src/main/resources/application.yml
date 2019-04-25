@@ -1,11 +1,35 @@
+server:
+  port: 8086
+  servlet:
+    context-path: /app_client
+
+
+#数据库链接
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta
     username: pet
     password: ABcd12#$
+  jackson:
+    default-property-inclusion: non_null
 
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  type-aliases-package: com.chongdao.client
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+  #tomcat配置
+  tomcat:
+    max-wait: 20000
+    max-active: 50
+    max-idle: 20
+    min-idle: 15
+    maxPostSize: 102400
+
+  jpa:
+    show-sql: true
 
 #创蓝短信服务
 sms:
@@ -14,3 +38,14 @@ sms:
   password: Ryh6TxCW0Ycbc3
   enable: 1
   SmsIdentifyCode: 【养宠有道】您的登陆验证码为:{$var}
+
+
+
+
+
+
+logging:
+  pattern:
+    console: "%d - %msg%n"
+#  path: /var/log/
+#  file: /var/log/tomcat/app_client.log

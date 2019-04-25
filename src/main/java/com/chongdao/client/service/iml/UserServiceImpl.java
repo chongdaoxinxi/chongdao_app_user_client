@@ -3,6 +3,7 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.TokenUtil;
@@ -35,8 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse<UserLoginVO> login(String phone, String code) {
         if (StringUtils.isBlank(phone)){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.USERNAME_OR_CODE_EMPTY.getCode(),
-                    ResultEnum.USERNAME_OR_CODE_EMPTY.getMessage());
+            throw new PetException(ResultEnum.USERNAME_OR_CODE_EMPTY);
         }
         User user = userRepository.findByName(phone);
         UserLoginVO userLoginVO = new UserLoginVO();

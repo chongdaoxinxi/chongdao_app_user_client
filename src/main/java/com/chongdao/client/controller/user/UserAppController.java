@@ -1,4 +1,4 @@
-package com.chongdao.client.controller;
+package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Banner;
