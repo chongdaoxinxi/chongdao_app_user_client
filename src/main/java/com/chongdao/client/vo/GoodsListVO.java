@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,6 +41,8 @@ public class GoodsListVO {
 
     /** 销量 */
     private Integer sales;
+
+    private List<CouponVO> couponVOList;
 
 
 

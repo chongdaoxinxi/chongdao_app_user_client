@@ -44,11 +44,10 @@ public class OrderInfo implements Serializable {
 	private Integer petAmount;//宠物数量
 	@Column(name = "goods_price")
 	private BigDecimal goodsPrice;//商品价格
-	private Integer goodsDiscard;//商品优惠券id
+	private Integer carId;//优惠券id
 	private BigDecimal goodsDiscount;//商品优惠券优惠价格
 	@Column(name = "service_price")
 	private BigDecimal servicePrice;//服务价格
-	private Integer serviceDiscard;//服务优惠券id
 	private BigDecimal serviceDiscount;//服务优惠券优惠价格
 	@Column(name = "discount_money")
 	private BigDecimal discountMoney;//优惠金额
@@ -94,10 +93,9 @@ public class OrderInfo implements Serializable {
 				", reward=" + reward +
 				", petAmount=" + petAmount +
 				", goodsPrice=" + goodsPrice +
-				", goodsDiscard=" + goodsDiscard +
+				", carId=" + carId +
 				", goodsDiscount=" + goodsDiscount +
 				", servicePrice=" + servicePrice +
-				", serviceDiscard=" + serviceDiscard +
 				", serviceDiscount=" + serviceDiscount +
 				", discountMoney=" + discountMoney +
 				", totalPrice=" + totalPrice +

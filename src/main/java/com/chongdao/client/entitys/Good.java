@@ -61,14 +61,22 @@ public class Good {
 
 	private Integer categoryId; //所属类别id
 
-	@Transient
 	private Integer sales;
 
 	@Transient
 	private String categoryName;
 
+	@Transient
+	private Integer type;
+
+	@Transient
+	private String couponName;
+
+	@Transient
+	private Integer couponId;
+
 	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodTypeId,
-				Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId) {
+				Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId,Integer sales) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
@@ -86,6 +94,7 @@ public class Good {
 		this.status = status;
 		this.moduleId = moduleId;
 		this.categoryId = categoryId;
+		this.sales = sales;
 	}
 
 	@Override

@@ -19,9 +19,9 @@
         <!--jdbc的数据库连接 -->
         <jdbcConnection
                 driverClass="com.mysql.jdbc.Driver"
-                connectionURL="jdbc:mysql://47.101.160.88:3306/chongdao_app_beta"
-                userId="pet"
-                password="ABcd12#$">
+                connectionURL="jdbc:mysql://localhost:3306/chongdao_app_beta"
+                userId="root"
+                password="1111">
         </jdbcConnection>
 
 
@@ -67,7 +67,7 @@
         </javaClientGenerator>
 
 
-        <table tableName="category" domainObjectName="Category" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="shop" domainObjectName="Shop" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
 
 
         <!-- geelynote mybatis插件的搭建 -->
