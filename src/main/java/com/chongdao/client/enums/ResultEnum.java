@@ -4,6 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum ResultEnum {
+    UP_COUPON(0,"上架满减优惠券"),
+    //逻辑删除
+    DELETE_COUPON(-1, "删除满减优惠券"),
+    DOWN_COUPON(1, "下架满减优惠券"),
+
+    GOODS(1,"商品"),
+    SERVICE(2,"服务"),
+
+
     SUCCESS(200, "成功"),
 
 

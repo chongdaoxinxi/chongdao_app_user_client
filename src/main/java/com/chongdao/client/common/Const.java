@@ -26,8 +26,13 @@ public class Const {
         Set<String> SALES_ASC_DESC = Sets.newHashSet("sales_desc","sales_asc");
         //orderBy为空的排序方式
         String DEFAULT_ORDER_BY = "null";
+    }
 
-
+    public interface  goodsListProActivities{
+        //优惠活动
+        //满减、店铺打折、店铺红包
+        Set<String> PROACTIVITIES = Sets.newHashSet("0","2");
+        String DISCOUNT = "1";
     }
 
     /**

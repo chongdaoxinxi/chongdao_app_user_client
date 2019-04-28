@@ -29,7 +29,12 @@ mybatis:
     maxPostSize: 102400
 
   jpa:
-    show-sql: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true   #是否输出sql
+    properties:
+      hibernate:
+        format_sql: true
 
 #创蓝短信服务
 sms:

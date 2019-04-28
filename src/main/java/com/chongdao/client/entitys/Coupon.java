@@ -1,11 +1,10 @@
 package com.chongdao.client.entitys;
 
-import com.chongdao.client.common.ResponseCode;
+import com.chongdao.client.enums.ResultEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,15 +29,15 @@ public class Coupon implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer shopId;
-    private Integer categoryId;
+    private Integer categoryId; //商品分类id（1，商品类，2，服务类）
     private String couponName;
     private BigDecimal fullPrice;//起效金额
     private BigDecimal decreasePrice;//减免金额
-    private Integer type;//0:满减券(店铺活动),3:优惠券,2满减优惠券
+    private Integer type;//0:满减券(店铺活动),2:优惠券
     private Integer usedCouponCount;//优惠券数量
     private Integer receiveCouponCount;//已领取优惠券数量
     //满减优惠券状态 -1删除，0上架，1下架（默认为0）
-    private Integer status = ResponseCode.UP_COUPON.getStatus();
+    private Integer status = ResultEnum.UP_COUPON.getCode();
     private String activeTime;//有效时间
     private String missTime;//失效时间
     private Date createTime;

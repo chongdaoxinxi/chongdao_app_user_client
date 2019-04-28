@@ -20,11 +20,17 @@
       <arg column="status" jdbcType="TINYINT" javaType="java.lang.Byte" />
       <arg column="module_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="sales" jdbcType="INTEGER" javaType="java.lang.Integer" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
     id, name, icon, price, discount, unit, des, good_type_id, shop_id, ratio, ratio_price,
-    stock, create_time, update_time, status, module_id, category_id
+    stock, create_time, update_time, status, module_id, category_id,sales
+  </sql>
+
+  <sql id="Base_Column_Lists" >
+    g.id, g.name, g.icon,g.price, g.discount, g.unit, g.des, g.good_type_id, g.shop_id, g.ratio, g.ratio_price,
+    g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id,g.sales
   </sql>
 
   <select id="selectList" resultMap="BaseResultMap">
@@ -36,16 +42,22 @@
 
   <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
     select
-    <include refid="Base_Column_List"/>,
-    (select IFNULL(SUM(a.count),0) from order_detail a LEFT JOIN order_info b on a.order_no=b.order_no where b.order_status in (3,4,5,6,8,9) and a.good_id=g.id) sales,
-    (select name from category c where c.id=g.category_id ) categoryName
-    from  good g
-    where g.status = 1
+    <include refid="Base_Column_Lists"/>,
+    (select name from category c where c.id=g.category_id ) categoryName,
+    p.id coupon_id,p.coupon_name,p.type
+    from  good g left join coupon p on g.shop_id = p.shop_id
+    where g.status = 1 and p.status=0
     <if test="goodsName != null">
       and g.name like #{goodsName}
     </if>
     <if test="categoryId != null">
       and  g.category_id  in (${categoryId})
+    </if>
+    <if test="discount >0">
+      and  g.discount  > 0
+    </if>
+    <if test="proActivities != null">
+      and  p.type  in (${proActivities})
     </if>
     order by ${orderBy}
   </select>
@@ -67,13 +79,13 @@
       des, good_type_id, shop_id,
       ratio, ratio_price, stock,
       create_time, update_time, status,
-      module_id, category_id)
+      module_id, category_id,sales)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
       #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
       #{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
       #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
-      #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER})
+      #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Good" >
     insert into good
@@ -129,6 +141,9 @@
       <if test="categoryId != null" >
         category_id,
       </if>
+      <if test="sales != null" >
+        sales,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -181,6 +196,9 @@
       </if>
       <if test="categoryId != null" >
         #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="sales != null" >
+        #{sales,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -235,6 +253,9 @@
       <if test="categoryId != null" >
         category_id = #{categoryId,jdbcType=INTEGER},
       </if>
+      <if test="sales != null" >
+        sales = #{sales,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -255,7 +276,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=TINYINT},
       module_id = #{moduleId,jdbcType=INTEGER},
-      category_id = #{categoryId,jdbcType=INTEGER}
+      category_id = #{categoryId,jdbcType=INTEGER},
+       sales = #{categoryId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
