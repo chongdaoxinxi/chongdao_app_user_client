@@ -27,7 +27,7 @@ public class PetCardServiceImpl implements PetCardService {
     public ResultResponse<PetCard>  getPetCardById(Integer cardId) {
         return Optional.ofNullable(cardId).map(id ->
                 ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findById(id).orElse(null)))
-                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PetCardServiceImpl implements PetCardService {
         } else if(Optional.ofNullable(userId).isPresent()) {
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserId(userId).orElse(null));
         } else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class PetCardServiceImpl implements PetCardService {
             petCardRepository.saveAndFlush(petCard);
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage());
         } else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
     }
 }

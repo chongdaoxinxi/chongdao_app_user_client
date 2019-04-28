@@ -27,7 +27,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Optional.ofNullable(userId).isPresent()) {
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.findByUserId(userId));
         } else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Optional.ofNullable(ua).isPresent()) {
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.saveAndFlush(ua));
         } else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
     }
 }

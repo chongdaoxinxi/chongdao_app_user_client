@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
                     uso.setIcon(u.getIcon());
                     uso.setType(u.getType());
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), uso);
-                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
+                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
     @Override
@@ -149,6 +149,6 @@ public class UserServiceImpl implements UserService {
                     u.setIcon(uso.getIcon());
                     u.setPhone(uso.getPhone());
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
-                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
+                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 }

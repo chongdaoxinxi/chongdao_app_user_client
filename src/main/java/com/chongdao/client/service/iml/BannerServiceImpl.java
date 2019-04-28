@@ -30,7 +30,7 @@ public class BannerServiceImpl implements BannerService {
     @Override
     public ResultResponse<List<Banner>> getBannerByAreaCode(String areaCode) {
         if(StringUtils.isBlank(areaCode)) {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
         List<Banner> banners = bannerRepository.findByAreaCode(areaCode);
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), banners);
