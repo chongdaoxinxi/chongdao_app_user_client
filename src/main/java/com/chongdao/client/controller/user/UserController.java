@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.transform.Result;
 import java.util.List;
 
 @RestController
@@ -52,8 +51,8 @@ public class UserController {
      * @param cardId
      * @return
      */
-    @GetMapping("/getPetCard")
-    public ResultResponse<PetCard> getPetCardList(Integer cardId) {
+    @GetMapping("/getPetCardInfo")
+    public ResultResponse<PetCard> getPetCardInfo(Integer cardId) {
         return petCardService.getPetCardById(cardId);
     }
 
@@ -73,7 +72,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/getUserAcount")
+    @GetMapping("/getUserAccount")
     public ResultResponse<UserAccount> getUserAccount(Integer userId) {
         return userAccountService.getUserAccountByUserId(userId);
     }

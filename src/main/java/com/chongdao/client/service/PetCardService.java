@@ -8,8 +8,6 @@ import java.util.List;
 public interface PetCardService {
     ResultResponse<PetCard> getPetCardById(Integer id);
 
-    ResultResponse<List<PetCard>> getPetCardByUserId(Integer userId);
-
     ResultResponse<List<PetCard>> getPetCardByUserIdAndStatus(Integer userId, Integer status);
 
     ResultResponse savePetCard(PetCard petCard);

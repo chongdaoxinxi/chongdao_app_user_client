@@ -24,16 +24,9 @@ public class PetCardServiceImpl implements PetCardService {
     private PetCardRepository petCardRepository;
 
     @Override
-    public ResultResponse<PetCard>  getPetCardById(Integer id) {
-        return Optional.ofNullable(id).map(cardId ->
-                ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findById(cardId).orElse(null)))
-                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
-    }
-
-    @Override
-    public ResultResponse<List<PetCard>> getPetCardByUserId(Integer userId) {
-        return Optional.ofNullable(userId).map(cardUserId ->
-                ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserId(cardUserId).orElse(null)))
+    public ResultResponse<PetCard>  getPetCardById(Integer cardId) {
+        return Optional.ofNullable(cardId).map(id ->
+                ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findById(id).orElse(null)))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
@@ -41,6 +34,8 @@ public class PetCardServiceImpl implements PetCardService {
     public ResultResponse<List<PetCard>> getPetCardByUserIdAndStatus(Integer userId, Integer status) {
         if(Optional.ofNullable(userId).isPresent() && Optional.ofNullable(status).isPresent()) {
             return  ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserIdAndStatus(userId, status).orElse(null));
+        } else if(Optional.ofNullable(userId).isPresent()) {
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserId(userId).orElse(null));
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
         }

@@ -22,7 +22,7 @@ public class PetType implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
     private String name;
     private String icon;//标志, 是个图片, 用来区分宠物种类
