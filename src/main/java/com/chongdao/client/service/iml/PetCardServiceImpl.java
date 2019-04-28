@@ -8,7 +8,9 @@ import com.chongdao.client.service.PetCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Description TODO
@@ -23,22 +25,35 @@ public class PetCardServiceImpl implements PetCardService {
 
     @Override
     public ResultResponse<PetCard>  getPetCardById(Integer id) {
-//        return petCardRepository.findById(id).get();
-        if(id == null) {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
-        }
-        return null;
+        return Optional.ofNullable(id).map(cardId ->
+                ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findById(cardId).orElse(null)))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
     @Override
     public ResultResponse<List<PetCard>> getPetCardByUserId(Integer userId) {
-        return null;
-//        return petCardRepository.findByUserId(userId).get();
+        return Optional.ofNullable(userId).map(cardUserId ->
+                ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserId(cardUserId).orElse(null)))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
     @Override
     public ResultResponse<List<PetCard>> getPetCardByUserIdAndStatus(Integer userId, Integer status) {
-        return null;
-//        return petCardRepository.findByUserIdAndStatus(userId, status).get();
+        if(Optional.ofNullable(userId).isPresent() && Optional.ofNullable(status).isPresent()) {
+            return  ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserIdAndStatus(userId, status).orElse(null));
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    public ResultResponse savePetCard(PetCard petCard) {
+        if(Optional.of(petCard).isPresent()) {
+            petCard.setCreateTime(new Date());
+            petCardRepository.saveAndFlush(petCard);
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage());
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage());
+        }
     }
 }

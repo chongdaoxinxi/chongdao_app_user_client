@@ -11,4 +11,6 @@ public interface PetCardService {
     public ResultResponse<List<PetCard>> getPetCardByUserId(Integer userId);
 
     public ResultResponse<List<PetCard>> getPetCardByUserIdAndStatus(Integer userId, Integer status);
+
+    public ResultResponse savePetCard(PetCard petCard);
 }
