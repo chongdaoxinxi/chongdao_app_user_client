@@ -17,6 +17,7 @@ public class UserLoginVO {
     private String token;
     private String phone;
 
+
     @JsonIgnore
     private String password;
 

@@ -25,6 +25,8 @@ public enum ResultEnum {
     TOKEN_NOT_EMPTY(415,"Token不能为空"),
     USER_LOGIN_ALREADY(416,"已在别处登录"),
     USERNAME_OR_CODE_EMPTY(417,"手机号码或验证码不能为空"),
+    USER_NOT_LOGIN_OR_TOKEN_EXPIRED(418,"用户未登录或token已过期"),
+
 
     ERROR(500,"服务忙，请稍后重试"),
     PARAM_ERROR(501, "参数不正确"),
@@ -35,13 +37,13 @@ public enum ResultEnum {
     ;
 
     /** 错误码 */
-    private Integer code;
+    private Integer status;
 
     /** 错误信息 */
     private String message;
 
-    ResultEnum(Integer code, String message) {
-        this.code = code;
+    ResultEnum(Integer status, String message) {
+        this.status = status;
         this.message = message;
     }
 }

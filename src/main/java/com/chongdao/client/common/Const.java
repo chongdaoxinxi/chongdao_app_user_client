@@ -13,6 +13,18 @@ public class Const {
     public static final Integer DELETE_ADDRESS_STATUS = -1;
 
 
+
+    /**
+     * 购物车
+     */
+    public interface Cart{
+        Byte CHECKED = 1;
+        Byte UN_CHECKED = 2;
+
+        String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
+        String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
+    }
+
     /**
      * 商品排序
      */
@@ -49,5 +61,9 @@ public class Const {
 
         Integer ACTIVITY_PET_FARE = 1;
     }
+
+
+
+
 
 }

@@ -130,23 +130,7 @@ public class GoodsServiceImpl implements GoodsService {
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),goodsDetailVo);
     }
 
-    /**
-     * 商品详情中的优惠券列表
-     * @param shopId 商品id
-     * @param type 优惠券类型(1：商品 2: 服务)
-     * @return
-     */
-    @Override
-    public ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer shopId, Integer type) {
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, ResultEnum.UP_COUPON.getCode(), type);
-        List<CouponVO> couponVOList = Lists.newArrayList();
-        couponList.forEach(coupon -> {
-            CouponVO couponVO = new CouponVO();
-            BeanUtils.copyProperties(coupon, couponVO);
-            couponVOList.add(couponVO);
-        });
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),couponVOList);
-    }
+
 
 
     /**
@@ -180,7 +164,7 @@ public class GoodsServiceImpl implements GoodsService {
     private List<CouponVO> assembleCouponVo(Integer shopId){
         List<CouponVO> couponVOS = Lists.newArrayList();
         //根据店铺查询在架状态的优惠券
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, ResultEnum.UP_COUPON.getCode(), ResultEnum.GOODS.getCode());
+        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, ResultEnum.UP_COUPON.getStatus(), ResultEnum.GOODS.getStatus());
         //封装优惠券
         couponList.forEach(coupon -> {
             CouponVO couponVO = new CouponVO();

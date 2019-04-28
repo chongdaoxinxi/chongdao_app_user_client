@@ -1,6 +1,7 @@
 package com.chongdao.client.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.*;
@@ -47,6 +49,19 @@ public class JsonUtil {
             return null;
         }
     }
+
+    public static <T> T map2Obj(Map<String,Object> map,Class<T> clazz){
+        try {
+            String s = objectMapper.writeValueAsString(map);
+            return string2Obj(s,clazz);
+        } catch (JsonProcessingException e) {
+            log.warn("Parse map to obj error",e);
+            return null;
+        }
+
+    }
+
+
 
     /**
      * 返回格式化好的json字符串
@@ -102,6 +117,5 @@ public class JsonUtil {
             log.warn("Parse String to Object error",e);
             return null;
         }
-
     }
 }

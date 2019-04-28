@@ -45,31 +45,31 @@ public class ResultResponse<T> implements Serializable {
 
     @JsonIgnore
     public boolean isSuccess(){
-        return this.status == ResultEnum.SUCCESS.getCode();
+        return this.status == ResultEnum.SUCCESS.getStatus();
     }
 
     public static <T> ResultResponse<T> createBySuccess(){
-        return new ResultResponse<T>(ResultEnum.SUCCESS.getCode());
+        return new ResultResponse<T>(ResultEnum.SUCCESS.getStatus(),ResultEnum.SUCCESS.getMessage());
     }
 
     public static <T> ResultResponse<T> createBySuccessMessage(String msg){
-        return new ResultResponse<T>(ResultEnum.SUCCESS.getCode(),msg);
+        return new ResultResponse<T>(ResultEnum.SUCCESS.getStatus(),msg);
     }
 
     public static <T> ResultResponse<T> createBySuccess(T data){
-        return new ResultResponse<T>(ResultEnum.SUCCESS.getCode(),data);
+        return new ResultResponse<T>(ResultEnum.SUCCESS.getStatus(),data);
     }
 
     public static <T> ResultResponse<T> createBySuccess(String msg,T data){
-        return new ResultResponse<T>(ResultEnum.SUCCESS.getCode(),msg,data);
+        return new ResultResponse<T>(ResultEnum.SUCCESS.getStatus(),msg,data);
     }
 
     public static <T> ResultResponse<T> createByError(){
-        return new ResultResponse<T>(ResultEnum.ERROR.getCode(),ResultEnum.ERROR.getMessage());
+        return new ResultResponse<T>(ResultEnum.ERROR.getStatus(),ResultEnum.ERROR.getMessage());
     }
 
     public static <T> ResultResponse<T> createByErrorMessage(String errorMessage){
-        return new ResultResponse<T>(ResultEnum.ERROR.getCode(),errorMessage);
+        return new ResultResponse<T>(ResultEnum.ERROR.getStatus(),errorMessage);
     }
 
     public static <T> ResultResponse<T> createByErrorCodeMessage(int errorCode,String errorMessage){
