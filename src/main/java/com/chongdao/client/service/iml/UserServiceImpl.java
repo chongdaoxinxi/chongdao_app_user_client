@@ -86,10 +86,10 @@ public class UserServiceImpl implements UserService {
         //检验验证码是否正确
         if (StringUtils.isNoneBlank(smsService.getSmsCode(name))) {
             if (!smsService.getSmsCode(name).equals(code)) {
-                return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getCode(), ResultEnum.USER_CODE_ERROR.getMessage());
+                return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getStatus(), ResultEnum.USER_CODE_ERROR.getMessage());
             }
         }else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getCode(), ResultEnum.USER_CODE_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getStatus(), ResultEnum.USER_CODE_ERROR.getMessage());
         }
         return ResultResponse.createBySuccess();
     }

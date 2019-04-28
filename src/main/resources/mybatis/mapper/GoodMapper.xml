@@ -48,16 +48,16 @@
     from  good g left join coupon p on g.shop_id = p.shop_id
     where g.status = 1 and p.status=0
     <if test="goodsName != null">
-      and g.name like #{goodsName}
+      or g.name like #{goodsName}
     </if>
     <if test="categoryId != null">
-      and  g.category_id  in (${categoryId})
+      or  g.category_id  in (${categoryId})
     </if>
     <if test="discount >0">
-      and  g.discount  > 0
+      or  g.discount  > 0
     </if>
     <if test="proActivities != null">
-      and  p.type  in (${proActivities})
+      or  p.type  in (${proActivities})
     </if>
     order by ${orderBy}
   </select>

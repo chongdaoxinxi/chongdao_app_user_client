@@ -37,7 +37,7 @@ public class Coupon implements Serializable {
     private Integer usedCouponCount;//优惠券数量
     private Integer receiveCouponCount;//已领取优惠券数量
     //满减优惠券状态 -1删除，0上架，1下架（默认为0）
-    private Integer status = ResultEnum.UP_COUPON.getCode();
+    private Integer status = ResultEnum.UP_COUPON.getStatus();
     private String activeTime;//有效时间
     private String missTime;//失效时间
     private Date createTime;

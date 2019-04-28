@@ -13,7 +13,7 @@ public class PetException extends RuntimeException{
     public PetException(ResultEnum resultEnum) {
         super(resultEnum.getMessage());
 
-        this.code = resultEnum.getCode();
+        this.code = resultEnum.getStatus();
     }
 
     public PetException(Integer code, String message) {

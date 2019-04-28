@@ -1,8 +1,11 @@
 package com.chongdao.client.utils;
 
 
+import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.UserRepository;
+import com.chongdao.client.vo.ResultTokenVo;
+import com.chongdao.client.vo.UserLoginVO;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,32 +69,37 @@ public class TokenUtil {
                 Integer userId = (Integer)(body.get("userId"));
                 Date generateTime = new Date((Long)body.get("generateTime"));
                 if(username == null || username.isEmpty()){
-                    resp.put("ERR_MSG", ResultEnum.USERNAME_NOT_EMPTY.getMessage());
+                    resp.put("status",ResultEnum.USERNAME_NOT_EMPTY.getStatus());
+                    resp.put("message",ResultEnum.USERNAME_NOT_EMPTY.getMessage());
                     return resp;
                 }
                 //账号在别处登录
-                if(userRepository.findByName(username).getLastLoginTime().after(generateTime)){
-                    resp.put("ERR_MSG", ResultEnum.USER_LOGIN_ALREADY.getMessage());
+  /*              if(userRepository.findByName(username).getLastLoginTime().after(generateTime)){
+                    resp.put("status",ResultEnum.USER_LOGIN_ALREADY.getStatus());
+                    resp.put("message",ResultEnum.USER_LOGIN_ALREADY.getMessage());
                     return resp;
-                }
-                resp.put("username",username);
-                resp.put("generateTime",generateTime);
+                }*/
                 resp.put("userId",userId);
+                resp.put("status",ResultEnum.SUCCESS.getStatus());
+                resp.put("message",ResultEnum.SUCCESS.getMessage());
                 return resp;
             }catch (SignatureException | MalformedJwtException e) {
                 // TODO: handle exception
                 // don't trust the JWT!
                 // jwt 解析错误
-                resp.put("ERR_MSG",ResultEnum.TOKEN_ERROR.getMessage());
+                resp.put("status",ResultEnum.TOKEN_ERROR.getStatus());
+                resp.put("message",ResultEnum.TOKEN_ERROR.getMessage());
                 return resp;
             } catch (ExpiredJwtException e) {
                 // TODO: handle exception
                 // jwt 已经过期，在设置jwt的时候如果设置了过期时间，这里会自动判断jwt是否已经过期，如果过期则会抛出这个异常，我们可以抓住这个异常并作相关处理。
-                resp.put("ERR_MSG",ResultEnum.TOKEN_EXPIRED.getMessage());
+                resp.put("status",ResultEnum.TOKEN_EXPIRED.getStatus());
+                resp.put("message",ResultEnum.TOKEN_EXPIRED.getMessage());
                 return resp;
             }
         }else {
-            resp.put("ERR_MSG",ResultEnum.TOKEN_NOT_EMPTY.getMessage());
+            resp.put("status",ResultEnum.TOKEN_NOT_EMPTY.getStatus());
+            resp.put("message",ResultEnum.TOKEN_NOT_EMPTY.getMessage());
             return resp;
         }
     }

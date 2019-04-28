@@ -27,11 +27,5 @@ public interface GoodsService {
      */
     ResultResponse<GoodsDetailVo> getGoodsDetail(Integer goodsId);
 
-    /**
-     * 商品详情中的优惠券列表
-     * @param shopId 商品id
-     * @param type 优惠券类型(1：商品 2: 服务)
-     * @return
-     */
-    ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer shopId, Integer type);
+
 }

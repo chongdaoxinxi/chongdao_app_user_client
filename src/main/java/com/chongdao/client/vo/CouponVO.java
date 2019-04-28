@@ -30,7 +30,7 @@ public class CouponVO {
     private BigDecimal decreasePrice;
 
     //满减优惠券状态 -1删除，0上架，1下架（默认为0）
-    private Integer status = ResultEnum.UP_COUPON.getCode();
+    private Integer status = ResultEnum.UP_COUPON.getStatus();
 
     //有效时间
     private String activeTime;
