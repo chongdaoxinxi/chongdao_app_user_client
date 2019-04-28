@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -25,31 +26,37 @@ public class UserAddress implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
 	@Column(name="user_id")
-	private Integer userId;
+	private Integer userId;//关联用户表id
 	@Column(name="user_name")
-	private String userName;
-	private String address;
-	private String phone;
-	private String location;
-	private Double lat;
-	private Double lng;
-	@Column(name = "default_address")
-	private Integer defaultAddress;
-	private Integer status;
+	private String userName;//收货人姓名
+	private String location;//定位地址
+	private String address;//详细地址
+	private String phone;//联系电话
+	private Double lat;//经度
+	private Double lng;//纬度
+	@Column(name = "is_default_address")
+	private Integer isDefaultAddress;//是否默认地址
+	private Integer status;//-1:失效;1:生效
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_time")
+	private Date createTime;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "update_time")
+	private Date updateTime;
 
 	@Override
 	public String toString() {
 		return "UserAddress{" +
 				"id=" + id +
-				", address='" + address + '\'' +
-				", lat=" + lat +
-				", lng=" + lng +
-				", location='" + location + '\'' +
-				", phone='" + phone + '\'' +
-				", status=" + status +
 				", userId=" + userId +
 				", userName='" + userName + '\'' +
-				", defaultAddress=" + defaultAddress +
+				", address='" + address + '\'' +
+				", phone='" + phone + '\'' +
+				", location='" + location + '\'' +
+				", lat=" + lat +
+				", lng=" + lng +
+				", isDefaultAddress=" + isDefaultAddress +
+				", status=" + status +
 				'}';
 	}
 }
