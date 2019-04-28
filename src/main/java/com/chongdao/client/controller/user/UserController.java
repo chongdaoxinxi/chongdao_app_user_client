@@ -8,6 +8,7 @@ import com.chongdao.client.service.PetCardService;
 import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.service.UserService;
+import com.chongdao.client.vo.UserSettingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,8 +83,28 @@ public class UserController {
      * @param ua
      * @return
      */
-    @GetMapping("saveUserAccount")
+    @GetMapping("/saveUserAccount")
     public ResultResponse saveUserAccount(UserAccount ua) {
         return userAccountService.saveUserAccount(ua);
     }
+
+    /**
+     * 获取用户设置信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getUserSettingInfo")
+    public ResultResponse<UserSettingVO> getUserSettingInfo(Integer userId) {
+        return userService.getUserSettingInfo(userId);
+    }
+
+    /**
+     *  保存用户设置信息
+     * @param uso
+     * @return
+     */
+    @GetMapping("/saveUserSetting")
+    public ResultResponse saveUserSetting(UserSettingVO uso){
+        return userService.saveUserSetting(uso);
+    };
 }

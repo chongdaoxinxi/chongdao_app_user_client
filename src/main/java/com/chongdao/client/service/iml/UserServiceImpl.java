@@ -9,11 +9,13 @@ import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.service.UserService;
+import com.chongdao.client.vo.UserSettingVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * 用户端登录注册实现类
@@ -31,11 +33,12 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户端登录
+     *
      * @return
      */
     @Override
     public ResultResponse<UserLoginVO> login(String phone, String code) {
-        if (StringUtils.isBlank(phone)){
+        if (StringUtils.isBlank(phone)) {
             throw new PetException(ResultEnum.USERNAME_OR_CODE_EMPTY);
         }
         User user = userRepository.findByName(phone);
@@ -43,42 +46,45 @@ public class UserServiceImpl implements UserService {
         userLoginVO.setLastLoginTime(new Date());
         userLoginVO.setCode(code);
         userLoginVO.setName(phone);
-        return assembleUserLogin(userLoginVO,user);
+        return assembleUserLogin(userLoginVO, user);
 
     }
 
     /**
      * 封装userLogin对象，方便复用
      * 校验手机号是否存在，如果不存在则校验验证码是否正确，通过后则进行注册
+     *
      * @param userLoginVO
      * @param user
      * @return
      */
-    private ResultResponse<UserLoginVO> assembleUserLogin(UserLoginVO userLoginVO,User user){
-        ResultResponse<UserLoginVO> response = checkCodeValid(userLoginVO.getName(),userLoginVO.getCode());
-        if (!response.isSuccess()){
-                return response;
+    private ResultResponse<UserLoginVO> assembleUserLogin(UserLoginVO userLoginVO, User user) {
+        ResultResponse<UserLoginVO> response = checkCodeValid(userLoginVO.getName(), userLoginVO.getCode());
+        if (!response.isSuccess()) {
+            return response;
         }
         User u = new User();
         //用户不存在进行注册
-        if (user == null){
+        if (user == null) {
             u.setPhone(userLoginVO.getName());
             u.setName(userLoginVO.getName());
             u.setLastLoginTime(new Date());
             userRepository.save(u);
             userLoginVO.setUserId(u.getId());
-        }else {
+        } else {
             userLoginVO.setPhone(user.getName());
             userLoginVO.setName(user.getName());
             userLoginVO.setUserId(user.getId());
         }
         //更新用户登录时间
         userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getName());
-        userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),user.getName(),userLoginVO.getLastLoginTime()));
+        userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(), user.getName(), userLoginVO.getLastLoginTime()));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userLoginVO);
     }
+
     /**
      * 校验验证码是否正确
+     *
      * @param name
      * @return
      */
@@ -88,7 +94,7 @@ public class UserServiceImpl implements UserService {
             if (!smsService.getSmsCode(name).equals(code)) {
                 return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getCode(), ResultEnum.USER_CODE_ERROR.getMessage());
             }
-        }else {
+        } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getCode(), ResultEnum.USER_CODE_ERROR.getMessage());
         }
         return ResultResponse.createBySuccess();
@@ -97,6 +103,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户端注册
+     *
      * @param userLoginVO
      * @return
      */
@@ -118,4 +125,30 @@ public class UserServiceImpl implements UserService {
         }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage());
     }*/
+    @Override
+    public ResultResponse<UserSettingVO> getUserSettingInfo(Integer userId) {
+        return Optional.ofNullable(userId)
+                .map(id -> userRepository.findById(userId).orElse(null))
+                .map(u -> {
+                    UserSettingVO uso = new UserSettingVO();
+                    uso.setName(u.getName());
+                    uso.setUserId(u.getId());
+                    uso.setPhone(u.getPhone());
+                    uso.setIcon(u.getIcon());
+                    uso.setType(u.getType());
+                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), uso);
+                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    @Override
+    public ResultResponse saveUserSetting(UserSettingVO uso) {
+        return Optional.ofNullable(uso).map(usoP -> usoP.getUserId())
+                .map(userId -> userRepository.findById(userId).orElse(null))
+                .map(u -> {
+                    u.setName(uso.getName());
+                    u.setIcon(uso.getIcon());
+                    u.setPhone(uso.getPhone());
+                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
+                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
 }
