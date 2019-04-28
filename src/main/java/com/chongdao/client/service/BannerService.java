@@ -12,5 +12,5 @@ import java.util.List;
  * @Version 1.0
  **/
 public interface BannerService {
-    public ResultResponse<List<Banner>> getBannerByAreaCode(String areaCode);
+    ResultResponse<List<Banner>> getBannerByAreaCode(String areaCode);
 }

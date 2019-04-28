@@ -3,7 +3,9 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.PetCard;
+import com.chongdao.client.entitys.UserAccount;
 import com.chongdao.client.service.PetCardService;
+import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.xml.transform.Result;
 import java.util.List;
 
 @RestController
@@ -21,6 +24,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private PetCardService petCardService;
+    @Autowired
+    private UserAccountService userAccountService;
 
     /**
      * 用户登录接口
@@ -60,5 +65,26 @@ public class UserController {
     @GetMapping("/savePetCard")
     public ResultResponse savePetCard(PetCard petCard) {
         return petCardService.savePetCard(petCard);
+    }
+
+    /**
+     *
+     * 获取用户账户信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getUserAcount")
+    public ResultResponse<UserAccount> getUserAccount(Integer userId) {
+        return userAccountService.getUserAccountByUserId(userId);
+    }
+
+    /**
+     * 保存用户账户信息
+     * @param ua
+     * @return
+     */
+    @GetMapping("saveUserAccount")
+    public ResultResponse saveUserAccount(UserAccount ua) {
+        return userAccountService.saveUserAccount(ua);
     }
 }
