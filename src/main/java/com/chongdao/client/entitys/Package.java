@@ -26,35 +26,43 @@ public class Package implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	private String name;
-	private String note;
-	private String comment;
-	private String content;
-	private Integer goodsid;//商品id
-	private String description;
+	@Column(name = "good")
+	private Integer good_id;//商品id
+	private String name;//名字
+	private String description;//产品描述
 	private BigDecimal displayprice;//例如360元得510元礼包, 这个值就是510
 	private BigDecimal price;//价格
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date startdate;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date enddate;
-	private Integer status;
+	private Integer status;//-1:删除;0:下架;1:上架
 	private Integer type;
 
-	private Integer version;
-	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
+	@Column(name = "start_time")
+	private String startTime;//有效时间
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
+	@Column(name = "end_time")
+	private String endTime;//失效时间
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_time")
+	private Date createTime;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "update_time")
+	private Date updateTime;
 
 	@Override
 	public String toString() {
-		return "Package [id=" + id + ", comment=" + comment + ", content=" + content + ", createby=" + createby
-				+ ", createdate=" + createdate + ", description=" + description + ", displayprice=" + displayprice
-				+ ", enddate=" + enddate + ", goodsid=" + goodsid + ", name=" + name + ", note=" + note + ", price="
-				+ price + ", startdate=" + startdate + ", status=" + status + ", type=" + type + ", updateby="
-				+ updateby + ", updatedate=" + updatedate + ", version=" + version + "]";
+		return "Package{" +
+				"id=" + id +
+				", good_id=" + good_id +
+				", name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", displayprice=" + displayprice +
+				", price=" + price +
+				", status=" + status +
+				", type=" + type +
+				", startTime='" + startTime + '\'' +
+				", endTime='" + endTime + '\'' +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime +
+				'}';
 	}
 }
