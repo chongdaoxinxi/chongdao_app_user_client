@@ -1,8 +1,9 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.vo.CartVo;
+import com.chongdao.client.vo.CartGoodsVo;
+;
 
 public interface OrderService {
-    ResultResponse<CartVo> preOrder(CartVo cartVo);
+    ResultResponse<CartGoodsVo> preOrder(CartGoodsVo cartGoodsVo);
 }

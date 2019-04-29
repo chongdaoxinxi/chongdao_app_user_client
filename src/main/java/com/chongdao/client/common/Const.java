@@ -2,6 +2,7 @@ package com.chongdao.client.common;
 
 
 import com.google.common.collect.Sets;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.Set;
 
@@ -11,6 +12,11 @@ public class Const {
     public static final Integer NORMAL_ADDRESS_STATUS = 1;
     //收货地址-逻辑删除状态
     public static final Integer DELETE_ADDRESS_STATUS = -1;
+
+    //双程常量
+    public static final Integer DUAL = 0;
+    //单程常量
+    public static final Integer SIGNLE = 1;
 
 
 

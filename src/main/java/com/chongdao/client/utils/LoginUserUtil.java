@@ -1,5 +1,8 @@
 package com.chongdao.client.utils;
 
+import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.exception.PetException;
+import com.chongdao.client.vo.ResultTokenVo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
@@ -30,6 +33,20 @@ public class LoginUserUtil {
         return b;
         //return PHONE_PATTERN.matcher(target).matches();
     }
+
+
+    public static ResultTokenVo resultTokenVo(String token){
+        //检验该用户的token
+        //将map转化为ResultTokenVo
+        ResultTokenVo tokenVo = JsonUtil.map2Obj(TokenUtil.validateToken(token), ResultTokenVo.class);
+        //如果返回是200代表用户已登录，否则未登录或者失效
+        //登录失败
+        if (tokenVo.getUserId() == null){
+            throw new PetException(tokenVo.getStatus(),tokenVo.getMessage());
+        }
+        return tokenVo;
+    }
+
 
     public static void main(String[] args) {
         System.out.println("是正确格式的手机号:"+checkTelephone("17521761654"));
