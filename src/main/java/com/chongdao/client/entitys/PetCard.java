@@ -48,7 +48,9 @@ public class PetCard implements Serializable {
     private Date createTime;
 
     //冗余字段
+    @Column(name = "type_name")
     private String typeName;//宠物种类名称
+    @Column(name = "type_icon")
     private String typeIcon;//宠物种类标志
 
     @Override

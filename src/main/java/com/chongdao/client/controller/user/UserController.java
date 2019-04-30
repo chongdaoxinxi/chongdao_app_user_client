@@ -107,4 +107,24 @@ public class UserController {
     public ResultResponse saveUserSetting(UserSettingVO uso){
         return userService.saveUserSetting(uso);
     };
+
+    /**
+     * 获取我的店铺收藏列表
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getFavouriteShopList")
+    public ResultResponse getFavouriteShopList(Integer userId) {
+        return null;
+    }
+
+    /**
+     * 获取我的店铺收藏列表
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getFavouriteGoodList")
+    public ResultResponse getFavouriteGoodList(Integer userId) {
+        return null;
+    }
 }

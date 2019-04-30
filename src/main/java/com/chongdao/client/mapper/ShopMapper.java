@@ -2,7 +2,11 @@ package com.chongdao.client.mapper;
 
 
 import com.chongdao.client.entitys.Shop;
+import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
+@Mapper
 public interface ShopMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -15,4 +19,6 @@ public interface ShopMapper {
     int updateByPrimaryKeySelective(Shop record);
 
     int updateByPrimaryKey(Shop record);
+
+    List<Shop> getMyFavouriteShopList(Integer userId);
 }

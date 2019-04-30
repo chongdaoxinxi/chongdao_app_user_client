@@ -18,37 +18,33 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name="favouriteshop")
-public class Favouriteshop implements Serializable {
+@Table(name="favourite_shop")
+public class FavouriteShop implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	private Integer shopid;//商店id
-	private Integer userid;//用户id
-	private Integer status;//0||1
+	private Integer shopId;//商店id
+	private Integer userId;//用户id
+	private Integer status;//-1:取消收藏, 1:收藏
 
-	private Integer version;
-	private Integer createby;
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
+	@Column(name="create_time")
+	private Date createTime;
+	@Column(name="update_time")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
+	private Date updateTime;
 
 	@Override
 	public String toString() {
-		return "Favouriteshop{" +
+		return "FavouriteShop{" +
 				"id=" + id +
-				", createby=" + createby +
-				", createdate=" + createdate +
-				", shopid=" + shopid +
+				", shopId=" + shopId +
+				", userId=" + userId +
 				", status=" + status +
-				", updateby=" + updateby +
-				", updatedate=" + updatedate +
-				", userid=" + userid +
-				", version=" + version +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime +
 				'}';
 	}
 }

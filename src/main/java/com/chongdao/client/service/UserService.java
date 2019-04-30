@@ -16,4 +16,8 @@ public interface UserService {
     ResultResponse<UserSettingVO> getUserSettingInfo(Integer userId);
 
     ResultResponse saveUserSetting(UserSettingVO uso);
+
+    ResultResponse getFavouriteShopList(Integer userId);
+
+    ResultResponse getFavouriteGoodList(Integer userId);
 }

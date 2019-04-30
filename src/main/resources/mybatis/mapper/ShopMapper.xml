@@ -376,4 +376,20 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <!-- 用于join, shop别名为s-->
+  <sql id="Join_Column_List">
+    s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
+    s.money, s.type, s.grade, s.wx_no, s.zfb_no, s.bank_no, s.qr_code_url, s.des, s.show_img, s.status, s.service_price_ratio,
+    s.stop_note, s.is_hot, s.is_auto_accept, s.is_join_common_weal, s.start_business_hours, s.end_business_hours,
+    s.create_time, s.update_time
+  </sql>
+  <!-- 获取用户收藏店铺列表 -->
+  <select id="getMyFavouriteShopList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from shop s
+    LEFT JOIN favourite_shop fs on s.id = fs.shop_id
+    where fs.user_id = #{userId} and fs.status = 1
+    order by fs.create_time desc
+  </select>
 </mapper>

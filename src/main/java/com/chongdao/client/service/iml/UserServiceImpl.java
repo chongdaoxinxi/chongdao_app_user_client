@@ -1,9 +1,11 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
+import com.chongdao.client.mapper.ShopMapper;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.TokenUtil;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,6 +32,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SmsService smsService;
+
+    @Autowired
+    private ShopMapper shopMapper;
 
 
     /**
@@ -150,5 +156,18 @@ public class UserServiceImpl implements UserService {
                     u.setPhone(uso.getPhone());
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
                 }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    @Override
+    public ResultResponse<List<Shop>> getFavouriteShopList(Integer userId) {
+        return Optional.ofNullable(userId)
+                .map(id -> shopMapper.getMyFavouriteShopList(id))
+                .map(list -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), list))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    @Override
+    public ResultResponse getFavouriteGoodList(Integer userId) {
+        return null;
     }
 }
