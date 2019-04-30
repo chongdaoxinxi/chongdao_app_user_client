@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse<UserLoginVO> login(String phone, String code) {
         if (StringUtils.isBlank(phone)){
-            return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USERNAME_OR_CODE_EMPTY.getStatus(), UserStatusEnum.USERNAME_OR_CODE_EMPTY.getMessage());
+            throw new PetException(ResultEnum.USERNAME_OR_CODE_EMPTY);
         }
         User user = userRepository.findByName(phone);
         UserLoginVO userLoginVO = new UserLoginVO();
