@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
+import com.chongdao.client.mapper.GoodMapper;
 import com.chongdao.client.mapper.ShopMapper;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
@@ -12,6 +13,7 @@ import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.service.UserService;
 import com.chongdao.client.vo.UserSettingVO;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ShopMapper shopMapper;
+
+    @Autowired
+    private GoodMapper goodMapper;
 
 
     /**
@@ -160,14 +165,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultResponse<List<Shop>> getFavouriteShopList(Integer userId) {
-        return Optional.ofNullable(userId)
-                .map(id -> shopMapper.getMyFavouriteShopList(id))
-                .map(list -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), list))
-                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+//        return Optional.ofNullable(userId)
+//                .map(id -> shopMapper.getMyFavouriteShopList(id))
+//                .map(list -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), list))
+//                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+        return null;
     }
 
     @Override
-    public ResultResponse getFavouriteGoodList(Integer userId) {
+    public ResultResponse<PageInfo> getFavouriteGoodList(Integer userId) {
+//        return Optional.ofNullable(userId)
+//                .map(id -> goodMapper.getFavouriteGoodList(id))
+//                .map(list -> {
+//                    PageInfo pi = new PageInfo(list);
+//                    pi.setList(goodsListVOList(list));
+//                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), pi);
+//                })
+//                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
         return null;
     }
+
 }

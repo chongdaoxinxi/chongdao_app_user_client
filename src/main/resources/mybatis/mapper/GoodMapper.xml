@@ -280,4 +280,17 @@
        sales = #{categoryId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 获取我的收藏商品 -->
+  <select id="getFavouriteGoodList" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_Lists"/>,
+    (select name from category c where c.id=g.category_id ) categoryName,
+    p.id coupon_id,p.coupon_name,p.type
+    from  good g
+    left join coupon p on g.shop_id = p.shop_id
+    left join favourite_good fg on g.id = fg.good_id
+    where g.status = 1 and p.status=0 and fs.status = 1 and fs.user_id = #{userId}
+    order by g.create_time desc
+  </select>
 </mapper>
