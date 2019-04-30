@@ -4,8 +4,10 @@ package com.chongdao.client.controller.user;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.PetCard;
 import com.chongdao.client.entitys.UserAccount;
+import com.chongdao.client.entitys.UserAddress;
 import com.chongdao.client.service.PetCardService;
 import com.chongdao.client.service.UserAccountService;
+import com.chongdao.client.service.UserAddressService;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.service.UserService;
 import com.chongdao.client.vo.UserSettingVO;
@@ -26,6 +28,8 @@ public class UserController {
     private PetCardService petCardService;
     @Autowired
     private UserAccountService userAccountService;
+    @Autowired
+    private UserAddressService userAddressService;
 
     /**
      * 用户登录接口
@@ -115,7 +119,7 @@ public class UserController {
      */
     @GetMapping("/getFavouriteShopList")
     public ResultResponse getFavouriteShopList(Integer userId) {
-        return null;
+        return userService.getFavouriteShopList(userId);
     }
 
     /**
@@ -125,6 +129,36 @@ public class UserController {
      */
     @GetMapping("/getFavouriteGoodList")
     public ResultResponse getFavouriteGoodList(Integer userId) {
-        return null;
+        return userService.getFavouriteGoodList(userId);
+    }
+
+    /**
+     * 保存收货地址
+     * @param uAddr
+     * @return
+     */
+    @GetMapping("/saveUserAddress")
+    public ResultResponse saveUserAddress(UserAddress uAddr) {
+        return userAddressService.saveUserAddress(uAddr);
+    }
+
+    /**
+     * 获取收货地址
+     * @param uAddrId
+     * @return
+     */
+    @GetMapping("/getUserAddressInfo")
+    public ResultResponse<UserAddress> getUserAddressInfoById(Integer uAddrId) {
+        return userAddressService.getUserAddressById(uAddrId);
+    }
+
+    /**
+     * 获取收货地址列表
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getUserAddressList")
+    public ResultResponse<List<UserAddress>> getUserAddressList(Integer userId) {
+        return userAddressService.getUserAddressList(userId);
     }
 }
