@@ -1,6 +1,7 @@
 package com.chongdao.client.entitys;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -13,13 +14,14 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class OrderInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private Integer orderNo;
+    private String orderNo;
 
     private Integer userId;
 
@@ -31,7 +33,7 @@ public class OrderInfo {
 
     private BigDecimal totalDiscount;
 
-    private String payment;
+    private BigDecimal payment;
 
     private Byte follow;
 
@@ -43,11 +45,15 @@ public class OrderInfo {
 
     private Date createTime;
 
+    private Date updateTime;
+
     private Date deliverTime;
+
+    private Date receiveTime;
 
     private Date paymentTime;
 
-    private Byte paymentType;
+    private Integer paymentType;
 
     private Date shopReceiveTime;
 
@@ -59,9 +65,18 @@ public class OrderInfo {
 
     private Integer orderStatus;
 
+    private Integer addressId;
+
     private BigDecimal reward;
 
-    public OrderInfo(Integer id, Integer orderNo, Integer userId, Integer shopId, BigDecimal goodsPrice, BigDecimal servicePrice, BigDecimal totalDiscount, String payment, Byte follow, Integer serviceType, Integer cardId, String remark, Date createTime, Date deliverTime, Date paymentTime, Byte paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime, Integer orderStatus, BigDecimal reward) {
+    private Integer isService;
+
+    private Integer couponId;
+
+    public OrderInfo(Integer id, String orderNo, Integer userId, Integer shopId, BigDecimal goodsPrice, BigDecimal servicePrice, BigDecimal totalDiscount,
+                     BigDecimal payment, Byte follow, Integer serviceType, Integer cardId, String remark, Date createTime, Date deliverTime,Date receiveTime, Date paymentTime,
+                     Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime, Integer orderStatus,Integer addressId, BigDecimal reward,
+                     Integer isService, Integer couponId) {
         this.id = id;
         this.orderNo = orderNo;
         this.userId = userId;
@@ -76,6 +91,7 @@ public class OrderInfo {
         this.remark = remark;
         this.createTime = createTime;
         this.deliverTime = deliverTime;
+        this.receiveTime = receiveTime;
         this.paymentTime = paymentTime;
         this.paymentType = paymentType;
         this.shopReceiveTime = shopReceiveTime;
@@ -84,6 +100,9 @@ public class OrderInfo {
         this.expressFinishTime = expressFinishTime;
         this.orderStatus = orderStatus;
         this.reward = reward;
+        this.addressId = addressId;
+        this.isService = isService;
+        this.couponId = couponId;
     }
 
 

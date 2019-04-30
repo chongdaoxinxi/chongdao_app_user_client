@@ -1,5 +1,6 @@
 package com.chongdao.client.vo;
 
+import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class CouponVO {
     private BigDecimal decreasePrice;
 
     //满减优惠券状态 -1删除，0上架，1下架（默认为0）
-    private Integer status = ResultEnum.UP_COUPON.getStatus();
+    private Integer status = CouponStatusEnum.UP_COUPON.getStatus();
 
     //有效时间
     private String activeTime;

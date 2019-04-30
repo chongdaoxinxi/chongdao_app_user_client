@@ -2,6 +2,7 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Coupon;
+import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.CouponRepository;
 import com.chongdao.client.service.CouponService;
@@ -28,7 +29,7 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer shopId, Integer type) {
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, ResultEnum.UP_COUPON.getStatus(), type);
+        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), type);
         List<CouponVO> couponVOList = Lists.newArrayList();
         couponList.forEach(coupon -> {
             CouponVO couponVO = new CouponVO();

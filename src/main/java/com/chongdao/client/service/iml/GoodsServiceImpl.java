@@ -4,6 +4,8 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Coupon;
 import com.chongdao.client.entitys.Good;
 import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.enums.CouponStatusEnum;
+import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.mapper.CategoryMapper;
@@ -164,7 +166,7 @@ public class GoodsServiceImpl implements GoodsService {
     private List<CouponVO> assembleCouponVo(Integer shopId){
         List<CouponVO> couponVOS = Lists.newArrayList();
         //根据店铺查询在架状态的优惠券
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, ResultEnum.UP_COUPON.getStatus(), ResultEnum.GOODS.getStatus());
+        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
         //封装优惠券
         couponList.forEach(coupon -> {
             CouponVO couponVO = new CouponVO();

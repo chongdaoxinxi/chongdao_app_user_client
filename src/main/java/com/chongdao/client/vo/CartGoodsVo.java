@@ -19,40 +19,7 @@ public class CartGoodsVo {
     private BigDecimal goodsPrice;
     private Integer goodsStatus;
     private BigDecimal goodsTotalPrice;
-    private Integer goodsStock;
     private Integer productChecked;
-
-
-
-    private Integer sellCount;
-    private String des;
-    private Integer shopId;
-    private String shopName;
-
-    private BigDecimal totalPrice;
-
-    //0.商品 1.服务
-    private Integer isService;
-
-    //0.双程 1.单程
-    private Integer orderType;
-
-    private BigDecimal discountPrice;
-
-    private Integer cardId;
-
-    private Double discount;
-
-    private BigDecimal servicePrice;
-
-
-
-    private CouponVO couponVO;
-
-    private Integer serviceCouponCount;
-
-    private Integer goodsCouponCount;
-
     private Integer goodsChecked;
 
 

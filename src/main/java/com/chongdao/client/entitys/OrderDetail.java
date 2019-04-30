@@ -1,57 +1,61 @@
 package com.chongdao.client.entitys;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
-
-
-/** 
- * @Author onlineS
- * @Description 订单明细
- * @Date 17:44 2019/4/18
- */
 @Entity
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "order_detail")
-public class OrderDetail implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class OrderDetail {
 
-	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
-	private Integer id;
-	private Integer orderNo;
-	private Integer count;
-	private Integer goodId;
-	private String name;
-	private BigDecimal price;
-	private String icon;
-	private BigDecimal currentPrice;
-	private Date createTime;
-	private Date updateTime;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    private String orderNo;
+
+    private Integer count;
+
+    private Integer goodId;
+
+    private String name;
+
+    private BigDecimal price;
+
+    private String icon;
+
+    private BigDecimal currentPrice;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private Integer userId;
+
+    private BigDecimal totalPrice;
+
+    public OrderDetail(Integer id, String orderNo, Integer count, Integer goodId, String name, BigDecimal price, String icon, BigDecimal currentPrice, Date createTime, Date updateTime, Integer userId, BigDecimal totalPrice) {
+        this.id = id;
+        this.orderNo = orderNo;
+        this.count = count;
+        this.goodId = goodId;
+        this.name = name;
+        this.price = price;
+        this.icon = icon;
+        this.currentPrice = currentPrice;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.userId = userId;
+        this.totalPrice = totalPrice;
+    }
 
 
-	@Override
-	public String toString() {
-		return "OrderDetail{" +
-				"id=" + id +
-				", orderNo=" + orderNo +
-				", count=" + count +
-				", goodId=" + goodId +
-				", name='" + name + '\'' +
-				", price=" + price +
-				", icon='" + icon + '\'' +
-				", currentPrice=" + currentPrice +
-				", createTime=" + createTime +
-				", updateTime=" + updateTime +
-				'}';
-	}
 }
