@@ -20,6 +20,10 @@ public class CartGoodsVo {
     private Integer goodsStatus;
     private BigDecimal goodsTotalPrice;
     private Integer goodsStock;
+    private Integer productChecked;
+
+
+
     private Integer sellCount;
     private String des;
     private Integer shopId;

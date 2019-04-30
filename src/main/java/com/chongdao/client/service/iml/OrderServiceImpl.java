@@ -16,6 +16,7 @@ import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.CartGoodsVo;
 import com.chongdao.client.vo.CartVo;
 import com.chongdao.client.vo.CouponVO;
+import com.chongdao.client.vo.OrderVo;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,15 @@ public class OrderServiceImpl implements OrderService {
         return ResultResponse.createBySuccess(cartGoodsVo);
     }
 
-
+    /**
+     * 创建订单
+     * @param orderVo
+     * @return
+     */
+    @Override
+    public ResultResponse<OrderVo> createOrder(OrderVo orderVo) {
+        return null;
+    }
 
 
     /**

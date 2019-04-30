@@ -1,47 +1,64 @@
 package com.chongdao.client.vo;
 
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
 public class OrderVo {
 
-    private Long orderNo;
+    private Integer orderNo;
+
+    private Integer userId;
+
+    private Integer ShopId;
+
+    private BigDecimal goodsPrice;
+
+    private BigDecimal servicePrice;
+
+    private BigDecimal totalDiscount;
 
     private BigDecimal payment;
 
-    private Integer paymentType;
+    private Byte follow;
 
-    private String paymentTypeDesc;
+    private Integer serviceType;
 
-    private Integer postage;
+    private Integer cardId;
 
-    private Integer status;
+    private String remark;
 
-    private String statusDesc;
+    private Date createTime;
 
-    private String paymentTime;
+    private Date deliverTime;
 
-    private String sendTime;
+    private Date paymentTime;
 
-    private String endTime;
+    private Byte paymentType;
 
-    private String closeTime;
+    private Date shopReceiveTime;
 
-    private String createTime;
+    private Integer expressId;
+
+    private Date expressReceiveTime;
+
+    private Date expressFinishTime;
+
+    private Integer orderStatus;
+
+    private BigDecimal reward;
+
+
 
     //订单明细
-   // private List<OrderItemVo> orderItemVoList;
+    private List<OrderGoodsVo> orderGoodsVoList;
 
-    private String imageHost;
 
-    private Integer shippingId;
 
-    private String receiverName;
-
-    //private ShippingVo shippingVo;
 
 
 

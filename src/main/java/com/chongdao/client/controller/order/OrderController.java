@@ -24,13 +24,22 @@ public class OrderController {
 
     /**
      * 预下单
-     * @param cartGoodsVo
+     * @param userId
+     * @param addressId
      * @return
      */
     @GetMapping("pre_order")
-    public ResultResponse<CartGoodsVo> preOrder(String token, CartGoodsVo cartGoodsVo){
+    public ResultResponse<CartGoodsVo> preOrder(String token, Integer userId, Integer addressId){
         //校验用户是否登录
         LoginUserUtil.resultTokenVo(token);
-        return orderService.preOrder(cartGoodsVo);
+        return orderService.preOrder(userId,addressId);
     }
+
+    @GetMapping("create_order")
+    public ResultResponse<OrderVo> createOrder(String token, OrderVo orderVo){
+        //校验用户是否登录
+        LoginUserUtil.resultTokenVo(token);
+        return orderService.createOrder(orderVo);
+    }
+
 }
