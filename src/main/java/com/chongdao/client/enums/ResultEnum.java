@@ -12,6 +12,9 @@ public enum ResultEnum {
     GOODS(1,"商品"),
     SERVICE(2,"服务"),
 
+    COUPON_FULL_AC(0,"店铺满减"),
+    COUPON_TICKET(2,"优惠券"),
+
 
     SUCCESS(200, "成功"),
 

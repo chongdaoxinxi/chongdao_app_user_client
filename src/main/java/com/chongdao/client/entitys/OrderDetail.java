@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /** 
@@ -18,6 +20,7 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "order_detail")
 public class OrderDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,48 +28,30 @@ public class OrderDetail implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
+	private Integer orderNo;
 	private Integer count;
-	private Double discount;
-	@Column(name="goods_name")
-	private String goodsName;
-	private String icon;
-	@Column(name="module_id")
-	private Integer moduleId;
-	@Column(name="old_id")
-	private Integer oldId;
-	@Column(name="order_id")
-	private Integer orderId;
+	private Integer goodId;
+	private String name;
 	private BigDecimal price;
-	@Column(name="re_order_id")
-	private Integer reOrderId;
-	@Column(name="shop_id")
-	private Integer shopId;
-	private Integer type;
-	@Column(name="type_id")
-	private Integer typeId;
-	private String unit;
-	private String orderNoRe;
-	private Integer status;
+	private String icon;
+	private BigDecimal currentPrice;
+	private Date createTime;
+	private Date updateTime;
+
 
 	@Override
 	public String toString() {
 		return "OrderDetail{" +
 				"id=" + id +
+				", orderNo=" + orderNo +
 				", count=" + count +
-				", discount=" + discount +
-				", goodsName='" + goodsName + '\'' +
-				", icon='" + icon + '\'' +
-				", moduleId=" + moduleId +
-				", oldId=" + oldId +
-				", orderId=" + orderId +
+				", goodId=" + goodId +
+				", name='" + name + '\'' +
 				", price=" + price +
-				", reOrderId=" + reOrderId +
-				", shopId=" + shopId +
-				", type=" + type +
-				", typeId=" + typeId +
-				", unit='" + unit + '\'' +
-				", orderNoRe='" + orderNoRe + '\'' +
-				", status=" + status +
+				", icon='" + icon + '\'' +
+				", currentPrice=" + currentPrice +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime +
 				'}';
 	}
 }
