@@ -30,4 +30,6 @@ public interface CartsMapper {
      * @param goodsList
      */
     void deleteByUserIdAndProductIds(Integer userId, List<String> goodsList);
+
+    List<Carts> selectCheckedCartByUserId(Integer userId);
 }

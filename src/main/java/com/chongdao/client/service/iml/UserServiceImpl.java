@@ -3,6 +3,7 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.enums.UserStatusEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse<UserLoginVO> login(String phone, String code) {
         if (StringUtils.isBlank(phone)){
-            throw new PetException(ResultEnum.USERNAME_OR_CODE_EMPTY);
+            return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USERNAME_OR_CODE_EMPTY.getStatus(), UserStatusEnum.USERNAME_OR_CODE_EMPTY.getMessage());
         }
         User user = userRepository.findByName(phone);
         UserLoginVO userLoginVO = new UserLoginVO();
@@ -86,10 +87,10 @@ public class UserServiceImpl implements UserService {
         //检验验证码是否正确
         if (StringUtils.isNoneBlank(smsService.getSmsCode(name))) {
             if (!smsService.getSmsCode(name).equals(code)) {
-                return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getStatus(), ResultEnum.USER_CODE_ERROR.getMessage());
+                return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USER_CODE_ERROR.getStatus(), UserStatusEnum.USER_CODE_ERROR.getMessage());
             }
         }else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.USER_CODE_ERROR.getStatus(), ResultEnum.USER_CODE_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USER_CODE_ERROR.getStatus(), UserStatusEnum.USER_CODE_ERROR.getMessage());
         }
         return ResultResponse.createBySuccess();
     }

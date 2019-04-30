@@ -3,6 +3,7 @@ package com.chongdao.client.utils;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.enums.UserStatusEnum;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserLoginVO;
@@ -69,8 +70,8 @@ public class TokenUtil {
                 Integer userId = (Integer)(body.get("userId"));
                 Date generateTime = new Date((Long)body.get("generateTime"));
                 if(username == null || username.isEmpty()){
-                    resp.put("status",ResultEnum.USERNAME_NOT_EMPTY.getStatus());
-                    resp.put("message",ResultEnum.USERNAME_NOT_EMPTY.getMessage());
+                    resp.put("status", UserStatusEnum.USERNAME_NOT_EMPTY.getStatus());
+                    resp.put("message",UserStatusEnum.USERNAME_NOT_EMPTY.getMessage());
                     return resp;
                 }
                 //账号在别处登录
@@ -87,19 +88,19 @@ public class TokenUtil {
                 // TODO: handle exception
                 // don't trust the JWT!
                 // jwt 解析错误
-                resp.put("status",ResultEnum.TOKEN_ERROR.getStatus());
-                resp.put("message",ResultEnum.TOKEN_ERROR.getMessage());
+                resp.put("status",UserStatusEnum.TOKEN_ERROR.getStatus());
+                resp.put("message",UserStatusEnum.TOKEN_ERROR.getMessage());
                 return resp;
             } catch (ExpiredJwtException e) {
                 // TODO: handle exception
                 // jwt 已经过期，在设置jwt的时候如果设置了过期时间，这里会自动判断jwt是否已经过期，如果过期则会抛出这个异常，我们可以抓住这个异常并作相关处理。
-                resp.put("status",ResultEnum.TOKEN_EXPIRED.getStatus());
-                resp.put("message",ResultEnum.TOKEN_EXPIRED.getMessage());
+                resp.put("status",UserStatusEnum.TOKEN_EXPIRED.getStatus());
+                resp.put("message",UserStatusEnum.TOKEN_EXPIRED.getMessage());
                 return resp;
             }
         }else {
-            resp.put("status",ResultEnum.TOKEN_NOT_EMPTY.getStatus());
-            resp.put("message",ResultEnum.TOKEN_NOT_EMPTY.getMessage());
+            resp.put("status",UserStatusEnum.TOKEN_NOT_EMPTY.getStatus());
+            resp.put("message",UserStatusEnum.TOKEN_NOT_EMPTY.getMessage());
             return resp;
         }
     }

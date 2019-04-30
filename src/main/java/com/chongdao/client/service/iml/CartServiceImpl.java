@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -40,6 +41,7 @@ public class CartServiceImpl implements CartService {
      * @param goodsId
      * @return
      */
+    @Transactional
     @Override
     public ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId) {
         if (count == null || goodsId == null){
@@ -85,6 +87,7 @@ public class CartServiceImpl implements CartService {
      * @param goodsIds
      * @return
      */
+    @Transactional
     @Override
     public ResultResponse<CartVo> deleteGoods(Integer userId, String goodsIds) {
         List<String> goodsList = Splitter.on(",").splitToList(goodsIds);

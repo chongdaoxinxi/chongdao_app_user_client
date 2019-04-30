@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class Coupon implements Serializable {
     private Integer usedCouponCount;//优惠券数量
     private Integer receiveCouponCount;//已领取优惠券数量
     //满减优惠券状态 -1删除，0上架，1下架（默认为0）
-    private Integer status = ResultEnum.UP_COUPON.getStatus();
+    private Integer status = CouponStatusEnum.UP_COUPON.getStatus();
     private String startTime;//有效时间
     private String endTime;//失效时间
     private Date createTime;

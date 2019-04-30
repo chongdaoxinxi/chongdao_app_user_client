@@ -1,15 +1,16 @@
 package com.chongdao.client.mapper;
 
-import com.mmall.pojo.OrderInfo;
+
+import com.chongdao.client.entitys.OrderInfo;
 
 public interface OrderInfoMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(OrderInfo key);
 
     int insert(OrderInfo record);
 
     int insertSelective(OrderInfo record);
 
-    OrderInfo selectByPrimaryKey(Integer id);
+    OrderInfo selectByPrimaryKey(OrderInfo key);
 
     int updateByPrimaryKeySelective(OrderInfo record);
 

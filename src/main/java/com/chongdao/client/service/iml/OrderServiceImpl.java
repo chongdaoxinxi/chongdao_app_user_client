@@ -1,34 +1,31 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Card;
-import com.chongdao.client.entitys.Coupon;
-import com.chongdao.client.entitys.Good;
-import com.chongdao.client.entitys.Shop;
-import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.mapper.GoodMapper;
-import com.chongdao.client.mapper.ShopMapper;
+import com.chongdao.client.entitys.*;
+import com.chongdao.client.enums.*;
+import com.chongdao.client.exception.PetException;
+import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.CardRepository;
 import com.chongdao.client.repository.CardUserRepository;
 import com.chongdao.client.repository.CouponRepository;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
-import com.chongdao.client.vo.CartGoodsVo;
-import com.chongdao.client.vo.CartVo;
-import com.chongdao.client.vo.CouponVO;
-import com.chongdao.client.vo.OrderVo;
+import com.chongdao.client.utils.GenerateOrderNo;
+import com.chongdao.client.vo.*;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import static com.chongdao.client.common.Const.DUAL;
-import static com.chongdao.client.enums.ResultEnum.COUPON_FULL_AC;
+import static com.chongdao.client.enums.CouponStatusEnum.COUPON_FULL_AC;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -48,67 +45,213 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CardRepository cardRepository;
 
+    @Autowired
+    private CartsMapper cartsMapper;
+
+    @Autowired
+    private OrderInfoMapper orderInfoMapper;
+
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
+
 
 
     /**
      * 预下单
-     * @param cartGoodsVo
+     * @param userId
+     * @param orderType 1代表预下单 2代表下单
      * @return
      */
     @Override
-    public ResultResponse<CartGoodsVo> preOrder(CartGoodsVo cartGoodsVo) {
+    public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, Integer addressId, OrderCommonVO orderCommonVO, Integer orderType) {
+        if (addressId == null){
+            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
+        }
+        if (userId == null){
+            throw new PetException(ResultEnum.PARAM_ERROR);
+        }
         //订单总价
         BigDecimal cartTotalPrice = new BigDecimal(BigInteger.ZERO);
-        if (cartGoodsVo.getUserId() == null || cartGoodsVo.getGoodsId() == null || cartGoodsVo.getShopId() == null){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
-        }
-        //查询商品
-        Good good = goodMapper.selectByPrimaryKey(cartGoodsVo.getGoodsId());
-        //查询店铺
-        Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
-        cartGoodsVo.setShopName(shop.getShopName());
-        if (good != null){
-            cartGoodsVo.setGoodsName(good.getName());
-            cartGoodsVo.setGoodsPrice(good.getPrice());
-            cartGoodsVo.setGoodsStatus(Integer.valueOf(good.getStatus()));
-            //折扣价
-            if (good.getDiscount() > 0) {
-                cartGoodsVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+        OrderVo orderVo = new OrderVo();
+        Double count = 1.0D;
+        //从购物车中获取数据
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId);
+        for (Carts cart : cartList) {
+            //查询商品
+            Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
+            //查询店铺
+            Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
+            orderVo.setShopName(shop.getShopName());
+            if (good != null){
+                orderVo.setGoodsName(good.getName());
+                orderVo.setGoodsPrice(good.getPrice());
+                //折扣价
+                if (good.getDiscount() > 0) {
+                    orderVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+                    //计算总价(商品存在打折)
+                    orderVo.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
+                            cart.getQuantity().doubleValue()));
+                    count = good.getDiscount();
+                }
+                //用户购买的商品数量
+                orderVo.setQuantity(cart.getQuantity());
+                //计算总价（无打折）
+                orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
             }
-            //用户购买的商品数量
-            cartGoodsVo.setQuantity(cartGoodsVo.getQuantity());
-            //计算总价
-            cartGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cartGoodsVo.getQuantity().doubleValue()));
-        }
+            orderVo.setUserId(userId);
+            orderVo.setShopId(shop.getId());
+            //获取符合当前条件商品的满减
+            List<CouponVO> couponVOList = getCouponVo(shop.getId(), cartTotalPrice);
+            orderVo.setCouponList(couponVOList);
+            BigDecimal decreasePrice = BigDecimal.ZERO;
+            if (!CollectionUtils.isEmpty(couponVOList)) {
+                decreasePrice = couponVOList.get(0).getDecreasePrice();
+            }
+            //总价
+            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(),cart.getQuantity()).add(decreasePrice);
+            if (orderCommonVO.getCouponId() != null){
+                //TODO 计算使用商品 a 优惠券后的价格
 
-        //获取符合当前条件商品的满减
-        CouponVO couponVo = getCouponVo(cartGoodsVo.getShopId(), cartTotalPrice);
-        cartGoodsVo.setCouponVO(couponVo);
-        BigDecimal decreasePrice = couponVo.getDecreasePrice() ;
-        if (decreasePrice == null){
-            decreasePrice = BigDecimal.ZERO;
+            }
+            if (orderCommonVO.getCardId() != null){
+                //TODO 计算使用配送优惠券后的价格
+            }
         }
-        //总价
-        cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartGoodsVo.getGoodsTotalPrice().doubleValue()).add(decreasePrice);
         //配送优惠券数量 0:双程 1:单程（商品默认为单程）
-        cartGoodsVo.setServiceCouponCount(getServiceCouponCount(cartGoodsVo.getUserId(),cartGoodsVo.getOrderType()));
+        orderVo.setServiceCouponCount(getServiceCouponCount(orderVo.getUserId(),orderCommonVO.getServiceType()));
         //商品优惠券数量
-        cartGoodsVo.setGoodsCouponCount(getCouponCount(cartGoodsVo.getUserId(),cartGoodsVo.getShopId()));
-        cartGoodsVo.setTotalPrice(cartTotalPrice);
+        orderVo.setGoodsCouponCount(getCouponCount(orderVo.getUserId(),orderVo.getShopId()));
+        orderVo.setTotalPrice(cartTotalPrice);
+        orderVo.setIsService(orderCommonVO.getIsService());
+        orderVo.setServiceType(orderCommonVO.getServiceType());
+        orderVo.setPayment(cartTotalPrice);
+        //如果orderType为2代表提交订单
+        if (orderType == OrderStatusEnum.ORDER_CREATE.getStatus()){
+            //创建订单
+            this.createOrder(orderVo,orderCommonVO);
+        }
+        return ResultResponse.createBySuccess(orderVo);
 
-        return ResultResponse.createBySuccess(cartGoodsVo);
+
     }
+
+
+
 
     /**
      * 创建订单
      * @param orderVo
      * @return
      */
-    @Override
-    public ResultResponse<OrderVo> createOrder(OrderVo orderVo) {
+
+    @Transactional
+    public ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO) {
+        //从购物车中获取数据
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId());
+
+        //计算这个订单的总价
+        ResultResponse serverResponse = this.getCartOrderItem(orderVo.getUserId(),cartList);
+        if(!serverResponse.isSuccess()){
+            return serverResponse;
+        }
+        List<OrderDetail> orderItemList = (List<OrderDetail>)serverResponse.getData();
+
+        //生成订单
+        OrderInfo order = this.assembleOrder(orderVo,orderCommonVO);
+        if(order == null){
+            return ResultResponse.createByErrorMessage("生成订单错误");
+        }
+        if(CollectionUtils.isEmpty(orderItemList)){
+            return ResultResponse.createByErrorMessage("购物车为空");
+        }
+        for(OrderDetail orderItem : orderItemList){
+            orderItem.setOrderNo(order.getOrderNo());
+        }
+        //mybatis 批量插入
+        orderDetailMapper.batchInsert(orderItemList);
+
+        //清空一下购物车
+        this.cleanCart(cartList);
+        return ResultResponse.createBySuccess();
+    }
+
+
+
+
+    /**
+     * 获取购物车信息
+     * @param userId
+     * @param cartList
+     * @return
+     */
+    private ResultResponse getCartOrderItem(Integer userId,List<Carts> cartList){
+        List<OrderDetail> orderItemList = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(cartList)){
+            return ResultResponse.createByErrorMessage("购物车为空");
+        }
+        //折扣
+        Double count = 1.0D;
+        //校验购物车的数据,包括产品的状态和数量
+        for(Carts cartItem : cartList){
+            OrderDetail orderDetail = new OrderDetail();
+            Good good = goodMapper.selectByPrimaryKey(cartItem.getGoodsId());
+            if(GoodsStatusEnum.ON_SALE.getStatus() != good.getStatus()){
+                return ResultResponse.createByErrorMessage("产品"+good.getName()+"不是在线售卖状态");
+            }
+
+            orderDetail.setUserId(userId);
+            orderDetail.setGoodId(good.getId());
+            orderDetail.setName(good.getName());
+            orderDetail.setIcon(good.getIcon());
+            orderDetail.setPrice(good.getPrice());
+            orderDetail.setCount(cartItem.getQuantity());
+            //计算折扣是否为0
+            if (good.getDiscount() > 0){
+                count = good.getDiscount();
+            }
+            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),count));
+            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(),cartItem.getQuantity()));
+            orderItemList.add(orderDetail);
+        }
+        return ResultResponse.createBySuccess(orderItemList);
+    }
+
+
+
+    /**
+     * 封装订单生成
+     * @return
+     */
+    private OrderInfo assembleOrder(OrderVo orderVo,OrderCommonVO orderCommonVO){
+        OrderInfo order = new OrderInfo();
+        String orderNo = GenerateOrderNo.genUniqueKey();
+        order.setOrderNo(orderNo);
+        order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
+        if (orderCommonVO.getPayType() == PaymentTypeEnum.ALI_PAY.getStatus()){
+            order.setPaymentType( PaymentTypeEnum.ALI_PAY.getStatus());
+        }else{
+            order.setPaymentType(PaymentTypeEnum.WX_PAY.getStatus());
+        }
+        order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
+        BeanUtils.copyProperties(orderVo,order);
+        BeanUtils.copyProperties(orderCommonVO,orderVo);
+        order.setPaymentType(orderCommonVO.getPayType());
+        int rowCount = orderInfoMapper.insert(order);
+        if(rowCount > 0){
+            return order;
+        }
         return null;
     }
 
+    /**
+     * 清空购物车
+     * @param cartList
+     */
+    private void cleanCart(List<Carts> cartList){
+        for(Carts cart : cartList){
+            cartsMapper.deleteByPrimaryKey(cart.getId());
+        }
+    }
 
     /**
      * 封装符合当前商品满减活动
@@ -116,16 +259,17 @@ public class OrderServiceImpl implements OrderService {
      * @param cartTotalPrice
      * @return
      */
-    private CouponVO getCouponVo(Integer shopId, BigDecimal cartTotalPrice){
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, ResultEnum.UP_COUPON.getStatus(), COUPON_FULL_AC.getStatus());
-       // List<CouponVO> couponVOList = Lists.newArrayList();
+    private List<CouponVO> getCouponVo(Integer shopId, BigDecimal cartTotalPrice){
+        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), COUPON_FULL_AC.getStatus());
+        List<CouponVO> couponVOList = Lists.newArrayList();
         CouponVO couponVO = new CouponVO();
         couponList.forEach(coupon -> {
             if (cartTotalPrice.compareTo(coupon.getFullPrice()) == 1){
                 BeanUtils.copyProperties(coupon,couponVO);
+                couponVOList.add(couponVO);
             }
         });
-        return couponVO;
+        return couponVOList;
     }
 
 
