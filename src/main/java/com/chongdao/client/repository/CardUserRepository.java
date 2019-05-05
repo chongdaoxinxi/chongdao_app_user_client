@@ -53,5 +53,15 @@ public interface CardUserRepository extends JpaRepository<CardUser, Integer> {
     Integer findByUserIdCommon(Integer userId);
 
 
+    /**
+     * 查询优惠券是否被领取
+     * @param couponId
+     * @param shopId
+     * @param userId
+     * @return
+     */
+    CardUser findByCouponIdAndShopIdAndUserId(Integer couponId, Integer shopId,Integer userId);
+
+
 
 }

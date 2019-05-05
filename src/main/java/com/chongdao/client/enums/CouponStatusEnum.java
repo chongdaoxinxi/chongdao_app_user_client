@@ -13,6 +13,8 @@ public enum CouponStatusEnum {
 
     COUPON_FULL_AC(0,"店铺满减"),
     COUPON_TICKET(2,"优惠券"),
+
+    RECEIVED_COUPON_CARD(5001,"您已领取过该优惠券，不能再次领取"),
     ;
 
     /** 错误码 */

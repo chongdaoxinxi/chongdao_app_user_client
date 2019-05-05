@@ -3,6 +3,8 @@ package com.chongdao.client.mapper;
 
 import com.chongdao.client.entitys.OrderInfo;
 
+import java.util.List;
+
 public interface OrderInfoMapper {
     int deleteByPrimaryKey(OrderInfo key);
 
@@ -15,4 +17,9 @@ public interface OrderInfoMapper {
     int updateByPrimaryKeySelective(OrderInfo record);
 
     int updateByPrimaryKey(OrderInfo record);
+
+    OrderInfo selectByOrderNo(String orderNo);
+
+
+    OrderInfo selectByUserIdAndOrderNo(Integer userId, String payOutTradeNo);
 }

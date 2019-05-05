@@ -48,6 +48,9 @@ public class CouponVO {
     //已领取优惠券数量
     private Integer receiveCouponCount;
 
+    //领取状态->仅针对当前用户是否已经领取该优惠券
+    //1.代表已领取 0.代表未领取，默认为0
+    private Integer receiveStatus = 0;
 
 
 

@@ -19,4 +19,6 @@ public interface OrderDetailMapper {
     int updateByPrimaryKey(OrderDetail record);
 
     void batchInsert(@Param("orderItemList") List<OrderDetail> orderItemList);
+
+    List<OrderDetail> getByOrderNoUserId();
 }

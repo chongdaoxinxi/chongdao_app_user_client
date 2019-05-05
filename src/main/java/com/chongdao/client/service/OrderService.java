@@ -7,7 +7,7 @@ import com.chongdao.client.vo.OrderVo;
 ;
 
 public interface OrderService {
-    ResultResponse<OrderVo> preOrCreateOrder(Integer userId, Integer addressId, OrderCommonVO orderCommonVO, Integer orderType);
+    ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO, Integer orderType);
 
    // ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO);
 }

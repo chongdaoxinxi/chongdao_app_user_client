@@ -22,15 +22,14 @@ public class OrderController {
     /**
      * 预下单/提交订单
      * @param userId
-     * @param addressId
      * @param orderType 1代表预下单 2代表下单
      * @return
      */
     @GetMapping("pre_or_create_order")
-    public ResultResponse<OrderVo> preOrCreateOrder(String token,Integer userId, Integer addressId, OrderCommonVO orderCommonVO, Integer orderType){
+    public ResultResponse<OrderVo> preOrCreateOrder(String token,Integer userId, OrderCommonVO orderCommonVO, Integer orderType){
         //校验用户是否登录
         LoginUserUtil.resultTokenVo(token);
-        return orderService.preOrCreateOrder(userId,addressId,orderCommonVO,orderType);
+        return orderService.preOrCreateOrder(userId,orderCommonVO,orderType);
     }
 
 

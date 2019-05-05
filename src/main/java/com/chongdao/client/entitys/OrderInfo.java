@@ -65,7 +65,9 @@ public class OrderInfo {
 
     private Integer orderStatus;
 
-    private Integer addressId;
+    private Integer receiveAddressId;
+
+    private Integer deliverAddressId;
 
     private BigDecimal reward;
 
@@ -75,7 +77,7 @@ public class OrderInfo {
 
     public OrderInfo(Integer id, String orderNo, Integer userId, Integer shopId, BigDecimal goodsPrice, BigDecimal servicePrice, BigDecimal totalDiscount,
                      BigDecimal payment, Byte follow, Integer serviceType, Integer cardId, String remark, Date createTime, Date deliverTime,Date receiveTime, Date paymentTime,
-                     Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime, Integer orderStatus,Integer addressId, BigDecimal reward,
+                     Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime, Integer orderStatus,Integer receiveAddressId,Integer deliverAddressId, BigDecimal reward,
                      Integer isService, Integer couponId) {
         this.id = id;
         this.orderNo = orderNo;
@@ -100,7 +102,8 @@ public class OrderInfo {
         this.expressFinishTime = expressFinishTime;
         this.orderStatus = orderStatus;
         this.reward = reward;
-        this.addressId = addressId;
+        this.receiveAddressId = receiveAddressId;
+        this.deliverAddressId = deliverAddressId;
         this.isService = isService;
         this.couponId = couponId;
     }
