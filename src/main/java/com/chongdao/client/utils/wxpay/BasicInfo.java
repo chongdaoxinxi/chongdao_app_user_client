@@ -9,13 +9,21 @@ package com.chongdao.client.utils.wxpay;
 public class BasicInfo {
     /**微信账号信息配置**/
 
-    /**公众号appId**/
+    /**
+     * 公众号appId
+     **/
     public static final String appID = "";
-    /**公众号appSecret**/
+    /**
+     * 公众号appSecret
+     **/
     public static final String AppSecret = "";
-    /**公众号商户号**/
+    /**
+     * 公众号商户号
+     **/
     public static final String MchId = "";
-    /**公众号商户号秘钥**/
+    /**
+     * 公众号商户号秘钥
+     **/
     public static final String MchKey = "";
 
 
@@ -32,15 +40,23 @@ public class BasicInfo {
     public static final String XIAO_AppID = "";
     /***小程序应用appSecret***/
     public static final String XIAO_AppSecret = "";
-    /**小程序商户号**/
+    /**
+     * 小程序商户号
+     **/
     public static final String XIAO_MchId = "";
-    /**小程序商户号秘钥**/
+    /**
+     * 小程序商户号秘钥
+     **/
     public static final String XIAO_MchKey = "";
 
 
-    /**商家名**/
+    /**
+     * 商家名
+     **/
     public static final String Send_Name = "佳电";
-    /**商户证书路径**/
+    /**
+     * 商户证书路径
+     **/
     public static final String KeyPath = "/apiclient_cert.p12";
 
     //微信回调URL
@@ -51,11 +67,11 @@ public class BasicInfo {
 
 
     //微信统一下单接口
-    public static final String unifiedordersurl ="https://api.mch.weixin.qq.com/pay/unifiedorder";
+    public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
     //微信红包退款接口
-    public static final String httpurl ="https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
+    public static final String httpurl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
     //微信退款接口
-    public static final String refundurl ="https://api.mch.weixin.qq.com/secapi/pay/refund";
+    public static final String refundurl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
     //企业转账接口
-    public static final String transfersurl ="https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+    public static final String transfersurl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
 }
