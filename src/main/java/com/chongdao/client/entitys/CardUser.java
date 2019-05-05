@@ -35,7 +35,4 @@ public class CardUser implements Serializable {
 	private Integer shopId;
 	private Integer couponId;
 
-
-
-
 }
