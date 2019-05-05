@@ -16,5 +16,31 @@ public interface CouponService {
      * @param type 优惠券类型(1：商品 2: 服务)
      * @return
      */
-    ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer shopId, Integer type);
+    ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer userId, Integer shopId, Integer type);
+
+    /**
+     * 领取优惠券
+     * @param userId
+     * @param shopId
+     * @param couponId
+     * @return
+     */
+    ResultResponse receiveCoupon(Integer userId, Integer shopId, Integer couponId);
+
+    /**
+     * 查询已领取优惠券
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    ResultResponse receiveCouponComplete(Integer userId, Integer shopId);
+
+
+    /**
+     * 查询配送券列表
+     * @param userId
+     * @param param
+     * @return
+     */
+    ResultResponse getCardServiceList(Integer userId,  String param);
 }

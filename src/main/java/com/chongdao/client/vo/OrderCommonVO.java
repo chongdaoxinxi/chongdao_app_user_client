@@ -19,4 +19,13 @@ public class OrderCommonVO {
     //1.支付宝 2.微信
     private Integer payType;
 
+    //接地址
+    private Integer receiveAddressId;
+
+    //送地址
+    private Integer deliverAddressId;
+
+    //单程 服务类型:1.家到宠物店，2.宠物店到家
+    private Integer singleServiceType;
+
 }

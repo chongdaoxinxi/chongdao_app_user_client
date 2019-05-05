@@ -4,6 +4,8 @@ import com.chongdao.client.entitys.CardUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface CardUserRepository extends JpaRepository<CardUser, Integer> {
 
     //---------------------------------官方券(配送和通用)------------------------------------------------//
@@ -16,6 +18,8 @@ public interface CardUserRepository extends JpaRepository<CardUser, Integer> {
     @Query(value = "select count(1) from card_user c1 inner join card c2 on c1.card_id = c2.id where c2.type in (1,4) and c2.status = 1 and c1.count > 0 and end_time > NOW() " +
             "AND c1.user_id=?1",nativeQuery = true)
     Integer findByUserIdAndRoundTrip(Integer userId);
+
+
 
     /**
      * 查看单程配送券数量
@@ -51,6 +55,18 @@ public interface CardUserRepository extends JpaRepository<CardUser, Integer> {
     @Query(value ="select count(1) from card_user c1 inner join card c2 on c1.card_id = c2.id where c2.type = 5 and c2.status = 1 and c1.count > 0 and end_time > NOW() " +
             "AND c1.user_id=?1",nativeQuery = true)
     Integer findByUserIdCommon(Integer userId);
+
+
+    /**
+     * 查询优惠券是否被领取
+     * @param couponId
+     * @param shopId
+     * @param userId
+     * @return
+     */
+    CardUser findByCouponIdAndShopIdAndUserId(Integer couponId, Integer shopId,Integer userId);
+
+
 
 
 

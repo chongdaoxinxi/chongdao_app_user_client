@@ -1,6 +1,13 @@
 package com.chongdao.client.service.iml;
 
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.config.AliPayConfig;
+import com.chongdao.client.dto.PayPaymentOrderDTO;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.*;
 import com.chongdao.client.exception.PetException;
@@ -12,7 +19,10 @@ import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
 import com.chongdao.client.vo.*;
+import com.github.pagehelper.StringUtil;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +32,14 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.chongdao.client.common.Const.DUAL;
 import static com.chongdao.client.enums.CouponStatusEnum.COUPON_FULL_AC;
 
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -56,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 
+
     /**
      * 预下单
      * @param userId
@@ -63,8 +77,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, Integer addressId, OrderCommonVO orderCommonVO, Integer orderType) {
-        if (addressId == null){
+    public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO, Integer orderType) {
+        if (orderCommonVO.getDeliverAddressId() == null){
             return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
         }
         if (userId == null){
@@ -85,6 +99,8 @@ public class OrderServiceImpl implements OrderService {
             if (good != null){
                 orderVo.setGoodsName(good.getName());
                 orderVo.setGoodsPrice(good.getPrice());
+                //用户购买的商品数量
+                orderVo.setQuantity(cart.getQuantity());
                 //折扣价
                 if (good.getDiscount() > 0) {
                     orderVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
@@ -92,11 +108,10 @@ public class OrderServiceImpl implements OrderService {
                     orderVo.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
                             cart.getQuantity().doubleValue()));
                     count = good.getDiscount();
+                }else{
+                    //计算总价（无打折）
+                    orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
-                //用户购买的商品数量
-                orderVo.setQuantity(cart.getQuantity());
-                //计算总价（无打折）
-                orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
             }
             orderVo.setUserId(userId);
             orderVo.setShopId(shop.getId());
@@ -146,6 +161,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO) {
+
+        //下单类型为服务类型订单时，需判断地址
+        if (orderCommonVO.getIsService().equals(GoodsStatusEnum.SERVICE.getStatus())) {
+            if (orderCommonVO.getReceiveAddressId() == null) {
+                return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.ADDRESS_NOT_EMPTY.getStatus(), OrderStatusEnum.ADDRESS_NOT_EMPTY.getMessage());
+            }
+        }
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId());
 
@@ -341,6 +363,10 @@ public class OrderServiceImpl implements OrderService {
         Integer count = cardUserRepository.findByUserIdCommon(userId);
         return count == null ? 0 : count;
     }
+
+
+
+
 
 
 
