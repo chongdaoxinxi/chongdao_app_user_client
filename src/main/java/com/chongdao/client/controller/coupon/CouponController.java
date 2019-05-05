@@ -48,8 +48,42 @@ public class CouponController {
                                         @RequestParam("token") String token){
         LoginUserUtil.resultTokenVo(token);
         return couponService.receiveCoupon(userId, shopId, couponId);
-
-
     }
+
+
+    /**
+     * 查询已领取优惠券(商品)
+     * @param userId
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @GetMapping("receive_coupon_complete")
+    public ResultResponse receiveCouponComplete(@RequestParam("userId")Integer userId,
+                                                @RequestParam("shopId") Integer shopId,
+                                                @RequestParam("token") String token){
+
+        LoginUserUtil.resultTokenVo(token);
+        return couponService.receiveCouponComplete(userId, shopId);
+    }
+
+
+    /**
+     * 查询已领取的配送优惠券
+     * @param userId
+     * @param token
+     * @param param 0双程 1 单程
+     * @return
+     */
+    @GetMapping("card_service_list")
+    public ResultResponse getCardServiceList(@RequestParam("userId")Integer userId,
+                                                @RequestParam("param") String param,
+                                                @RequestParam("token") String token){
+
+        LoginUserUtil.resultTokenVo(token);
+        return couponService.getCardServiceList(userId, param);
+    }
+
+
 
 }

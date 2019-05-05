@@ -26,4 +26,21 @@ public interface CouponService {
      * @return
      */
     ResultResponse receiveCoupon(Integer userId, Integer shopId, Integer couponId);
+
+    /**
+     * 查询已领取优惠券
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    ResultResponse receiveCouponComplete(Integer userId, Integer shopId);
+
+
+    /**
+     * 查询配送券列表
+     * @param userId
+     * @param param
+     * @return
+     */
+    ResultResponse getCardServiceList(Integer userId,  String param);
 }

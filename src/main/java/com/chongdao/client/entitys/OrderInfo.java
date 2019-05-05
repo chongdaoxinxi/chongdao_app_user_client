@@ -75,10 +75,14 @@ public class OrderInfo {
 
     private Integer couponId;
 
+
+    //单程服务类型:1.家到宠物店，2.宠物店到家
+    private Integer singleServiceType;
+
     public OrderInfo(Integer id, String orderNo, Integer userId, Integer shopId, BigDecimal goodsPrice, BigDecimal servicePrice, BigDecimal totalDiscount,
                      BigDecimal payment, Byte follow, Integer serviceType, Integer cardId, String remark, Date createTime, Date deliverTime,Date receiveTime, Date paymentTime,
                      Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime, Integer orderStatus,Integer receiveAddressId,Integer deliverAddressId, BigDecimal reward,
-                     Integer isService, Integer couponId) {
+                     Integer isService, Integer couponId, Integer singleServiceType) {
         this.id = id;
         this.orderNo = orderNo;
         this.userId = userId;
@@ -106,6 +110,7 @@ public class OrderInfo {
         this.deliverAddressId = deliverAddressId;
         this.isService = isService;
         this.couponId = couponId;
+        this.singleServiceType = singleServiceType;
     }
 
 

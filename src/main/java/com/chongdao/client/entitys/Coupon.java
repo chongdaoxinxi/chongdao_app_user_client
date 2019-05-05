@@ -44,6 +44,9 @@ public class Coupon implements Serializable {
     private Date createTime;
     private Date updateTime;
 
+    @Transient
+    private Integer cardId;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

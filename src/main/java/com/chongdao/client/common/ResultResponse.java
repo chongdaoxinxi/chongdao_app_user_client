@@ -57,7 +57,7 @@ public class ResultResponse<T> implements Serializable {
     }
 
     public static <T> ResultResponse<T> createBySuccess(T data){
-        return new ResultResponse<T>(ResultEnum.SUCCESS.getStatus(),data);
+        return new ResultResponse<T>(ResultEnum.SUCCESS.getStatus(),ResultEnum.SUCCESS.getMessage(),data);
     }
 
     public static <T> ResultResponse<T> createBySuccess(String msg,T data){

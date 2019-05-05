@@ -30,6 +30,12 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     Integer findByCouponCount(Integer userId, Integer shopId);
 
 
+    @Query(value = "select c1.card_id,c2.shop_id,c2.category_id,c2.full_price,c2.decrease_price , c2.start_time,c2.end_time  " +
+            "from card_user c1 inner join coupon c2 on c1.coupon_id = c2.id where c2.status=1 and c2.shop_id = c1.shop_id" +
+            " and end_time > NOW() and c1.count >0 and c1.user_id=?1 and c1.shop_id =?2 and c2.type=2", nativeQuery = true)
+    List<Coupon> findByUserIdCoupons(Integer userId, Integer shopId);
+
+
 
     /**
      * 更新已领取的优惠券数量
