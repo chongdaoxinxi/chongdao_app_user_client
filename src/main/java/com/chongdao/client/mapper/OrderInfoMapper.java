@@ -2,6 +2,7 @@ package com.chongdao.client.mapper;
 
 
 import com.chongdao.client.entitys.OrderInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,5 +22,7 @@ public interface OrderInfoMapper {
     OrderInfo selectByOrderNo(String orderNo);
 
 
-    OrderInfo selectByUserIdAndOrderNo(Integer userId, String payOutTradeNo);
+    OrderInfo selectByUserIdAndOrderNo(@Param("userId")Integer userId, @Param("payOutTradeNo")String payOutTradeNo);
+
+    List<OrderInfo> selectByUserIdList(@Param("userId") Integer userId, @Param("type")String type);
 }

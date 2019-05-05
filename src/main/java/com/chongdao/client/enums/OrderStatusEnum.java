@@ -9,7 +9,10 @@ public enum OrderStatusEnum {
     CANCELED(-2,"已取消"),
     NO_PAY(-1,"未支付"),
     PAID(1,"已付款"),
-    ORDER_SUCCESS(3,"订单完成"),
+    ACCEPTED_ORDER(2,"已接单"),
+    IN_SERVICE_ORDER(3,"服务中"),
+
+    ORDER_SUCCESS(4,"订单完成"),
 
 
     ORDER_PRE(1,"预下单"),

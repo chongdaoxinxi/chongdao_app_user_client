@@ -1,13 +1,8 @@
 package com.chongdao.client.service.iml;
 
-import com.alipay.api.AlipayClient;
-import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
+
+import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.config.AliPayConfig;
-import com.chongdao.client.dto.PayPaymentOrderDTO;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.*;
 import com.chongdao.client.exception.PetException;
@@ -19,22 +14,18 @@ import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
 import com.chongdao.client.vo.*;
-import com.github.pagehelper.StringUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.chongdao.client.common.Const.DUAL;
 import static com.chongdao.client.enums.CouponStatusEnum.COUPON_FULL_AC;
@@ -150,7 +141,23 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-
+    /**
+     * 根据type 获取订单列表
+     * @param userId
+     * @param type
+     * @return
+     */
+    @Override
+    public ResultResponse getOrderTypeList(Integer userId, String type) {
+        if (type == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+        //全部
+        if ("all".contains(type)){
+            type = "1,2,3,4,5,6,7,8,9";
+        }
+        return ResultResponse.createBySuccess(orderInfoMapper.selectByUserIdList(userId,type));
+    }
 
 
     /**
