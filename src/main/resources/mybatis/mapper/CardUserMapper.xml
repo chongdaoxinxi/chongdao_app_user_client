@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chongdao.client.mapper.CardUserMapper">
+  <resultMap id="BaseResultMap" type="com.chongdao.client.vo.CardUserVo">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="cardName" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="cardComment" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="cardFullPrice" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="cardDecreasePrice" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="cardStartTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="cardEndTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="cardType" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="couponName" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="couponCategoryName" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="couponShopName" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="couponFullPrice" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="couponDecreasePrice" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="couponStartTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="couponEndTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="couponType" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <!-- 获取用户优惠券 -->
+  <select id="getCardUserVoByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select cu.id as id, c.name as cardName, c.comment as cardComment, c.full_price as cardFullPrice, c.decrease_price as cardDecreatePrice,
+           c.start_time as cardStartTime, c.end_time as cardEndTime, c.type as cardType,
+           cp.coupon_name as couponName, cg.name as couopnCategoryName, s.shop_name as couponShopName, cp.full_price as couponFullPrice, cp.decrease_price as couponDecreasePrice,
+           cp.start_time as couponStartTime, cp.end_time as couponEndTime, cp.type as couponType
+    from card_user cu
+      left join card c on cu.card_id = c.id left join coupon cp on cu.coupon_id = cp.id
+      left join category cg on cp.category_id = cg.id left join shop s on cp.shop_id = s.id
+    where cu.status = 1
+      and ((c.status = 1 or c.status is null) or (cp.status = 1 or cp.status is null))
+      and cu.user_id = #{userId}
+      <if test="type == 1">
+          and (c.type is null or c.type = 1 or c.type = 2 or c.type = 5)
+      </if>
+      <if test="type == 2">
+          and (c.type = 3 or c.type = 4)
+      </if>
+    order by cu.create_time desc
+  </select>
+</mapper>

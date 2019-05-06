@@ -5,11 +5,8 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.PetCard;
 import com.chongdao.client.entitys.UserAccount;
 import com.chongdao.client.entitys.UserAddress;
-import com.chongdao.client.service.PetCardService;
-import com.chongdao.client.service.UserAccountService;
-import com.chongdao.client.service.UserAddressService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.vo.UserLoginVO;
-import com.chongdao.client.service.UserService;
 import com.chongdao.client.vo.UserSettingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +27,8 @@ public class UserController {
     private UserAccountService userAccountService;
     @Autowired
     private UserAddressService userAddressService;
+    @Autowired
+    private UserCardService userCardService;
 
     /**
      * 用户登录接口
@@ -160,5 +159,16 @@ public class UserController {
     @GetMapping("/getUserAddressList")
     public ResultResponse<List<UserAddress>> getUserAddressList(Integer userId) {
         return userAddressService.getUserAddressList(userId);
+    }
+
+    /**
+     * 获取用户优惠券
+     * @param userId
+     * @param type 1:优惠券;2:配送券
+     * @return
+     */
+    @GetMapping("/getUserCard")
+    public ResultResponse getUserCard(Integer userId, Integer type) {
+        return userCardService.getUserCard(userId, type);
     }
 }
