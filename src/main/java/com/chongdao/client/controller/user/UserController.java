@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.chongdao.client.entitys.Package;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class UserController {
     private UserAddressService userAddressService;
     @Autowired
     private UserCardService userCardService;
+    @Autowired
+    private PackageService packageService;
 
     /**
      * 用户登录接口
@@ -170,5 +173,13 @@ public class UserController {
     @GetMapping("/getUserCard")
     public ResultResponse getUserCard(Integer userId, Integer type) {
         return userCardService.getUserCard(userId, type);
+    }
+
+    /**
+     * 获取礼包列表
+     * @return
+     */
+    public ResultResponse<List<Package>> getPackage() {
+        return packageService.getPackageList();
     }
 }
