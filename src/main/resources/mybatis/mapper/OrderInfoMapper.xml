@@ -387,10 +387,17 @@
   </select>
 
 
-  <select id="selectByOrderNo" parameterType="long" resultMap="BaseResultMap">
+  <select id="selectByOrderNo" parameterType="String" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/>
     from order_info
     where  order_no = #{orderNo}
+  </select>
+
+  <select id="selectByUserIdList" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from order_info
+    where  user_id = #{userId}
+    and order_status in ${type}
   </select>
 
 </mapper>
