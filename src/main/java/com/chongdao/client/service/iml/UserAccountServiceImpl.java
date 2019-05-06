@@ -8,6 +8,7 @@ import com.chongdao.client.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.nio.file.OpenOption;
 import java.util.Optional;
 
@@ -35,6 +36,30 @@ public class UserAccountServiceImpl implements UserAccountService {
     public ResultResponse saveUserAccount(UserAccount ua) {
         if(Optional.ofNullable(ua).isPresent()) {
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.saveAndFlush(ua));
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    public ResultResponse rechargeAccount(Integer userId, BigDecimal money) {
+        if(userId != null && money != null) {
+            UserAccount ua = userAccountRepository.findByUserId(userId);
+            if(ua != null) {
+                BigDecimal old_money = ua.getMoney();
+                if(old_money != null) {
+                    ua.setMoney(old_money.add(money));
+                } else {
+                    ua.setMoney(money);
+                }
+                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.saveAndFlush(ua));
+            } else {
+                UserAccount newUa = new UserAccount();
+                newUa.setUserId(userId);
+                newUa.setStatus(1);
+                newUa.setMoney(money);
+                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.saveAndFlush(newUa));
+            }
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
