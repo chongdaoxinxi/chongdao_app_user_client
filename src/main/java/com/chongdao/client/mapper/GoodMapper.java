@@ -34,4 +34,8 @@ public interface GoodMapper {
                             @Param("discount") Integer discount,@Param("proActivities") String proActivities);
 
     List<Good> getFavouriteGoodList(@Param("userId") Integer userId);
+
+    List<Good> selectListByShopId(@Param("shopId")Integer shopId);
+
+    List<Good> selectByShopIdAndCategoryId(@Param("shopId") Integer shopId, @Param("categoryId")Integer categoryId);
 }

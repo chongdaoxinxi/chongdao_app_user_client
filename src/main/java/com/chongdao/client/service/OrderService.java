@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.vo.CartGoodsVo;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderVo;
+import com.github.pagehelper.PageInfo;
 ;
 
 public interface OrderService {
@@ -15,7 +16,7 @@ public interface OrderService {
      * @param type
      * @return
      */
-    ResultResponse getOrderTypeList(Integer userId, String type);
+    ResultResponse<PageInfo> getOrderTypeList(Integer userId, String type, int pageNum, int pageSize);
 
     // ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO);
 }

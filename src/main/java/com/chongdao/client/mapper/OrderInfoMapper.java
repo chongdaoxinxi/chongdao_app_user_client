@@ -1,6 +1,5 @@
 package com.chongdao.client.mapper;
 
-
 import com.chongdao.client.entitys.OrderInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,8 +18,8 @@ public interface OrderInfoMapper {
 
     int updateByPrimaryKey(OrderInfo record);
 
-    OrderInfo selectByOrderNo(String orderNo);
 
+    OrderInfo selectByOrderNo(String orderNo);
 
     OrderInfo selectByUserIdAndOrderNo(@Param("userId")Integer userId, @Param("payOutTradeNo")String payOutTradeNo);
 

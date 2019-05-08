@@ -35,7 +35,7 @@ public class OrderInfo {
 
     private BigDecimal payment;
 
-    private Byte follow;
+    private Integer follow;
 
     private Integer serviceType;
 
@@ -79,38 +79,39 @@ public class OrderInfo {
     //单程服务类型:1.家到宠物店，2.宠物店到家
     private Integer singleServiceType;
 
-    public OrderInfo(Integer id, String orderNo, Integer userId, Integer shopId, BigDecimal goodsPrice, BigDecimal servicePrice, BigDecimal totalDiscount,
-                     BigDecimal payment, Byte follow, Integer serviceType, Integer cardId, String remark, Date createTime, Date deliverTime,Date receiveTime, Date paymentTime,
-                     Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime, Integer orderStatus,Integer receiveAddressId,Integer deliverAddressId, BigDecimal reward,
-                     Integer isService, Integer couponId, Integer singleServiceType) {
+    public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
+                     BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark,
+                     Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
+                     BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType, Date updateTime) {
         this.id = id;
+        this.serviceType=serviceType;
         this.orderNo = orderNo;
         this.userId = userId;
         this.shopId = shopId;
+        this.orderStatus = orderStatus;
         this.goodsPrice = goodsPrice;
         this.servicePrice = servicePrice;
         this.totalDiscount = totalDiscount;
+        this.isService = isService;
         this.payment = payment;
         this.follow = follow;
-        this.serviceType = serviceType;
         this.cardId = cardId;
         this.remark = remark;
-        this.createTime = createTime;
         this.deliverTime = deliverTime;
-        this.receiveTime = receiveTime;
         this.paymentTime = paymentTime;
         this.paymentType = paymentType;
         this.shopReceiveTime = shopReceiveTime;
         this.expressId = expressId;
         this.expressReceiveTime = expressReceiveTime;
         this.expressFinishTime = expressFinishTime;
-        this.orderStatus = orderStatus;
         this.reward = reward;
         this.receiveAddressId = receiveAddressId;
         this.deliverAddressId = deliverAddressId;
-        this.isService = isService;
+        this.receiveTime = receiveTime;
         this.couponId = couponId;
+        this.createTime = createTime;
         this.singleServiceType = singleServiceType;
+        this.updateTime = updateTime;
     }
 
 

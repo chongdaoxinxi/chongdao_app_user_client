@@ -1,6 +1,8 @@
 package com.chongdao.client.repository;
 
 import com.chongdao.client.entitys.UserTrans;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -10,4 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Version 1.0
  **/
 public interface UserTransRepository extends JpaRepository<UserTrans, Integer> {
+    Page<UserTrans> findByUserIdAndType(Integer userId, Integer type, Pageable pageable);
 }

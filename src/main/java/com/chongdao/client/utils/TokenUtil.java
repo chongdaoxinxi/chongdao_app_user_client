@@ -1,12 +1,9 @@
 package com.chongdao.client.utils;
 
 
-import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.UserStatusEnum;
 import com.chongdao.client.repository.UserRepository;
-import com.chongdao.client.vo.ResultTokenVo;
-import com.chongdao.client.vo.UserLoginVO;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,6 @@ import java.util.Map;
 @Component
 public class TokenUtil {
     private static UserRepository userRepository;
-
     @Autowired
     public TokenUtil(UserRepository userRepository) {
         TokenUtil.userRepository = userRepository;
@@ -38,6 +34,7 @@ public class TokenUtil {
     private final String MESSAGE = "message";
 
     public static String generateToken(Integer userId,String username, Date generateTime) {
+
         HashMap<String, Object> map = new HashMap<>();
         //可以把任何安全的数据放到map里面
         map.put("username", username);

@@ -70,8 +70,7 @@ public class Shop extends PageParams implements Serializable {
 	private Date updateTime;
 
 
-	public Shop(Integer id, String shopName, String phone, String accountName, String password, Integer areaId, String areaCode, Double lat, Double lng, String logo, BigDecimal money, Integer type, Double grade, String wxNo, String zfbNo, String bankNo, String qrCodeUrl, String des,
-				String showImg, Integer status, Integer servicePriceRatio, String stopNote, Byte isHot, Byte isAutoAccept, Byte isJoinCommonWeal, String startBusinessHours, String endBusinessHours, Date createTime, Date updateTime) {
+	public Shop(Integer id, String shopName, String phone, String accountName, String password, Integer areaId, String areaCode, Double lat, Double lng, String logo, BigDecimal money, Integer type, Double grade, String wxNo, String zfbNo, String bankNo, String qrCodeUrl, String des, String showImg, Integer status, Integer servicePriceRatio, String stopNote, Byte isHot, Byte isAutoAccept, Byte isJoinCommonWeal, String startBusinessHours, String endBusinessHours, Date createTime, Date updateTime) {
 		this.id = id;
 		this.shopName = shopName;
 		this.phone = phone;

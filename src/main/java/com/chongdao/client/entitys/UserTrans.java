@@ -26,14 +26,17 @@ public class UserTrans implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	private Integer userid;
-	private Integer orderid;
+	private Integer userId;
+	private Integer orderId;
 	private String comment;//注释
 	private BigDecimal money;
-	private Integer type;//1:用户充值, 2:用户消费, 3:拒单退还
+	private Integer type;//1:用户充值;2:订单消费;3:订单退款
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createTime;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateTime;
+
+	//当类型为用户消费和订单退款时, 冗余消费商铺的名称
+	private String shopName;
 }

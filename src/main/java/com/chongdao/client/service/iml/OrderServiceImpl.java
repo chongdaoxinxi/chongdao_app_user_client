@@ -1,7 +1,6 @@
 package com.chongdao.client.service.iml;
 
 
-import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.*;
@@ -12,8 +11,11 @@ import com.chongdao.client.repository.CardUserRepository;
 import com.chongdao.client.repository.CouponRepository;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
+import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
 import com.chongdao.client.vo.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -57,6 +58,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderDetailMapper orderDetailMapper;
+
+    @Autowired
+    private UserAddressMapper addressMapper;
 
 
 
@@ -107,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
             orderVo.setUserId(userId);
             orderVo.setShopId(shop.getId());
             //获取符合当前条件商品的满减
-            List<CouponVO> couponVOList = getCouponVo(shop.getId(), cartTotalPrice);
+            List<CouponVO> couponVOList = this.getCouponVo(shop.getId(), cartTotalPrice);
             orderVo.setCouponList(couponVOList);
             BigDecimal decreasePrice = BigDecimal.ZERO;
             if (!CollectionUtils.isEmpty(couponVOList)) {
@@ -124,9 +128,9 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         //配送优惠券数量 0:双程 1:单程（商品默认为单程）
-        orderVo.setServiceCouponCount(getServiceCouponCount(orderVo.getUserId(),orderCommonVO.getServiceType()));
+        orderVo.setServiceCouponCount(this.getServiceCouponCount(orderVo.getUserId(),orderCommonVO.getServiceType()));
         //商品优惠券数量
-        orderVo.setGoodsCouponCount(getCouponCount(orderVo.getUserId(),orderVo.getShopId()));
+        orderVo.setGoodsCouponCount(this.getCouponCount(orderVo.getUserId(),orderVo.getShopId()));
         orderVo.setTotalPrice(cartTotalPrice);
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
@@ -148,15 +152,20 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ResultResponse getOrderTypeList(Integer userId, String type) {
+    public ResultResponse<PageInfo> getOrderTypeList(Integer userId, String type, int pageNum, int pageSize) {
         if (type == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
+        PageHelper.startPage(pageNum,pageSize);
         //全部
         if ("all".contains(type)){
             type = "1,2,3,4,5,6,7,8,9";
         }
-        return ResultResponse.createBySuccess(orderInfoMapper.selectByUserIdList(userId,type));
+        List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList,userId);
+        PageInfo pageResult = new PageInfo(orderInfoList);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
     }
 
 
@@ -205,7 +214,69 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    /**
+     * 封装订单列表
+     * @param orderList
+     * @param userId
+     * @return
+     */
+    private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList,Integer userId){
+        List<OrderVo> orderVoList = Lists.newArrayList();
+        for(OrderInfo order : orderList){
+            List<OrderDetail>  orderItemList = Lists.newArrayList();
+            if(userId == null){
+                //todo 管理员查询的时候 不需要传userId
+                orderItemList = orderDetailMapper.getByOrderNo(order.getOrderNo());
+            }else{
+                orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(),userId);
+            }
+            OrderVo orderVo = assembleOrderVo(order,orderItemList);
+            orderVoList.add(orderVo);
+        }
+        return orderVoList;
+    }
 
+
+    /**
+     * 封装订单详情
+     * @param order
+     * @param orderItemList
+     * @return
+     */
+    private OrderVo assembleOrderVo(OrderInfo order,List<OrderDetail> orderItemList){
+        OrderVo orderVo = new OrderVo();
+        //查询店铺
+        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
+        BeanUtils.copyProperties(order,orderVo);
+        orderVo.setShopName(shop.getShopName());
+        orderVo.setShopLogo(shop.getLogo());
+        //接宠地址
+        UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
+        //送宠地址
+        UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
+        if (receiveAddress != null){
+            orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+        }
+        if (deliverAddress != null){
+            orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+        }
+        //订单明细
+        List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
+        orderItemList.forEach(orderDetail -> {
+            OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
+            orderGoodsVo.setGoodsId(orderDetail.getId());
+            orderGoodsVo.setCreateTime(DateTimeUtil.dateToStr(orderDetail.getCreateTime()));
+            orderGoodsVo.setGoodsName(orderDetail.getName());
+            orderGoodsVo.setGoodsIcon(orderDetail.getIcon());
+            orderGoodsVo.setCurrentPrice(orderDetail.getCurrentPrice());
+            orderGoodsVo.setGoodsPrice(orderDetail.getPrice());
+            orderGoodsVo.setQuantity(orderDetail.getCount());
+            orderGoodsVo.setTotalPrice(orderDetail.getTotalPrice());
+            orderGoodsVoList.add(orderGoodsVo);
+        });
+        orderVo.setOrderGoodsVoList(orderGoodsVoList);
+        return orderVo;
+    }
 
     /**
      * 获取购物车信息

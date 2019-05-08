@@ -1,8 +1,8 @@
 package com.chongdao.client.mapper;
 
-
 import com.chongdao.client.entitys.Shop;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +21,8 @@ public interface ShopMapper {
     int updateByPrimaryKey(Shop record);
 
     List<Shop> getMyFavouriteShopList(Integer userId);
+
+    List<Shop> selectByName(@Param("shopName") String shopName, @Param("orderBy") String orderBy,
+                            @Param("categoryId") String categoryId,
+                            @Param("discount") Integer discount,@Param("proActivities") String proActivities);
 }

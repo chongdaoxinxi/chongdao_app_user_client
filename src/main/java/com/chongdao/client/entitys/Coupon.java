@@ -44,13 +44,6 @@ public class Coupon implements Serializable {
     private Integer usedCouponCount;//优惠券数量
     private Integer receiveCouponCount;//已领取优惠券数量
 
-    @Transient
-    private Integer cardId;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
+
 }

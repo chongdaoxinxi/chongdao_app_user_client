@@ -20,5 +20,7 @@ public interface OrderDetailMapper {
 
     void batchInsert(@Param("orderItemList") List<OrderDetail> orderItemList);
 
-    List<OrderDetail> getByOrderNoUserId();
+    List<OrderDetail> getByOrderNoUserId(@Param("orderNo") String orderNo, @Param("userId") Integer userId);
+
+    List<OrderDetail> getByOrderNo(String orderNo);
 }

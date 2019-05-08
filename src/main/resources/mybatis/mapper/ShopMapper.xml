@@ -40,6 +40,12 @@
     stop_note, is_hot, is_auto_accept, is_join_common_weal, start_business_hours, end_business_hours, 
     create_time, update_time
   </sql>
+  <sql id="Base_Column_Lists">
+    s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
+    s.money, s.type, s.grade, s.wx_no, s.zfb_no, s.bank_no, qr_code_url, s.des, show_img, s.status, service_price_ratio,
+    stop_note, is_hot, is_auto_accept, is_join_common_weal, s.start_business_hours, s.end_business_hours,
+    s.create_time, s.update_time
+  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -69,7 +75,7 @@
       #{qrCodeUrl,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR}, #{showImg,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{servicePriceRatio,jdbcType=INTEGER}, #{stopNote,jdbcType=VARCHAR}, 
       #{isHot,jdbcType=TINYINT}, #{isAutoAccept,jdbcType=TINYINT}, #{isJoinCommonWeal,jdbcType=TINYINT}, 
-      #{startBusinessHours,jdbcType=INTEGER}, #{endBusinessHours,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{startBusinessHours,jdbcType=VARCHAR}, #{endBusinessHours,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Shop">
@@ -392,4 +398,26 @@
     where fs.user_id = #{userId} and fs.status = 1
     order by fs.create_time desc
   </select>
+
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_Lists"/>,
+    p.id coupon_id,p.coupon_name,p.type
+    from  shop s left join coupon p on s.id = p.shop_id
+    where s.status in (0,1)
+    <if test="shopName != null">
+      and s.shop_name like #{shopName}
+    </if>
+    <if test="categoryId != null">
+      or (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+    </if>
+    <if test="discount >0">
+      or  (select discount from good g where g.shop_id=s.id and discount > 0 limit 0,1)  > 0
+    </if>
+    <if test="proActivities != null">
+      or  p.type  in (${proActivities})
+    </if>
+    order by ${orderBy}
+  </select>
+
 </mapper>

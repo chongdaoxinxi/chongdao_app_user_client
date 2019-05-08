@@ -1,23 +1,19 @@
 package com.chongdao.client.entitys;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
-
-/**
- * @Author onlineS
- * @Description 用户地址
- * @Date 9:28 2019/4/19
- */
-@Entity
-@Setter
 @Getter
-@NoArgsConstructor
+@Setter
+@Entity
 @Table(name="user_address")
 public class UserAddress implements Serializable {
 	private static final long serialVersionUID = 1L;
