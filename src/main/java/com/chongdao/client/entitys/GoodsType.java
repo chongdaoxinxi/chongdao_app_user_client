@@ -25,38 +25,32 @@ public class GoodsType implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
+
 	private String name;
-	@Column(name="shop_id")
+
+	private Integer moduleId;
+
+	private Integer categoryId;
+
 	private Integer shopId;
-	@Column(name="module_id")
-	private Integer moduleId;//所属模块id
-	private Integer board;//所属分类id
-	private String sort;
-	private Integer status;
 
-	private Integer version;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
+	private Integer sort;
 
-	@Override
-	public String toString() {
-		return "GoodsType{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", shopId=" + shopId +
-				", moduleId=" + moduleId +
-				", board=" + board +
-				", sort='" + sort + '\'' +
-				", status=" + status +
-				", version=" + version +
-				", createby=" + createby +
-				", createdate=" + createdate +
-				", updateby=" + updateby +
-				", updatedate=" + updatedate +
-				'}';
+	private Byte status;
+
+	private Date createTime;
+
+	private Date updateTime;
+
+	public GoodsType(Integer id, String name, Integer moduleId, Integer categoryId, Integer shopId, Integer sort, Byte status, Date createTime, Date updateTime) {
+		this.id = id;
+		this.name = name;
+		this.moduleId = moduleId;
+		this.categoryId = categoryId;
+		this.shopId = shopId;
+		this.sort = sort;
+		this.status = status;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
 	}
 }

@@ -1,16 +1,17 @@
 package com.chongdao.client.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 /**
- * 订单明细Vo
+ * 订单商品Vo
  */
 @Data
 public class OrderGoodsVo {
 
-    private Long orderNo;
+    private String orderNo;
 
     private Integer goodsId;
 
@@ -18,11 +19,15 @@ public class OrderGoodsVo {
 
     private String goodsIcon;
 
-    private BigDecimal currentUnitPrice;
+    private BigDecimal currentPrice;
 
     private Integer quantity;
 
     private BigDecimal totalPrice;
 
     private String createTime;
+
+    private Integer userId;
+
+    private BigDecimal goodsPrice;
 }

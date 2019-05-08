@@ -30,4 +30,8 @@ public interface GoodMapper {
 
     List<Good> selectByName(@Param("goodsName") String goodsName, @Param("orderBy") String orderBy, @Param("categoryId") String categoryId,
                             @Param("discount") Integer discount,@Param("proActivities") String proActivities);
+
+    List<Good> selectListByShopId(@Param("shopId")Integer shopId);
+
+    List<Good> selectByShopIdAndCategoryId(@Param("shopId") Integer shopId, @Param("categoryId")Integer categoryId);
 }

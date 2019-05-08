@@ -2,13 +2,13 @@ package com.chongdao.client.controller.order;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.OrderService;
-import com.chongdao.client.utils.JsonUtil;
 import com.chongdao.client.utils.LoginUserUtil;
-import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.*;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,9 +38,12 @@ public class OrderController {
      * @return
      */
     @GetMapping("order_type_list")
-    public ResultResponse getOrderTypeList(String type, String token){
+    public ResultResponse<PageInfo> getOrderTypeList(@RequestParam("type") String type,
+                                                     @RequestParam("token") String token,
+                                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return orderService.getOrderTypeList(tokenVo.getUserId(), type);
+        return orderService.getOrderTypeList(tokenVo.getUserId(), type,pageNum,pageSize);
 
     }
 

@@ -2,8 +2,6 @@ package com.chongdao.client.common;
 
 
 import com.google.common.collect.Sets;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import java.util.Set;
 
 public class Const {
@@ -33,15 +31,22 @@ public class Const {
     }
 
     /**
-     * 商品排序
+     * 排序
      */
-    public interface goodsListOrderBy{
+    public interface OrderBy{
+        //销量排行（首页）
+        String SALES_ORDER_BY = "(select count(1) from good g where g.shop_id=s.id)";
+        //好评率
+        Set<String> FAVORABLE = Sets.newHashSet("grade_desc","grade_asc");
+        String FAVORABLE_DESC = "grade";
         //综合排序
         String ARRANGEMENT_KEY = "arrangement";
-        String ARRANGEMENT_VALUE = "sales desc" + "," +"price asc";
+        String ARRANGEMENT_VALUE_GOODS = "sales desc" + "," +"price asc";
+        String ARRANGEMENT_VALUE_SHOP = SALES_ORDER_BY + " desc" + "," + FAVORABLE_DESC + " desc" ;
+
         //价格排序
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
-        //销量排序
+        //销量排序（商品）
         Set<String> SALES_ASC_DESC = Sets.newHashSet("sales_desc","sales_asc");
         //orderBy为空的排序方式
         String DEFAULT_ORDER_BY = "null";
@@ -80,6 +85,9 @@ public class Const {
         String RESPONSE_SUCCESS = "success";
         String RESPONSE_FAILED = "failed";
     }
+
+
+
 
 
 

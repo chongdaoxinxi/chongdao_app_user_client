@@ -68,7 +68,7 @@ public class PayServiceImpl implements PayService {
             //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
             AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 //                model.setBody(orderMap.get("body"));                      //商品信息
-            List<OrderDetail> orderItemList = orderDetailMapper.getByOrderNoUserId();
+            List<OrderDetail> orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(),order.getUserId());
             model.setSubject(orderItemList.get(0).getName());//商品名称
             model.setOutTradeNo(orderNo);//商户订单号
             model.setTimeoutExpress("120m"); //交易超时时间

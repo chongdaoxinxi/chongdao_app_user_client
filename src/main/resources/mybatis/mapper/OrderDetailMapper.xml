@@ -12,13 +12,13 @@
       <arg column="icon" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="current_price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="total_price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, order_no, count, good_id, name, price, icon, current_price, create_time, updateTime,
+    id, order_no, count, good_id, name, price, icon, current_price, create_time, update_time,
     user_id, total_price
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -35,12 +35,12 @@
     insert into order_detail (id, order_no, count,
       good_id, name, price,
       icon, current_price, create_time,
-      updateTime, user_id, total_price
+      update_time, user_id, total_price
       )
     values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER},
       #{goodId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
       #{icon,jdbcType=VARCHAR}, #{currentPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
-      #{updatetime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}
+      #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderDetail" >
@@ -73,8 +73,8 @@
       <if test="createTime != null" >
         create_time,
       </if>
-      <if test="updatetime != null" >
-        updateTime,
+      <if test="updateTime != null" >
+        update_time,
       </if>
       <if test="userId != null" >
         user_id,
@@ -111,8 +111,8 @@
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=INTEGER},
@@ -149,8 +149,8 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatetime != null" >
-        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         user_id = #{userId,jdbcType=INTEGER},
@@ -171,7 +171,7 @@
       icon = #{icon,jdbcType=VARCHAR},
       current_price = #{currentPrice,jdbcType=DECIMAL},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       user_id = #{userId,jdbcType=INTEGER},
       total_price = #{totalPrice,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
@@ -201,4 +201,12 @@
     and user_id = #{userId}
 
   </select>
+
+  <select id="getByOrderNo" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from order_detail
+    where order_no = #{orderNo}
+  </select>
+
 </mapper>

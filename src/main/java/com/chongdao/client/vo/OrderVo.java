@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class OrderVo {
 
-    private Integer orderNo;
+    private String orderNo;
 
     private Integer userId;
 
@@ -62,11 +62,15 @@ public class OrderVo {
 
     private BigDecimal reward;
 
-    private Integer AddressId;
+    private Integer receiveAddressId;
+
+    private Integer deliverAddressId;
 
     private Integer isService;
 
     private String shopName;
+
+    private String shopLogo;
 
     private String goodsName;
 
@@ -82,8 +86,13 @@ public class OrderVo {
 
     private Integer goodsCouponCount;
 
-    //订单明细
+    private String deliverAddressName;
+
+    private String receiveAddressName;
+
+    //订单商品Vo
     private List<OrderGoodsVo> orderGoodsVoList;
+
 
 
 }

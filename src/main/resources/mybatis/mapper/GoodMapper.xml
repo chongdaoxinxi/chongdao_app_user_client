@@ -40,6 +40,13 @@
     order by id asc
   </select>
 
+  <select id="selectListByShopId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from good where status = 1 and shop_id=#{shopId}
+    order by id asc
+  </select>
+
   <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
     select
     <include refid="Base_Column_Lists"/>,
@@ -48,7 +55,7 @@
     from  good g left join coupon p on g.shop_id = p.shop_id
     where g.status = 1 and p.status=0
     <if test="goodsName != null">
-      or g.name like #{goodsName}
+      and g.name like #{goodsName}
     </if>
     <if test="categoryId != null">
       or  g.category_id  in (${categoryId})
@@ -62,6 +69,13 @@
     order by ${orderBy}
   </select>
 
+
+  <select id="selectByShopIdAndCategoryId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from good where status = 1 and shop_id=#{shopId} and category_id=#{categoryId}
+    order by id asc
+  </select>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select

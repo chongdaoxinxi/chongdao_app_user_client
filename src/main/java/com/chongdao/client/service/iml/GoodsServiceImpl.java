@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.chongdao.client.common.Const.goodsListOrderBy.*;
+import static com.chongdao.client.common.Const.OrderBy.*;
 import static com.chongdao.client.common.Const.goodsListProActivities.*;
 
 @Service
@@ -41,7 +41,7 @@ public class GoodsServiceImpl implements GoodsService {
     private CategoryMapper categoryMapper;
 
     @Autowired
-    private CouponRepository couponRepository;
+    private  CouponRepository couponRepository;
 
     @Autowired
     private ShopMapper shopMapper;
@@ -70,7 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
                 orderBy = orderByArray[0] + " " + orderByArray[1];
             }else if (ARRANGEMENT_KEY.contains(orderBy)){
                 //综合排序
-                orderBy = ARRANGEMENT_VALUE;
+                orderBy = ARRANGEMENT_VALUE_GOODS;
             }
         }
         //初始化折扣筛选条件，方便sql拼接
@@ -90,8 +90,8 @@ public class GoodsServiceImpl implements GoodsService {
                 discount,StringUtils.isBlank(proActivities) ? null: proActivities);
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setOrderBy(orderBy);
-        pageInfo.setList(goodsListVOList(goodList));
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),pageInfo);
+        pageInfo.setList(this.goodsListVOList(goodList));
+        return ResultResponse.createBySuccess(pageInfo);
     }
 
 
@@ -111,7 +111,8 @@ public class GoodsServiceImpl implements GoodsService {
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
         //查询优惠券（属于该商品可以使用或者领取的）
-        List<CouponVO> couponVOList = assembleCouponVo(good.getShopId());
+        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
+        List<CouponVO> couponVOList = assembleCouponVo(couponList);
         //封装详情VO类
         GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
         goodsDetailVo.setGoodsId(goodsId);
@@ -150,7 +151,9 @@ public class GoodsServiceImpl implements GoodsService {
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
             }
             //封装优惠券
-            goodsListVO.setCouponVOList(assembleCouponVo(good.getShopId()));
+            //根据店铺查询在架状态的优惠券
+            List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
+            goodsListVO.setCouponVOList(assembleCouponVo(couponList));
             goodsListVOList.add(goodsListVO);
         });
         return goodsListVOList;
@@ -160,13 +163,12 @@ public class GoodsServiceImpl implements GoodsService {
     /**
      * 封装优惠券功能方便复用
      * type:0 代表店铺满减活动（不属于优惠券）;1代表优惠券
-     * @param shopId
+     * @param couponList
      * @return
      */
-    private List<CouponVO> assembleCouponVo(Integer shopId){
+
+    public  static List<CouponVO> assembleCouponVo(List<Coupon> couponList){
         List<CouponVO> couponVOS = Lists.newArrayList();
-        //根据店铺查询在架状态的优惠券
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
         //封装优惠券
         couponList.forEach(coupon -> {
             CouponVO couponVO = new CouponVO();
