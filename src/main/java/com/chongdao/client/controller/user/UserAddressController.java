@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAddress;
 import com.chongdao.client.service.UserAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class UserAddressController {
      * @return
      */
     @GetMapping("/getUserAddressList")
-    public ResultResponse<List<UserAddress>> getUserAddressList(Integer userId) {
-        return userAddressService.getUserAddressList(userId);
+    public ResultResponse<Page<UserAddress>> getUserAddressList(Integer userId, Integer pageNum, Integer pageSize) {
+        return userAddressService.getUserAddressList(userId, pageNum, pageSize);
     }
 }

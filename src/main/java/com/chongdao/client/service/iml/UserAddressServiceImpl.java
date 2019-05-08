@@ -6,11 +6,12 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.UserAddressRepository;
 import com.chongdao.client.service.UserAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.ast.OpNE;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import javax.xml.transform.Result;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,10 +35,13 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     @Override
-    public ResultResponse<List<UserAddress>> getUserAddressList(Integer userId) {
-        return Optional.ofNullable(userId)
-                .map(id -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAddressRepository.findByUserId(id).orElse(null)))
-                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    public ResultResponse<Page<UserAddress>> getUserAddressList(Integer userId, Integer pageNum, Integer pageSize) {
+        if(userId != null && pageNum != null && pageSize != null) {
+            Pageable pageable = new PageRequest(pageNum, pageSize, Sort.Direction.DESC, "createTime");
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAddressRepository.findByUserIdPageable(userId, pageable));
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
     }
 
     @Override

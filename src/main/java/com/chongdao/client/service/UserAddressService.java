@@ -3,6 +3,7 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAddress;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -11,6 +12,6 @@ import java.util.List;
  */
 public interface UserAddressService {
     ResultResponse<UserAddress> getUserAddressById(Integer uAddrId);
-    ResultResponse<List<UserAddress>> getUserAddressList(Integer userId);
+    ResultResponse<Page<UserAddress>> getUserAddressList(Integer userId, Integer pageNum, Integer pageSize);
     ResultResponse saveUserAddress(UserAddress uAddr);
 }
