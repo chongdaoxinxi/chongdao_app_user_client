@@ -26,16 +26,12 @@ public class Banner implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
 	private String img;//图片
-	@Column(name="area_code")
 	private String areaCode;//区域码
-	@Column(name="action_type")
 	private Integer actionType;//??
 	private Integer status;
 	private Integer sort;
-	@Column(name="action_val")
 	private String actionVal;//??
 	private String note;//??
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 
 	@Override

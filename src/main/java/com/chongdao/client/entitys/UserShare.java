@@ -25,13 +25,9 @@ public class UserShare implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	@Column(name="user_id")
 	private Integer userId;
-	@Column(name="share_code")
 	private String shareCode;//分享码
-	@Column(name="max_mun")
 	private Integer maxMun;//分享次数
-	@Column(name="coupon_id")
 	private Integer couponId;//配送券id
 	private Integer cardid;//优惠券id
 

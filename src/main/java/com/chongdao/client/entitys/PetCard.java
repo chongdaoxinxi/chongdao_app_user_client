@@ -26,31 +26,22 @@ public class PetCard implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
-    @Column(name = "user_id")
     private int userId;//主人id
     private String name;//宠物昵称
     private String icon;//宠物头像
     private Integer sex;//宠物性别, 1:男, 2:绝育男, 3:女, 4:绝育女
-    @Column(name = "type_id")
     private int typeId;//宠物种类id
     private String breed;//宠物品种
     private BigDecimal weight;//宠物体重
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "birth_date")
     private Date birthDate;//宠物出生日期
-    @Column(name = "is_has_dog_certificate")
     private Integer isHasDogCertificate;//是否有狗证 1:有, -1:没有
-    @Column(name = "is_has_vaccine_certificate")
     private Integer isHasVaccineCertificate;//是否有疫苗证 1:有, -1:没有
     private Integer status;//-1:删除, 0:不激活状态, 1:激活状态;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_time")
     private Date createTime;
 
     //冗余字段
-    @Column(name = "type_name")
     private String typeName;//宠物种类名称
-    @Column(name = "type_icon")
     private String typeIcon;//宠物种类标志
 
     @Override

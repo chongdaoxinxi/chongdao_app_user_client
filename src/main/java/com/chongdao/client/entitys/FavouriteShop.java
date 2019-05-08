@@ -28,12 +28,7 @@ public class FavouriteShop implements Serializable {
 	private Integer shopId;//商店id
 	private Integer userId;//用户id
 	private Integer status;//-1:取消收藏, 1:收藏
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_time")
 	private Date createTime;
-	@Column(name="update_time")
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateTime;
 
 	@Override

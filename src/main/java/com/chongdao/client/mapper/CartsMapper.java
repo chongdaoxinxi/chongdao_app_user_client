@@ -1,10 +1,12 @@
 package com.chongdao.client.mapper;
 
 import com.chongdao.client.entitys.Carts;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+@Mapper
 public interface CartsMapper {
     int deleteByPrimaryKey(Integer id);
 
