@@ -3,13 +3,11 @@ package com.chongdao.client.mapper;
 import com.chongdao.client.entitys.Good;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
 @Mapper
-@Component(value = "shopMapper")
 public interface GoodMapper {
     int deleteByPrimaryKey(Integer id);
 

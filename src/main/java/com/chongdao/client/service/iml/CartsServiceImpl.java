@@ -7,7 +7,7 @@ import com.chongdao.client.entitys.Good;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.CartsMapper;
 import com.chongdao.client.mapper.GoodMapper;
-import com.chongdao.client.service.CartService;
+import com.chongdao.client.service.CartsService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.CartGoodsVo;
 import com.chongdao.client.vo.CartVo;
@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class CartServiceImpl implements CartService {
+public class CartsServiceImpl implements CartsService {
 
     @Autowired
     private CartsMapper cartsMapper;

@@ -37,8 +37,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     public ResultResponse<Page<UserAddress>> getUserAddressList(Integer userId, Integer pageNum, Integer pageSize) {
         if(userId != null && pageNum != null && pageSize != null) {
-            Pageable pageable = new PageRequest(pageNum, pageSize, Sort.Direction.DESC, "createTime");
-            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAddressRepository.findByUserIdPageable(userId, pageable));
+            Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "createTime");
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAddressRepository.findByUserId(userId, pageable));
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }

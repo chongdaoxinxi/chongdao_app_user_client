@@ -30,21 +30,18 @@ public class Package implements Serializable {
 	private Integer good_id;//商品id
 	private String name;//名字
 	private String description;//产品描述
-	private BigDecimal displayprice;//例如360元得510元礼包, 这个值就是510
+	private BigDecimal displayPrice;//例如360元得510元礼包, 这个值就是510
 	private BigDecimal price;//价格
 	private Integer status;//-1:删除;0:下架;1:上架
 	private Integer type;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "start_time")
 	private String startTime;//有效时间
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "end_time")
 	private String endTime;//失效时间
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_time")
 	private Date createTime;
-	@Temporal(TemporalType.TIMESTAMP)
+
 	@Column(name = "update_time")
 	private Date updateTime;
 
@@ -55,7 +52,7 @@ public class Package implements Serializable {
 				", good_id=" + good_id +
 				", name='" + name + '\'' +
 				", description='" + description + '\'' +
-				", displayprice=" + displayprice +
+				", displayPrice=" + displayPrice +
 				", price=" + price +
 				", status=" + status +
 				", type=" + type +

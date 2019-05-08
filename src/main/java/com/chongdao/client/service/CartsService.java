@@ -3,7 +3,7 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.vo.CartVo;
 
-public interface CartService {
+public interface CartsService {
 
     /**
      * 添加购物车

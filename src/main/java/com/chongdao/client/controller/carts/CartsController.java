@@ -1,7 +1,7 @@
-package com.chongdao.client.controller.cart;
+package com.chongdao.client.controller.carts;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.service.CartService;
+import com.chongdao.client.service.CartsService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.CartVo;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/cart/")
 @Slf4j
-public class CartController {
+public class CartsController {
 
     @Autowired
-    private CartService cartService;
+    private CartsService cartsService;
 
     /**
      * 添加到购物车
@@ -32,7 +32,7 @@ public class CartController {
     public ResultResponse<CartVo> add(String token,Integer count, Integer goodsId){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartService.add(tokenVo.getUserId(),count,goodsId);
+        return cartsService.add(tokenVo.getUserId(),count,goodsId);
     }
 
 
@@ -45,7 +45,7 @@ public class CartController {
     public ResultResponse<CartVo> list(String token){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartService.list(tokenVo.getUserId());
+        return cartsService.list(tokenVo.getUserId());
     }
 
 
@@ -58,7 +58,7 @@ public class CartController {
     @RequestMapping("delete_goods")
     public ResultResponse<CartVo> deleteGoods(String token, String goodsIds){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartService.deleteGoods(tokenVo.getUserId(),goodsIds);
+        return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds);
     }
 
 
