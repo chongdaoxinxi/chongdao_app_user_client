@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.UserAccount;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.UserAccountRepository;
 import com.chongdao.client.service.UserAccountService;
+import com.chongdao.client.service.UserTransService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class UserAccountServiceImpl implements UserAccountService {
     @Autowired
     private UserAccountRepository userAccountRepository;
+    @Autowired
+    private UserTransService userTransService;
 
     @Override
     public ResultResponse<UserAccount> getUserAccountByUserId(Integer userId) {
@@ -52,12 +55,16 @@ public class UserAccountServiceImpl implements UserAccountService {
                 } else {
                     ua.setMoney(money);
                 }
+                UserAccount userAccount = userAccountRepository.saveAndFlush(ua);
+                userTransService.saveUserTransByRecharge(userAccount, money);
                 return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.saveAndFlush(ua));
             } else {
                 UserAccount newUa = new UserAccount();
                 newUa.setUserId(userId);
                 newUa.setStatus(1);
                 newUa.setMoney(money);
+                UserAccount userAccount = userAccountRepository.saveAndFlush(newUa);
+                userTransService.saveUserTransByRecharge(userAccount, money);
                 return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.saveAndFlush(newUa));
             }
         } else {
