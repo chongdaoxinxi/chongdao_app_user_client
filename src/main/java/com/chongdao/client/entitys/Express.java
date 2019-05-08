@@ -40,10 +40,8 @@ public class Express extends PageParams implements Serializable {
 
 	private Integer version;
 	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedate;
 
 	//暂时废弃

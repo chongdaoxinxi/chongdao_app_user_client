@@ -17,5 +17,5 @@ import java.util.Optional;
 public interface UserAddressRepository extends JpaRepository<UserAddress, Integer> {
     Optional<List<UserAddress>> findByUserId(Integer userId);
 
-    Page<UserAddress> findByUserIdPageable(Integer userId, Pageable pageable);
+    Page<UserAddress> findByUserId(Integer userId, Pageable pageable);
 }

@@ -35,17 +35,9 @@ public class Package implements Serializable {
 	private Integer status;//-1:删除;0:下架;1:上架
 	private Integer type;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "start_time")
 	private String startTime;//有效时间
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "end_time")
 	private String endTime;//失效时间
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "create_time")
 	private Date createTime;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "update_time")
 	private Date updateTime;
 
 	@Override

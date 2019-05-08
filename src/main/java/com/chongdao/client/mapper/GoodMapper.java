@@ -9,7 +9,6 @@ import java.util.List;
 
 
 @Mapper
-@Component(value = "shopMapper")
 public interface GoodMapper {
     int deleteByPrimaryKey(Integer id);
 
