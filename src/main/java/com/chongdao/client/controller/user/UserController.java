@@ -3,7 +3,9 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.*;
+import com.chongdao.client.vo.CardUserVo;
 import com.chongdao.client.vo.UserLoginVO;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +41,8 @@ public class UserController {
      * @return
      */
     @GetMapping("/getUserCard")
-    public ResultResponse getUserCard(Integer userId, Integer type) {
-        return userCardService.getUserCard(userId, type);
+    public ResultResponse<PageInfo<CardUserVo>> getUserCard(Integer userId, Integer type, Integer pageNum, Integer pageSize) {
+        return userCardService.getUserCard(userId, type, pageNum, pageSize);
     }
 
     /**

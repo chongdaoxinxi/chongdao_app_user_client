@@ -2,9 +2,8 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.vo.CardUserVo;
-
-import java.util.List;
+import com.github.pagehelper.PageInfo;
 
 public interface UserCardService {
-    ResultResponse<List<CardUserVo>> getUserCard(Integer userId, Integer type);
+    ResultResponse<PageInfo<CardUserVo>> getUserCard(Integer userId, Integer type, Integer pageNum, Integer pageSize);
 }
