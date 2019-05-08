@@ -382,7 +382,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal servicePrice = BigDecimal.ZERO;
         if (cardId != null){
             Card card = cardRepository.findById(cardId).get();
-            servicePrice = card.getDesPrice();
+            servicePrice = card.getDecreasePrice();
         }
         return servicePrice;
     }
