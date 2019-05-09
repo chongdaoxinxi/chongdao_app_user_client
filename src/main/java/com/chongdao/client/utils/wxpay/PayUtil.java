@@ -29,7 +29,6 @@ public class PayUtil {
     //支付证书认证
     private static SSLContext sslContext;
 
-
     /**
      * 发起微信支付相关请求
      *
@@ -75,7 +74,6 @@ public class PayUtil {
         return message.toString();
     }
 
-
     /**
      * 生成随机字符串
      *
@@ -88,7 +86,6 @@ public class PayUtil {
         }
         return sb.toString();
     }
-
 
     /**
      * 初始化微信证书
@@ -103,7 +100,6 @@ public class PayUtil {
         } catch (IOException e) {
             throw new RuntimeException("证书不正确！", e);
         }
-
         try {
             KeyStore keystore = KeyStore.getInstance("PKCS12");
             char[] partnerId2charArray = mchId.toCharArray();

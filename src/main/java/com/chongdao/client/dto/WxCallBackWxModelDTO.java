@@ -1,4 +1,4 @@
-package com.chongdao.client.utils.wxpay;
+package com.chongdao.client.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @NoArgsConstructor
-public class CallBackWxModel implements Serializable {
+public class WxCallBackWxModelDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String return_code;

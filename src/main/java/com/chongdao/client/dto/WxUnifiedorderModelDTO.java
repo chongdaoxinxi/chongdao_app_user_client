@@ -1,4 +1,4 @@
-package com.chongdao.client.utils.wxpay;
+package com.chongdao.client.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class UnifiedorderModel {
+public class WxUnifiedorderModelDTO {
     /**
      * 公众号appid
      */
@@ -34,7 +34,6 @@ public class UnifiedorderModel {
      * 签名方式
      */
     private String sign_type;
-
 
     /**
      * 商品描述：腾讯充值中心-QQ会员充值
@@ -68,7 +67,6 @@ public class UnifiedorderModel {
      * 交易类型
      **/
     private String trade_type;
-
 
     /**
      * 用户标识

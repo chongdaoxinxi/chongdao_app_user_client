@@ -1,4 +1,4 @@
-package com.chongdao.client.utils.wxpay;
+package com.chongdao.client.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class UnifiedorderResponse {
+public class WxUnifiedorderResponseDTO {
     /**
      * 预付单信息
      **/
@@ -38,7 +38,6 @@ public class UnifiedorderResponse {
      * 商户号id
      **/
     private String mch_id;
-
     /**
      * 返回提示信息
      **/
@@ -51,7 +50,6 @@ public class UnifiedorderResponse {
      * 返回码
      **/
     private String return_code;
-
     /**
      * 时间戳
      **/

@@ -26,7 +26,6 @@ public class BasicInfo {
      **/
     public static final String MchKey = "";
 
-
     /***app应用appId***/
     public static final String APP_AppID = "";
     /***app应用appSecret***/
@@ -49,7 +48,6 @@ public class BasicInfo {
      **/
     public static final String XIAO_MchKey = "";
 
-
     /**
      * 商家名
      **/
@@ -65,13 +63,6 @@ public class BasicInfo {
     /***支付完成后的同步返回地址***/
     public static final String ReturnUrl = "http://39.108.83.186/api/callBackController/callBackWeiXinPay";
 
-
     //微信统一下单接口
     public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-    //微信红包退款接口
-    public static final String httpurl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
-    //微信退款接口
-    public static final String refundurl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
-    //企业转账接口
-    public static final String transfersurl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
 }
