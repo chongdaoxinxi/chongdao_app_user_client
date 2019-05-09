@@ -53,6 +53,7 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private OrderInfoMapper orderInfoMapper;
 
+    @Autowired
     private OrderDetailMapper orderDetailMapper;
 
     @Autowired
@@ -272,8 +273,7 @@ public class PayServiceImpl implements PayService {
 
         if (!sign.equals(map.get("sign"))) {
             //返回签名不一致
-
-            return null;
+            return ResultResponse.createByErrorMessage("支付失败, 签名不一致!");
         }
         // 信息处理
         String result_code = map.get("result_code");
@@ -282,12 +282,12 @@ public class PayServiceImpl implements PayService {
                 //由于微信后台会同时回调多次，所以需要做防止重复提交操作的判断
                 //此处放防止重复提交操作
             } else if ("FAIL".equals(result_code)) {
+                return ResultResponse.createByErrorMessage("支付失败, 微信回调失败!");
             }
         } catch (Exception e) {
             e.printStackTrace();
             //回调报错
-
-            return null;
+            return ResultResponse.createByErrorMessage("支付失败, 微信回调报错!");
         }
 
         //这里是验证返回值没问题了，可以写具体的支付成功的逻辑
@@ -301,6 +301,8 @@ public class PayServiceImpl implements PayService {
         out.print(result);
         out.flush();
         out.close();
-        return null;
+
+        // 返回成功信息给前台
+        return ResultResponse.createBySuccessMessage("支付成功!");
     }
 }
