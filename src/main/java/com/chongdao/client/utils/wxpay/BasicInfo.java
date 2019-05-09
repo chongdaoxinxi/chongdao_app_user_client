@@ -34,34 +34,21 @@ public class BasicInfo {
     public static final String APP_MchId = "";
     /***app应用商户密钥***/
     public static final String APP_MchKey = "";
-
-    /***小程序应用appId***/
-    public static final String XIAO_AppID = "";
-    /***小程序应用appSecret***/
-    public static final String XIAO_AppSecret = "";
     /**
-     * 小程序商户号
-     **/
-    public static final String XIAO_MchId = "";
+     * 应用服务器IP
+     */
+    public static final String SERVER_IP = "47.101.160.88";
     /**
-     * 小程序商户号秘钥
-     **/
-    public static final String XIAO_MchKey = "";
-
-    /**
-     * 商家名
-     **/
-    public static final String Send_Name = "佳电";
+     * 应用名称(应用市场中的名称)
+     */
+    public static final String APP_NAME="养宠有道";
     /**
      * 商户证书路径
      **/
     public static final String KeyPath = "/apiclient_cert.p12";
 
     //微信回调URL
-    /***支付完成后的异步通知地址***/
-    public static final String NotifyUrl = "http://39.108.83.186/api/callBackController/callBackWeiXinPay";
-    /***支付完成后的同步返回地址***/
-    public static final String ReturnUrl = "http://39.108.83.186/api/callBackController/callBackWeiXinPay";
+    public static final String NotifyUrl = "http://39.108.83.186/api/callBackController/wx_pay_callback";
 
     //微信统一下单接口
     public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";

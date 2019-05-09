@@ -2,6 +2,9 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 public interface PayService {
@@ -20,4 +23,8 @@ public interface PayService {
      * @return
      */
     ResultResponse aliCallback(Map<String,String> params);
+
+    ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr);
+
+    ResultResponse wxPayCallback(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

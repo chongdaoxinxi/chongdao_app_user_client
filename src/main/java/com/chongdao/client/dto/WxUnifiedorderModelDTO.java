@@ -40,14 +40,6 @@ public class WxUnifiedorderModelDTO {
      */
     private String body;
     /**
-     * 商品详情
-     **/
-    private String detail;
-    /**
-     * 附加数据
-     **/
-    private String attach;
-    /**
      * 支付订单号
      */
     private String out_trade_no;
@@ -56,7 +48,7 @@ public class WxUnifiedorderModelDTO {
      */
     private Integer total_fee;
     /**
-     * 终端IP(8.8.8.8)
+     * 终端IP(8.8.8.8)-我们应用的ip地址
      */
     private String spbill_create_ip;
     /**
@@ -64,10 +56,19 @@ public class WxUnifiedorderModelDTO {
      */
     private String notify_url;
     /**
-     * 交易类型
+     * 交易类型/请求方式-APP
      **/
     private String trade_type;
 
+    // 非必须字段
+    /**
+     * 商品详情
+     **/
+    private String detail;
+    /**
+     * 附加数据
+     **/
+    private String attach;
     /**
      * 用户标识
      **/

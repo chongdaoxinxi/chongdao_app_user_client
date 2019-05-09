@@ -85,14 +85,4 @@ public class Const {
         String RESPONSE_SUCCESS = "success";
         String RESPONSE_FAILED = "failed";
     }
-
-
-
-
-
-
-
-
-
-
 }
