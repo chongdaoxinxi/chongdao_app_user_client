@@ -22,30 +22,14 @@ public class Area implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
 	private String code;
 	private Integer pid;//上级区域id(例如:上海市为嘉定区的上级)
+	private Integer level;//层级关系
 	private Double lat;
 	private Double lng;
-	private Integer level;//层级关系
-	@Column(name="is_open")
 	private Integer isOpen;//该地区是否开放
 	private Integer rate;
-
-	@Override
-	public String toString() {
-		return "Area{" +
-				"id=" + id +
-				", code='" + code + '\'' +
-				", isOpen=" + isOpen +
-				", level=" + level +
-				", name='" + name + '\'' +
-				", pid=" + pid +
-				", rate=" + rate +
-				", lat=" + lat +
-				", lng=" + lng +
-				'}';
-	}
 }

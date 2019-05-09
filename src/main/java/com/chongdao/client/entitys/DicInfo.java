@@ -28,15 +28,5 @@ public class DicInfo implements Serializable {
 	private String note;
 	private Integer status;
 	private String val;//值
-
-	@Override
-	public String toString() {
-		return "DicInfo{" +
-				"id=" + id +
-				", code='" + code + '\'' +
-				", note='" + note + '\'' +
-				", status=" + status +
-				", val='" + val + '\'' +
-				'}';
-	}
+	private String areaCode;
 }

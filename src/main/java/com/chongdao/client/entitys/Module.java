@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -24,34 +23,13 @@ public class Module implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
 	private String icon;
+	private Integer type;//1:商品;2:服务
 	private Integer sort;
-	private Integer status;//0||1
-	@Column(name="service_money")
-	private BigDecimal serviceMoney;
-	private Integer type;
+	private Integer status;//-1非正常||0暂停||1正常
+	private Date createTime;
 
-	private Integer version;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-
-	@Override
-	public String toString() {
-		return "Module{" +
-				"id=" + id +
-				", icon='" + icon + '\'' +
-				", name='" + name + '\'' +
-				", serviceMoney=" + serviceMoney +
-				", sort=" + sort +
-				", status=" + status +
-				", type=" + type +
-				'}';
-	}
 }

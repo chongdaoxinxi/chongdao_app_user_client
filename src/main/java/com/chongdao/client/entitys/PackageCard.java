@@ -19,7 +19,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Table(name = "package_card")
-public class Packagecard implements Serializable {
+public class PackageCard implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -32,5 +32,4 @@ public class Packagecard implements Serializable {
 
 	private Date createTime;
 	private Date updateTime;
-
 }

@@ -19,7 +19,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Table(name = "package_user")
-public class Packageuser implements Serializable {
+public class PackageUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -28,11 +28,8 @@ public class Packageuser implements Serializable {
 	private Integer userId;
 	private Integer packageId;
 	private Integer count;
-	private Integer status;
+	private Integer status;//-1||1
 
 	private Date createTime;
 	private Date updateTime;
-
-	//废弃字段
-	private Integer eventid;
 }
