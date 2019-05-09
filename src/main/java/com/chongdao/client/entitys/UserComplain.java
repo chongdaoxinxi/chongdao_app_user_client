@@ -23,26 +23,11 @@ public class UserComplain implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private int id;
-	@Column(name="user_id")
 	private int userId;
-	@Column(name="order_id")
 	private int orderId;
 	private String note;
-
-	private int version;
-	private int updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-	private int createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	@Override
-	public String toString() {
-		return "Usercomplain [id=" + id + ", createby=" + createby + ", createdate=" + createdate + ", note=" + note
-				+ ", orderId=" + orderId + ", updateby=" + updateby + ", updatedate=" + updatedate + ", userId="
-				+ userId + ", version=" + version + "]";
-	}
+	private Date updateTime;
+	private Date createTime;
 }

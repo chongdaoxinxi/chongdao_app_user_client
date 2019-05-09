@@ -22,15 +22,11 @@ public class OrderAddress implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	@Column(name="order_id")
 	private Integer orderId;
-	@Column(name = "order_no")
 	private String orderNo;
-	@Column(name="user_address_id")
 	private Integer userAddressId;
-	@Column(name="user_name")
 	private String userName;
 	private String phone;
 	private String location;//定位地址

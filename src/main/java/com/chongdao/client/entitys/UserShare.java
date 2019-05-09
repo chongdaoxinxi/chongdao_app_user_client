@@ -23,26 +23,13 @@ public class UserShare implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
 	private Integer userId;
 	private String shareCode;//分享码
 	private Integer maxMun;//分享次数
 	private Integer couponId;//配送券id
-	private Integer cardid;//优惠券id
-
-	private Integer version;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-
-	@Override
-	public String toString() {
-		return "UserShare [id=" + id + ", couponId=" + couponId + ", maxMun=" + maxMun + ", shareCode=" + shareCode
-				+ ", userId=" + userId + ", cardid=" + cardid + ", createby=" + createby + ", createdate=" + createdate
-				+ ", updateby=" + updateby + ", updatedate=" + updatedate + ", version=" + version + "]";
-	}
+	private Integer cardId;//优惠券id
+	private Date createTime;
+	private Date updateTime;
 }

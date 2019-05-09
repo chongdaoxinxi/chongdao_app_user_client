@@ -18,18 +18,15 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "ordertrans")
+@Table(name = "order_trans")
 public class OrderTran implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	@Column(name="user_id")
 	private Integer userId;
-	@Column(name="shop_id")
 	private int shopId;
-	@Column(name="order_id")
 	private Integer orderId;
 	private Integer adtorderid;
 	private String comment;

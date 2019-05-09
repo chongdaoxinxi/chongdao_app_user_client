@@ -46,7 +46,7 @@ public class UserTransServiceImpl implements UserTransService {
     @Override
     public ResultResponse<Page<UserTrans>> getUserTrans(Integer userId, Integer type, Integer pageNum, Integer pageSize) {
         if(userId != null && type != null && pageNum != null && pageSize != null) {
-            Pageable pageable = new PageRequest(pageNum, pageSize, Sort.Direction.DESC, "createTime");
+            Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "createTime");
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userTransRepository.findByUserIdAndType(userId, type, pageable));
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());

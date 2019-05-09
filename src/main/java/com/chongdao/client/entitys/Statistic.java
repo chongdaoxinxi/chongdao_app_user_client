@@ -25,31 +25,9 @@ public class Statistic implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Integer id;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date currentdate;//当前日期
 	private double entry;//进入小程序次数
 	private double register;//注册小程序次数
-
-	private Integer version;
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-
-	@Override
-	public String toString() {
-		return "Statistic{" +
-				"id=" + id +
-				", createby=" + createby +
-				", createdate=" + createdate +
-				", currentdate=" + currentdate +
-				", entry=" + entry +
-				", register=" + register +
-				", updateby=" + updateby +
-				", updatedate=" + updatedate +
-				", version=" + version +
-				'}';
-	}
+	private Date currentTime;//当前日期
+	private Date createTime;
+	private Date updateTime;
 }

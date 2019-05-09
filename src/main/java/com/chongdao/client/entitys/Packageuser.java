@@ -18,43 +18,21 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "packageuser")
+@Table(name = "package_user")
 public class Packageuser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	private Integer userid;
-	private Integer packageid;
+	private Integer userId;
+	private Integer packageId;
 	private Integer count;
 	private Integer status;
 
-	private Integer createby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
-	private Integer version;
+	private Date createTime;
+	private Date updateTime;
 
 	//废弃字段
 	private Integer eventid;
-
-	@Override
-	public String toString() {
-		return "Packageuser{" +
-				"id=" + id +
-				", count=" + count +
-				", createby=" + createby +
-				", createdate=" + createdate +
-				", eventid=" + eventid +
-				", packageid=" + packageid +
-				", status=" + status +
-				", updateby=" + updateby +
-				", updatedate=" + updatedate +
-				", userid=" + userid +
-				", version=" + version +
-				'}';
-	}
 }

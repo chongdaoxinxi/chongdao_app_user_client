@@ -22,7 +22,7 @@ public class CardUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
 	private Integer cardId;//优惠券id
 	private Integer userId;//用户id

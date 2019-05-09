@@ -18,37 +18,19 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "packagecard")
+@Table(name = "package_card")
 public class Packagecard implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	private Integer packageid;//礼包id
-	private Integer cardid;//优惠券id
+	private Integer packageId;//礼包id
+	private Integer cardId;//优惠券id
 	private Integer amount;//数量
 	private Integer status;
 
-	private Integer createby;
-	private Date createdate;
-	private Integer updateby;
-	private Date updatedate;
-	private Integer version;
+	private Date createTime;
+	private Date updateTime;
 
-	@Override
-	public String toString() {
-		return "Packagecard{" +
-				"id=" + id +
-				", amount=" + amount +
-				", cardid=" + cardid +
-				", createby=" + createby +
-				", createdate=" + createdate +
-				", packageid=" + packageid +
-				", status=" + status +
-				", updateby=" + updateby +
-				", updatedate=" + updatedate +
-				", version=" + version +
-				'}';
-	}
 }
