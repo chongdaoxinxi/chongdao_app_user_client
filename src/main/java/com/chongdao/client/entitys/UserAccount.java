@@ -27,7 +27,7 @@ public class UserAccount implements Serializable {
     private Integer userId;
     private BigDecimal money;
     private Integer type;
-    private Integer status;
+    private Integer status;//-1:失效;1:生效
 
     @Override
     public String toString() {
