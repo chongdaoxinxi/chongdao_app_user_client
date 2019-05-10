@@ -37,7 +37,7 @@ public class UserIdentify implements Serializable {
     private String region;
     /** 用户标识 */
     private String userIdentify;
-    private Integer status;
+    private Integer status;//-1:失效;1:生效
     private Date createTime;
 
     @Override
