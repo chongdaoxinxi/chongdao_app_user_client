@@ -45,7 +45,7 @@ public class UserShareServiceImpl implements UserShareService {
     }
 
     @Override
-    public ResultResponse userShare(Integer userId) {
+    public ResultResponse userShare(Integer userId, Integer type) {
         if(userId != null) {
             UserShare us = userShareRepository.findByUserId(userId);
             Map<String, Object> resp = new HashMap<>();
@@ -61,7 +61,6 @@ public class UserShareServiceImpl implements UserShareService {
                 // 这里的逻辑是什么
 //                us.setCardId();
 //                us.setCouponId();
-//                us.setShareCode();
                 us.setCreateTime(new Date());
                 resp.put("is_full", false);
             }

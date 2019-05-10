@@ -8,5 +8,5 @@ public interface UserShareService {
 
     UserShare saveUserShare(UserShare us);
 
-    ResultResponse userShare(Integer userId);
+    ResultResponse userShare(Integer userId, Integer type);
 }
