@@ -6,6 +6,8 @@ import com.chongdao.client.service.PackageCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,5 +24,10 @@ public class PackageCardServiceImpl implements PackageCardService {
     @Override
     public void savePackageCard(PackageCard pc) {
         Optional.ofNullable(pc).map(pcI -> packageCardRepository.saveAndFlush(pcI));
+    }
+
+    @Override
+    public List<PackageCard> getPackageCardById(Integer packageId) {
+        return Optional.ofNullable(packageId).flatMap(id -> packageCardRepository.findByPackageId(packageId)).orElse(new ArrayList<>());
     }
 }
