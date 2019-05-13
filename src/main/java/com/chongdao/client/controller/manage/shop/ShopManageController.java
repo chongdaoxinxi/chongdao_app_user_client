@@ -3,6 +3,9 @@ package com.chongdao.client.controller.manage.shop;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.service.ShopManageService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
+import com.chongdao.client.vo.ShopManageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,12 +41,27 @@ public class ShopManageController {
     }
 
     /**
-     * 获取店铺基本信息
-     * @param shopId
+     * 商家登出
+     * @param token
      * @return
      */
-    public ResultResponse getShopInfo(Integer shopId) {
+    @GetMapping("/shopLogout")
+    public ResultResponse shopLogout(String token) {
+        // token缓存在前端  登出建议前端主动销毁token, 页面直接跳转到登录页
+//        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+//        //TODO 销毁token
         return null;
+    }
+
+    /**
+     * 获取店铺基本信息
+     * @param token
+     * @return
+     */
+    @GetMapping("/getShopInfo")
+    public ResultResponse<ShopManageVO> getShopInfo(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopManageService.getShopInfo(tokenVo.getUserId());
     }
 
     /**
@@ -51,16 +69,17 @@ public class ShopManageController {
      * @param s
      * @return
      */
-    public ResultResponse saveShopIndo(Shop s) {
-        return null;
+    @GetMapping("/saveShopInfo")
+    public ResultResponse saveShopInfo(Shop s) {
+        return shopManageService.saveShopInfo(s);
     }
 
     /**
      * 获取店铺销售统计
-     * @param shopId
+     * @param token
      * @return
      */
-    public ResultResponse getShopOrderStatistics(Integer shopId) {
+    public ResultResponse getShopOrderStatistics(String token) {
         return null;
     }
 }

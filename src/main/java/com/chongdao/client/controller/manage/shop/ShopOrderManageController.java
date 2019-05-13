@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShopOrderManageController {
     /**
      * 获取订单列表
-     * @param shopId
+     * @param token
      * @param type 1:待接单;2:已接单;3:已完成;4:退款中;null:全部
      * @return
      */
-    public ResultResponse getOrderList(Integer shopId, Integer type) {
+    public ResultResponse getOrderList(String token, Integer type) {
         return null;
     }
 

@@ -1,7 +1,6 @@
 package com.chongdao.client.controller.manage.shop;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Shop;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,23 +16,23 @@ public class ShopGoodManageController {
 
     /**
      * 获取商品类别
-     * @param shopId
+     * @param token
      * @return
      */
-    public ResultResponse getGoodCategoryList(Integer shopId) {
+    public ResultResponse getGoodCategoryList(String token) {
         return null;
     }
 
     /**
      * 获取商品列表
-     * @param shopId
+     * @param token
      * @param categoryId
      * @param goodName
      * @param pageNum
      * @param pageSize
      * @return
      */
-    public ResultResponse getGoodList(Integer shopId, Integer categoryId, Integer goodName, Integer pageNum, Integer pageSize) {
+    public ResultResponse getGoodList(String token, Integer categoryId, Integer goodName, Integer pageNum, Integer pageSize) {
         return null;
     }
 
@@ -57,11 +56,11 @@ public class ShopGoodManageController {
 
     /**
      * 打折商品
-     * @param shopId
+     * @param token
      * @param categoryId
      * @return
      */
-    public ResultResponse discountGood(Shop shopId, Integer categoryId) {
+    public ResultResponse discountGood(String token, Integer categoryId) {
         return null;
     }
 }

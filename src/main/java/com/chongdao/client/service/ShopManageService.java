@@ -1,6 +1,8 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.vo.ShopManageVO;
 
 /**
  * @Description TODO
@@ -10,4 +12,10 @@ import com.chongdao.client.common.ResultResponse;
  **/
 public interface ShopManageService {
     ResultResponse shopLogin(String name, String password);
+
+    ResultResponse shopLogout();
+
+    ResultResponse<ShopManageVO> getShopInfo(Integer shopId);
+
+    ResultResponse saveShopInfo(Shop s);
 }

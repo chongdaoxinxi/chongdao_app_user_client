@@ -17,19 +17,19 @@ public class ShopCouponManageController {
 
     /**
      * 获取满减券列表
-     * @param shopId
+     * @param token
      * @return
      */
-    public ResultResponse getShopFullReductionCouponList(Integer shopId) {
+    public ResultResponse getShopFullReductionCouponList(String token) {
         return null;
     }
 
     /**
      * 获取优惠券列表
-     * @param shopId
+     * @param token
      * @return
      */
-    public ResultResponse getShopCustomCouponList(Integer shopId) {
+    public ResultResponse getShopCustomCouponList(String token) {
         return null;
     }
 
