@@ -2,6 +2,8 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.UserService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserSettingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +24,13 @@ public class UserSettingController {
 
     /**
      * 获取用户设置信息
-     * @param userId
+     * @param token
      * @return
      */
     @GetMapping("/getUserSettingInfo")
-    public ResultResponse<UserSettingVO> getUserSettingInfo(Integer userId) {
-        return userService.getUserSettingInfo(userId);
+    public ResultResponse<UserSettingVO> getUserSettingInfo(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userService.getUserSettingInfo(tokenVo.getUserId());
     }
 
     /**

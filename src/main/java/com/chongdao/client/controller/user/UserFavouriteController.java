@@ -2,6 +2,8 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.UserService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,21 +23,23 @@ public class UserFavouriteController {
 
     /**
      * 获取我的店铺收藏列表
-     * @param userId
+     * @param token
      * @return
      */
     @GetMapping("/getFavouriteShopList")
-    public ResultResponse getFavouriteShopList(Integer userId) {
-        return userService.getFavouriteShopList(userId);
+    public ResultResponse getFavouriteShopList(String  token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userService.getFavouriteShopList(tokenVo.getUserId());
     }
 
     /**
      * 获取我的店铺收藏列表
-     * @param userId
+     * @param token
      * @return
      */
     @GetMapping("/getFavouriteGoodList")
-    public ResultResponse getFavouriteGoodList(Integer userId) {
-        return userService.getFavouriteGoodList(userId);
+    public ResultResponse getFavouriteGoodList(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userService.getFavouriteGoodList(tokenVo.getUserId());
     }
 }

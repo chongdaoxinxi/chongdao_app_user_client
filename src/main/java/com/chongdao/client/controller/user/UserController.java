@@ -2,15 +2,19 @@ package com.chongdao.client.controller.user;
 
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.service.*;
+import com.chongdao.client.entitys.Package;
+import com.chongdao.client.service.PackageService;
+import com.chongdao.client.service.UserCardService;
+import com.chongdao.client.service.UserService;
+import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.CardUserVo;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserLoginVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.chongdao.client.entitys.Package;
 
 import java.util.List;
 
@@ -36,13 +40,14 @@ public class UserController {
 
     /**
      * 获取用户优惠券
-     * @param userId
+     * @param token
      * @param type 1:优惠券;2:配送券
      * @return
      */
     @GetMapping("/getUserCard")
-    public ResultResponse<PageInfo<CardUserVo>> getUserCard(Integer userId, Integer type, Integer pageNum, Integer pageSize) {
-        return userCardService.getUserCard(userId, type, pageNum, pageSize);
+    public ResultResponse<PageInfo<CardUserVo>> getUserCard(String token, Integer type, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userCardService.getUserCard(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 
     /**

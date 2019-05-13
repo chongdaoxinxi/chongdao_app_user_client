@@ -3,9 +3,10 @@ package com.chongdao.client.controller.user;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAccount;
 import com.chongdao.client.entitys.UserTrans;
-import com.chongdao.client.repository.UserTransRepository;
 import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.service.UserTransService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +30,13 @@ public class UserAccountController {
     /**
      *
      * 获取用户账户信息
-     * @param userId
+     * @param token
      * @return
      */
     @GetMapping("/getUserAccount")
-    public ResultResponse<UserAccount> getUserAccount(Integer userId) {
-        return userAccountService.getUserAccountByUserId(userId);
+    public ResultResponse<UserAccount> getUserAccount(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userAccountService.getUserAccountByUserId(tokenVo.getUserId());
     }
 
     /**
@@ -49,14 +51,15 @@ public class UserAccountController {
 
     /**
      *
-     * @param userId
+     * @param token
      * @param type 1:用户充值;2:订单消费;3:订单退款
      * @param pageNum
      * @param pageSize
      * @return
      */
     @GetMapping("/getUserTrans")
-    public ResultResponse<Page<UserTrans>> getUserTrans(Integer userId, Integer type, Integer pageNum, Integer pageSize) {
-        return userTransService.getUserTrans(userId, type, pageNum, pageSize);
+    public ResultResponse<Page<UserTrans>> getUserTrans(String token, Integer type, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userTransService.getUserTrans(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 }

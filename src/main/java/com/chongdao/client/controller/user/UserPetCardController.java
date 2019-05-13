@@ -3,6 +3,8 @@ package com.chongdao.client.controller.user;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.PetCard;
 import com.chongdao.client.service.PetCardService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +26,14 @@ public class UserPetCardController {
 
     /**
      *  获取用户的宠物卡片列表
-     * @param userId
+     * @param token
      * @param status
      * @return
      */
     @GetMapping("/getPetCardList")
-    public ResultResponse<List<PetCard>> getPetCardList(Integer userId, Integer status) {
-        return petCardService.getPetCardByUserIdAndStatus(userId, status);
+    public ResultResponse<List<PetCard>> getPetCardList(String token, Integer status) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return petCardService.getPetCardByUserIdAndStatus(tokenVo.getUserId(), status);
     }
 
     /**

@@ -3,13 +3,13 @@ package com.chongdao.client.controller.user;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAddress;
 import com.chongdao.client.service.UserAddressService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @Description TODO
@@ -34,7 +34,7 @@ public class UserAddressController {
     }
 
     /**
-     * 获取收货地址
+     * 获取收货地址详情
      * @param uAddrId
      * @return
      */
@@ -45,11 +45,12 @@ public class UserAddressController {
 
     /**
      * 获取收货地址列表
-     * @param userId
+     * @param token
      * @return
      */
     @GetMapping("/getUserAddressList")
-    public ResultResponse<Page<UserAddress>> getUserAddressList(Integer userId, Integer pageNum, Integer pageSize) {
-        return userAddressService.getUserAddressList(userId, pageNum, pageSize);
+    public ResultResponse<Page<UserAddress>> getUserAddressList(String token, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userAddressService.getUserAddressList(tokenVo.getUserId(), pageNum, pageSize);
     }
 }
