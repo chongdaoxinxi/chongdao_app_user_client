@@ -1,12 +1,13 @@
 package com.chongdao.client.entitys;
 
 import com.chongdao.client.common.PageParams;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -69,9 +70,10 @@ public class Shop extends PageParams implements Serializable {
 
 	private Date updateTime;
 
+	/** 最后一次登录时间（token鉴别有效期使用） */
+	private Date lastLoginTime;
 
-	public Shop(Integer id, String shopName, String phone, String accountName, String password, Integer areaId, String areaCode, Double lat, Double lng, String logo, BigDecimal money, Integer type, Double grade, String wxNo, String zfbNo, String bankNo, String qrCodeUrl, String des, String showImg, Integer status, Integer servicePriceRatio, String stopNote, Byte isHot, Byte isAutoAccept, Byte isJoinCommonWeal, String startBusinessHours, String endBusinessHours, Date createTime, Date updateTime) {
-		this.id = id;
+	public Shop(String shopName, String phone, String accountName, String password, Integer areaId, String areaCode, Double lat, Double lng, String logo, BigDecimal money, Integer type, String address, Double grade, String wxNo, String zfbNo, String bankNo, String qrCodeUrl, String des, String showImg, Integer status, Integer servicePriceRatio, String stopNote, Byte isHot, Byte isAutoAccept, Byte isStop, Byte isJoinCommonWeal, String startBusinessHours, String endBusinessHours, Date createTime, Date updateTime, Date lastLoginTime) {
 		this.shopName = shopName;
 		this.phone = phone;
 		this.accountName = accountName;
@@ -83,6 +85,7 @@ public class Shop extends PageParams implements Serializable {
 		this.logo = logo;
 		this.money = money;
 		this.type = type;
+		this.address = address;
 		this.grade = grade;
 		this.wxNo = wxNo;
 		this.zfbNo = zfbNo;
@@ -95,10 +98,12 @@ public class Shop extends PageParams implements Serializable {
 		this.stopNote = stopNote;
 		this.isHot = isHot;
 		this.isAutoAccept = isAutoAccept;
+		this.isStop = isStop;
 		this.isJoinCommonWeal = isJoinCommonWeal;
 		this.startBusinessHours = startBusinessHours;
 		this.endBusinessHours = endBusinessHours;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
+		this.lastLoginTime = lastLoginTime;
 	}
 }
