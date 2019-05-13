@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.service.ShopManageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,7 @@ public class ShopManageController {
      * 商家登录
      * @return
      */
+    @GetMapping("/shopLogin")
     public ResultResponse shopLogin(String name, String password) {
         return shopManageService.shopLogin(name, password);
     }
