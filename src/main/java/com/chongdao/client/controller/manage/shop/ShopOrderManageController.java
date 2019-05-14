@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/shopOrderManage/")
+@RequestMapping("/api/shop_order_manage/")
 public class ShopOrderManageController {
     /**
      * 获取订单列表

@@ -108,6 +108,7 @@ public class OrderServiceImpl implements OrderService {
                     orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
             }
+            orderVo.setAreaCode(shop.getAreaCode());
             orderVo.setUserId(userId);
             orderVo.setShopId(shop.getId());
             //获取符合当前条件商品的满减
@@ -340,7 +341,7 @@ public class OrderServiceImpl implements OrderService {
         if(rowCount > 0){
             return order;
         }
-        return null;
+        return order;
     }
 
     /**

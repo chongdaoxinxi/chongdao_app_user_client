@@ -1,5 +1,6 @@
 package com.chongdao.client.mapper;
 
+import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.GoodsType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,4 +22,11 @@ public interface GoodsTypeMapper {
     int updateByPrimaryKey(GoodsType record);
 
     List<GoodsType> selectByCategoryId(@Param("shopId") Integer shopId, @Param("categoryId") Integer categoryId);
+
+
+
+    //----------------------------------商户端------------------------------------------//
+    
+    List<GoodsType> getGoodCategoryList(Integer shopId);
+
 }
