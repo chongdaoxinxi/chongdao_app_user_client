@@ -57,6 +57,8 @@ public class OrderInfo {
 
     private Date shopReceiveTime;
 
+    private Date shopFinishTime;
+
     private Integer expressId;
 
     private Date expressReceiveTime;
@@ -75,14 +77,16 @@ public class OrderInfo {
 
     private Integer couponId;
 
+    private String areaCode;
+
 
     //单程服务类型:1.家到宠物店，2.宠物店到家
     private Integer singleServiceType;
 
     public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
                      BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark,
-                     Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
-                     BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType, Date updateTime) {
+                     Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
+                     BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType, Date updateTime,String areaCode) {
         this.id = id;
         this.serviceType=serviceType;
         this.orderNo = orderNo;
@@ -101,6 +105,7 @@ public class OrderInfo {
         this.paymentTime = paymentTime;
         this.paymentType = paymentType;
         this.shopReceiveTime = shopReceiveTime;
+        this.shopFinishTime = shopFinishTime;
         this.expressId = expressId;
         this.expressReceiveTime = expressReceiveTime;
         this.expressFinishTime = expressFinishTime;
@@ -112,6 +117,7 @@ public class OrderInfo {
         this.createTime = createTime;
         this.singleServiceType = singleServiceType;
         this.updateTime = updateTime;
+        this.areaCode = areaCode;
     }
 
 

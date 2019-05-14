@@ -35,7 +35,7 @@ public class ShopManageServiceImpl implements ShopManageService {
             return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         //正确性校验
-        Optional<Shop> shop = shopRespository.findByAcountName(name);
+        Optional<Shop> shop = shopRespository.findByAccountName(name);
         if(shop.isPresent()){
             Shop s = shop.get();
             String pwd = s.getPassword();

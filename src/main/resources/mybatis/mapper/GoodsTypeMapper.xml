@@ -144,9 +144,17 @@
 
 
   <select id="selectByCategoryId" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List"/>
+  from goods_type where status = 1 and shop_id=#{shopId} and category_id=#{categoryId}
+  order by sort asc
+</select>
+
+
+  <select id="getGoodCategoryList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from goods_type where status = 1 and shop_id=#{shopId} and category_id=#{categoryId}
-    order by id asc
+    from goods_type where status = 1 and shop_id=#{shopId}
+    order by sort asc
   </select>
 </mapper>

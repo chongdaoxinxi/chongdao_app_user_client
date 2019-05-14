@@ -3,6 +3,7 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Coupon;
 import com.chongdao.client.entitys.Good;
+import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.GoodsStatusEnum;
@@ -10,12 +11,14 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.mapper.CategoryMapper;
 import com.chongdao.client.mapper.GoodMapper;
+import com.chongdao.client.mapper.GoodsTypeMapper;
 import com.chongdao.client.mapper.ShopMapper;
 import com.chongdao.client.repository.CouponRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
+import com.chongdao.client.vo.GoodsTypeVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -45,6 +48,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private ShopMapper shopMapper;
+
+    @Autowired
+    private GoodsTypeMapper goodsTypeMapper;
 
     /**
      * 分页查询商品
@@ -178,4 +184,82 @@ public class GoodsServiceImpl implements GoodsService {
         });
         return couponVOS;
     }
+
+
+    //-------------------------------------------------------------------商户端实现--------------------------------------------------------------------------//
+
+
+    /**
+     * 获取商品类别
+     * @return
+     */
+    @Override
+    public ResultResponse getGoodCategoryList(Integer shopId) {
+        List<GoodsType> goodCategoryList = goodsTypeMapper.getGoodCategoryList(shopId);
+        List<GoodsTypeVO> goodsTypeVOList = Lists.newArrayList();
+        goodCategoryList.stream().forEach(goodsType -> {
+            GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
+            goodsTypeVO.setGoodsTypeName(goodsType.getName());
+            goodsTypeVO.setGoodsTypeId(goodsType.getId());
+            goodsTypeVO.setCategoryId(goodsType.getCategoryId());
+            goodsTypeVOList.add(goodsTypeVO);
+        });
+        return ResultResponse.createBySuccess(goodsTypeVOList);
+    }
+
+
+    /**
+     * 获取商品列表
+     * @param goodsTypeId
+     * @param goodName
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, Integer goodName, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Good> goodList = goodMapper.getGoodList(shopId,goodsTypeId, goodName);
+        List<GoodsListVO> goodsListVOList = Lists.newArrayList();
+        goodList.stream().forEach(good -> {
+            GoodsListVO goodsListVO = new GoodsListVO();
+            BeanUtils.copyProperties(good,goodsListVO);
+            goodsListVOList.add(goodsListVO);
+        });
+        return ResultResponse.createBySuccess(goodsListVOList);
+    }
+
+
+
+    /**
+     * 商品下架
+     * @param goodId
+     * @param status 1:上架,0下架，-1删除
+     * @return
+     */
+    @Override
+    public ResultResponse updateGoodsStatus(Integer goodId, Integer status) {
+        if (goodId == null || status == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        goodMapper.updateGoodsStatus(goodId,status);
+        return ResultResponse.createBySuccess();
+    }
+
+
+    /**
+     * 商品打折
+     * @param goodsTypeId
+     * @param discount
+     * @return
+     */
+    @Override
+    public ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount) {
+        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        goodMapper.goodsDiscount(shopId,goodsTypeId,discount);
+        return ResultResponse.createBySuccess();
+    }
+
 }

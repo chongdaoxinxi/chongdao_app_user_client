@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/shopCouponManage/")
+@RequestMapping("/api/shop_coupon_manage/")
 public class ShopCouponManageController {
 
     /**

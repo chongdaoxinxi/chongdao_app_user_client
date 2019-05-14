@@ -12,5 +12,5 @@ import java.util.Optional;
  * @Version 1.0
  **/
 public interface ShopRespository extends JpaRepository<Shop, Integer> {
-    Optional<Shop> findByAcountName(String name);
+    Optional<Shop> findByAccountName(String name);
 }

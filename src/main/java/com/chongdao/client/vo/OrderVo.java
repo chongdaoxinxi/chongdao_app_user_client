@@ -1,10 +1,7 @@
 package com.chongdao.client.vo;
 
-import com.chongdao.client.entitys.Coupon;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -52,6 +49,8 @@ public class OrderVo {
 
     private Date shopReceiveTime;
 
+    private Date shopFinishTime;
+
     private Integer expressId;
 
     private Date expressReceiveTime;
@@ -89,6 +88,8 @@ public class OrderVo {
     private String deliverAddressName;
 
     private String receiveAddressName;
+
+    private String areaCode;
 
     //订单商品Vo
     private List<OrderGoodsVo> orderGoodsVoList;

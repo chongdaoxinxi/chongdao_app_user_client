@@ -59,4 +59,15 @@ public class ShopController {
         return shopService.getShopService(shopId,categoryId);
     }
 
+
+    /**
+     * 获取店铺所有订单评价以及店铺总评价
+     * @param shopId
+     * @return
+     */
+    @GetMapping("eval_all")
+    public ResultResponse getShopEvalAll(Integer shopId){
+        return shopService.getShopEvalAll(shopId);
+    }
+
 }

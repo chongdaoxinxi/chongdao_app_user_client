@@ -31,4 +31,16 @@ public interface ShopService{
      * @return
      */
     ResultResponse getShopService(Integer shopId, Integer type);
+
+    /**
+     * 获取店铺所有订单评价以及店铺总评价
+     * @param shopId
+     * @return
+     */
+    ResultResponse getShopEvalAll(Integer shopId);
+
+
+
+
+
 }

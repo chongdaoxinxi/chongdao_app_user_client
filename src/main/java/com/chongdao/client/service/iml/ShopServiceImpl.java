@@ -1,20 +1,17 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Coupon;
-import com.chongdao.client.entitys.Good;
-import com.chongdao.client.entitys.GoodsType;
-import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.mapper.GoodMapper;
-import com.chongdao.client.mapper.GoodsTypeMapper;
-import com.chongdao.client.mapper.ShopMapper;
+import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.CouponRepository;
+import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.GoodsTypeVO;
+import com.chongdao.client.vo.OrderEvalVO;
 import com.chongdao.client.vo.ShopVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -23,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -45,6 +43,18 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private GoodsTypeMapper goodsTypeMapper;
+
+    @Autowired
+    private OrderEvalMapper orderEvalMapper;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
+
+    @Autowired
+    private OrderInfoMapper orderInfoMapper;
 
     /**
      * 根据条件展示商店(首页)
@@ -149,6 +159,49 @@ public class ShopServiceImpl implements ShopService {
     }
 
     /**
+     * 获取店铺所有订单评价以及店铺总评价
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse<List<OrderEvalVO>> getShopEvalAll(Integer shopId) {
+        if (shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        //获取该店铺的所有评价
+        List<OrderEval> orderEvalList = orderEvalMapper.getShopEvalAll(shopId);
+        List<OrderEvalVO> orderEvalVOList = Lists.newArrayList();
+        List<OrderEvalVO> orderEvalVOS = Lists.newArrayList();
+        orderEvalList.forEach(e -> {
+            OrderEvalVO orderEvalVO = new OrderEvalVO();
+            BeanUtils.copyProperties(e,orderEvalVO);
+            //获取用户
+            User user = userRepository.findById(e.getUserId()).get();
+            orderEvalVO.setUserName(user.getName());
+            //获取购买商品
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(e.getOrderNo());
+            if (!CollectionUtils.isEmpty(orderDetailList)){
+                orderEvalVO.setGoodsName(orderDetailList.get(0).getName());
+            }
+            orderEvalVOList.add(orderEvalVO);
+        });
+        OrderEvalVO orderEvalVO = new OrderEvalVO();
+        //获取店铺评分
+        Shop shop = shopMapper.selectByPrimaryKey(shopId);
+        orderEvalVO.setShopGrade(shop.getGrade());
+        //获取店铺准时率
+        //获取订单完成数目
+        Integer countAll = orderInfoMapper.findByShopIdAll(shopId);
+        //获取准时完成的订单
+        Integer count = orderInfoMapper.findByShopIdPunctuality(shopId);
+        Double punctuality = Double.valueOf((count / countAll));
+        orderEvalVO.setShopPunctuality(punctuality);
+        orderEvalVOS.add(orderEvalVO);
+        orderEvalVOList.addAll(orderEvalVOS);
+        return ResultResponse.createBySuccess(orderEvalVOList);
+    }
+
+    /**
      * 封装分页查询
      * @param shopList
      * @return
@@ -173,5 +226,13 @@ public class ShopServiceImpl implements ShopService {
         });
         return shopVOList;
     }
+
+
+
+
+
+
+
+
 
 }

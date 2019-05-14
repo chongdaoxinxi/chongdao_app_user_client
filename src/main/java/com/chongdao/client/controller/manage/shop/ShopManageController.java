@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/shopManage/")
+@RequestMapping("/api/shop_manage/")
 public class ShopManageController {
     @Autowired
     private ShopManageService shopManageService;

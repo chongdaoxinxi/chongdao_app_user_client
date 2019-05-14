@@ -307,4 +307,26 @@
     where g.status = 1 and p.status=0 and fs.status = 1 and fs.user_id = #{userId}
     order by g.create_time desc
   </select>
+
+  <select id="getGoodList" resultMap="BaseResultMap" parameterType="map">
+    select <include refid="Base_Column_List"/>
+    from good where status in (0,1) and shop_id = #{shopId}
+    <if test="goodName != null " >
+      and name like concat(concat("%",#{goodName}),"%")
+    </if>
+    <if test="goodsTypeId != null " >
+      and good_type_id = #{goodsTypeId}
+    </if>
+    order by create_time asc
+  </select>
+
+  <update id="updateGoodsStatus" parameterType="map">
+    update good set status=#{status}
+    where id = #{goodId}
+  </update>
+
+  <update id="goodsDiscount" parameterType="map">
+    update good set discount=#{discount}
+    where good_type_id = #{goodsTypeId} and shop_id = #{shopId}
+  </update>
 </mapper>
