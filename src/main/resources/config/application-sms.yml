@@ -1,0 +1,42 @@
+sms:
+  url: http://smssh1.253.com/msg/variable/json
+  account: N2434702
+  password: Ryh6TxCW0Ycbc3
+  phone: 17821753286
+  enable: 1
+  SmsIdentifyCode: 【养宠有道】您的登陆验证码为:{$var}
+  ShopNewOrder: 【养宠有道】您有新订单了，请接单, 订单号：{$var}
+  ShopUserRefund: 【养宠有道】客户要求退款，订单号：{$var}
+  ShopNewOrderAuto: 【养宠有道】您的订单：{$var} 已被自动确认，请进入商家管理平台查看详情并及时安排服务时间
+  ExpressNewOrder: 【养宠有道】有新订单了，请接单,店铺名：{$var}，订单号：{$var}
+  ExpressRefundOrder: 【养宠有道】您的已接订单{$var}由于客户退单, 该订单已取消，无需服务
+  ShopNewAdtOrder: 【养宠有道】追加订单已下单成功, 订单号：{$var}, 追加订单号：{$var}
+  UserOrderTimeOutNotAccept: 【养宠有道】您的订单：{$var} 由于未被商家：{$var} 确认接单，您可以选择联系商家后继续等待或重新选择店铺下单。
+  UserNewAdtOrder: 【养宠有道】您的订单追加订单已下单成功，订单号：{$var}, 追加订单号：{$var}
+  UserAcceptAdtOrder: 【养宠有道】您的追加订单商家已接受，订单号：{$var}, 追加订单号：{$var}
+  UserRefuseAdtOrder: 【养宠有道】您的追加订单商家已拒绝，订单号：{$var}, 追加订单号：{$var}
+  UserRefundAdtOrder: 【养宠有道】您的追加订单退款已处理，订单号：{$var}, 追加订单号：{$var}
+  orderassigned: 【养宠有道】您已拿到新的订单, 订单号：{$var}
+  ShopPetArrived: 【养宠有道】您服务的宠物已到店, 请准备服务, 订单号：{$var}
+  UserRefund: 【养宠有道】客户要求退款，店铺名：{$var}, 订单号：{$var}
+  UserRefundArrived: 【养宠有道】您的退款已处理, 订单号：{$var}
+  UserTopUp: 【养宠有道】您的充值已处理, 订单号：{$var}, 充值金额：{$var}, 余额：{$var}
+  UserPetArrived: 【养宠有道】您的爱宠已被送回, 订单号：{$var}
+  ExpressServiceComplete: 【养宠有道】店铺服务已结束, 宠物可以开始送回, 店铺名：{$var}，订单号：{$var}
+  ShopAcceptOrder: 【养宠有道】您的订单：{$var}商家已确认，配送员快马加鞭上门接宠，请耐心等待
+  ShopRefuseOrder: 【养宠有道】订单已被商家，{$var}拒绝, 请重新下单, 订单号：{$var}
+  ExpressOrderComplete: 【养宠有道】店铺{$var}完成接回，订单号:{$var}
+  ShopAcceptRefund: 【养宠有道】您的订单：{$var} 已由商家 {$var} 同意退款，您的款项将在12小时内被退回
+  UserOrderRefund: 【养宠有道】您的订单：{$var} 已被撤销，您的款项将在12小时内被退回
+  ShopTimeoutNotAccept: 【养宠有道】您的订单：{$var} 由于超时未接单，已被退回，请进入商家管理平台查看详情，及时联系客户
+
+
+
+  NewSendMessage: 【养宠有道】您已下单成功，订单：{$var} 正在等待商家确认
+  MerchantOrder: 【养宠有道】您的订单：{$var}商家已确认，配送员快马加鞭上门接宠，请耐心等待
+  PetsServed: 【养宠有道】您的爱宠已安全送达商家。订单号：{$var}
+  MerchantCompletion: 【养宠有道】商家{$var}完成服务，等待接回，订单号：{$var}
+  PickUpPets: 【养宠有道】您的爱宠正在由配送员送回途中，请耐心等待，订单号：{$var}
+  PickUpQuickly: 【养宠有道】您的订单已确认，订单号：{$var},配送员正在火速接宠，请耐心等待。
+  FavouriteServed: 【养宠有道】您的爱宠已送达，订单号：{$var}
+  GoodsServed: 【养宠有道】您购买的商品已送达。订单号：{$var}

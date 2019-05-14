@@ -29,47 +29,17 @@ public class Express extends PageParams implements Serializable {
 	private String username;//用户名
 	private String password;
 	private String name;//姓名
-	private String tel;
+	private String phone;
 	private Integer type;//1||2
-	private Integer status;//0||1
+	private Integer status;//-1||1
 	private String description;
 	private String areaCode;//区域码
 	private String areaName;//区域名称
 	private Double lastLng;
 	private Double lastLat;
-
-	private Integer version;
-	private Integer createby;
-	private Date createdate;
-	private Integer updateby;
-	private Date updatedate;
+	private Date createTime;
 
 	//暂时废弃
 	private String headImg;
 	private String openId;
-
-	@Override
-	public String toString() {
-		return "Express{" +
-				"id=" + id +
-				", createby=" + createby +
-				", createdate=" + createdate +
-				", description='" + description + '\'' +
-				", name='" + name + '\'' +
-				", password='" + password + '\'' +
-				", status=" + status +
-				", type=" + type +
-				", tel='" + tel + '\'' +
-				", updateby=" + updateby +
-				", updatedate=" + updatedate +
-				", username='" + username + '\'' +
-				", version=" + version +
-				", areaCode='" + areaCode + '\'' +
-				", lastLng=" + lastLng +
-				", lastLat=" + lastLat +
-				", headImg='" + headImg + '\'' +
-				", openId='" + openId + '\'' +
-				", areaName='" + areaName + '\'' +
-				'}';
-	}
 }

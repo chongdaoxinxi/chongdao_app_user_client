@@ -13,8 +13,8 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -99,5 +99,49 @@ public class SmsServiceImpl implements SmsService {
             sb.append(NUMS[index]);
         }
         return sb.toString();
+    }
+
+
+    ////////////////////////////订单流程短信服务///////////////////////////////////////////////
+
+    /**
+     * 接单后 配送员推送
+     * @param orderNo
+     * @param phoneList
+     * @return
+     */
+    @Override
+    public void acceptOrderMsgExpressSender(String orderNo, String shopName, List<String> phoneList) {
+        String params = "";
+        for (int i = 0; i < phoneList.size(); i ++) {
+            params = params + phoneList.get(i) + "," + shopName +","+ orderNo;
+            if (i < phoneList.size() - 1) {
+                params = params + ";";
+            }
+        }
+        String report= "true";
+        customMsgSender(this.smsUtil.getExpressNewOrder(), params, report);
+    }
+
+    /**
+     * 接单后店铺推送
+     * @param orderNo
+     * @param shopName
+     * @param telephone
+     * @return
+     */
+    @Override
+    public void acceptOrderMsgShopSender(String orderNo, String shopName, String telephone) {
+        String params = telephone+","+ orderNo + "," + shopName;
+        String report= "true";
+        customMsgSender(this.smsUtil.getShopAcceptRefund(), params, report);
+    }
+
+    private void customMsgSender(String msg, String params, String report) {
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                msg, params, report);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        gson.fromJson(response, SmsVariableResponse.class);
     }
 }

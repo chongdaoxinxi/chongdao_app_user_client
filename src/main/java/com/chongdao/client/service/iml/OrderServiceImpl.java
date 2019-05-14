@@ -6,14 +6,16 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.*;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.mapper.*;
-import com.chongdao.client.repository.CardRepository;
-import com.chongdao.client.repository.CardUserRepository;
-import com.chongdao.client.repository.CouponRepository;
+import com.chongdao.client.repository.*;
 import com.chongdao.client.service.OrderService;
+import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
-import com.chongdao.client.vo.*;
+import com.chongdao.client.vo.CouponVO;
+import com.chongdao.client.vo.OrderCommonVO;
+import com.chongdao.client.vo.OrderGoodsVo;
+import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -26,7 +28,10 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.chongdao.client.common.Const.DUAL;
 import static com.chongdao.client.enums.CouponStatusEnum.COUPON_FULL_AC;
@@ -62,8 +67,26 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private UserAddressMapper addressMapper;
 
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
+    @Autowired
+    private OrderRefundRepository orderRefundRepository;
 
+    @Autowired
+    private ShopBillRepository shopBillRepository;
+
+    @Autowired
+    private OrderTranRepository orderTranRepository;
+
+    @Autowired
+    private ExpressRepository expressRepository;
+
+    @Autowired
+    private SmsService smsService;
+
+    @Autowired
+    private ShopRespository shopRespository;
 
     /**
      * 预下单
@@ -445,9 +468,121 @@ public class OrderServiceImpl implements OrderService {
 
 
 
+////////////////////////////////////////////////商家端获取订单////////////////////////////////////////////////////////////////////
 
+    /**
+     * 商家端获取订单(全部/待接单/已接单/已完成/退款中)
+     * @param shopId
+     * @param type
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ResultResponse<PageInfo> getShopOrderTypeList(Integer shopId, String type, Integer pageNum, Integer pageSize) {
+        if (type == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+        PageHelper.startPage(pageNum,pageSize);
+        if ("all".contains(type)){
+            type = null;//全部
+        } else if(type.equals("1")) {
+            type = "1";//待接单
+        } else if(type.equals("2")) {
+            type = "2,7,10,11,12,13";//已接单
+        } else if(type.equals("3")) {
+            type = "3,6";//已完成
+        } else if(type.equals("4")) {
+            type = "0,4,5,8,9";//退款中
+        } else {
+            type = "";
+        }
+        List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdList(shopId, type);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
+        PageInfo pageResult = new PageInfo(orderInfoList);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
+    }
 
+    @Override
+    public ResultResponse refundOrder(Integer orderId) {
+        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
+                .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_ACCEPT.getMessage()))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
 
+    /**
+     * 商家退款时, 数据处理
+     * @param o
+     * @return
+     */
+    private ResultResponse refundOrderData(OrderInfo o, Integer targetStatus, String note) {
+        //更新订单状态为4
+        o.setOrderStatus(targetStatus);
+        orderInfoRepository.saveAndFlush(o);
+        //添加退款记录
+        OrderRefund or = new OrderRefund();
+        or.setOrderId(o.getId());
+        or.setType(2);//商家
+        or.setNote(note);
+        or.setCreatedate(new Date());
+        orderRefundRepository.saveAndFlush(or);
+        return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+    }
 
+    /**
+     * 商家手动接单
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse acceptOrder(Integer orderId) {
+        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
+                .map(o -> {
+                    o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
+                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderInfoRepository.saveAndFlush(o));
+                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
 
+    /**
+     * 商家接单数据处理
+     * @param o
+     * @return
+     */
+    private ResultResponse acceptOrderData(OrderInfo o) {
+        //更新状态
+        o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
+        OrderInfo orderInfo = orderInfoRepository.saveAndFlush(o);
+        //计算将要转入商家账户的资金(扣除满减, 折扣, 商家的优惠券)
+        BigDecimal realPrice = new BigDecimal(0);
+        //将钱转入商家账户, 生成流水记录(shopBill)
+        ShopBill sb = new ShopBill();
+        sb.setUserId(orderInfo.getUserId());
+        sb.setOrderId(orderInfo.getId());
+        sb.setPrice(realPrice);
+        sb.setNote("用户订单消费");
+        sb.setShopId(orderInfo.getShopId());
+        sb.setType(1);//订单消费
+        sb.setCreatedate(new Date());
+        shopBillRepository.saveAndFlush(sb);
+        //生成订单资金交易记录(order_tran)
+        OrderTran ot = new OrderTran();
+        ot.setOrderId(orderInfo.getId());
+        ot.setComment("用户消费:" + orderInfo.getPayment() + ", 订单号:" + o.getOrderNo());
+        ot.setCreateTime(new Date());
+        orderTranRepository.save(ot);
+        //发送短信
+        String areaCode = "3101";
+        List<Express> expressListOp = expressRepository.findByAreaCodeAndStatus(areaCode, 1);
+        List<String> phoneList = new ArrayList<>();
+        expressListOp.forEach(e -> phoneList.add(e.getPhone()));
+        Integer shopId = o.getShopId();
+        Shop s = shopRespository.findById(shopId).orElse(null);
+        if(s != null) {
+            smsService.acceptOrderMsgExpressSender(o.getOrderNo(), s.getShopName(), phoneList);
+            smsService.acceptOrderMsgShopSender(o.getOrderNo(), s.getShopName(), s.getPhone());
+        }
+
+        return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+    }
 }

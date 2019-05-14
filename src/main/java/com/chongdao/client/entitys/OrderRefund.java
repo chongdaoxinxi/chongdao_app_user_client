@@ -28,7 +28,7 @@ public class OrderRefund implements Serializable {
 	@Column(name="order_id")
 	private Integer orderId;//订单id
 	private String note;//退款信息
-	private Integer type;//1: 用户, 2:商家
+	private Integer type;//1: 用户;2:商家;3:系统;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 

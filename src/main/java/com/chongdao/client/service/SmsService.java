@@ -2,6 +2,8 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 
+import java.util.List;
+
 /**
  * 验证码服务
  */
@@ -25,4 +27,8 @@ public interface SmsService {
      * 移除指定手机号的验证码缓存
      */
     void remove(String telephone);
+
+    void acceptOrderMsgExpressSender(String orderNo, String shopName, List<String> phoneList);
+
+    void acceptOrderMsgShopSender(String orderNo, String shopName, String telephone);
 }

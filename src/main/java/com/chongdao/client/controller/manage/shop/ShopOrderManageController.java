@@ -1,6 +1,11 @@
 package com.chongdao.client.controller.manage.shop;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.service.OrderService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,23 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/shopOrderManage/")
 public class ShopOrderManageController {
+    @Autowired
+    private OrderService orderService;
+
     /**
      * 获取订单列表
      * @param token
-     * @param type 1:待接单;2:已接单;3:已完成;4:退款中;null:全部
+     * @param type 1:待接单;2:已接单;3:已完成;4:退款中;all:全部
+     * @param pageNum
+     * @param pageSize
      * @return
      */
-    public ResultResponse getOrderList(String token, Integer type) {
-        return null;
-    }
-
-    /**
-     * 拒单
-     * @param orderId
-     * @return
-     */
-    public ResultResponse refundOrder(Integer orderId) {
-        return null;
+    @GetMapping("/getOrderList")
+    public ResultResponse getOrderList(String token, String type, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.getShopOrderTypeList(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 
     /**
@@ -37,7 +40,28 @@ public class ShopOrderManageController {
      * @param orderId
      * @return
      */
+    @GetMapping("/refuseOrder")
+    public ResultResponse refuseOrder(Integer orderId) {
+        return orderService.refundOrder(orderId);
+    }
+
+    /**
+     * 接单
+     * @param orderId
+     * @return
+     */
+    @GetMapping("/acceptOrder")
     public ResultResponse acceptOrder(Integer orderId) {
         return null;
+    }
+
+    /**
+     * 退款
+     * @param orderId
+     * @return
+     */
+    @GetMapping("/refundOrder")
+    public ResultResponse refundOrder(Integer orderId) {
+        return orderService.refundOrder(orderId);
     }
 }

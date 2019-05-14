@@ -393,4 +393,14 @@
     where  user_id = #{userId}
     and order_status in (${type})
   </select>
+
+  <select id="selectByShopIdList" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from order_info
+    where  shop_id = #{shopId}
+      <if test="type != null">
+        and order_status in (${type})
+      </if>
+    order by order_info.create_time.
+  </select>
 </mapper>

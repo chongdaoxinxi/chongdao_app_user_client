@@ -35,7 +35,7 @@ public class ShopBill extends PageParams implements Serializable {
 	private Integer orderId;
 	private BigDecimal price;
 	private String note;
-	private Integer type;//1:客户订单, 2:, 3:店铺提现
+	private Integer type;//1:客户订单, 2:订单退款, 3:店铺提现
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdate;
 
