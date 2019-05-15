@@ -600,7 +600,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ResultResponse refuseOrder(Integer orderId) {
+        public ResultResponse refuseOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_REFUSE.getMessage(), true))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
