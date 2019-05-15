@@ -43,4 +43,31 @@ public interface CouponService {
      * @return
      */
     ResultResponse getCardServiceList(Integer userId,  String param);
+
+
+
+
+    //---------------------------------------------------------- 商户端 -----------------------------------------------
+
+    /**
+     * 添加优惠券
+     * @param shopId
+     * @param couponVO
+     * @param type
+     */
+    ResultResponse save(Integer shopId, CouponVO couponVO, Integer type);
+
+    /**
+     * 优惠券状态（上下架、删除）
+     * @param couponId
+     */
+    ResultResponse updateCouponStatusById(Integer couponId, Integer status);
+
+
+    /**
+     * 根据shopId查找满减优惠券
+     * @param shopId
+     * @return
+     */
+    ResultResponse<List<CouponVO>> findByShopId(Integer shopId, Integer type);
 }

@@ -1,9 +1,15 @@
 package com.chongdao.client.controller.manage.shop;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Coupon;
+import com.chongdao.client.service.CouponService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.CouponVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description TODO
@@ -15,48 +21,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/shop_coupon_manage/")
 public class ShopCouponManageController {
 
-    /**
-     * 获取满减券列表
-     * @param token
-     * @return
-     */
-    public ResultResponse getShopFullReductionCouponList(String token) {
-        return null;
-    }
+    @Autowired
+    private CouponService couponService;
+
 
     /**
-     * 获取优惠券列表
-     * @param token
+     * 添加满减优惠券
+     * @param couponVO
      * @return
      */
-    public ResultResponse getShopCustomCouponList(String token) {
-        return null;
+    @GetMapping("/addCoupon")
+    public ResultResponse<CouponVO> addCoupon(String token, CouponVO couponVO, Integer type, Integer shopId){
+        LoginUserUtil.resultTokenVo(token);
+        couponService.save(shopId, couponVO, type);
+        return ResultResponse.createBySuccess();
     }
 
+
     /**
-     * 添加满减券/优惠券
-     * @param coupon
+     * 查询优惠券(包含店铺满减)
+     * @param shopId
+     * @param type 0 店铺满减 2 优惠券
      * @return
      */
-    public ResultResponse addCounpon(Coupon coupon) {
-        return null;
+    @GetMapping("/findCouponByShopId")
+    public ResultResponse<List<CouponVO>> findCouponByShopId(Integer shopId, Integer type){
+        return  couponService.findByShopId(shopId, type);
     }
 
+
     /**
-     * 下架满减券/优惠券
+     * 优惠券上架、下架、删除（1，0，-1）
      * @param couponId
      * @return
      */
-    public ResultResponse offShelveCoupon(Integer couponId) {
-        return null;
+    @GetMapping("/updateCouponStatusById")
+    public ResultResponse<Integer> updateCouponStatusById(String token, Integer couponId, Integer status){
+        LoginUserUtil.resultTokenVo(token);
+        couponService.updateCouponStatusById(couponId, status);
+        return ResultResponse.createBySuccess();
     }
 
-    /**
-     * 删除满减券/优惠券
-     * @param couponId
-     * @return
-     */
-    public ResultResponse removeCoupon(Integer couponId) {
-        return null;
-    }
 }
