@@ -81,4 +81,6 @@ public class SMSUtil {
 
 	private String GoodsServed;
 
+	private String ShopAgreeRefundOrder;
+
 }

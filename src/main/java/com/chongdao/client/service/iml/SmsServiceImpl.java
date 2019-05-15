@@ -105,26 +105,20 @@ public class SmsServiceImpl implements SmsService {
     ////////////////////////////订单流程短信服务///////////////////////////////////////////////
 
     /**
-     * 接单后 配送员推送
+     * 接单-配送员短信通知
      * @param orderNo
      * @param phoneList
      * @return
      */
     @Override
     public void acceptOrderMsgExpressSender(String orderNo, String shopName, List<String> phoneList) {
-        String params = "";
-        for (int i = 0; i < phoneList.size(); i ++) {
-            params = params + phoneList.get(i) + "," + shopName +","+ orderNo;
-            if (i < phoneList.size() - 1) {
-                params = params + ";";
-            }
-        }
+        String params = assemblePhoneList(orderNo, shopName, phoneList);
         String report= "true";
         customMsgSender(this.smsUtil.getExpressNewOrder(), params, report);
     }
 
     /**
-     * 接单后店铺推送
+     * 接单-店铺短信通知
      * @param orderNo
      * @param shopName
      * @param telephone
@@ -135,6 +129,43 @@ public class SmsServiceImpl implements SmsService {
         String params = telephone+","+ orderNo + "," + shopName;
         String report= "true";
         customMsgSender(this.smsUtil.getShopAcceptRefund(), params, report);
+    }
+
+    /**
+     * 商家同意退款-管理员短信通知
+     * @param orderNo
+     * @param shopName
+     * @param phoneList
+     */
+    @Override
+    public void refundOrderMsgAdminSender(String orderNo, String shopName, List<String> phoneList) {
+        String params = assemblePhoneList(orderNo, shopName, phoneList);
+        String report= "true";
+        customMsgSender(this.smsUtil.getShopAgreeRefundOrder(), params, report);
+    }
+
+    /**
+     * 拒单-用户短信通知
+     * @param orderNo
+     * @param shopName
+     * @param telephone
+     */
+    @Override
+    public void refuseOrderMsgUserSender(String orderNo, String shopName, String telephone) {
+        String params = telephone+","+ shopName + "," + orderNo;
+        String report= "true";
+        customMsgSender(this.smsUtil.getShopRefuseOrder(), params, report);
+    }
+
+    private String assemblePhoneList(String orderNo, String shopName, List<String> phoneList) {
+        String params = "";
+        for (int i = 0; i < phoneList.size(); i ++) {
+            params = params + phoneList.get(i) + "," + shopName +","+ orderNo;
+            if (i < phoneList.size() - 1) {
+                params = params + ";";
+            }
+        }
+        return params;
     }
 
     private void customMsgSender(String msg, String params, String report) {

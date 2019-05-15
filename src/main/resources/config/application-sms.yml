@@ -29,7 +29,7 @@ sms:
   ShopAcceptRefund: 【养宠有道】您的订单：{$var} 已由商家 {$var} 同意退款，您的款项将在12小时内被退回
   UserOrderRefund: 【养宠有道】您的订单：{$var} 已被撤销，您的款项将在12小时内被退回
   ShopTimeoutNotAccept: 【养宠有道】您的订单：{$var} 由于超时未接单，已被退回，请进入商家管理平台查看详情，及时联系客户
-
+  ShopAgreeRefundOrder: 【养宠有道】订单号：{$var} 商家已同意退款, 请管理员及时处理
 
 
   NewSendMessage: 【养宠有道】您已下单成功，订单：{$var} 正在等待商家确认

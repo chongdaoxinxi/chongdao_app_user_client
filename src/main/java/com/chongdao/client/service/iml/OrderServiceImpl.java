@@ -88,6 +88,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ShopRespository shopRespository;
 
+    @Autowired
+    private DicInfoRepository dicInfoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     /**
      * 预下单
      * @param userId
@@ -508,7 +514,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResultResponse refundOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
-                .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_ACCEPT.getMessage()))
+                .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_ACCEPT.getMessage(), false))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    /**
+     * 拒单
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse refuseOrder(Integer orderId) {
+        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
+                .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_REFUSE.getMessage(), true))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
@@ -517,7 +535,7 @@ public class OrderServiceImpl implements OrderService {
      * @param o
      * @return
      */
-    private ResultResponse refundOrderData(OrderInfo o, Integer targetStatus, String note) {
+    private ResultResponse refundOrderData(OrderInfo o, Integer targetStatus, String refundNote, Boolean isRefuseOrder) {
         //更新订单状态为4
         o.setOrderStatus(targetStatus);
         orderInfoRepository.saveAndFlush(o);
@@ -525,9 +543,11 @@ public class OrderServiceImpl implements OrderService {
         OrderRefund or = new OrderRefund();
         or.setOrderId(o.getId());
         or.setType(2);//商家
-        or.setNote(note);
+        or.setNote(refundNote);
         or.setCreatedate(new Date());
         orderRefundRepository.saveAndFlush(or);
+        //发送短信
+        refundOrderSmsSender(o, isRefuseOrder);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
     }
 
@@ -541,7 +561,7 @@ public class OrderServiceImpl implements OrderService {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> {
                     o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
-                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderInfoRepository.saveAndFlush(o));
+                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), acceptOrderData(o));
                 }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
@@ -573,17 +593,82 @@ public class OrderServiceImpl implements OrderService {
         ot.setCreateTime(new Date());
         orderTranRepository.save(ot);
         //发送短信
-        String areaCode = "3101";
-        List<Express> expressListOp = expressRepository.findByAreaCodeAndStatus(areaCode, 1);
-        List<String> phoneList = new ArrayList<>();
-        expressListOp.forEach(e -> phoneList.add(e.getPhone()));
-        Integer shopId = o.getShopId();
-        Shop s = shopRespository.findById(shopId).orElse(null);
-        if(s != null) {
-            smsService.acceptOrderMsgExpressSender(o.getOrderNo(), s.getShopName(), phoneList);
-            smsService.acceptOrderMsgShopSender(o.getOrderNo(), s.getShopName(), s.getPhone());
-        }
-
+        acceptOrderSmsSender(orderInfo);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+    }
+
+    /**
+     * 商家接单短信通知
+     * @param orderInfo
+     */
+    private void acceptOrderSmsSender(OrderInfo orderInfo) {
+        String areaCode = orderInfo.getAreaCode();
+        if(areaCode != null) {
+            List<Express> expressListOp = expressRepository.findByAreaCodeAndStatus(areaCode, 1);
+            List<String> phoneList = new ArrayList<>();
+            expressListOp.forEach(e -> phoneList.add(e.getPhone()));
+            Integer shopId = orderInfo.getShopId();
+            Shop s = shopRespository.findById(shopId).orElse(null);
+            if(s != null) {
+                //通知商家
+                smsService.acceptOrderMsgShopSender(orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
+                //通知所有配送员
+                smsService.acceptOrderMsgExpressSender(orderInfo.getOrderNo(), s.getShopName(), phoneList);
+            }
+        }
+    }
+
+    /**
+     * 商家拒单短信通知
+     * @param orderInfo
+     */
+    private void refuseOrderSmsSender(OrderInfo orderInfo) {
+        Integer userId = orderInfo.getUserId();
+        User user = userRepository.findById(userId).orElse(null);
+        if(user != null) {
+            Integer shopId = orderInfo.getShopId();
+            Shop shop = shopRespository.findById(shopId).orElse(null);
+            if(shop != null) {
+                String shopName = shop.getShopName();
+                String phone = user.getPhone();
+                String orderNo = orderInfo.getOrderNo();
+                smsService.refuseOrderMsgUserSender(orderNo, shopName, phone);
+            }
+        }
+    }
+
+    /**
+     * 商家同意退款短信通知
+     * @param orderInfo
+     */
+    private void refundOrderSmsSender(OrderInfo orderInfo, Boolean isRefuseOrder) {
+        Integer shopId = orderInfo.getShopId();
+        if(shopId != null) {
+            Shop shop = shopRespository.findById(shopId).orElse(null);
+            if(shop != null) {
+                String areaCode = orderInfo.getAreaCode();
+                List<DicInfo> dicInfoList = dicInfoRepository.findByCodeAndAreaCodeAndStatus("admin_phone", areaCode, 1).orElse(null);
+                List<String> phoneList = new ArrayList<>();
+                dicInfoList.forEach(e -> {
+                    String val = e.getVal();
+                    if(val != null) {
+                        phoneList.add(val);
+                    }
+                });
+                String shopName = shop.getShopName();
+                String orderNo = orderInfo.getOrderNo();
+                //发送短信给管理员
+                smsService.refundOrderMsgAdminSender(orderNo, shopName, phoneList);
+                if(isRefuseOrder) {
+                    //是否是拒单
+                    Integer userId = orderInfo.getUserId();
+                    User user = userRepository.findById(userId).orElse(null);
+                    if(user != null) {
+                        //拒单发送短信给用户
+                        smsService.refuseOrderMsgUserSender(orderNo, shopName, user.getPhone());
+                    }
+                }
+            }
+        }
     }
 }

@@ -22,6 +22,8 @@ public interface OrderService {
 
     ResultResponse<PageInfo> getShopOrderTypeList(Integer shopId, String type, Integer pageNum, Integer pageSize);
 
+    ResultResponse refuseOrder(Integer orderId);
+
     ResultResponse refundOrder(Integer orderId);
 
     ResultResponse acceptOrder(Integer orderId);

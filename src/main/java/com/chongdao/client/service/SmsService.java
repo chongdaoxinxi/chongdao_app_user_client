@@ -28,7 +28,29 @@ public interface SmsService {
      */
     void remove(String telephone);
 
+    /**
+     * 接单-配送员短信通知
+     * @param orderNo
+     * @param shopName
+     * @param phoneList
+     */
     void acceptOrderMsgExpressSender(String orderNo, String shopName, List<String> phoneList);
 
+    /**
+     * 接单-店铺短信通知
+     * @param orderNo
+     * @param shopName
+     * @param telephone
+     */
     void acceptOrderMsgShopSender(String orderNo, String shopName, String telephone);
+
+    /**
+     * 商家同意退款-管理员通知
+     * @param orderNo
+     * @param shopName
+     * @param phoneList
+     */
+    void refundOrderMsgAdminSender(String orderNo, String shopName, List<String> phoneList);
+
+    void refuseOrderMsgUserSender(String orderNo, String shopName, String telephone);
 }
