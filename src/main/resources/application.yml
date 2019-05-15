@@ -19,7 +19,7 @@ spring:
 
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/*.xml
-  type-aliases-package: com.chongdao.client
+  type-aliases-package: com.chongdao.client.entitys
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 

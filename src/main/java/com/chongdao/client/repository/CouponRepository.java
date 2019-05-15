@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -46,4 +47,27 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     @Modifying
     void updateReceiveCountByCouponId(@Param("couponId") Integer couponId, @Param("shopId") Integer shopId);
 
+
+
+    //----------------------------------------------商户端---------------------------------------------
+
+
+
+    /**
+     * 更新优惠券状态
+     * @param couponId
+     * @param status
+     */
+    @Modifying
+    @Query("update Coupon c set c.status = ?2 where id = ?1")
+    @Transactional
+    void updateCouponStatusById(@Param("couponId") Integer couponId, @Param("status") Integer status);
+
+
+    /**
+     * 根据shopId查找满减优惠券
+     * @param shopId
+     * @return
+     */
+    List<Coupon> findByShopIdAndTypeInAndStatusNotOrderByCreateTimeDesc(Integer shopId, List<Integer> typeList,Integer status);
 }
