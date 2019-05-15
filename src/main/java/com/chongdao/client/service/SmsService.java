@@ -3,6 +3,7 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 验证码服务
@@ -29,7 +30,15 @@ public interface SmsService {
     void remove(String telephone);
 
     /**
-     * 接单-配送员短信通知
+     * 商家接单-用户短信通知
+     * @param orderNo
+     * @param shopName
+     * @param phoneList
+     */
+    void acceptOrderMsgUserSender(String orderNo, String shopName, List<String> phoneList);
+
+    /**
+     * 商家接单-配送员短信通知
      * @param orderNo
      * @param shopName
      * @param phoneList
@@ -37,7 +46,7 @@ public interface SmsService {
     void acceptOrderMsgExpressSender(String orderNo, String shopName, List<String> phoneList);
 
     /**
-     * 接单-店铺短信通知
+     * 商家接单-店铺短信通知
      * @param orderNo
      * @param shopName
      * @param telephone
@@ -52,5 +61,62 @@ public interface SmsService {
      */
     void refundOrderMsgAdminSender(String orderNo, String shopName, List<String> phoneList);
 
+    /**
+     * 商家拒单-用户通知
+     * @param orderNo
+     * @param shopName
+     * @param telephone
+     */
     void refuseOrderMsgUserSender(String orderNo, String shopName, String telephone);
+
+    /**
+     * 商家服务完成-配送员通知
+     * @param orderNo
+     * @param shopName
+     * @param telephone
+     */
+    void serviceCompleteMsgExpressSender(String orderNo, String shopName, String telephone);
+
+    /**
+     * 商家服务完成-用户通知
+     * @param orderNo
+     * @param shopName
+     * @param phoneList
+     */
+    void serviceCompleteMsgUserSender(String orderNo, String shopName, List<String> phoneList);
+
+    /**
+     * 获取订单所在地区的配送员号码列表
+     * @param orderId
+     * @return
+     */
+    List<String> getExpressPhoneListByOrderId(Integer orderId);
+
+    /**
+     * 获取负责订单的配送员号码
+     * @param orderId
+     * @return
+     */
+    String getExpressPhoneByOrderId(Integer orderId);
+
+    /**
+     * 获取订单所在地区的管理员号码列表
+     * @param orderId
+     * @return
+     */
+    List<String> getAdminPhoneListByOrderId(Integer orderId);
+
+    /**
+     * 获取商铺信息参数(名称, 联系号码)
+     * @param orderId
+     * @return
+     */
+    Map<String, String> getShopParamsByOrderId(Integer orderId);
+
+    /**
+     * 获取订单的用户信息参数(接:联系人, 接:电话, 送:联系人, 送:联系电话)
+     * @param orderId
+     * @return
+     */
+    Map<String, String> getUserParamsByOrderId(Integer orderId);
 }

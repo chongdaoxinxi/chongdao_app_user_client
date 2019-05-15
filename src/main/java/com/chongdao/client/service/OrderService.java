@@ -27,4 +27,6 @@ public interface OrderService {
     ResultResponse refundOrder(Integer orderId);
 
     ResultResponse acceptOrder(Integer orderId);
+
+    ResultResponse shopServiceCompleted(Integer orderId);
 }

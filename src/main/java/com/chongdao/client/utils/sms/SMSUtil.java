@@ -24,63 +24,38 @@ public class SMSUtil {
 
 	private String SmsIdentifyCode;
 
-	private String ShopNewOrder;
-
-
-	private String ExpressNewOrder;
-
-	private String orderasigned;
-
-	private String ShopPetArrived;
-
+	private String UserNewSendMessage;
+	private String UserOrderTimeOutNotAccept;
+	private String UserMerchantOrder;
+	private String UserPetsServed;
+	private String UserGoodsServed;
+	private String UserMerchantCompletion;
+	private String UserPetArrived;
+	private String UserPickUpPets;
 	private String UserRefund;
-
 	private String UserRefundArrived;
-
+	private String UserOrderRefund;
 	private String UserTopUp;
 
-	private String UserPetArrived;
-
-	private String ExpressServiceComplete;
-
+	private String ShopNewOrder;
+	private String ShopNewOrderAuto;
+	private String ShopUserRefund;
+	private String ShopPetArrived;
 	private String ShopAcceptOrder;
-
 	private String ShopRefuseOrder;
-
-	private String ShopNewAdtOrder;
-
-	private String UserNewAdtOrder;
-
-	private String UserAcceptAdtOrder;
-
-	private String UserRefuseAdtOrder;
-
-	private String UserRefundAdtOrder;
-
-	private String UserOrderTimeOutNotAccept;
-
-	private String ExpressRefundOrder;
-
 	private String ShopAcceptRefund;
-
-	private String UserOrderRefund;
-
+	private String ShopAgreeRefundOrder;
 	private String ShopTimeoutNotAccept;
 
-	private String NewSendMessage;
-	private String MerchantOrder;
-	private String PetsServed;
-	private String MerchantCompletion;
-	private String PickUpPets;
-	private String ShopNewOrderAuto;
+	private String ExpressNewOrder;
+	private String ExpressOrderAssigned;
+	private String ExpressRefundOrder;
+	private String ExpressServiceComplete;
+	private String ExpressOrderComplete;
 
-	private String ShopUserRefund;
-
-	private  String PickUpQuickly;
-	private  String FavouriteServed;
-
-	private String GoodsServed;
-
-	private String ShopAgreeRefundOrder;
-
+	private String ShopNewAdtOrder;
+	private String UserNewAdtOrder;
+	private String UserAcceptAdtOrder;
+	private String UserRefuseAdtOrder;
+	private String UserRefundAdtOrder;
 }

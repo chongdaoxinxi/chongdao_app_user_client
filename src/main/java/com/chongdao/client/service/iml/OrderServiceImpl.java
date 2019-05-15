@@ -20,6 +20,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderAddressRepository orderAddressRepository;
 
     /**
      * 预下单
@@ -511,6 +515,78 @@ public class OrderServiceImpl implements OrderService {
         return ResultResponse.createBySuccess(pageResult);
     }
 
+    /**
+     * 商家手动接单
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse acceptOrder(Integer orderId) {
+        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
+                .map(o -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), acceptOrderData(o)))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    /**
+     * 商家接单数据处理
+     * @param o
+     * @return
+     */
+    private ResultResponse acceptOrderData(OrderInfo o) {
+        //更新状态
+        o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
+        OrderInfo orderInfo = orderInfoRepository.saveAndFlush(o);
+        //计算将要转入商家账户的资金(扣除满减, 折扣, 商家的优惠券)
+        BigDecimal realPrice = new BigDecimal(0);
+        //将钱转入商家账户, 生成流水记录(shopBill)
+        ShopBill sb = new ShopBill();
+        sb.setUserId(orderInfo.getUserId());
+        sb.setOrderId(orderInfo.getId());
+        sb.setPrice(realPrice);
+        sb.setNote("用户订单消费");
+        sb.setShopId(orderInfo.getShopId());
+        sb.setType(1);//订单消费
+        sb.setCreatedate(new Date());
+        shopBillRepository.saveAndFlush(sb);
+        //生成订单资金交易记录(order_tran)
+        OrderTran ot = new OrderTran();
+        ot.setOrderId(orderInfo.getId());
+        ot.setComment("用户消费:" + orderInfo.getPayment() + ", 订单号:" + o.getOrderNo());
+        ot.setCreateTime(new Date());
+        orderTranRepository.save(ot);
+        //发送短信
+        acceptOrderSmsSender(orderInfo);
+        return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+    }
+
+    /**
+     * 商家接单短信通知(->用户+商家+配送员)
+     * @param orderInfo
+     */
+    private void acceptOrderSmsSender(OrderInfo orderInfo) {
+        String areaCode = orderInfo.getAreaCode();
+        if(areaCode != null) {
+            List<Express> expressListOp = expressRepository.findByAreaCodeAndStatus(areaCode, 1);
+            List<String> phoneList = new ArrayList<>();
+            expressListOp.forEach(e -> phoneList.add(e.getPhone()));
+            Integer shopId = orderInfo.getShopId();
+            Shop s = shopRespository.findById(shopId).orElse(null);
+            if(s != null) {
+                //通知用户
+                //TODO
+                //通知商家
+                smsService.acceptOrderMsgShopSender(orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
+                //通知所有配送员
+                smsService.acceptOrderMsgExpressSender(orderInfo.getOrderNo(), s.getShopName(), phoneList);
+            }
+        }
+    }
+
+    /**
+     * 退款
+     * @param orderId
+     * @return
+     */
     @Override
     public ResultResponse refundOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
@@ -552,93 +628,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 商家手动接单
-     * @param orderId
-     * @return
-     */
-    @Override
-    public ResultResponse acceptOrder(Integer orderId) {
-        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
-                .map(o -> {
-                    o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
-                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), acceptOrderData(o));
-                }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
-    }
-
-    /**
-     * 商家接单数据处理
-     * @param o
-     * @return
-     */
-    private ResultResponse acceptOrderData(OrderInfo o) {
-        //更新状态
-        o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
-        OrderInfo orderInfo = orderInfoRepository.saveAndFlush(o);
-        //计算将要转入商家账户的资金(扣除满减, 折扣, 商家的优惠券)
-        BigDecimal realPrice = new BigDecimal(0);
-        //将钱转入商家账户, 生成流水记录(shopBill)
-        ShopBill sb = new ShopBill();
-        sb.setUserId(orderInfo.getUserId());
-        sb.setOrderId(orderInfo.getId());
-        sb.setPrice(realPrice);
-        sb.setNote("用户订单消费");
-        sb.setShopId(orderInfo.getShopId());
-        sb.setType(1);//订单消费
-        sb.setCreatedate(new Date());
-        shopBillRepository.saveAndFlush(sb);
-        //生成订单资金交易记录(order_tran)
-        OrderTran ot = new OrderTran();
-        ot.setOrderId(orderInfo.getId());
-        ot.setComment("用户消费:" + orderInfo.getPayment() + ", 订单号:" + o.getOrderNo());
-        ot.setCreateTime(new Date());
-        orderTranRepository.save(ot);
-        //发送短信
-        acceptOrderSmsSender(orderInfo);
-        return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
-    }
-
-    /**
-     * 商家接单短信通知
-     * @param orderInfo
-     */
-    private void acceptOrderSmsSender(OrderInfo orderInfo) {
-        String areaCode = orderInfo.getAreaCode();
-        if(areaCode != null) {
-            List<Express> expressListOp = expressRepository.findByAreaCodeAndStatus(areaCode, 1);
-            List<String> phoneList = new ArrayList<>();
-            expressListOp.forEach(e -> phoneList.add(e.getPhone()));
-            Integer shopId = orderInfo.getShopId();
-            Shop s = shopRespository.findById(shopId).orElse(null);
-            if(s != null) {
-                //通知商家
-                smsService.acceptOrderMsgShopSender(orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
-                //通知所有配送员
-                smsService.acceptOrderMsgExpressSender(orderInfo.getOrderNo(), s.getShopName(), phoneList);
-            }
-        }
-    }
-
-    /**
-     * 商家拒单短信通知
-     * @param orderInfo
-     */
-    private void refuseOrderSmsSender(OrderInfo orderInfo) {
-        Integer userId = orderInfo.getUserId();
-        User user = userRepository.findById(userId).orElse(null);
-        if(user != null) {
-            Integer shopId = orderInfo.getShopId();
-            Shop shop = shopRespository.findById(shopId).orElse(null);
-            if(shop != null) {
-                String shopName = shop.getShopName();
-                String phone = user.getPhone();
-                String orderNo = orderInfo.getOrderNo();
-                smsService.refuseOrderMsgUserSender(orderNo, shopName, phone);
-            }
-        }
-    }
-
-    /**
-     * 商家同意退款短信通知
+     * 商家同意退款短信通知(同意退款: ->管理员;拒单: ->管理员+用户)
      * @param orderInfo
      */
     private void refundOrderSmsSender(OrderInfo orderInfo, Boolean isRefuseOrder) {
@@ -666,6 +656,60 @@ public class OrderServiceImpl implements OrderService {
                     if(user != null) {
                         //拒单发送短信给用户
                         smsService.refuseOrderMsgUserSender(orderNo, shopName, user.getPhone());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 商家服务完成(->用户+配送员)
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse shopServiceCompleted(Integer orderId) {
+        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(id))
+                .map(o -> shopServiceCompletedData(o))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    /**
+     * 商家服务完成数据处理
+     * @param orderInfo
+     * @return
+     */
+    private ResultResponse shopServiceCompletedData(OrderInfo orderInfo) {
+        //更新状态
+        orderInfo.setOrderStatus(OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus());
+        orderInfo.setShopFinishTime(new Date());
+        orderInfoRepository.saveAndFlush(orderInfo);
+        //短信通知
+        shopServiceCompletedSmsSender(orderInfo);
+        return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+    }
+
+    /**
+     * 商家服务完成短信通知
+     * @param orderInfo
+     */
+    private void shopServiceCompletedSmsSender(OrderInfo orderInfo) {
+        //推送短信->所负责的配送员及该订单用户
+        //通知用户
+        //TODO
+        //通知负责订单的配送员
+        Integer expressId = orderInfo.getExpressId();
+        if(expressId != null) {
+            Express express = expressRepository.findById(expressId).orElse(null);
+            if(express != null) {
+                String phone = express.getPhone();
+                if(StringUtils.isNotBlank(phone)) {
+                    Integer shopId = orderInfo.getShopId();
+                    if(shopId != null) {
+                        Shop shop = shopRespository.findById(shopId).orElse(null);
+                        if(shop != null) {
+                            smsService.serviceCompleteMsgExpressSender(orderInfo.getOrderNo(), shop.getShopName(), phone);
+                        }
                     }
                 }
             }
