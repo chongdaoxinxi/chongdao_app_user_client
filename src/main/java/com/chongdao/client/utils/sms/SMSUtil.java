@@ -33,7 +33,9 @@ public class SMSUtil {
 	private String UserPetArrived;
 	private String UserPickUpPets;
 	private String UserRefund;
+	private String UserRefundAgree;
 	private String UserRefundArrived;
+	private String UserOrderRefuse;
 	private String UserOrderRefund;
 	private String UserTopUp;
 

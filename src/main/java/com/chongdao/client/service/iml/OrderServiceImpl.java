@@ -12,6 +12,7 @@ import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
+import com.chongdao.client.utils.sms.SMSUtil;
 import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderGoodsVo;
@@ -29,7 +30,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +97,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderAddressRepository orderAddressRepository;
+
+    @Autowired
+    private SMSUtil smsUtil;
 
     /**
      * 预下单
@@ -564,20 +567,18 @@ public class OrderServiceImpl implements OrderService {
      * @param orderInfo
      */
     private void acceptOrderSmsSender(OrderInfo orderInfo) {
-        String areaCode = orderInfo.getAreaCode();
-        if(areaCode != null) {
-            List<Express> expressListOp = expressRepository.findByAreaCodeAndStatus(areaCode, 1);
-            List<String> phoneList = new ArrayList<>();
-            expressListOp.forEach(e -> phoneList.add(e.getPhone()));
-            Integer shopId = orderInfo.getShopId();
+        Integer shopId = orderInfo.getShopId();
+        if(shopId != null) {
             Shop s = shopRespository.findById(shopId).orElse(null);
             if(s != null) {
+                List<String> phoneList_express = smsService.getExpressPhoneListByOrderId(orderInfo.getId());
+                List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
                 //通知用户
-                //TODO
+                smsService.customOrderMsgSenderPatch(smsUtil.getUserMerchantOrder(), orderInfo.getOrderNo(), s.getShopName(), phoneList_user);
                 //通知商家
-                smsService.acceptOrderMsgShopSender(orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
+                smsService.customOrderMsgSenderSimple(smsUtil.getShopAcceptOrder(), orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
                 //通知所有配送员
-                smsService.acceptOrderMsgExpressSender(orderInfo.getOrderNo(), s.getShopName(), phoneList);
+                smsService.customOrderMsgSenderPatch(smsUtil.getExpressNewOrder(), orderInfo.getOrderNo(), s.getShopName(), phoneList_express);
             }
         }
     }
@@ -636,27 +637,17 @@ public class OrderServiceImpl implements OrderService {
         if(shopId != null) {
             Shop shop = shopRespository.findById(shopId).orElse(null);
             if(shop != null) {
-                String areaCode = orderInfo.getAreaCode();
-                List<DicInfo> dicInfoList = dicInfoRepository.findByCodeAndAreaCodeAndStatus("admin_phone", areaCode, 1).orElse(null);
-                List<String> phoneList = new ArrayList<>();
-                dicInfoList.forEach(e -> {
-                    String val = e.getVal();
-                    if(val != null) {
-                        phoneList.add(val);
-                    }
-                });
-                String shopName = shop.getShopName();
-                String orderNo = orderInfo.getOrderNo();
-                //发送短信给管理员
-                smsService.refundOrderMsgAdminSender(orderNo, shopName, phoneList);
+                List<String> phoneList_admin = smsService.getAdminPhoneListByOrderId(orderInfo.getId());
+                List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
+                //通知管理员
+                smsService.customOrderMsgSenderPatch(smsUtil.getShopAgreeRefundOrder(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_admin);
+                //通知用户
                 if(isRefuseOrder) {
-                    //是否是拒单
-                    Integer userId = orderInfo.getUserId();
-                    User user = userRepository.findById(userId).orElse(null);
-                    if(user != null) {
-                        //拒单发送短信给用户
-                        smsService.refuseOrderMsgUserSender(orderNo, shopName, user.getPhone());
-                    }
+                    //拒单->退款
+                    smsService.customOrderMsgSenderPatch(smsUtil.getUserOrderRefuse(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
+                } else {
+                    //退款
+                    smsService.customOrderMsgSenderPatch(smsUtil.getUserRefundAgree(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
                 }
             }
         }
@@ -696,21 +687,15 @@ public class OrderServiceImpl implements OrderService {
     private void shopServiceCompletedSmsSender(OrderInfo orderInfo) {
         //推送短信->所负责的配送员及该订单用户
         //通知用户
-        //TODO
+        //TODO  待确认给哪些用户通知短信
         //通知负责订单的配送员
-        Integer expressId = orderInfo.getExpressId();
-        if(expressId != null) {
-            Express express = expressRepository.findById(expressId).orElse(null);
-            if(express != null) {
-                String phone = express.getPhone();
-                if(StringUtils.isNotBlank(phone)) {
-                    Integer shopId = orderInfo.getShopId();
-                    if(shopId != null) {
-                        Shop shop = shopRespository.findById(shopId).orElse(null);
-                        if(shop != null) {
-                            smsService.serviceCompleteMsgExpressSender(orderInfo.getOrderNo(), shop.getShopName(), phone);
-                        }
-                    }
+        String phone = smsService.getExpressPhoneByOrderId(orderInfo.getId());
+        if(StringUtils.isNotBlank(phone)) {
+            Integer shopId = orderInfo.getShopId();
+            if(shopId != null) {
+                Shop shop = shopRespository.findById(shopId).orElse(null);
+                if(shop != null) {
+                    smsService.customOrderMsgSenderSimple(smsUtil.getExpressServiceComplete(), orderInfo.getOrderNo(), shop.getShopName(), phone);
                 }
             }
         }

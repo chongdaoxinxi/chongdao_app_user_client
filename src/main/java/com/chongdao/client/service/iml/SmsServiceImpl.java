@@ -3,7 +3,6 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Express;
-import com.chongdao.client.entitys.OrderAddress;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.*;
@@ -13,10 +12,14 @@ import com.chongdao.client.utils.sms.SmsSender253;
 import com.chongdao.client.utils.sms.SmsVariableRequest;
 import com.chongdao.client.utils.sms.SmsVariableResponse;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -44,6 +47,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 发送验证码到指定手机 并 缓存验证码 10分钟 及 请求间隔时间1分钟
+     *
      * @param telephone
      * @return
      */
@@ -56,11 +60,11 @@ public class SmsServiceImpl implements SmsService {
         }*/
         //生成验证码
         String code = generateRandomSmsCode();
-        String params = telephone+","+code;
+        String params = telephone + "," + code;
 
-        String report= "true";
+        String report = "true";
 
-        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+        SmsVariableRequest smsVariableRequest = new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
                 this.smsUtil.getSmsIdentifyCode(), params, report);
 
         String requestJson = gson.toJson(smsVariableRequest);
@@ -70,8 +74,8 @@ public class SmsServiceImpl implements SmsService {
         SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
         boolean success = false;
         //请求成功
-        if ("0".equals(resp.getCode())){
-            success= true;
+        if ("0".equals(resp.getCode())) {
+            success = true;
         }
         if (success) {
             //将验证码key存入guava缓存中
@@ -85,6 +89,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 获取缓存中的验证码
+     *
      * @param telephone
      * @return
      */
@@ -103,6 +108,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 6位验证码生成器
+     *
      * @return
      */
     private static String generateRandomSmsCode() {
@@ -117,54 +123,65 @@ public class SmsServiceImpl implements SmsService {
 
     ////////////////////////////订单流程短信服务///////////////////////////////////////////////
 
-
+    /**
+     * 通用短信通知(单个人)
+     *
+     * @param msg
+     * @param shopName
+     * @param orderNo
+     * @param phone
+     */
     @Override
-    public void acceptOrderMsgUserSender(String orderNo, String shopName, List<String> phoneList) {
-        //TODO 发送给用户的短信应该是发什么号码呢?orderAddress里的?接/送地址都发?还是用户表里的?
+    public void customOrderMsgSenderSimple(String msg, String shopName, String orderNo, String phone) {
+        String params = phone + "," + shopName + "," + orderNo;
+        String report = "true";
+        customMsgSender(msg, params, report);
     }
 
+    /**
+     * 通用短信通知(单个人, 只有订单号)
+     * @param msg
+     * @param orderNo
+     * @param phone
+     */
     @Override
-    public void acceptOrderMsgExpressSender(String orderNo, String shopName, List<String> phoneList) {
+    public void customOrderMsgSenderSimpleNoShopName(String msg, String orderNo, String phone) {
+        String params = phone  + "," + orderNo;
+        String report = "true";
+        customMsgSender(msg, params, report);
+    }
+
+    /**
+     * 通用短信通知(批量)
+     *
+     * @param msg
+     * @param shopName
+     * @param orderNo
+     * @param phoneList
+     */
+    @Override
+    public void customOrderMsgSenderPatch(String msg, String shopName, String orderNo, List<String> phoneList) {
         String params = assemblePhoneList(orderNo, shopName, phoneList);
-        String report= "true";
-        customMsgSender(this.smsUtil.getExpressNewOrder(), params, report);
+        String report = "true";
+        customMsgSender(msg, params, report);
     }
 
+    /**
+     * 通用短信通知(批量, 只有订单号)
+     * @param msg
+     * @param orderNo
+     * @param phoneList
+     */
     @Override
-    public void acceptOrderMsgShopSender(String orderNo, String shopName, String telephone) {
-        String params = telephone+","+ orderNo + "," + shopName;
-        String report= "true";
-        customMsgSender(this.smsUtil.getShopAcceptRefund(), params, report);
-    }
-
-    @Override
-    public void refundOrderMsgAdminSender(String orderNo, String shopName, List<String> phoneList) {
-        String params = assemblePhoneList(orderNo, shopName, phoneList);
-        String report= "true";
-        customMsgSender(this.smsUtil.getShopAgreeRefundOrder(), params, report);
-    }
-
-    @Override
-    public void refuseOrderMsgUserSender(String orderNo, String shopName, String telephone) {
-        String params = telephone+","+ shopName + "," + orderNo;
-        String report= "true";
-        customMsgSender(this.smsUtil.getShopRefuseOrder(), params, report);
-    }
-
-    @Override
-    public void serviceCompleteMsgExpressSender(String orderNo, String shopName, String telephone) {
-        String params = telephone+","+ shopName + "," + orderNo;
-        String report= "true";
-        customMsgSender(this.smsUtil.getExpressServiceComplete(), params, report);
-    }
-
-    @Override
-    public void serviceCompleteMsgUserSender(String orderNo, String shopName, List<String> phoneList) {
-        //TODO 发送给用户的短信应该是发什么号码呢?orderAddress里的?接/送地址都发?还是用户表里的?
+    public void customOrderMsgSenderPatchNoShopName(String msg, String orderNo, List<String> phoneList) {
+        String params = assemblePhoneList(orderNo, "", phoneList);
+        String report = "true";
+        customMsgSender(msg, params, report);
     }
 
     /**
      * 封装联系电话 list->params
+     *
      * @param orderNo
      * @param shopName
      * @param phoneList
@@ -172,8 +189,12 @@ public class SmsServiceImpl implements SmsService {
      */
     private String assemblePhoneList(String orderNo, String shopName, List<String> phoneList) {
         String params = "";
-        for (int i = 0; i < phoneList.size(); i ++) {
-            params = params + phoneList.get(i) + "," + shopName +","+ orderNo;
+        for (int i = 0; i < phoneList.size(); i++) {
+            if(StringUtils.isNotBlank(shopName)) {
+                params = params + phoneList.get(i) + "," + shopName + "," + orderNo;
+            } else {
+                params = params + phoneList.get(i) + "," + orderNo;
+            }
             if (i < phoneList.size() - 1) {
                 params = params + ";";
             }
@@ -183,22 +204,28 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 标准发送短信模式
+     *
      * @param msg
      * @param params
      * @param report
      */
     private void customMsgSender(String msg, String params, String report) {
-        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+        SmsVariableRequest smsVariableRequest = new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
                 msg, params, report);
         String requestJson = gson.toJson(smsVariableRequest);
         String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
         gson.fromJson(response, SmsVariableResponse.class);
     }
 
+    /**
+     * 获取配送员联系方式列表
+     * @param orderId
+     * @return
+     */
     @Override
     public List<String> getExpressPhoneListByOrderId(Integer orderId) {
         List<String> resp = new ArrayList<>();
-        Optional.ofNullable(orderId)
+        return Optional.ofNullable(orderId)
                 .flatMap(id -> orderInfoRepository.findById(id))
                 .map(o -> o.getAreaCode())
                 .map(code -> expressRepository.findByAreaCodeAndStatus(code, 1))
@@ -207,9 +234,13 @@ public class SmsServiceImpl implements SmsService {
                     return resp;
                 })
                 .orElse(resp);
-        return resp;
     }
 
+    /**
+     * 获取配送员联系方式
+     * @param orderId
+     * @return
+     */
     @Override
     public String getExpressPhoneByOrderId(Integer orderId) {
         return Optional.ofNullable(orderId)
@@ -222,13 +253,18 @@ public class SmsServiceImpl implements SmsService {
                         phone = Optional.ofNullable(express).map(e -> e.getPhone()).orElse("");
                     }
                     return phone;
-                }).orElse("");
+                }).orElse(null);
     }
 
+    /**
+     * 获取管理员联系方式
+     * @param orderId
+     * @return
+     */
     @Override
     public List<String> getAdminPhoneListByOrderId(Integer orderId) {
         List<String> resp = new ArrayList<>();
-        Optional.ofNullable(orderId)
+        return Optional.ofNullable(orderId)
                 .flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> o.getAreaCode())
                 .flatMap(code -> dicInfoRepository.findByCodeAndAreaCodeAndStatus("admin_phone", code, 1))
@@ -237,45 +273,38 @@ public class SmsServiceImpl implements SmsService {
                     return resp;
                 })
                 .orElse(resp);
-        return resp;
     }
 
+    /**
+     * 获取商家联系方式
+     * @param orderId
+     * @return
+     */
     @Override
-    public Map<String, String> getShopParamsByOrderId(Integer orderId) {
-        Map<String, String> resp = new HashMap<>();
-        Optional.ofNullable(orderId)
-                .flatMap(id -> orderInfoRepository.findById(id))
+    public String getShopPhoneByOrderId(Integer orderId) {
+        return Optional.ofNullable(orderId)
+                .flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> o.getShopId())
                 .flatMap(sId -> shopRespository.findById(sId))
-                .flatMap(s -> Optional.ofNullable(s.getShopName()).map(sName -> {
-                    resp.put("shopName", sName);
-                    return s;
-                }))
-                .flatMap(s -> Optional.ofNullable(s.getPhone()).map(phone -> {
-                    resp.put("shopPhone", phone);
-                    return s;
-                })).orElse(null);
-        return resp;
+                .map(s -> s.getPhone())
+                .orElse(null);
     }
 
+    /**
+     * 获取用户联系方式
+     * @param orderId
+     * @return
+     */
     @Override
-    public Map<String, String> getUserParamsByOrderId(Integer orderId) {
-        Map<String, String> resp = new HashMap<>();
-        if(orderId != null) {
-            List<OrderAddress> oaList = orderAddressRepository.findByOrderId(orderId);
-            oaList.forEach(e -> {
-                Integer type = e.getType();
-                if(type == 1) {
-                    //接宠
-                    resp.put("greetUserName", e.getUserName());
-                    resp.put("greetUserPhone", e.getPhone());
-                } else if(type == 2){
-                    //送宠
-                    resp.put("sendUserName", e.getUserName());
-                    resp.put("greetUserPhone", e.getPhone());
-                }
-            });
-        }
-        return resp;
+    public List<String> getUserPhoneListByOrderId(Integer orderId) {
+        List<String> resp = new ArrayList<>();
+        return Optional.ofNullable(orderId)
+                .map(id -> orderAddressRepository.findByOrderId(id))
+                .map(list -> {
+                    list.forEach(e -> {
+                        Optional.ofNullable(e.getPhone()).map(p -> resp.add(p));
+                    });
+                    return resp;
+                }).orElse(resp);
     }
 }
