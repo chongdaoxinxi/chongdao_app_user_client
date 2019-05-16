@@ -34,7 +34,7 @@ public class SmsServiceImpl implements SmsService {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
     @Autowired
-    private ShopRespository shopRespository;
+    private ShopRepository shopRespository;
     @Autowired
     private ExpressRepository expressRepository;
     @Autowired

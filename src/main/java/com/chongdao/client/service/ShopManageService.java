@@ -5,7 +5,7 @@ import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.vo.ShopManageVO;
 
 /**
- * @Description TODO
+ * @Description 商家端
  * @Author onlineS
  * @Date 2019/5/13
  * @Version 1.0

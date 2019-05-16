@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
     private SmsService smsService;
 
     @Autowired
-    private ShopRespository shopRespository;
+    private ShopRepository shopRespository;
 
     @Autowired
     private DicInfoRepository dicInfoRepository;

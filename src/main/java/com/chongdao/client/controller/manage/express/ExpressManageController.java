@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Description TODO
+ * @Description 配送员端接口
  * @Author onlineS
  * @Date 2019/5/15
  * @Version 1.0

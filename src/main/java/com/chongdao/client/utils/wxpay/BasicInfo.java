@@ -1,7 +1,7 @@
 package com.chongdao.client.utils.wxpay;
 
 /**
- * @Description TODO
+ * @Description 微信账号信息配置
  * @Author onlineS
  * @Date 2019/4/30
  * @Version 1.0

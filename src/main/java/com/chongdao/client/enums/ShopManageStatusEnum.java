@@ -3,7 +3,7 @@ package com.chongdao.client.enums;
 import lombok.Getter;
 
 /**
- * @Description TODO
+ * @Description 商户端枚举类
  * @Author onlineS
  * @Date 2019/5/13
  * @Version 1.0

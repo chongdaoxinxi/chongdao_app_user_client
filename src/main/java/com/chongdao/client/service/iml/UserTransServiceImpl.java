@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @Description TODO
+ * @Description 用户资金交易记录
  * @Author onlineS
  * @Date 2019/5/8
  * @Version 1.0

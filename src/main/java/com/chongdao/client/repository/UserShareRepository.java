@@ -4,7 +4,7 @@ import com.chongdao.client.entitys.UserShare;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * @Description TODO
+ * @Description 用户分享jpa
  * @Author onlineS
  * @Date 2019/5/10
  * @Version 1.0

@@ -4,7 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.ShopManageStatusEnum;
-import com.chongdao.client.repository.ShopRespository;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopManageService;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.ShopLoginVO;
@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Optional;
 
 /**
- * @Description TODO
+ * @Description 商家端
  * @Author onlineS
  * @Date 2019/5/13
  * @Version 1.0
@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class ShopManageServiceImpl implements ShopManageService {
     @Autowired
-    private ShopRespository shopRespository;
+    private ShopRepository shopRespository;
 
     @Override
     public ResultResponse shopLogin(String name, String password) {
