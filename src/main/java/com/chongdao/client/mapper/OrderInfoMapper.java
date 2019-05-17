@@ -44,4 +44,8 @@ public interface OrderInfoMapper {
      * @return
      */
     Integer findByShopIdPunctuality(Integer shopId);
+
+    List<OrderInfo> selectExpressOrderList(@Param("expressId") Integer expressId, @Param("type")String type);
+
+    List<OrderInfo> selectExpressAdminOrderList(@Param("type")String type);
 }

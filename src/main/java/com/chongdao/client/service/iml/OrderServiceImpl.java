@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
     private SmsService smsService;
 
     @Autowired
-    private ShopRepository shopRespository;
+    private ShopRepository shopRepository;
 
     @Autowired
     private DicInfoRepository dicInfoRepository;
@@ -524,7 +524,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ResultResponse acceptOrder(Integer orderId) {
+    public ResultResponse shopAcceptOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), acceptOrderData(o)))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
@@ -569,7 +569,7 @@ public class OrderServiceImpl implements OrderService {
     private void acceptOrderSmsSender(OrderInfo orderInfo) {
         Integer shopId = orderInfo.getShopId();
         if(shopId != null) {
-            Shop s = shopRespository.findById(shopId).orElse(null);
+            Shop s = shopRepository.findById(shopId).orElse(null);
             if(s != null) {
                 List<String> phoneList_express = smsService.getExpressPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
@@ -589,7 +589,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ResultResponse refundOrder(Integer orderId) {
+    public ResultResponse shopRefundOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_ACCEPT.getMessage(), false))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
@@ -601,7 +601,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-        public ResultResponse refuseOrder(Integer orderId) {
+        public ResultResponse shopRefuseOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_REFUSE.getMessage(), true))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
@@ -635,7 +635,7 @@ public class OrderServiceImpl implements OrderService {
     private void refundOrderSmsSender(OrderInfo orderInfo, Boolean isRefuseOrder) {
         Integer shopId = orderInfo.getShopId();
         if(shopId != null) {
-            Shop shop = shopRespository.findById(shopId).orElse(null);
+            Shop shop = shopRepository.findById(shopId).orElse(null);
             if(shop != null) {
                 List<String> phoneList_admin = smsService.getAdminPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
@@ -693,11 +693,73 @@ public class OrderServiceImpl implements OrderService {
         if(StringUtils.isNotBlank(phone)) {
             Integer shopId = orderInfo.getShopId();
             if(shopId != null) {
-                Shop shop = shopRespository.findById(shopId).orElse(null);
+                Shop shop = shopRepository.findById(shopId).orElse(null);
                 if(shop != null) {
                     smsService.customOrderMsgSenderSimple(smsUtil.getExpressServiceComplete(), orderInfo.getOrderNo(), shop.getShopName(), phone);
                 }
             }
         }
+    }
+
+
+    ////////////////////////////////////////////////////////配送端//////////////////////////////////////////////////////
+
+
+    /**
+     * 获取普通配送员订单
+     * @param expressId
+     * @param type
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ResultResponse<PageInfo> expressOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize) {
+        if (expressId == null || type == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+        PageHelper.startPage(pageNum,pageSize);
+        if(type.equals("1")) {
+            //可接单
+            type = "2";
+        } else if(type.equals("2")) {
+            //已接单
+            type = "4,5,7,8,9,10,11,12,13";
+        } else if(type.equals("3")) {
+            //已完成
+            type = "3,6";
+        }
+        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressOrderList(expressId, type);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
+        PageInfo pageResult = new PageInfo(orderInfos);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    /**
+     * 获取管理员配送员订单
+     * @param type
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize) {
+        if (type == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+        PageHelper.startPage(pageNum,pageSize);
+        if(type.equals("1")) {
+            //商家未接单
+            type = "-1,1";
+        } else if(type.equals("2")) {
+            //商家已接单
+            type = "2,3,4,5,6,7,8,9,10,11,12,13";
+        }
+        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
+        PageInfo pageResult = new PageInfo(orderInfos);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
     }
 }

@@ -1,6 +1,8 @@
 package com.chongdao.client.controller.manage.express;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.service.ExpressManageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/express_manage/")
 public class ExpressManageController {
+    @Autowired
+    private ExpressManageService expressManageService;
 
     /**
      * 登录
@@ -23,7 +27,7 @@ public class ExpressManageController {
      */
     @GetMapping("/login")
     public ResultResponse login(String username, String password) {
-        return null;
+        return expressManageService.expressLogin(username, password);
     }
 
     /**

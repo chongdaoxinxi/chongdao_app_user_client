@@ -22,11 +22,50 @@ public interface OrderService {
 
     ResultResponse<PageInfo> getShopOrderTypeList(Integer shopId, String type, Integer pageNum, Integer pageSize);
 
-    ResultResponse refuseOrder(Integer orderId);
+    /**
+     * 拒单
+     * @param orderId
+     * @return
+     */
+    ResultResponse shopRefuseOrder(Integer orderId);
 
-    ResultResponse refundOrder(Integer orderId);
+    /**
+     * 退款
+     * @param orderId
+     * @return
+     */
+    ResultResponse shopRefundOrder(Integer orderId);
 
-    ResultResponse acceptOrder(Integer orderId);
+    /**
+     * 商家手动接单
+     * @param orderId
+     * @return
+     */
+    ResultResponse shopAcceptOrder(Integer orderId);
 
+    /**
+     * 商家服务完成(->用户+配送员)
+     * @param orderId
+     * @return
+     */
     ResultResponse shopServiceCompleted(Integer orderId);
+
+    /**
+     * 获取普通配送员订单
+     * @param expressId
+     * @param type
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultResponse<PageInfo> expressOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取管理员配送员订单
+     * @param type
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize);
 }

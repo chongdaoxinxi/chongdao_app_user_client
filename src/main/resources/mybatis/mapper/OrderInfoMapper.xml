@@ -1,437 +1,471 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chongdao.client.mapper.OrderInfoMapper">
-  <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.OrderInfo">
-    <constructor>
-      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <idArg column="service_type" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="order_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="shop_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="order_status" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="goods_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-      <arg column="service_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-      <arg column="total_discount" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-      <arg column="is_service" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="payment" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-      <arg column="follow" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="card_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="remark" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="deliver_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="payment_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="payment_type" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="shop_receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="shop_finish_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="express_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="express_receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="express_finish_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="reward" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-      <arg column="receive_address_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="deliver_address_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="coupon_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="single_service_type" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-    </constructor>
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, service_type, order_no, user_id, shop_id, order_status, goods_price, service_price,
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.OrderInfo">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <idArg column="service_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="order_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="shop_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="order_status" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="goods_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="service_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="total_discount" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="is_service" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="payment" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="follow" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="card_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="remark" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="deliver_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="payment_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="payment_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="shop_receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="shop_finish_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="express_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="express_receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="express_finish_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="reward" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="receive_address_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="deliver_address_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="coupon_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="single_service_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, service_type, order_no, user_id, shop_id, order_status, goods_price, service_price,
     total_discount, is_service, payment, follow, card_id, remark, area_code deliver_time, payment_time,
     payment_type, shop_receive_time, shop_finish_time, express_id, express_receive_time, express_finish_time,
     reward, receive_address_id, deliver_address_id, receive_time, coupon_id, create_time,
     single_service_type, update_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from order_info
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo">
-    delete from order_info
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.chongdao.client.entitys.OrderInfo">
-    insert into order_info (id, service_type, order_no,
-      user_id, shop_id, order_status,
-      goods_price, service_price, total_discount,
-      is_service, payment, follow,
-      card_id, remark, area_code, deliver_time,
-      payment_time, payment_type, shop_receive_time, shop_finish_time,
-      express_id, express_receive_time, express_finish_time,
-      reward, receive_address_id, deliver_address_id,
-      receive_time, coupon_id, create_time,
-      single_service_type, update_time)
-    values (#{id,jdbcType=INTEGER}, #{serviceType,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR},
-      #{userId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, #{orderStatus,jdbcType=INTEGER},
-      #{goodsPrice,jdbcType=DECIMAL}, #{servicePrice,jdbcType=DECIMAL}, #{totalDiscount,jdbcType=DECIMAL},
-      #{isService,jdbcType=INTEGER}, #{payment,jdbcType=DECIMAL}, #{follow,jdbcType=INTEGER},
-      #{cardId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},#{areaCode,jdbcType=VARCHAR}, #{deliverTime,jdbcType=TIMESTAMP},
-      #{paymentTime,jdbcType=TIMESTAMP}, #{paymentType,jdbcType=INTEGER}, #{shopReceiveTime,jdbcType=TIMESTAMP},
-      #{shopFinishTime,jdbcType=TIMESTAMP},
-      #{expressId,jdbcType=INTEGER}, #{expressReceiveTime,jdbcType=TIMESTAMP}, #{expressFinishTime,jdbcType=TIMESTAMP},
-      #{reward,jdbcType=DECIMAL}, #{receiveAddressId,jdbcType=INTEGER}, #{deliverAddressId,jdbcType=INTEGER},
-      #{receiveTime,jdbcType=TIMESTAMP}, #{couponId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-      #{singleServiceType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderInfo">
-    insert into order_info
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="serviceType != null">
-        service_type,
-      </if>
-      <if test="orderNo != null">
-        order_no,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="shopId != null">
-        shop_id,
-      </if>
-      <if test="orderStatus != null">
-        order_status,
-      </if>
-      <if test="goodsPrice != null">
-        goods_price,
-      </if>
-      <if test="servicePrice != null">
-        service_price,
-      </if>
-      <if test="totalDiscount != null">
-        total_discount,
-      </if>
-      <if test="isService != null">
-        is_service,
-      </if>
-      <if test="payment != null">
-        payment,
-      </if>
-      <if test="follow != null">
-        follow,
-      </if>
-      <if test="cardId != null">
-        card_id,
-      </if>
-      <if test="remark != null">
-        remark,
-      </if>
-      <if test="areaCode != null">
-        area_code,
-      </if>
-      <if test="deliverTime != null">
-        deliver_time,
-      </if>
-      <if test="paymentTime != null">
-        payment_time,
-      </if>
-      <if test="paymentType != null">
-        payment_type,
-      </if>
-      <if test="shopReceiveTime != null">
-        shop_receive_time,
-      </if>
-      <if test="shopFinishTime != null">
-        shop_finish_time,
-      </if>
-      <if test="expressId != null">
-        express_id,
-      </if>
-      <if test="expressReceiveTime != null">
-        express_receive_time,
-      </if>
-      <if test="expressFinishTime != null">
-        express_finish_time,
-      </if>
-      <if test="reward != null">
-        reward,
-      </if>
-      <if test="receiveAddressId != null">
-        receive_address_id,
-      </if>
-      <if test="deliverAddressId != null">
-        deliver_address_id,
-      </if>
-      <if test="receiveTime != null">
-        receive_time,
-      </if>
-      <if test="couponId != null">
-        coupon_id,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="singleServiceType != null">
-        single_service_type,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="serviceType != null">
-        #{serviceType,jdbcType=INTEGER},
-      </if>
-      <if test="orderNo != null">
-        #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="shopId != null">
-        #{shopId,jdbcType=INTEGER},
-      </if>
-      <if test="orderStatus != null">
-        #{orderStatus,jdbcType=INTEGER},
-      </if>
-      <if test="goodsPrice != null">
-        #{goodsPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="servicePrice != null">
-        #{servicePrice,jdbcType=DECIMAL},
-      </if>
-      <if test="totalDiscount != null">
-        #{totalDiscount,jdbcType=DECIMAL},
-      </if>
-      <if test="isService != null">
-        #{isService,jdbcType=INTEGER},
-      </if>
-      <if test="payment != null">
-        #{payment,jdbcType=DECIMAL},
-      </if>
-      <if test="follow != null">
-        #{follow,jdbcType=INTEGER},
-      </if>
-      <if test="cardId != null">
-        #{cardId,jdbcType=INTEGER},
-      </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="areaCode != null">
-        #{areaCode,jdbcType=VARCHAR},
-      </if>
-      <if test="deliverTime != null">
-        #{deliverTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="paymentTime != null">
-        #{paymentTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="paymentType != null">
-        #{paymentType,jdbcType=INTEGER},
-      </if>
-      <if test="shopReceiveTime != null">
-        #{shopReceiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="shopFinishTime != null">
-        #{shopFinishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="expressId != null">
-        #{expressId,jdbcType=INTEGER},
-      </if>
-      <if test="expressReceiveTime != null">
-        #{expressReceiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="expressFinishTime != null">
-        #{expressFinishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="reward != null">
-        #{reward,jdbcType=DECIMAL},
-      </if>
-      <if test="receiveAddressId != null">
-        #{receiveAddressId,jdbcType=INTEGER},
-      </if>
-      <if test="deliverAddressId != null">
-        #{deliverAddressId,jdbcType=INTEGER},
-      </if>
-      <if test="receiveTime != null">
-        #{receiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="couponId != null">
-        #{couponId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="singleServiceType != null">
-        #{singleServiceType,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.OrderInfo">
-    update order_info
-    <set>
-      <if test="orderNo != null">
-        order_no = #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="shopId != null">
-        shop_id = #{shopId,jdbcType=INTEGER},
-      </if>
-      <if test="orderStatus != null">
-        order_status = #{orderStatus,jdbcType=INTEGER},
-      </if>
-      <if test="goodsPrice != null">
-        goods_price = #{goodsPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="servicePrice != null">
-        service_price = #{servicePrice,jdbcType=DECIMAL},
-      </if>
-      <if test="totalDiscount != null">
-        total_discount = #{totalDiscount,jdbcType=DECIMAL},
-      </if>
-      <if test="isService != null">
-        is_service = #{isService,jdbcType=INTEGER},
-      </if>
-      <if test="payment != null">
-        payment = #{payment,jdbcType=DECIMAL},
-      </if>
-      <if test="follow != null">
-        follow = #{follow,jdbcType=INTEGER},
-      </if>
-      <if test="cardId != null">
-        card_id = #{cardId,jdbcType=INTEGER},
-      </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="areaCode != null">
-        area_code = #{areaCode,jdbcType=VARCHAR},
-      </if>
-      <if test="deliverTime != null">
-        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="paymentTime != null">
-        payment_time = #{paymentTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="paymentType != null">
-        payment_type = #{paymentType,jdbcType=INTEGER},
-      </if>
-      <if test="shopReceiveTime != null">
-        shop_receive_time = #{shopReceiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="shopFinishTime != null">
-        shop_finish_time = #{shopFinishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="expressId != null">
-        express_id = #{expressId,jdbcType=INTEGER},
-      </if>
-      <if test="expressReceiveTime != null">
-        express_receive_time = #{expressReceiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="expressFinishTime != null">
-        express_finish_time = #{expressFinishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="reward != null">
-        reward = #{reward,jdbcType=DECIMAL},
-      </if>
-      <if test="receiveAddressId != null">
-        receive_address_id = #{receiveAddressId,jdbcType=INTEGER},
-      </if>
-      <if test="deliverAddressId != null">
-        deliver_address_id = #{deliverAddressId,jdbcType=INTEGER},
-      </if>
-      <if test="receiveTime != null">
-        receive_time = #{receiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="couponId != null">
-        coupon_id = #{couponId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="singleServiceType != null">
-        single_service_type = #{singleServiceType,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo">
-    update order_info
-    set order_no = #{orderNo,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER},
-      shop_id = #{shopId,jdbcType=INTEGER},
-      order_status = #{orderStatus,jdbcType=INTEGER},
-      goods_price = #{goodsPrice,jdbcType=DECIMAL},
-      service_price = #{servicePrice,jdbcType=DECIMAL},
-      total_discount = #{totalDiscount,jdbcType=DECIMAL},
-      is_service = #{isService,jdbcType=INTEGER},
-      payment = #{payment,jdbcType=DECIMAL},
-      follow = #{follow,jdbcType=INTEGER},
-      card_id = #{cardId,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR},
-      area_code = #{areaCode,jdbcType=VARCHAR},
-      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
-      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
-      payment_type = #{paymentType,jdbcType=INTEGER},
-      shop_receive_time = #{shopReceiveTime,jdbcType=TIMESTAMP},
-      shop_finish_time = #{shopFinishTime,jdbcType=TIMESTAMP},
-      express_id = #{expressId,jdbcType=INTEGER},
-      express_receive_time = #{expressReceiveTime,jdbcType=TIMESTAMP},
-      express_finish_time = #{expressFinishTime,jdbcType=TIMESTAMP},
-      reward = #{reward,jdbcType=DECIMAL},
-      receive_address_id = #{receiveAddressId,jdbcType=INTEGER},
-      deliver_address_id = #{deliverAddressId,jdbcType=INTEGER},
-      receive_time = #{receiveTime,jdbcType=TIMESTAMP},
-      coupon_id = #{couponId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      single_service_type = #{singleServiceType,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo">
+        delete
+        from order_info
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.chongdao.client.entitys.OrderInfo">
+        insert into order_info (id, service_type, order_no,
+                                user_id, shop_id, order_status,
+                                goods_price, service_price, total_discount,
+                                is_service, payment, follow,
+                                card_id, remark, area_code, deliver_time,
+                                payment_time, payment_type, shop_receive_time, shop_finish_time,
+                                express_id, express_receive_time, express_finish_time,
+                                reward, receive_address_id, deliver_address_id,
+                                receive_time, coupon_id, create_time,
+                                single_service_type, update_time)
+        values (#{id,jdbcType=INTEGER}, #{serviceType,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR},
+                #{userId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, #{orderStatus,jdbcType=INTEGER},
+                #{goodsPrice,jdbcType=DECIMAL}, #{servicePrice,jdbcType=DECIMAL}, #{totalDiscount,jdbcType=DECIMAL},
+                #{isService,jdbcType=INTEGER}, #{payment,jdbcType=DECIMAL}, #{follow,jdbcType=INTEGER},
+                #{cardId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR},
+                #{deliverTime,jdbcType=TIMESTAMP},
+                #{paymentTime,jdbcType=TIMESTAMP}, #{paymentType,jdbcType=INTEGER},
+                #{shopReceiveTime,jdbcType=TIMESTAMP},
+                #{shopFinishTime,jdbcType=TIMESTAMP},
+                #{expressId,jdbcType=INTEGER}, #{expressReceiveTime,jdbcType=TIMESTAMP},
+                #{expressFinishTime,jdbcType=TIMESTAMP},
+                #{reward,jdbcType=DECIMAL}, #{receiveAddressId,jdbcType=INTEGER}, #{deliverAddressId,jdbcType=INTEGER},
+                #{receiveTime,jdbcType=TIMESTAMP}, #{couponId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+                #{singleServiceType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderInfo">
+        insert into order_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="serviceType != null">
+                service_type,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="goodsPrice != null">
+                goods_price,
+            </if>
+            <if test="servicePrice != null">
+                service_price,
+            </if>
+            <if test="totalDiscount != null">
+                total_discount,
+            </if>
+            <if test="isService != null">
+                is_service,
+            </if>
+            <if test="payment != null">
+                payment,
+            </if>
+            <if test="follow != null">
+                follow,
+            </if>
+            <if test="cardId != null">
+                card_id,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="areaCode != null">
+                area_code,
+            </if>
+            <if test="deliverTime != null">
+                deliver_time,
+            </if>
+            <if test="paymentTime != null">
+                payment_time,
+            </if>
+            <if test="paymentType != null">
+                payment_type,
+            </if>
+            <if test="shopReceiveTime != null">
+                shop_receive_time,
+            </if>
+            <if test="shopFinishTime != null">
+                shop_finish_time,
+            </if>
+            <if test="expressId != null">
+                express_id,
+            </if>
+            <if test="expressReceiveTime != null">
+                express_receive_time,
+            </if>
+            <if test="expressFinishTime != null">
+                express_finish_time,
+            </if>
+            <if test="reward != null">
+                reward,
+            </if>
+            <if test="receiveAddressId != null">
+                receive_address_id,
+            </if>
+            <if test="deliverAddressId != null">
+                deliver_address_id,
+            </if>
+            <if test="receiveTime != null">
+                receive_time,
+            </if>
+            <if test="couponId != null">
+                coupon_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="singleServiceType != null">
+                single_service_type,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="serviceType != null">
+                #{serviceType,jdbcType=INTEGER},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="goodsPrice != null">
+                #{goodsPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="servicePrice != null">
+                #{servicePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="totalDiscount != null">
+                #{totalDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="isService != null">
+                #{isService,jdbcType=INTEGER},
+            </if>
+            <if test="payment != null">
+                #{payment,jdbcType=DECIMAL},
+            </if>
+            <if test="follow != null">
+                #{follow,jdbcType=INTEGER},
+            </if>
+            <if test="cardId != null">
+                #{cardId,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="areaCode != null">
+                #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deliverTime != null">
+                #{deliverTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paymentTime != null">
+                #{paymentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paymentType != null">
+                #{paymentType,jdbcType=INTEGER},
+            </if>
+            <if test="shopReceiveTime != null">
+                #{shopReceiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="shopFinishTime != null">
+                #{shopFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expressId != null">
+                #{expressId,jdbcType=INTEGER},
+            </if>
+            <if test="expressReceiveTime != null">
+                #{expressReceiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expressFinishTime != null">
+                #{expressFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reward != null">
+                #{reward,jdbcType=DECIMAL},
+            </if>
+            <if test="receiveAddressId != null">
+                #{receiveAddressId,jdbcType=INTEGER},
+            </if>
+            <if test="deliverAddressId != null">
+                #{deliverAddressId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="couponId != null">
+                #{couponId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="singleServiceType != null">
+                #{singleServiceType,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.OrderInfo">
+        update order_info
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="shopId != null">
+                shop_id = #{shopId,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="goodsPrice != null">
+                goods_price = #{goodsPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="servicePrice != null">
+                service_price = #{servicePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="totalDiscount != null">
+                total_discount = #{totalDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="isService != null">
+                is_service = #{isService,jdbcType=INTEGER},
+            </if>
+            <if test="payment != null">
+                payment = #{payment,jdbcType=DECIMAL},
+            </if>
+            <if test="follow != null">
+                follow = #{follow,jdbcType=INTEGER},
+            </if>
+            <if test="cardId != null">
+                card_id = #{cardId,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="areaCode != null">
+                area_code = #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deliverTime != null">
+                deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paymentTime != null">
+                payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paymentType != null">
+                payment_type = #{paymentType,jdbcType=INTEGER},
+            </if>
+            <if test="shopReceiveTime != null">
+                shop_receive_time = #{shopReceiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="shopFinishTime != null">
+                shop_finish_time = #{shopFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expressId != null">
+                express_id = #{expressId,jdbcType=INTEGER},
+            </if>
+            <if test="expressReceiveTime != null">
+                express_receive_time = #{expressReceiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expressFinishTime != null">
+                express_finish_time = #{expressFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reward != null">
+                reward = #{reward,jdbcType=DECIMAL},
+            </if>
+            <if test="receiveAddressId != null">
+                receive_address_id = #{receiveAddressId,jdbcType=INTEGER},
+            </if>
+            <if test="deliverAddressId != null">
+                deliver_address_id = #{deliverAddressId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="couponId != null">
+                coupon_id = #{couponId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="singleServiceType != null">
+                single_service_type = #{singleServiceType,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo">
+        update order_info
+        set order_no             = #{orderNo,jdbcType=VARCHAR},
+            user_id              = #{userId,jdbcType=INTEGER},
+            shop_id              = #{shopId,jdbcType=INTEGER},
+            order_status         = #{orderStatus,jdbcType=INTEGER},
+            goods_price          = #{goodsPrice,jdbcType=DECIMAL},
+            service_price        = #{servicePrice,jdbcType=DECIMAL},
+            total_discount       = #{totalDiscount,jdbcType=DECIMAL},
+            is_service           = #{isService,jdbcType=INTEGER},
+            payment              = #{payment,jdbcType=DECIMAL},
+            follow               = #{follow,jdbcType=INTEGER},
+            card_id              = #{cardId,jdbcType=INTEGER},
+            remark               = #{remark,jdbcType=VARCHAR},
+            area_code            = #{areaCode,jdbcType=VARCHAR},
+            deliver_time         = #{deliverTime,jdbcType=TIMESTAMP},
+            payment_time         = #{paymentTime,jdbcType=TIMESTAMP},
+            payment_type         = #{paymentType,jdbcType=INTEGER},
+            shop_receive_time    = #{shopReceiveTime,jdbcType=TIMESTAMP},
+            shop_finish_time     = #{shopFinishTime,jdbcType=TIMESTAMP},
+            express_id           = #{expressId,jdbcType=INTEGER},
+            express_receive_time = #{expressReceiveTime,jdbcType=TIMESTAMP},
+            express_finish_time  = #{expressFinishTime,jdbcType=TIMESTAMP},
+            reward               = #{reward,jdbcType=DECIMAL},
+            receive_address_id   = #{receiveAddressId,jdbcType=INTEGER},
+            deliver_address_id   = #{deliverAddressId,jdbcType=INTEGER},
+            receive_time         = #{receiveTime,jdbcType=TIMESTAMP},
+            coupon_id            = #{couponId,jdbcType=INTEGER},
+            create_time          = #{createTime,jdbcType=TIMESTAMP},
+            single_service_type  = #{singleServiceType,jdbcType=INTEGER},
+            update_time          = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 
-  <select id="selectByUserIdAndOrderNo" resultMap="BaseResultMap" parameterType="map">
-    select <include refid="Base_Column_List"/>
-    from order_info
-    where order_no = #{orderNo}
-    and user_id = #{userId}
-  </select>
+    <select id="selectByUserIdAndOrderNo" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where order_no = #{orderNo}
+        and user_id = #{userId}
+    </select>
 
 
-  <select id="selectByOrderNo" parameterType="String" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
-    from order_info
-    where  order_no = #{orderNo}
-  </select>
+    <select id="selectByOrderNo" parameterType="String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where order_no = #{orderNo}
+    </select>
 
-  <select id="selectByUserIdList" parameterType="map" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
-    from order_info
-    where  user_id = #{userId}
-    and order_status in (${type})
-  </select>
-
-  <select id="selectByShopIdList" parameterType="map" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
-    from order_info
-    where  shop_id = #{shopId}
-      <if test="type != null">
+    <select id="selectByUserIdList" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where user_id = #{userId}
         and order_status in (${type})
-      </if>
-    order by order_info.create_time
-  </select>
-  <select id="findByShopIdAll" parameterType="int" resultType="integer">
-    select count(1) from order_info where shop_id = #{shopId} and status = 4
-  </select>
+    </select>
 
-  <select id="findByShopIdPunctuality" parameterType="int" resultType="integer">
-    select count(1) from order_info where shop_id = #{shopId} and status = 4
-    and UNIX_TIMESTAMP(shop_finish_time) <![CDATA[<= ]]> UNIX_TIMESTAMP(deliver_time)
-  </select>
+    <select id="selectByShopIdList" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where shop_id = #{shopId}
+        <if test="type != null">
+            and order_status in (${type})
+        </if>
+        order by order_info.create_time
+    </select>
+    <select id="findByShopIdAll" parameterType="int" resultType="integer">
+        select count(1)
+        from order_info
+        where shop_id = #{shopId}
+          and status = 4
+    </select>
+
+    <select id="findByShopIdPunctuality" parameterType="int" resultType="integer">
+        select count(1)
+        from order_info
+        where shop_id = #{shopId}
+          and status = 4
+          and UNIX_TIMESTAMP(shop_finish_time) <![CDATA[<= ]]> UNIX_TIMESTAMP(deliver_time)
+    </select>
+    <select id="selectExpressOrderList" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where express_id = #{expressId}
+        <if test="type != null">
+            and order_status in (${type})
+        </if>
+        order by order_info.create_time desc, order_info.order_status desc
+    </select>
+    <select id="selectExpressAdminOrderList" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where 1 = 1
+        <if test="type != null">
+            and order_status in (${type})
+        </if>
+        order by order_info.create_time desc, order_info.order_status desc
+    </select>
 </mapper>

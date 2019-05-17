@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class ShopManageServiceImpl implements ShopManageService {
     @Autowired
-    private ShopRepository shopRespository;
+    private ShopRepository shopRepository;
 
     @Override
     public ResultResponse shopLogin(String name, String password) {
@@ -35,7 +35,7 @@ public class ShopManageServiceImpl implements ShopManageService {
             return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         //正确性校验
-        Optional<Shop> shop = shopRespository.findByAccountName(name);
+        Optional<Shop> shop = shopRepository.findByAccountName(name);
         if(shop.isPresent()){
             Shop s = shop.get();
             String pwd = s.getPassword();
@@ -62,7 +62,7 @@ public class ShopManageServiceImpl implements ShopManageService {
         sVo.setLastLoginTime(current);
         //记录下最后登录时间
         s.setLastLoginTime(current);
-        shopRespository.saveAndFlush(s);
+        shopRepository.saveAndFlush(s);
         //生成token
         sVo.setToken(TokenUtil.generateToken(shopId, accountName, current));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), sVo);
@@ -76,7 +76,7 @@ public class ShopManageServiceImpl implements ShopManageService {
     @Override
     public ResultResponse<ShopManageVO> getShopInfo(Integer shopId) {
         return Optional.ofNullable(shopId)
-                .flatMap(id -> shopRespository.findById(shopId))
+                .flatMap(id -> shopRepository.findById(shopId))
                 .map(s -> {
                     ShopManageVO smVo = new ShopManageVO();
                     BeanUtils.copyProperties(s, smVo);
@@ -89,7 +89,7 @@ public class ShopManageServiceImpl implements ShopManageService {
         return Optional.ofNullable(shop)
                 .map(s -> {
                     s.setUpdateTime(new Date());
-                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRespository.saveAndFlush(s));
+                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.saveAndFlush(s));
                 })
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }

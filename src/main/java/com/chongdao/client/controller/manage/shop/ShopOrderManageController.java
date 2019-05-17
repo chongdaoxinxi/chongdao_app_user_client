@@ -42,7 +42,7 @@ public class ShopOrderManageController {
      */
     @GetMapping("/acceptOrder")
     public ResultResponse acceptOrder(Integer orderId) {
-        return orderService.acceptOrder(orderId);
+        return orderService.shopAcceptOrder(orderId);
     }
 
     /**
@@ -52,7 +52,7 @@ public class ShopOrderManageController {
      */
     @GetMapping("/refuseOrder")
     public ResultResponse refuseOrder(Integer orderId) {
-        return orderService.refuseOrder(orderId);
+        return orderService.shopRefuseOrder(orderId);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ShopOrderManageController {
      */
     @GetMapping("/refundOrder")
     public ResultResponse refundOrder(Integer orderId) {
-        return orderService.refundOrder(orderId);
+        return orderService.shopRefundOrder(orderId);
     }
 
     /**
