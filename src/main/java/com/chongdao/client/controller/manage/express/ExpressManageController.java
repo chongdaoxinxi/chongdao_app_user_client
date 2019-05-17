@@ -37,7 +37,7 @@ public class ExpressManageController {
     }
 
     /**
-     * 获取订单列表(可接, 已接, 已完成
+     * 获取订单列表(可接, 已接, 已完成)
      * @param token
      * @param type
      * @param pageNum

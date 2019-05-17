@@ -37,7 +37,7 @@ public class SmsServiceImpl implements SmsService {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
     @Autowired
-    private ShopRepository shopRespository;
+    private ShopRepository shopRepository;
     @Autowired
     private ExpressRepository expressRepository;
     @Autowired
@@ -285,7 +285,7 @@ public class SmsServiceImpl implements SmsService {
         return Optional.ofNullable(orderId)
                 .flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> o.getShopId())
-                .flatMap(sId -> shopRespository.findById(sId))
+                .flatMap(sId -> shopRepository.findById(sId))
                 .map(s -> s.getPhone())
                 .orElse(null);
     }

@@ -5,7 +5,7 @@ import com.chongdao.client.common.ResultResponse;
 import java.util.List;
 
 /**
- * 短信通知服务
+ * 短信通知服务(标准模版:msg+phone+shopName/null+orderNo, 非标准模版请单独写方法)
  */
 public interface SmsService {
 
@@ -28,12 +28,40 @@ public interface SmsService {
      */
     void remove(String telephone);
 
+    /**
+     * 通用短信通知(单个人)
+     *
+     * @param msg
+     * @param shopName
+     * @param orderNo
+     * @param phone
+     */
     void customOrderMsgSenderSimple(String msg, String shopName, String orderNo, String phone);
 
+    /**
+     * 通用短信通知(单个人, 只有订单号)
+     * @param msg
+     * @param orderNo
+     * @param phone
+     */
     void customOrderMsgSenderSimpleNoShopName(String msg, String orderNo, String phone);
 
+    /**
+     * 通用短信通知(批量)
+     *
+     * @param msg
+     * @param shopName
+     * @param orderNo
+     * @param phoneList
+     */
     void customOrderMsgSenderPatch(String msg, String shopName, String orderNo, List<String> phoneList);
 
+    /**
+     * 通用短信通知(批量, 只有订单号)
+     * @param msg
+     * @param orderNo
+     * @param phoneList
+     */
     void customOrderMsgSenderPatchNoShopName(String msg, String orderNo, List<String> phoneList);
 
     /**
