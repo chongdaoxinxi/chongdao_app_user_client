@@ -2,8 +2,8 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.enums.ManageStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.enums.ShopManageStatusEnum;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopManageService;
 import com.chongdao.client.utils.TokenUtil;
@@ -32,7 +32,7 @@ public class ShopManageServiceImpl implements ShopManageService {
     public ResultResponse shopLogin(String name, String password) {
         // 非空校验
         if(StringUtils.isBlank(name) || StringUtils.isBlank(password)) {
-            return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         //正确性校验
         Optional<Shop> shop = shopRepository.findByAccountName(name);
@@ -44,11 +44,11 @@ public class ShopManageServiceImpl implements ShopManageService {
                 return assembleShopLogin(s);
             } else {
                 //不正确的密码
-                return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_ERROR_PASSWORD.getStatus(), ShopManageStatusEnum.SHOP_ERROR_PASSWORD.getMessage());
+                return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_ERROR_PASSWORD.getStatus(), ManageStatusEnum.SHOP_ERROR_PASSWORD.getMessage());
             }
         } else {
             // 无效用户名
-            return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NOT_EXIST_ERROR.getStatus(), ShopManageStatusEnum.SHOP_NOT_EXIST_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NOT_EXIST_ERROR.getStatus(), ManageStatusEnum.SHOP_NOT_EXIST_ERROR.getMessage());
         }
     }
 

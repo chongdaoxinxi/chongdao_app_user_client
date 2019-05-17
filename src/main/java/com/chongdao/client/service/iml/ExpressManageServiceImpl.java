@@ -1,8 +1,19 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Express;
+import com.chongdao.client.enums.ManageStatusEnum;
+import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.repository.ExpressRepository;
 import com.chongdao.client.service.ExpressManageService;
+import com.chongdao.client.utils.TokenUtil;
+import com.chongdao.client.vo.ExpressLoginVO;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * @Description 配送端
@@ -12,29 +23,46 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class ExpressManageServiceImpl implements ExpressManageService {
+    @Autowired
+    private ExpressRepository expressRepository;
+
     @Override
     public ResultResponse expressLogin(String username, String password) {
-//        // 非空校验
-//        if(StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-//            return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
-//        }
-//        //正确性校验
-//        Optional<Shop> shop = shopRespository.findByAccountName(username);
-//        if(shop.isPresent()){
-//            Shop s = shop.get();
-//            String pwd = s.getPassword();
-//            if(StringUtils.isNoneBlank(pwd) && pwd.equals(password)) {
-//                //密码正确 进入下一步
-//                return assembleShopLogin(s);
-//            } else {
-//                //不正确的密码
-//                return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_ERROR_PASSWORD.getStatus(), ShopManageStatusEnum.SHOP_ERROR_PASSWORD.getMessage());
-//            }
-//        } else {
-//            // 无效用户名
-//            return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NOT_EXIST_ERROR.getStatus(), ShopManageStatusEnum.SHOP_NOT_EXIST_ERROR.getMessage());
-//        }
-        return null;
+        // 非空校验
+        if(StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
+        }
+        //正确性校验
+        Optional<Express> expresseOp = expressRepository.findByUsernameAndPassword(username, password);
+        if(expresseOp.isPresent()) {
+            Express express = expresseOp.get();
+            Integer status = express.getStatus();
+            if(status == 1) {
+                return assembleExpressLogin(express);
+            } else {
+                return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ACCOUNT_FREEZE.getStatus(), ManageStatusEnum.ACCOUNT_FREEZE.getMessage());
+            }
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_ERROR_PASSWORD.getStatus(), ManageStatusEnum.SHOP_ERROR_PASSWORD.getMessage());
+        }
+    }
+
+    private ResultResponse assembleExpressLogin(Express express) {
+        Integer id = express.getId();
+        String username = express.getUsername();
+        String password = express.getPassword();
+        if(id != null && username != null && password != null) {
+            ExpressLoginVO eVo = new ExpressLoginVO();
+            eVo.setExpressId(id);
+            eVo.setUsername(username);
+            eVo.setPassword(password);
+            Date date = new Date();
+            eVo.setLastLoginTime(date);
+            eVo.setToken(TokenUtil.generateToken(id, username, date));
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), eVo);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ACCOUNT_INFO_ERROR.getStatus(), ManageStatusEnum.ACCOUNT_INFO_ERROR.getMessage());
+        }
     }
 
     @Override

@@ -9,7 +9,7 @@ import lombok.Getter;
  * @Version 1.0
  **/
 @Getter
-public enum  ShopManageStatusEnum {
+public enum ManageStatusEnum {
     SHOP_EXIST_ERROR(410,"用户已存在"),
     SHOP_CODE_ERROR(411,"验证码错误"),
     SHOP_NAME_NOT_EMPTY(412,"用户名不能为空"),
@@ -21,12 +21,14 @@ public enum  ShopManageStatusEnum {
     SHOP_NOT_LOGIN_OR_TOKEN_EXPIRED(418,"用户未登录或token已过期"),
     SHOP_NOT_EXIST_ERROR(419,"用户已存在"),
     SHOP_ERROR_PASSWORD(420,"用户名或密码不正确"),
+    ACCOUNT_FREEZE(421,"帐号已被冻结"),
+    ACCOUNT_INFO_ERROR(422, "帐号信息错误"),
     ;
 
     private int status;
     private String message;
 
-    ShopManageStatusEnum(int status,String message){
+    ManageStatusEnum(int status, String message){
         this.status = status;
         this.message = message;
     }
