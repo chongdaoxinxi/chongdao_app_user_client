@@ -2,6 +2,10 @@ package com.chongdao.client.controller.manage.express;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.ExpressManageService;
+import com.chongdao.client.service.ExpressOrderService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExpressManageController {
     @Autowired
     private ExpressManageService expressManageService;
+    @Autowired
+    private ExpressOrderService expressOrderService;
 
     /**
      * 登录
@@ -49,8 +55,9 @@ public class ExpressManageController {
      * @return
      */
     @GetMapping("/getExpressOrderList")
-    public ResultResponse getExpressOrderList(String token, Integer type, Integer pageNum, Integer pageSize) {
-        return null;
+    public ResultResponse<PageInfo> getExpressOrderList(String token, String type, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.getExpressOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 
     /**
@@ -62,8 +69,9 @@ public class ExpressManageController {
      * @return
      */
     @GetMapping("/getExpressManageOrderList")
-    public ResultResponse getExpressManageOrderList(String token, Integer type, Integer pageNum, Integer pageSize) {
-        return null;
+    public ResultResponse<PageInfo> getExpressManageOrderList(String token, String type, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.getExpressAdminOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 
     /**
@@ -79,6 +87,7 @@ public class ExpressManageController {
 
     /**
      * 取消订单(状态变为-1)-----------疑问 此方法存在合理嘛
+     * @param token
      * @param orderId
      * @return
      */

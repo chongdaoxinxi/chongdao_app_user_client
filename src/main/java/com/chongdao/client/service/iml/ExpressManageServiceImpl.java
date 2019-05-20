@@ -33,9 +33,9 @@ public class ExpressManageServiceImpl implements ExpressManageService {
             return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         //正确性校验
-        Optional<Express> expresseOp = expressRepository.findByUsernameAndPassword(username, password);
-        if(expresseOp.isPresent()) {
-            Express express = expresseOp.get();
+        Optional<Express> expressOp = expressRepository.findByUsernameAndPassword(username, password);
+        if(expressOp.isPresent()) {
+            Express express = expressOp.get();
             Integer status = express.getStatus();
             if(status == 1) {
                 return assembleExpressLogin(express);
