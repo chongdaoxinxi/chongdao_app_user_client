@@ -23,6 +23,7 @@ public enum ManageStatusEnum {
     SHOP_ERROR_PASSWORD(420,"用户名或密码不正确"),
     ACCOUNT_FREEZE(421,"帐号已被冻结"),
     ACCOUNT_INFO_ERROR(422, "帐号信息错误"),
+    ORDER_CANNT_ACCEPT(423, "订单状态已改变, 无法接单"),
     ;
 
     private int status;

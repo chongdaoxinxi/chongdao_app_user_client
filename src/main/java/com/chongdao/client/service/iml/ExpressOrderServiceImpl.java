@@ -5,11 +5,14 @@ import com.chongdao.client.entitys.OrderDetail;
 import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.UserAddress;
+import com.chongdao.client.enums.ManageStatusEnum;
+import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.OrderDetailMapper;
 import com.chongdao.client.mapper.OrderInfoMapper;
 import com.chongdao.client.mapper.ShopMapper;
 import com.chongdao.client.mapper.UserAddressMapper;
+import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.service.ExpressOrderService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.vo.OrderGoodsVo;
@@ -39,6 +42,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     private ShopMapper shopMapper;
     @Autowired
     private UserAddressMapper addressMapper;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
     /**
      * 获取订单列表(可接, 已接, 已完成)
@@ -65,7 +70,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             type = "";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectExpressOrderList(expressId, type);
-        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList,null);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
@@ -86,17 +91,17 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
         PageHelper.startPage(pageNum, pageSize);
-        if(type.equals("all")) {
+        if (type.equals("all")) {
             type = null;
         } else if (type.equals("1")) {
             type = "2,3,4,5,6,7,8,9,10,11,12,13";//商家已接单
         } else if (type.equals("2")) {
             type = "-1,0,1";//商家未接单
-        }else {
+        } else {
             type = "";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectExpressAdminOrderList(type);
-        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList,null);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
@@ -111,7 +116,74 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      */
     @Override
     public ResultResponse expressAcceptOrder(Integer expressId, Integer orderId) {
-        return null;
+        if (expressId != null && orderId != null) {
+            OrderInfo odi = orderInfoRepository.findById(orderId).orElse(null);
+            if (odi != null) {
+                Integer orderStatus = odi.getOrderStatus();
+                if (orderStatus != OrderStatusEnum.ACCEPTED_ORDER.getStatus()) {
+                    return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ORDER_CANNT_ACCEPT.getStatus(), ManageStatusEnum.ORDER_CANNT_ACCEPT.getMessage());
+                } else {
+                    //保存配送员id及更新状态至7
+                    odi.setExpressId(orderId);
+                    odi.setOrderStatus(OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus());
+                    //此处是否应该存入配送员接单时间
+                    //TODO
+                    orderInfoRepository.saveAndFlush(odi);
+
+                    //短信通知用户
+                    //TODO
+                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+                }
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+    }
+
+    /**
+     * 到店
+     *
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse arriveShop(Integer expressId, Integer orderId) {
+        if(expressId != null && orderId != null) {
+            OrderInfo odi = orderInfoRepository.findById(orderId).orElse(null);
+            if(odi != null) {
+                Integer serviceType = odi.getServiceType();
+                if(serviceType == 1) {
+                    //单程 直接转掉服务完成方法
+                    return serviceComplete(expressId, orderId);
+                } else if(serviceType == 2) {
+                    //双程
+                    odi.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());
+                    orderInfoRepository.saveAndFlush(odi);
+                    //短信通知  用户/商家
+                    //TODO
+                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+                }
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+    }
+
+    /**
+     * 服务完成
+     *
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse serviceComplete(Integer expressId, Integer orderId) {
+        if(expressId != null && orderId != null) {
+            OrderInfo odi = orderInfoRepository.findById(orderId).orElse(null);
+            if(odi != null) {
+                //TODO ???单程是否应该是店铺服务完成才算订单结束呢
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
     }
 
     /**
@@ -127,46 +199,23 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     /**
-     * 到店
-     *
-     * @param expressId
-     * @param orderId
-     * @return
-     */
-    @Override
-    public ResultResponse arriveShop(Integer expressId, Integer orderId) {
-        return null;
-    }
-
-    /**
-     * 服务完成
-     *
-     * @param expressId
-     * @param orderId
-     * @return
-     */
-    @Override
-    public ResultResponse serviceComplete(Integer expressId, Integer orderId) {
-        return null;
-    }
-
-    /**
      * 封装订单列表
+     *
      * @param orderList
      * @param userId
      * @return
      */
-    private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList, Integer userId){
+    private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList, Integer userId) {
         List<OrderVo> orderVoList = Lists.newArrayList();
-        for(OrderInfo order : orderList){
-            List<OrderDetail>  orderItemList = Lists.newArrayList();
-            if(userId == null){
+        for (OrderInfo order : orderList) {
+            List<OrderDetail> orderItemList = Lists.newArrayList();
+            if (userId == null) {
                 //todo 管理员查询的时候 不需要传userId
                 orderItemList = orderDetailMapper.getByOrderNo(order.getOrderNo());
-            }else{
-                orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(),userId);
+            } else {
+                orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(), userId);
             }
-            OrderVo orderVo = assembleOrderVo(order,orderItemList);
+            OrderVo orderVo = assembleOrderVo(order, orderItemList);
             orderVoList.add(orderVo);
         }
         return orderVoList;
@@ -175,25 +224,26 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
 
     /**
      * 封装订单详情
+     *
      * @param order
      * @param orderItemList
      * @return
      */
-    private OrderVo assembleOrderVo(OrderInfo order,List<OrderDetail> orderItemList){
+    private OrderVo assembleOrderVo(OrderInfo order, List<OrderDetail> orderItemList) {
         OrderVo orderVo = new OrderVo();
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-        BeanUtils.copyProperties(order,orderVo);
+        BeanUtils.copyProperties(order, orderVo);
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         //接宠地址
         UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
         //送宠地址
         UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
-        if (receiveAddress != null){
+        if (receiveAddress != null) {
             orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
         }
-        if (deliverAddress != null){
+        if (deliverAddress != null) {
             orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
         }
         //订单明细

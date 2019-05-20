@@ -82,7 +82,8 @@ public class ExpressManageController {
      */
     @GetMapping("/expressAcceptOrder")
     public ResultResponse expressAcceptOrder(String token, Integer orderId){
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.expressAcceptOrder(tokenVo.getUserId(), orderId);
     }
 
     /**
@@ -93,7 +94,8 @@ public class ExpressManageController {
      */
     @GetMapping("/cancelOrder")
     public ResultResponse cancelOrder(String token, Integer orderId) {
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.cancelOrder(tokenVo.getUserId(), orderId);
     }
 
     /**
@@ -104,7 +106,8 @@ public class ExpressManageController {
      */
     @GetMapping("/arriveShop")
     public ResultResponse arriveShop(String token, Integer orderId) {
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.arriveShop(tokenVo.getUserId(), orderId);
     }
 
     /**
@@ -115,6 +118,7 @@ public class ExpressManageController {
      */
     @GetMapping("/serviceComplete")
     public ResultResponse serviceComplete(String token, Integer orderId) {
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.serviceComplete(tokenVo.getUserId(), orderId);
     }
 }
