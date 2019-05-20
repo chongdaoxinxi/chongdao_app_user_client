@@ -1,32 +1,11 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
-import com.github.pagehelper.PageInfo;
 
 /**
  * 配送端获取订单列表接口
  */
 public interface ExpressOrderService {
-    /**
-     * 获取订单列表(可接, 已接, 已完成)
-     * @param expressId
-     * @param type
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    ResultResponse<PageInfo> getExpressOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize);
-
-    /**
-     * 获取配送管理员订单列表(商家已接单, 商家未接单)
-     * @param expressId
-     * @param type
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    ResultResponse<PageInfo> getExpressAdminOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize);
-
     /**
      * 接单
      * @param expressId

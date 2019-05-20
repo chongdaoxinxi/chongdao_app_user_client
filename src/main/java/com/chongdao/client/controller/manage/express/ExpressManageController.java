@@ -3,6 +3,7 @@ package com.chongdao.client.controller.manage.express;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.ExpressManageService;
 import com.chongdao.client.service.ExpressOrderService;
+import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
@@ -24,6 +25,8 @@ public class ExpressManageController {
     private ExpressManageService expressManageService;
     @Autowired
     private ExpressOrderService expressOrderService;
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 登录
@@ -57,7 +60,7 @@ public class ExpressManageController {
     @GetMapping("/getExpressOrderList")
     public ResultResponse<PageInfo> getExpressOrderList(String token, String type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return expressOrderService.getExpressOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
+        return orderService.expressOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 
     /**
@@ -70,8 +73,7 @@ public class ExpressManageController {
      */
     @GetMapping("/getExpressManageOrderList")
     public ResultResponse<PageInfo> getExpressManageOrderList(String token, String type, Integer pageNum, Integer pageSize) {
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return expressOrderService.getExpressAdminOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
+        return orderService.expressAdminOrderList(type, pageNum, pageSize);
     }
 
     /**

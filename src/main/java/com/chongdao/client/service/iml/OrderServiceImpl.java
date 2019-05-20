@@ -751,7 +751,7 @@ public class OrderServiceImpl implements OrderService {
         PageHelper.startPage(pageNum,pageSize);
         if(type.equals("1")) {
             //商家未接单
-            type = "-1,1";
+            type = "-1,0,1";
         } else if(type.equals("2")) {
             //商家已接单
             type = "2,3,4,5,6,7,8,9,10,11,12,13";
