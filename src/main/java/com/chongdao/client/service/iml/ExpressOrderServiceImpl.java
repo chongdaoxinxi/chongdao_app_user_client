@@ -8,7 +8,6 @@ import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
-import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.ExpressOrderService;
 import com.chongdao.client.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,6 @@ import java.util.List;
 public class ExpressOrderServiceImpl implements ExpressOrderService {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private SmsService smsService;
     @Autowired
@@ -171,7 +168,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     /**
-     * 取消订单(状态变为-1)-----------疑问 此方法存在合理嘛
+     * 取消订单(状态变为-1)-----------?? 此方法存在合理嘛
      *
      * @param expressId
      * @param orderId
