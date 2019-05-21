@@ -24,36 +24,32 @@ public class SMSUtil {
 
 	private String SmsIdentifyCode;
 
-	private String UserNewSendMessage;
-	private String UserOrderTimeOutNotAccept;
-	private String UserMerchantOrder;
-	private String UserPetsServed;
-	private String UserGoodsServed;
-	private String UserMerchantCompletion;
-	private String UserPetArrived;
-	private String UserPickUpPets;
-	private String UserRefund;
-	private String UserRefundAgree;
-	private String UserRefundArrived;
-	private String UserOrderRefuse;
-	private String UserOrderRefund;
-	private String UserTopUp;
-
-	private String ShopNewOrder;
-	private String ShopNewOrderAuto;
-	private String ShopUserRefund;
-	private String ShopPetArrived;
-	private String ShopAcceptOrder;
-	private String ShopRefuseOrder;
-	private String ShopAcceptRefund;
-	private String ShopAgreeRefundOrder;
-	private String ShopTimeoutNotAccept;
-
-	private String ExpressNewOrder;
-	private String ExpressOrderAssigned;
-	private String ExpressRefundOrder;
-	private String ExpressServiceComplete;
-	private String ExpressOrderComplete;
+	private String NewOrderUser;
+	private String NewOrderShop;
+	private String OrderAutoAcceptShop;
+	private String OrderAcceptUser;
+	private String OrderAcceptShop;
+	private String NewOrderExpress;
+	private String OrderTimeOutNotAcceptUser;
+	private String OrderTimeoutNotAcceptShop;
+	private String OrderRefuseUser;
+	private String OrderAssignedExpress;
+	private String OrderGoodsServedUser;
+	private String OrderPetArrivedUser;
+	private String OrderPetsServedUser;
+	private String OrderPetArrivedShop;
+	private String OrderShopServiceCompleteUser;
+	private String OrderShopServiceCompleteExpress;
+	private String OrderPickUpPetsUser;
+	private String OrderUserRefundUser;
+	private String OrderUserRefundShop;
+	private String OrderUserRefundExpress;
+	private String OrderRefundAgreeUser;
+	private String OrderRefundAgreeAdmin;
+	private String OrderRefundCompleteUser;
+	private String OrderExpressCancelUser;
+	private String UserTopUpUser;
+	private String UserTopUpAdmin;
 
 	private String ShopNewAdtOrder;
 	private String UserNewAdtOrder;

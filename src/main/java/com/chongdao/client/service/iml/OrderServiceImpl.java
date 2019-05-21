@@ -103,16 +103,17 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 预下单
+     *
      * @param userId
      * @param orderType 1代表预下单 2代表下单
      * @return
      */
     @Override
     public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO, Integer orderType) {
-        if (orderCommonVO.getDeliverAddressId() == null){
+        if (orderCommonVO.getDeliverAddressId() == null) {
             return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
         }
-        if (userId == null){
+        if (userId == null) {
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
         //订单总价
@@ -127,7 +128,7 @@ public class OrderServiceImpl implements OrderService {
             //查询店铺
             Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
             orderVo.setShopName(shop.getShopName());
-            if (good != null){
+            if (good != null) {
                 orderVo.setGoodsName(good.getName());
                 orderVo.setGoodsPrice(good.getPrice());
                 //用户购买的商品数量
@@ -139,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
                     orderVo.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
                             cart.getQuantity().doubleValue()));
                     count = good.getDiscount();
-                }else{
+                } else {
                     //计算总价（无打折）
                     orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
@@ -155,27 +156,27 @@ public class OrderServiceImpl implements OrderService {
                 decreasePrice = couponVOList.get(0).getDecreasePrice();
             }
             //总价
-            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(),cart.getQuantity()).add(decreasePrice);
-            if (orderCommonVO.getCouponId() != null){
+            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(decreasePrice);
+            if (orderCommonVO.getCouponId() != null) {
                 //TODO 计算使用商品 a 优惠券后的价格
 
             }
-            if (orderCommonVO.getCardId() != null){
+            if (orderCommonVO.getCardId() != null) {
                 //TODO 计算使用配送优惠券后的价格
             }
         }
         //配送优惠券数量 0:双程 1:单程（商品默认为单程）
-        orderVo.setServiceCouponCount(this.getServiceCouponCount(orderVo.getUserId(),orderCommonVO.getServiceType()));
+        orderVo.setServiceCouponCount(this.getServiceCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
         //商品优惠券数量
-        orderVo.setGoodsCouponCount(this.getCouponCount(orderVo.getUserId(),orderVo.getShopId()));
+        orderVo.setGoodsCouponCount(this.getCouponCount(orderVo.getUserId(), orderVo.getShopId()));
         orderVo.setTotalPrice(cartTotalPrice);
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
         orderVo.setPayment(cartTotalPrice);
         //如果orderType为2代表提交订单
-        if (orderType == OrderStatusEnum.ORDER_CREATE.getStatus()){
+        if (orderType == OrderStatusEnum.ORDER_CREATE.getStatus()) {
             //创建订单
-            this.createOrder(orderVo,orderCommonVO);
+            this.createOrder(orderVo, orderCommonVO);
         }
         return ResultResponse.createBySuccess(orderVo);
 
@@ -184,22 +185,23 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 根据type 获取订单列表
+     *
      * @param userId
      * @param type
      * @return
      */
     @Override
     public ResultResponse<PageInfo> getOrderTypeList(Integer userId, String type, int pageNum, int pageSize) {
-        if (type == null){
+        if (type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         //全部
-        if ("all".contains(type)){
+        if ("all".contains(type)) {
             type = "1,2,3,4,5,6,7,8,9";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
-        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList,userId);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, userId);
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
@@ -208,12 +210,13 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 创建订单
+     *
      * @param orderVo
      * @return
      */
 
     @Transactional
-    public ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO) {
+    public ResultResponse<OrderVo> createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
 
         //下单类型为服务类型订单时，需判断地址
         if (orderCommonVO.getIsService().equals(GoodsStatusEnum.SERVICE.getStatus())) {
@@ -225,21 +228,21 @@ public class OrderServiceImpl implements OrderService {
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId());
 
         //计算这个订单的总价
-        ResultResponse serverResponse = this.getCartOrderItem(orderVo.getUserId(),cartList);
-        if(!serverResponse.isSuccess()){
+        ResultResponse serverResponse = this.getCartOrderItem(orderVo.getUserId(), cartList);
+        if (!serverResponse.isSuccess()) {
             return serverResponse;
         }
-        List<OrderDetail> orderItemList = (List<OrderDetail>)serverResponse.getData();
+        List<OrderDetail> orderItemList = (List<OrderDetail>) serverResponse.getData();
 
         //生成订单
-        OrderInfo order = this.assembleOrder(orderVo,orderCommonVO);
-        if(order == null){
+        OrderInfo order = this.assembleOrder(orderVo, orderCommonVO);
+        if (order == null) {
             return ResultResponse.createByErrorMessage("生成订单错误");
         }
-        if(CollectionUtils.isEmpty(orderItemList)){
+        if (CollectionUtils.isEmpty(orderItemList)) {
             return ResultResponse.createByErrorMessage("购物车为空");
         }
-        for(OrderDetail orderItem : orderItemList){
+        for (OrderDetail orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
         //mybatis 批量插入
@@ -253,21 +256,22 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 封装订单列表
+     *
      * @param orderList
      * @param userId
      * @return
      */
-    private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList,Integer userId){
+    private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList, Integer userId) {
         List<OrderVo> orderVoList = Lists.newArrayList();
-        for(OrderInfo order : orderList){
-            List<OrderDetail>  orderItemList = Lists.newArrayList();
-            if(userId == null){
+        for (OrderInfo order : orderList) {
+            List<OrderDetail> orderItemList = Lists.newArrayList();
+            if (userId == null) {
                 //todo 管理员查询的时候 不需要传userId
                 orderItemList = orderDetailMapper.getByOrderNo(order.getOrderNo());
-            }else{
-                orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(),userId);
+            } else {
+                orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(), userId);
             }
-            OrderVo orderVo = assembleOrderVo(order,orderItemList);
+            OrderVo orderVo = assembleOrderVo(order, orderItemList);
             orderVoList.add(orderVo);
         }
         return orderVoList;
@@ -276,25 +280,26 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 封装订单详情
+     *
      * @param order
      * @param orderItemList
      * @return
      */
-    private OrderVo assembleOrderVo(OrderInfo order,List<OrderDetail> orderItemList){
+    private OrderVo assembleOrderVo(OrderInfo order, List<OrderDetail> orderItemList) {
         OrderVo orderVo = new OrderVo();
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-        BeanUtils.copyProperties(order,orderVo);
+        BeanUtils.copyProperties(order, orderVo);
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         //接宠地址
         UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
         //送宠地址
         UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
-        if (receiveAddress != null){
+        if (receiveAddress != null) {
             orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
         }
-        if (deliverAddress != null){
+        if (deliverAddress != null) {
             orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
         }
         //订单明细
@@ -317,23 +322,24 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 获取购物车信息
+     *
      * @param userId
      * @param cartList
      * @return
      */
-    private ResultResponse getCartOrderItem(Integer userId,List<Carts> cartList){
+    private ResultResponse getCartOrderItem(Integer userId, List<Carts> cartList) {
         List<OrderDetail> orderItemList = Lists.newArrayList();
-        if(CollectionUtils.isEmpty(cartList)){
+        if (CollectionUtils.isEmpty(cartList)) {
             return ResultResponse.createByErrorMessage("购物车为空");
         }
         //折扣
         Double count = 1.0D;
         //校验购物车的数据,包括产品的状态和数量
-        for(Carts cartItem : cartList){
+        for (Carts cartItem : cartList) {
             OrderDetail orderDetail = new OrderDetail();
             Good good = goodMapper.selectByPrimaryKey(cartItem.getGoodsId());
-            if(GoodsStatusEnum.ON_SALE.getStatus() != good.getStatus()){
-                return ResultResponse.createByErrorMessage("产品"+good.getName()+"不是在线售卖状态");
+            if (GoodsStatusEnum.ON_SALE.getStatus() != good.getStatus()) {
+                return ResultResponse.createByErrorMessage("产品" + good.getName() + "不是在线售卖状态");
             }
 
             orderDetail.setUserId(userId);
@@ -343,38 +349,38 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setPrice(good.getPrice());
             orderDetail.setCount(cartItem.getQuantity());
             //计算折扣是否为0
-            if (good.getDiscount() > 0){
+            if (good.getDiscount() > 0) {
                 count = good.getDiscount();
             }
-            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),count));
-            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(),cartItem.getQuantity()));
+            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count));
+            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cartItem.getQuantity()));
             orderItemList.add(orderDetail);
         }
         return ResultResponse.createBySuccess(orderItemList);
     }
 
 
-
     /**
      * 封装订单生成
+     *
      * @return
      */
-    private OrderInfo assembleOrder(OrderVo orderVo,OrderCommonVO orderCommonVO){
+    private OrderInfo assembleOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
         OrderInfo order = new OrderInfo();
         String orderNo = GenerateOrderNo.genUniqueKey();
         order.setOrderNo(orderNo);
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
-        if (orderCommonVO.getPayType() == PaymentTypeEnum.ALI_PAY.getStatus()){
-            order.setPaymentType( PaymentTypeEnum.ALI_PAY.getStatus());
-        }else{
+        if (orderCommonVO.getPayType() == PaymentTypeEnum.ALI_PAY.getStatus()) {
+            order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
+        } else {
             order.setPaymentType(PaymentTypeEnum.WX_PAY.getStatus());
         }
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
-        BeanUtils.copyProperties(orderVo,order);
-        BeanUtils.copyProperties(orderCommonVO,orderVo);
+        BeanUtils.copyProperties(orderVo, order);
+        BeanUtils.copyProperties(orderCommonVO, orderVo);
         order.setPaymentType(orderCommonVO.getPayType());
         int rowCount = orderInfoMapper.insert(order);
-        if(rowCount > 0){
+        if (rowCount > 0) {
             return order;
         }
         return order;
@@ -382,27 +388,29 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 清空购物车
+     *
      * @param cartList
      */
-    private void cleanCart(List<Carts> cartList){
-        for(Carts cart : cartList){
+    private void cleanCart(List<Carts> cartList) {
+        for (Carts cart : cartList) {
             cartsMapper.deleteByPrimaryKey(cart.getId());
         }
     }
 
     /**
      * 封装符合当前商品满减活动
+     *
      * @param shopId
      * @param cartTotalPrice
      * @return
      */
-    private List<CouponVO> getCouponVo(Integer shopId, BigDecimal cartTotalPrice){
+    private List<CouponVO> getCouponVo(Integer shopId, BigDecimal cartTotalPrice) {
         List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), COUPON_FULL_AC.getStatus());
         List<CouponVO> couponVOList = Lists.newArrayList();
         CouponVO couponVO = new CouponVO();
         couponList.forEach(coupon -> {
-            if (cartTotalPrice.compareTo(coupon.getFullPrice()) == 1){
-                BeanUtils.copyProperties(coupon,couponVO);
+            if (cartTotalPrice.compareTo(coupon.getFullPrice()) == 1) {
+                BeanUtils.copyProperties(coupon, couponVO);
                 couponVOList.add(couponVO);
             }
         });
@@ -412,12 +420,13 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 计算配送费
+     *
      * @param cardId
      * @return
      */
-    private BigDecimal couputerServiceFee(Integer cardId){
+    private BigDecimal couputerServiceFee(Integer cardId) {
         BigDecimal servicePrice = BigDecimal.ZERO;
-        if (cardId != null){
+        if (cardId != null) {
             Card card = cardRepository.findById(cardId).get();
             servicePrice = card.getDecreasePrice();
         }
@@ -426,17 +435,18 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 获取所有商品优惠券数量包含官方
+     *
      * @param userId
      * @param shopId
      * @return
      */
-    private Integer getCouponCount(Integer userId, Integer shopId){
+    private Integer getCouponCount(Integer userId, Integer shopId) {
         Integer count = 0;
         //官方免费洗等优惠券数量 + 商家优惠券数量
-        count = couponRepository.findByCouponCount(userId,shopId) + getGoodsCouponCount(userId);
+        count = couponRepository.findByCouponCount(userId, shopId) + getGoodsCouponCount(userId);
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
         //查询是否参加公益
-        if (shop.getIsJoinCommonWeal() == 1){
+        if (shop.getIsJoinCommonWeal() == 1) {
             count = count + getCommonShopCount(userId);
         }
         return count;
@@ -444,48 +454,50 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 获取配送券数量(官方)
+     *
      * @param userId
-     * @param param 双程：0，单程，1
+     * @param param  双程：0，单程，1
      * @return
      */
-    private Integer getServiceCouponCount(Integer userId, Integer param){
+    private Integer getServiceCouponCount(Integer userId, Integer param) {
         Integer count = 0;
-        if (param == DUAL){
+        if (param == DUAL) {
             //双程数量
             count = cardUserRepository.findByUserIdAndRoundTrip(userId);
-        }else{
+        } else {
             count = cardUserRepository.findByUserIdAndSingleTrip(userId);
         }
-        return  count;
+        return count;
     }
 
     /**
      * 获取商品优惠券数量(官方)包含免费洗等不含公益
+     *
      * @param userId
      * @return
      */
-    private Integer getGoodsCouponCount(Integer userId){
+    private Integer getGoodsCouponCount(Integer userId) {
         Integer count = cardUserRepository.findByUserIdAndShopIdsIsNull(userId);
         return count == null ? 0 : count;
     }
 
     /**
      * 获取公益优惠券数量
+     *
      * @param userId
      * @return
      */
-    private Integer getCommonShopCount(Integer userId){
+    private Integer getCommonShopCount(Integer userId) {
         Integer count = cardUserRepository.findByUserIdCommon(userId);
         return count == null ? 0 : count;
     }
-
-
 
 
 ////////////////////////////////////////////////商家端获取订单////////////////////////////////////////////////////////////////////
 
     /**
      * 商家端获取订单(全部/待接单/已接单/已完成/退款中)
+     *
      * @param shopId
      * @param type
      * @param pageNum
@@ -494,19 +506,19 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public ResultResponse<PageInfo> getShopOrderTypeList(Integer shopId, String type, Integer pageNum, Integer pageSize) {
-        if (type == null){
+        if (type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
-        PageHelper.startPage(pageNum,pageSize);
-        if ("all".contains(type)){
+        PageHelper.startPage(pageNum, pageSize);
+        if ("all".contains(type)) {
             type = null;//全部
-        } else if(type.equals("1")) {
+        } else if (type.equals("1")) {
             type = "1";//待接单
-        } else if(type.equals("2")) {
+        } else if (type.equals("2")) {
             type = "2,7,10,11,12,13";//已接单
-        } else if(type.equals("3")) {
+        } else if (type.equals("3")) {
             type = "3,6";//已完成
-        } else if(type.equals("4")) {
+        } else if (type.equals("4")) {
             type = "0,4,5,8,9";//退款中
         } else {
             type = "";
@@ -520,6 +532,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家手动接单
+     *
      * @param orderId
      * @return
      */
@@ -532,6 +545,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家接单数据处理
+     *
      * @param o
      * @return
      */
@@ -564,27 +578,29 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家接单短信通知(->用户+商家+配送员)
+     *
      * @param orderInfo
      */
     private void acceptOrderSmsSender(OrderInfo orderInfo) {
         Integer shopId = orderInfo.getShopId();
-        if(shopId != null) {
+        if (shopId != null) {
             Shop s = shopRepository.findById(shopId).orElse(null);
-            if(s != null) {
+            if (s != null) {
                 List<String> phoneList_express = smsService.getExpressPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
                 //通知用户
-                smsService.customOrderMsgSenderPatch(smsUtil.getUserMerchantOrder(), orderInfo.getOrderNo(), s.getShopName(), phoneList_user);
+                smsService.customOrderMsgSenderPatch(smsUtil.getOrderAcceptUser(), orderInfo.getOrderNo(), s.getShopName(), phoneList_user);
                 //通知商家
-                smsService.customOrderMsgSenderSimple(smsUtil.getShopAcceptOrder(), orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
+                smsService.customOrderMsgSenderSimple(smsUtil.getOrderAcceptShop(), orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
                 //通知所有配送员
-                smsService.customOrderMsgSenderPatch(smsUtil.getExpressNewOrder(), orderInfo.getOrderNo(), s.getShopName(), phoneList_express);
+                smsService.customOrderMsgSenderPatch(smsUtil.getNewOrderExpress(), orderInfo.getOrderNo(), s.getShopName(), phoneList_express);
             }
         }
     }
 
     /**
      * 退款
+     *
      * @param orderId
      * @return
      */
@@ -597,11 +613,12 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 拒单
+     *
      * @param orderId
      * @return
      */
     @Override
-        public ResultResponse shopRefuseOrder(Integer orderId) {
+    public ResultResponse shopRefuseOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_REFUSE.getMessage(), true))
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
@@ -609,6 +626,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家退款时, 数据处理
+     *
      * @param o
      * @return
      */
@@ -630,24 +648,25 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家同意退款短信通知(同意退款: ->管理员;拒单: ->管理员+用户)
+     *
      * @param orderInfo
      */
     private void refundOrderSmsSender(OrderInfo orderInfo, Boolean isRefuseOrder) {
         Integer shopId = orderInfo.getShopId();
-        if(shopId != null) {
+        if (shopId != null) {
             Shop shop = shopRepository.findById(shopId).orElse(null);
-            if(shop != null) {
+            if (shop != null) {
                 List<String> phoneList_admin = smsService.getAdminPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
                 //通知管理员
-                smsService.customOrderMsgSenderPatch(smsUtil.getShopAgreeRefundOrder(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_admin);
+                smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefundAgreeAdmin(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_admin);
                 //通知用户
-                if(isRefuseOrder) {
+                if (isRefuseOrder) {
                     //拒单->退款
-                    smsService.customOrderMsgSenderPatch(smsUtil.getUserOrderRefuse(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
+                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefuseUser(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
                 } else {
                     //退款
-                    smsService.customOrderMsgSenderPatch(smsUtil.getUserRefundAgree(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
+                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefundAgreeUser(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
                 }
             }
         }
@@ -655,6 +674,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家服务完成(->用户+配送员)
+     *
      * @param orderId
      * @return
      */
@@ -667,6 +687,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家服务完成数据处理
+     *
      * @param orderInfo
      * @return
      */
@@ -682,20 +703,24 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 商家服务完成短信通知
+     *
      * @param orderInfo
      */
     private void shopServiceCompletedSmsSender(OrderInfo orderInfo) {
         //推送短信->所负责的配送员及该订单用户
-        //通知用户
-        //TODO  待确认给哪些用户通知短信
-        //通知负责订单的配送员
-        String phone = smsService.getExpressPhoneByOrderId(orderInfo.getId());
-        if(StringUtils.isNotBlank(phone)) {
-            Integer shopId = orderInfo.getShopId();
-            if(shopId != null) {
-                Shop shop = shopRepository.findById(shopId).orElse(null);
-                if(shop != null) {
-                    smsService.customOrderMsgSenderSimple(smsUtil.getExpressServiceComplete(), orderInfo.getOrderNo(), shop.getShopName(), phone);
+        Integer shopId = orderInfo.getShopId();
+        if (shopId != null) {
+            Shop shop = shopRepository.findById(shopId).orElse(null);
+            if (shop != null) {
+                //通知负责订单的配送员
+                String phone = smsService.getExpressPhoneByOrderId(orderInfo.getId());
+                if (StringUtils.isNotBlank(phone)) {
+                    smsService.customOrderMsgSenderSimple(smsUtil.getOrderShopServiceCompleteExpress(), orderInfo.getOrderNo(), shop.getShopName(), phone);
+                }
+                //通知用户
+                List<String> phoneList = smsService.getUserPhoneListByOrderId(orderInfo.getId());
+                if (phoneList.size() > 0) {
+                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderShopServiceCompleteUser(), orderInfo.getOrderNo(), shop.getShopName(), phoneList);
                 }
             }
         }
@@ -707,6 +732,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 获取普通配送员订单
+     *
      * @param expressId
      * @param type
      * @param pageNum
@@ -715,17 +741,17 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public ResultResponse<PageInfo> expressOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize) {
-        if (expressId == null || type == null){
+        if (expressId == null || type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
-        PageHelper.startPage(pageNum,pageSize);
-        if(type.equals("1")) {
+        PageHelper.startPage(pageNum, pageSize);
+        if (type.equals("1")) {
             //可接单
             type = "2";
-        } else if(type.equals("2")) {
+        } else if (type.equals("2")) {
             //已接单
             type = "4,5,7,8,9,10,11,12,13";
-        } else if(type.equals("3")) {
+        } else if (type.equals("3")) {
             //已完成
             type = "3,6";
         }
@@ -738,6 +764,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 获取管理员配送员订单
+     *
      * @param type
      * @param pageNum
      * @param pageSize
@@ -745,14 +772,14 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize) {
-        if (type == null){
+        if (type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
-        PageHelper.startPage(pageNum,pageSize);
-        if(type.equals("1")) {
+        PageHelper.startPage(pageNum, pageSize);
+        if (type.equals("1")) {
             //商家未接单
             type = "-1,0,1";
-        } else if(type.equals("2")) {
+        } else if (type.equals("2")) {
             //商家已接单
             type = "2,3,4,5,6,7,8,9,10,11,12,13";
         }
