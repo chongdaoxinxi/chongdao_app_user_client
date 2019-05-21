@@ -34,6 +34,7 @@ public class SMSUtil {
 	private String OrderTimeoutNotAcceptShop;
 	private String OrderRefuseUser;
 	private String OrderAssignedExpress;
+	private String OrderAssignedUser;
 	private String OrderGoodsServedUser;
 	private String OrderPetArrivedUser;
 	private String OrderPetsServedUser;

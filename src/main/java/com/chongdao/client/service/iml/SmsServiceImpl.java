@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,20 +134,21 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public void customOrderMsgSenderSimple(String msg, String shopName, String orderNo, String phone) {
-        String params = phone + "," + shopName + "," + orderNo;
+        String params = phone + "," + orderNo + "," + shopName;
         String report = "true";
         customMsgSender(msg, params, report);
     }
 
     /**
      * 通用短信通知(单个人, 只有订单号)
+     *
      * @param msg
      * @param orderNo
      * @param phone
      */
     @Override
     public void customOrderMsgSenderSimpleNoShopName(String msg, String orderNo, String phone) {
-        String params = phone  + "," + orderNo;
+        String params = phone + "," + orderNo;
         String report = "true";
         customMsgSender(msg, params, report);
     }
@@ -168,6 +170,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 通用短信通知(批量, 只有订单号)
+     *
      * @param msg
      * @param orderNo
      * @param phoneList
@@ -190,8 +193,8 @@ public class SmsServiceImpl implements SmsService {
     private String assemblePhoneList(String orderNo, String shopName, List<String> phoneList) {
         String params = "";
         for (int i = 0; i < phoneList.size(); i++) {
-            if(StringUtils.isNotBlank(shopName)) {
-                params = params + phoneList.get(i) + "," + shopName + "," + orderNo;
+            if (StringUtils.isNotBlank(shopName)) {
+                params = params + phoneList.get(i) + "," + orderNo + "," + shopName;
             } else {
                 params = params + phoneList.get(i) + "," + orderNo;
             }
@@ -218,7 +221,38 @@ public class SmsServiceImpl implements SmsService {
     }
 
     /**
+     * 用户充值完成通知短信
+     * @param msg
+     * @param chargeNo
+     * @param chargeMoney
+     * @param balanceMoney
+     */
+    @Override
+    public void UserTopUpUseMsgSender(String msg, String chargeNo, BigDecimal chargeMoney, BigDecimal balanceMoney) {
+        String params = chargeNo + "," + chargeMoney + "," + balanceMoney;
+        String report = "true";
+        customMsgSender(msg, params, report);
+    }
+
+    /**
+     * 用户充值完成管理员通知短信
+     * @param msg
+     * @param chargeNo
+     * @param userId
+     * @param username
+     * @param chargeMoney
+     * @param balanceMoney
+     */
+    @Override
+    public void UserTopUpAdminMsgSender(String msg, String chargeNo, Integer userId, String username, BigDecimal chargeMoney, BigDecimal balanceMoney) {
+        String params = chargeNo + "," + userId + "," + username + "," + chargeMoney + "," + balanceMoney;
+        String report = "true";
+        customMsgSender(msg, params, report);
+    }
+
+    /**
      * 获取配送员联系方式列表
+     *
      * @param orderId
      * @return
      */
@@ -238,6 +272,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 获取配送员联系方式
+     *
      * @param orderId
      * @return
      */
@@ -258,6 +293,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 获取管理员联系方式
+     *
      * @param orderId
      * @return
      */
@@ -277,6 +313,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 获取商家联系方式
+     *
      * @param orderId
      * @return
      */
@@ -292,6 +329,7 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 获取用户联系方式
+     *
      * @param orderId
      * @return
      */

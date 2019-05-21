@@ -589,11 +589,11 @@ public class OrderServiceImpl implements OrderService {
                 List<String> phoneList_express = smsService.getExpressPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
                 //通知用户
-                smsService.customOrderMsgSenderPatch(smsUtil.getOrderAcceptUser(), orderInfo.getOrderNo(), s.getShopName(), phoneList_user);
+                smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderAcceptUser(), orderInfo.getOrderNo(), phoneList_user);
                 //通知商家
-                smsService.customOrderMsgSenderSimple(smsUtil.getOrderAcceptShop(), orderInfo.getOrderNo(), s.getShopName(), s.getPhone());
+                smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderAcceptShop(), orderInfo.getOrderNo(), s.getPhone());
                 //通知所有配送员
-                smsService.customOrderMsgSenderPatch(smsUtil.getNewOrderExpress(), orderInfo.getOrderNo(), s.getShopName(), phoneList_express);
+                smsService.customOrderMsgSenderPatch(smsUtil.getNewOrderExpress(), s.getShopName(), orderInfo.getOrderNo(), phoneList_express);
             }
         }
     }
@@ -659,14 +659,14 @@ public class OrderServiceImpl implements OrderService {
                 List<String> phoneList_admin = smsService.getAdminPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
                 //通知管理员
-                smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefundAgreeAdmin(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_admin);
+                smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderRefundAgreeAdmin(), orderInfo.getOrderNo(), phoneList_admin);
                 //通知用户
                 if (isRefuseOrder) {
                     //拒单->退款
-                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefuseUser(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
+                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefuseUser(), shop.getShopName(), orderInfo.getOrderNo(), phoneList_user);
                 } else {
                     //退款
-                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderRefundAgreeUser(), orderInfo.getOrderNo(), shop.getShopName(), phoneList_user);
+                    smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderRefundAgreeUser(), orderInfo.getOrderNo(), phoneList_user);
                 }
             }
         }
@@ -715,12 +715,12 @@ public class OrderServiceImpl implements OrderService {
                 //通知负责订单的配送员
                 String phone = smsService.getExpressPhoneByOrderId(orderInfo.getId());
                 if (StringUtils.isNotBlank(phone)) {
-                    smsService.customOrderMsgSenderSimple(smsUtil.getOrderShopServiceCompleteExpress(), orderInfo.getOrderNo(), shop.getShopName(), phone);
+                    smsService.customOrderMsgSenderSimple(smsUtil.getOrderShopServiceCompleteExpress(), shop.getShopName(), orderInfo.getOrderNo(), phone);
                 }
                 //通知用户
                 List<String> phoneList = smsService.getUserPhoneListByOrderId(orderInfo.getId());
                 if (phoneList.size() > 0) {
-                    smsService.customOrderMsgSenderPatch(smsUtil.getOrderShopServiceCompleteUser(), orderInfo.getOrderNo(), shop.getShopName(), phoneList);
+                    smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderShopServiceCompleteUser(), orderInfo.getOrderNo(), phoneList);
                 }
             }
         }

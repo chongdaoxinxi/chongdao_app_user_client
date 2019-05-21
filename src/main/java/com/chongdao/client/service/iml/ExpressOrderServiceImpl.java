@@ -10,6 +10,8 @@ import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ExpressOrderService;
 import com.chongdao.client.service.SmsService;
+import com.chongdao.client.utils.sms.SMSUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     private SmsService smsService;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private SMSUtil smsUtil;
 
     /**
      * 接单
@@ -74,12 +78,19 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             if(shop != null) {
                 String shopName = shop.getShopName();
                 List<String> phoneList = smsService.getUserPhoneListByOrderId(orderInfo.getId());
-                //TODO 具体发什么待定
-                String msg = "";
-                if(pointedMsg != null && !pointedMsg.equals("")) {
-                    msg = pointedMsg;
+                //推送用户
+                if(phoneList.size() > 0) {
+                    String msg = smsUtil.getOrderAssignedUser();
+                    if(pointedMsg != null && !pointedMsg.equals("")) {
+                        msg = pointedMsg;
+                    }
+                    smsService.customOrderMsgSenderPatchNoShopName(msg, orderInfo.getOrderNo(), phoneList);
                 }
-                smsService.customOrderMsgSenderPatch(msg, shopName, orderInfo.getOrderNo(), phoneList);
+                //推送配送员自己
+                String phone = smsService.getExpressPhoneByOrderId(orderInfo.getId());
+                if(StringUtils.isNotBlank(phone)) {
+                    smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderAssignedExpress(), orderInfo.getOrderNo(), phone);
+                }
             }
         }
     }

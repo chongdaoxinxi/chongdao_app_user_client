@@ -2,6 +2,7 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -63,6 +64,26 @@ public interface SmsService {
      * @param phoneList
      */
     void customOrderMsgSenderPatchNoShopName(String msg, String orderNo, List<String> phoneList);
+
+    /**
+     * 用户充值完成通知短信
+     * @param msg
+     * @param chargeNo
+     * @param chargeMoney
+     * @param balanceMoney
+     */
+    void UserTopUpUseMsgSender(String msg, String chargeNo, BigDecimal chargeMoney, BigDecimal balanceMoney);
+
+    /**
+     * 用户充值完成管理员通知短信
+     * @param msg
+     * @param chargeNo
+     * @param userId
+     * @param username
+     * @param chargeMoney
+     * @param balanceMoney
+     */
+    void UserTopUpAdminMsgSender(String msg, String chargeNo, Integer userId, String username, BigDecimal chargeMoney, BigDecimal balanceMoney);
 
     /**
      * 获取订单所在地区的配送员号码列表
