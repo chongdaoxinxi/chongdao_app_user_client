@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -336,11 +333,14 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public List<String> getUserPhoneListByOrderId(Integer orderId) {
         List<String> resp = new ArrayList<>();
+        Set<String> tempSet = new HashSet<>();
         return Optional.ofNullable(orderId)
                 .map(id -> orderAddressRepository.findByOrderId(id))
                 .map(list -> {
-                    list.forEach(e -> {
-                        Optional.ofNullable(e.getPhone()).map(p -> resp.add(p));
+                    //先存入set, 当双程往返地址联系人相同时, 联系号码去重
+                    list.forEach(e -> Optional.ofNullable(e.getPhone()).map(p -> tempSet.add(p)));
+                    tempSet.forEach(e -> {
+                        resp.add(e);
                     });
                     return resp;
                 }).orElse(resp);

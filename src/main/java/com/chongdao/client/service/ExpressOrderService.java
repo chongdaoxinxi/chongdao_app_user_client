@@ -37,4 +37,12 @@ public interface ExpressOrderService {
      * @return
      */
     ResultResponse serviceComplete(Integer expressId, Integer orderId);
+
+    /**
+     * 单程(店->家), 配送员到店后开始配送时的短信通知
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    ResultResponse expressStartServiceInSingleTripNotice(Integer expressId, Integer orderId);
 }

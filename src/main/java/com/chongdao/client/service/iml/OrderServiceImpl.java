@@ -584,16 +584,22 @@ public class OrderServiceImpl implements OrderService {
     private void acceptOrderSmsSender(OrderInfo orderInfo) {
         Integer shopId = orderInfo.getShopId();
         if (shopId != null) {
-            Shop s = shopRepository.findById(shopId).orElse(null);
-            if (s != null) {
+            Shop shop = shopRepository.findById(shopId).orElse(null);
+            if (shop != null) {
                 List<String> phoneList_express = smsService.getExpressPhoneListByOrderId(orderInfo.getId());
                 List<String> phoneList_user = smsService.getUserPhoneListByOrderId(orderInfo.getId());
-                //通知用户
-                smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderAcceptUser(), orderInfo.getOrderNo(), phoneList_user);
-                //通知商家
-                smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderAcceptShop(), orderInfo.getOrderNo(), s.getPhone());
-                //通知所有配送员
-                smsService.customOrderMsgSenderPatch(smsUtil.getNewOrderExpress(), s.getShopName(), orderInfo.getOrderNo(), phoneList_express);
+                if(phoneList_user.size() > 0) {
+                    //通知用户
+                    smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderAcceptUser(), orderInfo.getOrderNo(), phoneList_user);
+                }
+                if(StringUtils.isNotBlank(shop.getPhone())) {
+                    //通知商家
+                    smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderAcceptShop(), orderInfo.getOrderNo(), shop.getPhone());
+                }
+                if(phoneList_express.size() > 0) {
+                    //通知所有配送员
+                    smsService.customOrderMsgSenderPatch(smsUtil.getNewOrderExpress(), shop.getShopName(), orderInfo.getOrderNo(), phoneList_express);
+                }
             }
         }
     }
