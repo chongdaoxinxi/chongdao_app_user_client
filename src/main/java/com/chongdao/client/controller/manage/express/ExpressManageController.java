@@ -123,4 +123,16 @@ public class ExpressManageController {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.serviceComplete(tokenVo.getUserId(), orderId);
     }
+
+    /**
+     * 单程(店->家), 配送员到店后开始配送时的短信通知
+     * @param token
+     * @param orderId
+     * @return
+     */
+    @GetMapping("/expressStartServiceInSingleTripNotice")
+    public ResultResponse expressStartServiceInSingleTripNotice(String token, Integer orderId) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.expressStartServiceInSingleTripNotice(tokenVo.getUserId(), orderId);
+    }
 }
