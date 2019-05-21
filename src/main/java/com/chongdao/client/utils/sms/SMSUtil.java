@@ -49,6 +49,7 @@ public class SMSUtil {
 	private String OrderRefundAgreeAdmin;
 	private String OrderRefundCompleteUser;
 	private String OrderExpressCancelUser;
+	private String OrderExpressCancelCustom;
 	private String UserTopUpUser;
 	private String UserTopUpAdmin;
 	private String SingleTripGoodServiceStartUser;

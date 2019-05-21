@@ -15,7 +15,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Description 配送端
@@ -53,8 +55,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     //保存配送员id及更新状态至7
                     odi.setExpressId(orderId);
                     odi.setOrderStatus(OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus());
-                    //此处是否应该存入配送员接单时间
-                    //TODO
+                    odi.setExpressReceiveTime(new Date());
                     OrderInfo orderInfo = orderInfoRepository.saveAndFlush(odi);
 
                     //短信通知用户
@@ -142,7 +143,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     /**
-     * 服务完成
+     * 配送服务完成
      *
      * @param expressId
      * @param orderId
@@ -155,6 +156,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             if (odi != null) {
                 //单程只要配送员送达就算服务完成
                 odi.setOrderStatus(3);
+                odi.setExpressFinishTime(new Date());
                 OrderInfo orderInfo = orderInfoRepository.saveAndFlush(odi);
                 //短信通知
                 expressServiceCompleteSmsSender(orderInfo);
@@ -169,12 +171,42 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      * @param orderInfo
      */
     private void expressServiceCompleteSmsSender(OrderInfo orderInfo) {
-        //服务完成分两种情况: 店->家, 家->店
-        //TODO 如何区分这两种情况
+        List<String> phoneList = smsService.getUserPhoneListByOrderId(orderInfo.getId());
+        if(phoneList.size() > 0) {
+            String msg = "";
+            Integer serviceType = orderInfo.getServiceType();
+            if (serviceType == 1) {
+                //单程服务完成分两种情况: 店->家, 家->店
+                Integer isService = orderInfo.getIsService();
+                if(isService == -1) {
+                    //商品
+                    msg = smsUtil.getOrderGoodsServedUser();
+                } else if(isService == 1) {
+                    //服务
+                    Integer singleServiceType = orderInfo.getSingleServiceType();
+                    if (singleServiceType != null) {
+                        if (singleServiceType == 1) {
+                            //家->店
+                            msg = smsUtil.getOrderPetsServedUser();
+                        } else if (singleServiceType == 2) {
+                            //店->家
+                            msg = smsUtil.getOrderPetArrivedUser();
+                        }
+                    }
+                }
+            } else if (serviceType == 2) {
+                //双程
+                msg = smsUtil.getOrderPetArrivedUser();
+            }
+            if(StringUtils.isNotBlank(msg)) {
+                smsService.customOrderMsgSenderPatchNoShopName(msg, orderInfo.getOrderNo(), phoneList);
+            }
+        }
     }
 
     /**
      * 单程(店->家), 配送员到店后开始配送时的短信通知
+     *
      * @param expressId
      * @param orderId
      * @return
@@ -183,16 +215,16 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     public ResultResponse expressStartServiceInSingleTripNotice(Integer expressId, Integer orderId) {
         //仅推送短信给用户, 使用户体验更好
         List<String> phoneList = smsService.getUserPhoneListByOrderId(orderId);
-        if(phoneList.size() > 0) {
+        if (phoneList.size() > 0) {
             OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
-            if(orderInfo != null) {
+            if (orderInfo != null) {
                 Integer isService = orderInfo.getIsService();
-                if(isService != null) {
-                    if(isService == -1) {
+                if (isService != null) {
+                    if (isService == -1) {
                         //商品
                         smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripGoodServiceStartUser(), orderInfo.getOrderNo(), phoneList);
                         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
-                    } else if(isService == 1) {
+                    } else if (isService == 1) {
                         //服务
                         smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
                         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
@@ -212,7 +244,14 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      */
     @Override
     public ResultResponse cancelOrder(Integer expressId, Integer orderId) {
-        return null;
+        return Optional.ofNullable(orderId).
+                flatMap(id -> orderInfoRepository.findById(id))
+                .map(o -> {
+                    o.setOrderStatus(-1);
+                    expressAdminCancelOrderSmsSender(orderInfoRepository.saveAndFlush(o));
+                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+                })
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
 
     /**
@@ -221,6 +260,25 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      * @param orderInfo
      */
     private void expressAdminCancelOrderSmsSender(OrderInfo orderInfo) {
-
+        Integer id = orderInfo.getId();
+        //通知商家
+        String shopPhone = smsService.getShopPhoneByOrderId(id);
+        if (StringUtils.isNotBlank(shopPhone)) {
+            smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderExpressCancelCustom(), orderInfo.getOrderNo(), shopPhone);
+        }
+        //通知用户
+        List<String> phoneList = smsService.getUserPhoneListByOrderId(id);
+        if (phoneList.size() > 0)
+            smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderExpressCancelUser(), orderInfo.getOrderNo(), phoneList);
+        //通知配送员
+        String expressPhone = smsService.getExpressPhoneByOrderId(id);
+        if (StringUtils.isNotBlank(expressPhone)) {
+            smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderExpressCancelCustom(), orderInfo.getOrderNo(), expressPhone);
+        }
+        //通知管理员
+        List<String> phoneListAdmin = smsService.getAdminPhoneListByOrderId(id);
+        if (phoneListAdmin.size() > 0) {
+            smsService.customOrderMsgSenderSimpleNoShopName(smsUtil.getOrderExpressCancelCustom(), orderInfo.getOrderNo(), expressPhone);
+        }
     }
 }

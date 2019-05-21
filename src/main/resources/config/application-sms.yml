@@ -25,20 +25,19 @@ sms:
 ## 配送员到店
   ## 单程(订单完成)
     ## 商品
-    OrderGoodsServedUser: 【养宠有道】您购买的商品已送达。订单号：{$var}
+    OrderGoodsServedUser: 【养宠有道】您购买的商品已送达, 欢迎下次惠顾, 订单号：{$var}
     ## 服务(有狗, 店->家)
-    OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 订单号：{$var}
+    OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 欢迎下次惠顾, 订单号：{$var}
     ## 服务(有狗, 家->店)
-    OrderPetsServedUser: 【养宠有道】您的爱宠已安全送达商家。订单号：{$var}
+    OrderPetsServedUser: 【养宠有道】您的爱宠已安全送达商家, 欢迎下次惠顾, 订单号：{$var}
   ## 双程
   OrderPetArrivedShop: 【养宠有道】您服务的宠物已到店, 请准备服务, 订单号：{$var}
-#  OrderPetArrivedUser: 【养宠有道】您的爱宠已安全送达商家。订单号：{$var}
 ## 商家服务完成(双程)
     OrderShopServiceCompleteUser: 【养宠有道】商家{$var}完成服务，等待接回，订单号：{$var}
     OrderShopServiceCompleteExpress: 【养宠有道】店铺服务已结束, 宠物可以开始送回, 订单号：{$var}, 店铺名：{$var}
 ## 配送员开始送回
     OrderPickUpPetsUser: 【养宠有道】您的爱宠正在由配送员送回途中，请耐心等待，订单号：{$var}
-## 返程服务完成
+## 订单完成
 #    OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 订单号：{$var}
 
 ## 单程(店->家服务, 配送员拿到商品/服务完成后, 开始配送的短信通知)
@@ -55,6 +54,7 @@ sms:
 
 ## 订单撤销(配送端管理员)
   OrderExpressCancelUser: 【养宠有道】您的订单：{$var} 已被撤销，您的款项将在12小时内被退回
+  OrderExpressCancelCustom: 【养宠有道】您的订单：{$var} 已被撤销，用户款项将在12小时内被退回
 ## 充值
   UserTopUpUser: 【养宠有道】您的充值已处理, 订单号：{$var}, 充值金额：{$var}, 余额：{$var}
   UserTopUpAdmin:  【养宠有道】订单号：{$var}, 用户ID：{$var}, 用户姓名：{$var}, 充值金额：{$var}, 余额：{$var}
