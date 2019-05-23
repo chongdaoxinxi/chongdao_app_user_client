@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 /**
- * @Description TODO
+ * @Description 商铺JPA
  * @Author onlineS
  * @Date 2019/5/13
  * @Version 1.0
  **/
-public interface ShopRespository extends JpaRepository<Shop, Integer> {
+public interface ShopRepository extends JpaRepository<Shop, Integer> {
     Optional<Shop> findByAccountName(String name);
 }

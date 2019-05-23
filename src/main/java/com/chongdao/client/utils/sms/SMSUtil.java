@@ -24,61 +24,40 @@ public class SMSUtil {
 
 	private String SmsIdentifyCode;
 
-	private String ShopNewOrder;
-
-
-	private String ExpressNewOrder;
-
-	private String orderasigned;
-
-	private String ShopPetArrived;
-
-	private String UserRefund;
-
-	private String UserRefundArrived;
-
-	private String UserTopUp;
-
-	private String UserPetArrived;
-
-	private String ExpressServiceComplete;
-
-	private String ShopAcceptOrder;
-
-	private String ShopRefuseOrder;
+	private String NewOrderUser;
+	private String NewOrderShop;
+	private String OrderAutoAcceptShop;
+	private String OrderAcceptUser;
+	private String OrderAcceptShop;
+	private String NewOrderExpress;
+	private String OrderTimeOutNotAcceptUser;
+	private String OrderTimeoutNotAcceptShop;
+	private String OrderRefuseUser;
+	private String OrderAssignedExpress;
+	private String OrderAssignedUser;
+	private String OrderGoodsServedUser;
+	private String OrderPetArrivedUser;
+	private String OrderPetsServedUser;
+	private String OrderPetArrivedShop;
+	private String OrderShopServiceCompleteUser;
+	private String OrderShopServiceCompleteExpress;
+	private String OrderPickUpPetsUser;
+	private String OrderUserRefundUser;
+	private String OrderUserRefundShop;
+	private String OrderUserRefundExpress;
+	private String OrderRefundAgreeUser;
+	private String OrderRefundAgreeAdmin;
+	private String OrderRefundCompleteUser;
+	private String OrderExpressCancelUser;
+	private String OrderExpressCancelCustom;
+	private String UserTopUpUser;
+	private String UserTopUpAdmin;
+	private String SingleTripGoodServiceStartUser;
+	private String SingleTripPetServiceStartUser;
 
 	private String ShopNewAdtOrder;
-
 	private String UserNewAdtOrder;
-
 	private String UserAcceptAdtOrder;
-
 	private String UserRefuseAdtOrder;
-
 	private String UserRefundAdtOrder;
-
-	private String UserOrderTimeOutNotAccept;
-
-	private String ExpressRefundOrder;
-
-	private String ShopAcceptRefund;
-
-	private String UserOrderRefund;
-
-	private String ShopTimeoutNotAccept;
-
-	private String NewSendMessage;
-	private String MerchantOrder;
-	private String PetsServed;
-	private String MerchantCompletion;
-	private String PickUpPets;
-	private String ShopNewOrderAuto;
-
-	private String ShopUserRefund;
-
-	private  String PickUpQuickly;
-	private  String FavouriteServed;
-
-	private String GoodsServed;
-
 }

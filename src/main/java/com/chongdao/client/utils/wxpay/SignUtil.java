@@ -6,7 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.util.*;
 
 /**
- * @Description TODO
+ * @Description SignUtil
  * @Author onlineS
  * @Date 2019/4/30
  * @Version 1.0

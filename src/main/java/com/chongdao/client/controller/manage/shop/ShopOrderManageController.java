@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Description TODO
+ * @Description 商家端订单管理
  * @Author onlineS
  * @Date 2019/5/13
  * @Version 1.0
@@ -40,19 +40,19 @@ public class ShopOrderManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/refuseOrder")
-    public ResultResponse refuseOrder(Integer orderId) {
-        return orderService.refundOrder(orderId);
+    @GetMapping("/acceptOrder")
+    public ResultResponse acceptOrder(Integer orderId) {
+        return orderService.shopAcceptOrder(orderId);
     }
 
     /**
-     * 接单
+     * 拒单
      * @param orderId
      * @return
      */
-    @GetMapping("/acceptOrder")
-    public ResultResponse acceptOrder(Integer orderId) {
-        return null;
+    @GetMapping("/refuseOrder")
+    public ResultResponse refuseOrder(Integer orderId) {
+        return orderService.shopRefuseOrder(orderId);
     }
 
     /**
@@ -62,6 +62,14 @@ public class ShopOrderManageController {
      */
     @GetMapping("/refundOrder")
     public ResultResponse refundOrder(Integer orderId) {
-        return orderService.refundOrder(orderId);
+        return orderService.shopRefundOrder(orderId);
     }
+
+    /**
+     * 服务完成
+     * @param orderId
+     * @return
+     */
+    @GetMapping("/shopServiceCompleted")
+    public ResultResponse shopServiceCompleted(Integer orderId) { return orderService.shopServiceCompleted(orderId);}
 }

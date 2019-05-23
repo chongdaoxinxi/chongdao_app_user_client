@@ -2,9 +2,9 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.enums.ManageStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.enums.ShopManageStatusEnum;
-import com.chongdao.client.repository.ShopRespository;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopManageService;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.ShopLoginVO;
@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Optional;
 
 /**
- * @Description TODO
+ * @Description 商家端
  * @Author onlineS
  * @Date 2019/5/13
  * @Version 1.0
@@ -26,16 +26,16 @@ import java.util.Optional;
 @Service
 public class ShopManageServiceImpl implements ShopManageService {
     @Autowired
-    private ShopRespository shopRespository;
+    private ShopRepository shopRepository;
 
     @Override
     public ResultResponse shopLogin(String name, String password) {
         // 非空校验
         if(StringUtils.isBlank(name) || StringUtils.isBlank(password)) {
-            return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ShopManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         //正确性校验
-        Optional<Shop> shop = shopRespository.findByAccountName(name);
+        Optional<Shop> shop = shopRepository.findByAccountName(name);
         if(shop.isPresent()){
             Shop s = shop.get();
             String pwd = s.getPassword();
@@ -44,11 +44,11 @@ public class ShopManageServiceImpl implements ShopManageService {
                 return assembleShopLogin(s);
             } else {
                 //不正确的密码
-                return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_ERROR_PASSWORD.getStatus(), ShopManageStatusEnum.SHOP_ERROR_PASSWORD.getMessage());
+                return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_ERROR_PASSWORD.getStatus(), ManageStatusEnum.SHOP_ERROR_PASSWORD.getMessage());
             }
         } else {
             // 无效用户名
-            return ResultResponse.createByErrorCodeMessage(ShopManageStatusEnum.SHOP_NOT_EXIST_ERROR.getStatus(), ShopManageStatusEnum.SHOP_NOT_EXIST_ERROR.getMessage());
+            return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NOT_EXIST_ERROR.getStatus(), ManageStatusEnum.SHOP_NOT_EXIST_ERROR.getMessage());
         }
     }
 
@@ -62,7 +62,7 @@ public class ShopManageServiceImpl implements ShopManageService {
         sVo.setLastLoginTime(current);
         //记录下最后登录时间
         s.setLastLoginTime(current);
-        shopRespository.saveAndFlush(s);
+        shopRepository.saveAndFlush(s);
         //生成token
         sVo.setToken(TokenUtil.generateToken(shopId, accountName, current));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), sVo);
@@ -76,7 +76,7 @@ public class ShopManageServiceImpl implements ShopManageService {
     @Override
     public ResultResponse<ShopManageVO> getShopInfo(Integer shopId) {
         return Optional.ofNullable(shopId)
-                .flatMap(id -> shopRespository.findById(shopId))
+                .flatMap(id -> shopRepository.findById(shopId))
                 .map(s -> {
                     ShopManageVO smVo = new ShopManageVO();
                     BeanUtils.copyProperties(s, smVo);
@@ -89,7 +89,7 @@ public class ShopManageServiceImpl implements ShopManageService {
         return Optional.ofNullable(shop)
                 .map(s -> {
                     s.setUpdateTime(new Date());
-                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRespository.saveAndFlush(s));
+                    return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.saveAndFlush(s));
                 })
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }

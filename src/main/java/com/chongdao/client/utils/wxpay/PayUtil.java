@@ -16,7 +16,7 @@ import java.io.*;
 import java.security.KeyStore;
 
 /**
- * @Description TODO
+ * @Description PayUtil
  * @Author onlineS
  * @Date 2019/4/30
  * @Version 1.0
