@@ -1,10 +1,7 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Coupon;
-import com.chongdao.client.entitys.Good;
-import com.chongdao.client.entitys.GoodsType;
-import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
@@ -13,6 +10,7 @@ import com.chongdao.client.mapper.CategoryMapper;
 import com.chongdao.client.mapper.GoodMapper;
 import com.chongdao.client.mapper.GoodsTypeMapper;
 import com.chongdao.client.mapper.ShopMapper;
+import com.chongdao.client.repository.CategoryRepository;
 import com.chongdao.client.repository.CouponRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.CouponVO;
@@ -51,6 +49,10 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsTypeMapper goodsTypeMapper;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
 
     /**
      * 分页查询商品
@@ -260,6 +262,69 @@ public class GoodsServiceImpl implements GoodsService {
         }
         goodMapper.goodsDiscount(shopId,goodsTypeId,discount);
         return ResultResponse.createBySuccess();
+    }
+
+
+    /**
+     * 获取商品分类
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse categoryList(Integer shopId) {
+        if (shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        List<Category> categoryList = categoryRepository.findByStatus(1);
+        return ResultResponse.createBySuccess(categoryList);
+    }
+
+    /**
+     * 增加或编辑商品
+     * @param shopId
+     * @param goodsListVO
+     * @return
+     */
+    @Override
+    public ResultResponse saveOrEditGoods(Integer shopId, GoodsListVO goodsListVO) {
+        if (shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        //如果goodsId为null代表增加，否则为编辑
+        Good good = new Good();
+        BeanUtils.copyProperties(goodsListVO,good);
+        if (goodsListVO.getId() == null){
+            int result = goodMapper.insert(good);
+            if (result == 0){
+                return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.SAVE_GOODS_ERROR.getStatus(),
+                        GoodsStatusEnum.SAVE_GOODS_ERROR.getMessage());
+            }
+            return ResultResponse.createBySuccess();
+        }
+        //编辑
+        int result = goodMapper.insertSelective(good);
+        if (result == 0){
+            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.SAVE_GOODS_ERROR.getStatus(),
+                    GoodsStatusEnum.SAVE_GOODS_ERROR.getMessage());
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 根据商品id查询
+     * @param shopId
+     * @param goodsId
+     * @return
+     */
+    @Override
+    public ResultResponse selectGoodsById(Integer shopId, Integer goodsId) {
+        if (shopId == null || goodsId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        Good good = goodMapper.selectByPrimaryKey(goodsId);
+        GoodsListVO goodsListVO = new GoodsListVO();
+        BeanUtils.copyProperties(good,goodsListVO);
+        return ResultResponse.createBySuccess(goodsListVO);
     }
 
 }

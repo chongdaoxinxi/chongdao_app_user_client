@@ -8,15 +8,18 @@ import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.config.AliPayConfig;
+import com.chongdao.client.dto.OrderLogDTO;
 import com.chongdao.client.dto.WxUnifiedorderModelDTO;
 import com.chongdao.client.dto.WxUnifiedorderResponseDTO;
 import com.chongdao.client.entitys.OrderDetail;
 import com.chongdao.client.entitys.OrderInfo;
+import com.chongdao.client.entitys.OrderLog;
 import com.chongdao.client.entitys.PayInfo;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.mapper.OrderDetailMapper;
 import com.chongdao.client.mapper.OrderInfoMapper;
+import com.chongdao.client.repository.OrderLogRepository;
 import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -58,6 +61,9 @@ public class PayServiceImpl implements PayService {
 
     @Autowired
     private PayInfoRepository payInfoRepository;
+
+    @Autowired
+    private OrderLogRepository logRepository;
 
 
     /**
@@ -102,11 +108,18 @@ public class PayServiceImpl implements PayService {
             AlipayTradeAppPayResponse response = client.sdkExecute(ali_request);
             orderStr = response.getBody();
             if (StringUtils.isBlank(orderStr)) {
+                OrderLog orderLog = OrderLogDTO.addOrderLog(order);
+                orderLog.setNote("支付宝预下单失败");
+                logRepository.save(orderLog);
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败!!!");
             }
             resultMap.put("orderStr", orderStr);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");
+            OrderLog orderLog = OrderLogDTO.addOrderLog(order);
+            orderLog.setNote("支付宝预下单成功");
+            orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+            logRepository.save(orderLog);
             log.info("支付宝App支付:支付订单创建成功out_trade_no----", order.getOrderNo());
         } catch (Exception e) {
             resultMap.put("status", "500");

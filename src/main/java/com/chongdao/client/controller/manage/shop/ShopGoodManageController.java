@@ -2,8 +2,8 @@ package com.chongdao.client.controller.manage.shop;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.GoodsService;
-import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.GoodsListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 @RequestMapping("/api/shop_good_manage/")
+
 public class ShopGoodManageController {
 
     @Autowired
@@ -78,4 +79,50 @@ public class ShopGoodManageController {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.discountGood(shopId,goodsTypeId,discount);
     }
+
+
+    /**
+     * 获取所有商品分类（官方定义）
+     * @param token
+     * @param shopId
+     * @return
+     */
+    @GetMapping("category_list")
+    public ResultResponse categoryList(String token,Integer shopId){
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.categoryList(shopId);
+    }
+
+
+    /**
+     * 添加或编辑商品
+     * @param token
+     * @param shopId
+     * @param goodsListVO
+     * @return
+     */
+    @GetMapping("add_goods")
+    public ResultResponse addOrEditGoods(String token, Integer shopId, GoodsListVO goodsListVO){
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.saveOrEditGoods(shopId,goodsListVO);
+    }
+
+
+    /**
+     * 根据商品id查询
+     * @param token
+     * @param shopId
+     * @param goodsId
+     * @return
+     */
+    @GetMapping("select_goods_by_id")
+    public ResultResponse selectGoodsById(String token, Integer shopId, Integer goodsId){
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.selectGoodsById(shopId,goodsId);
+    }
+
+
+
+
+
 }

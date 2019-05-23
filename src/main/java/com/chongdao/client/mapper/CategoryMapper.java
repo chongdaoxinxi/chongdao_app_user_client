@@ -4,8 +4,6 @@ package com.chongdao.client.mapper;
 import com.chongdao.client.entitys.Category;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
-
 @Mapper
 public interface CategoryMapper {
     int deleteByPrimaryKey(Integer id);
@@ -20,5 +18,6 @@ public interface CategoryMapper {
 
     int updateByPrimaryKey(Category record);
 
-    List<Category> selectByCategoryId(String categoryId);
+
+
 }

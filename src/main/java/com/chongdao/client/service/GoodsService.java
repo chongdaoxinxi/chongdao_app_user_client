@@ -1,11 +1,9 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.GoodsDetailVo;
+import com.chongdao.client.vo.GoodsListVO;
 import com.github.pagehelper.PageInfo;
-
-import java.util.List;
 
 public interface GoodsService {
 
@@ -65,4 +63,27 @@ public interface GoodsService {
      * @return
      */
     ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount);
+
+    /**
+     * 获取商品分类
+     * @param shopId
+     * @return
+     */
+    ResultResponse categoryList(Integer shopId);
+
+    /**
+     * 增加或编辑商品
+     * @param shopId
+     * @param goodsListVO
+     * @return
+     */
+    ResultResponse saveOrEditGoods(Integer shopId, GoodsListVO goodsListVO);
+
+    /**
+     * 根据商品id查询
+     * @param shopId
+     * @param goodsId
+     * @return
+     */
+    ResultResponse selectGoodsById(Integer shopId, Integer goodsId);
 }

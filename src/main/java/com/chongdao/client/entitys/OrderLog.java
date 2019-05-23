@@ -18,31 +18,19 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "order_log")
 public class OrderLog implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	@Column(name="order_id")
 	private Integer orderId;//订单id
+	private String orderNo;
 	private String note;//日志信息
-	@Column(name="order_status")
 	private Integer orderStatus;//订单所处状态
+	private Integer orderType; //支付类型：1，支付宝 2 微信
+	private Date createTime = new Date();
+	private Date updateTime = new Date();
 
-	private Integer version;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-	private Integer createby;
-	private Integer updateby;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updatedate;
 
-	@Override
-	public String toString() {
-		return "OrderLog [id=" + id + ", createdate=" + createdate + ", note=" + note + ", orderId=" + orderId
-				+ ", orderStatus=" + orderStatus + ", createby=" + createby + ", updateby=" + updateby + ", updatedate="
-				+ updatedate + ", version=" + version + "]";
-	}
 }
