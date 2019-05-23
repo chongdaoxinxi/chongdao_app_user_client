@@ -27,7 +27,7 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public ResultResponse<String> uploadFile(MultipartFile file) {
         try {
-            if (file.isEmpty() || file.getSize() == 0){
+            if (file.isEmpty() || file == null){
                 return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
             }
             StorePath storePath = this.storageClient.uploadFile(file.getInputStream(), file.getSize(),
