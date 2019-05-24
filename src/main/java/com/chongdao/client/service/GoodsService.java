@@ -86,4 +86,18 @@ public interface GoodsService {
      * @return
      */
     ResultResponse selectGoodsById(Integer shopId, Integer goodsId);
+
+    /**
+     * 提高系数
+     * @param goodsTypeId
+     * @return
+     */
+    ResultResponse improveRatio(Double ratio,Integer goodsTypeId,Integer shopId);
+
+    /**
+     * 一键恢复
+     * @param shopId
+     * @return
+     */
+    ResultResponse recoverAll(Integer shopId);
 }

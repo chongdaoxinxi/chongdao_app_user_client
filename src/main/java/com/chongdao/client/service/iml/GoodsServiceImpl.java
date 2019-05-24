@@ -12,6 +12,7 @@ import com.chongdao.client.mapper.GoodsTypeMapper;
 import com.chongdao.client.mapper.ShopMapper;
 import com.chongdao.client.repository.CategoryRepository;
 import com.chongdao.client.repository.CouponRepository;
+import com.chongdao.client.repository.GoodsRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.GoodsDetailVo;
@@ -52,6 +53,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
 
 
     /**
@@ -325,6 +329,49 @@ public class GoodsServiceImpl implements GoodsService {
         GoodsListVO goodsListVO = new GoodsListVO();
         BeanUtils.copyProperties(good,goodsListVO);
         return ResultResponse.createBySuccess(goodsListVO);
+    }
+
+
+    /**
+     * 提高系数
+     * @param goodsTypeId
+     * @return
+     */
+    @Override
+    public ResultResponse improveRatio(Double ratio,Integer goodsTypeId,Integer shopId) {
+        if (goodsTypeId == null || shopId == null || ratio == null || ratio <= 0d || ratio>= 10d){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        //全部
+        if (goodsTypeId == 0){
+            Integer integer = goodsRepository.updateRatioAndShopId(ratio, shopId);
+            if (integer == 0){
+                return ResultResponse.createByErrorMessage("提高系数失败");
+            }
+            return ResultResponse.createBySuccess();
+        }
+        Integer integer = goodsRepository.updateRatioAndGoodTypeIdAndShopId(ratio, goodsTypeId, shopId);
+        if (integer == 0){
+            return ResultResponse.createByErrorMessage("提高系数失败");
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 一键恢复
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse recoverAll(Integer shopId) {
+        if (shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        Integer integer = goodsRepository.updateRatio(shopId);
+        if (integer == 0){
+            return ResultResponse.createByErrorMessage("一键恢复失败");
+        }
+        return ResultResponse.createBySuccess();
     }
 
 }

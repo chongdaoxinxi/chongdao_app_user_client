@@ -1,14 +1,11 @@
 package com.chongdao.client.entitys;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.type.UUIDBinaryType;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -47,7 +44,7 @@ public class Good {
 	//提高系数默认为1
 	private Double ratio = 1.0D;
 
-	private BigDecimal ratioPrice;
+	private BigDecimal ratioPrice = price.multiply(new BigDecimal(ratio)).setScale(2);
 
 	private Integer stock;
 

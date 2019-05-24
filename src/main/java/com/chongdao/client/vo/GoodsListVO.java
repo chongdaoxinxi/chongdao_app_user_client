@@ -42,6 +42,10 @@ public class GoodsListVO {
     /** 销量 */
     private Integer sales;
 
+
+    /** 品牌id */
+    private Integer brandId;
+
     private List<CouponVO> couponVOList;
 
 

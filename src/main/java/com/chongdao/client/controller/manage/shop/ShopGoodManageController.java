@@ -121,6 +121,28 @@ public class ShopGoodManageController {
         return goodsService.selectGoodsById(shopId,goodsId);
     }
 
+    /**
+     * 提高系数
+     * @param goodsTypeId (0代表全部)
+     * @return
+     */
+    @GetMapping("improve_ratio")
+    public ResultResponse improveRatio(String token,Double ratio,Integer goodsTypeId,Integer shopId){
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.improveRatio(ratio,goodsTypeId,shopId);
+    }
+
+    /**
+     * 一键恢复
+     * @param token
+     * @param shopId
+     * @return
+     */
+    @GetMapping("recover_all")
+    public ResultResponse recoverAll(String token,Integer shopId){
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.recoverAll(shopId);
+    }
 
 
 
