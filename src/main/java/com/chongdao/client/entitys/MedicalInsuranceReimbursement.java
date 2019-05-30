@@ -12,30 +12,24 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description 医疗险投保人
+ * @Description 医疗保险报销
  * @Author onlineS
- * @Date 2019/5/28
+ * @Date 2019/5/30
  * @Version 1.0
  **/
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class MedicalInsurancePolicyHolder implements Serializable {
+public class MedicalInsuranceReimbursement implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer userId;//用户id
-    private String name;
-    private String phone;
-    private String address;
-    private Integer cardType;//证件类型
-    private String cardNo;
-    private String mail;
-    private String bankUsername;//银行卡户名
-    private String bankName;//银行名称
-    private String bankNo;//银行卡账号
-    private Date createDate;
+    private Integer medicalInsuranceOrderId;//医疗保险订单id
+    private Integer status;//报销流程状态
+    private Date applyDate;//报销申请时间
+    private Date auditDate;//审核完成时间
+    private Date createDate;//创建时间
 }

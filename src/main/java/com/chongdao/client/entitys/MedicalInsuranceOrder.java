@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description 医疗险投保人
+ * @Description 医疗险
  * @Author onlineS
  * @Date 2019/5/28
  * @Version 1.0
@@ -21,21 +21,17 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-public class MedicalInsurancePolicyHolder implements Serializable {
+public class MedicalInsuranceOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer userId;//用户id
-    private String name;
-    private String phone;
-    private String address;
-    private Integer cardType;//证件类型
-    private String cardNo;
-    private String mail;
-    private String bankUsername;//银行卡户名
-    private String bankName;//银行名称
-    private String bankNo;//银行卡账号
-    private Date createDate;
+    private Integer medicalInsurancePolicyHolderId;//投保人id
+    private Integer petCardId;//宠物卡片id
+    private Integer status;//订单状态
+    private Date applyDate;//保险订单下单时间
+    private Date auditDate;//审核完成时间
+    private Date createDate;//数据创建时间
 }

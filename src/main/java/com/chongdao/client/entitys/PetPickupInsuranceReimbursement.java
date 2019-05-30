@@ -11,21 +11,19 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * @Description 宠物运输险
+ * @Description 运输险报销
  * @Author onlineS
- * @Date 2019/5/28
+ * @Date 2019/5/30
  * @Version 1.0
  **/
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class PetPickupInsurance implements Serializable {
+public class PetPickupInsuranceReimbursement implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-
-    private Integer orderId;//接送险订单id
 }

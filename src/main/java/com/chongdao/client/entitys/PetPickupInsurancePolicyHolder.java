@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Description 运输险投保人(后台通过订单信息自动生成)
@@ -26,6 +27,7 @@ public class PetPickupInsurancePolicyHolder implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    private Integer userId;//用户id
     private String name;
     private String phone;
     private String address;
@@ -35,4 +37,5 @@ public class PetPickupInsurancePolicyHolder implements Serializable {
     private String bankUsername;//银行卡户名
     private String bankName;//银行名称
     private String bankNo;//银行卡账号
+    private Date createDate;//创建时间
 }
