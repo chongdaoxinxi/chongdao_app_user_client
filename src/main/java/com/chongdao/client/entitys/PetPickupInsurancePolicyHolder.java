@@ -26,4 +26,13 @@ public class PetPickupInsurancePolicyHolder implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    private String name;
+    private String phone;
+    private String address;
+    private Integer cardType;//证件类型
+    private String cardNo;
+    private String mail;
+    private String bankUsername;//银行卡户名
+    private String bankName;//银行名称
+    private String bankNo;//银行卡账号
 }
