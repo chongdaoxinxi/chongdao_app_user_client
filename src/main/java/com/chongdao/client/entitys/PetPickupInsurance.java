@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * @Description 宠物接送险
+ * @Description 宠物运输险
  * @Author onlineS
  * @Date 2019/5/28
  * @Version 1.0
