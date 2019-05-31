@@ -46,6 +46,9 @@ public class GoodsListVO {
     /** 品牌id */
     private Integer brandId;
 
+
+    private String typeName;
+
     private List<CouponVO> couponVOList;
 
 

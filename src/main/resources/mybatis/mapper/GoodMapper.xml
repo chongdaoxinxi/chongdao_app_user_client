@@ -21,16 +21,18 @@
       <arg column="module_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="sales" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="brand_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type_name" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
     id, name, icon, price, discount, unit, des, good_type_id, shop_id, ratio, ratio_price,
-    stock, create_time, update_time, status, module_id, category_id,sales
+    stock, create_time, update_time, status, module_id, category_id,sales,brand_id,type_name
   </sql>
 
   <sql id="Base_Column_Lists" >
     g.id, g.name, g.icon,g.price, g.discount, g.unit, g.des, g.good_type_id, g.shop_id, g.ratio, g.ratio_price,
-    g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id,g.sales
+    g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id,g.sales,g.brand_id,g.type_name
   </sql>
 
   <select id="selectList" resultMap="BaseResultMap">
@@ -93,13 +95,14 @@
       des, good_type_id, shop_id,
       ratio, ratio_price, stock,
       create_time, update_time, status,
-      module_id, category_id,sales)
+      module_id, category_id,sales,brand_id,type_name)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
       #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
       #{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
       #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
-      #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER})
+      #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER}, #{brandId,jdbcType=INTEGER},
+       #{typeName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Good" >
     insert into good
@@ -158,6 +161,12 @@
       <if test="sales != null" >
         sales,
       </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="typeName != null" >
+        type_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -213,6 +222,12 @@
       </if>
       <if test="sales != null" >
         #{sales,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="typeName != null" >
+        #{typeName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -270,6 +285,12 @@
       <if test="sales != null" >
         sales = #{sales,jdbcType=INTEGER},
       </if>
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="typeName != null" >
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -291,7 +312,9 @@
       status = #{status,jdbcType=TINYINT},
       module_id = #{moduleId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
-       sales = #{categoryId,jdbcType=INTEGER}
+       sales = #{categoryId,jdbcType=INTEGER},
+       brand_id = #{brandId,jdbcType=INTEGER},
+        type_name = #{typeName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

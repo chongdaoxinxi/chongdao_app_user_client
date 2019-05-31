@@ -29,7 +29,7 @@ public class Good {
 
 	private String icon; //图片
 
-	private BigDecimal price;
+	private BigDecimal price = BigDecimal.ZERO;
 
 	private Double discount = 0.0D;
 
@@ -59,6 +59,12 @@ public class Good {
 	private Integer categoryId; //所属类别id
 
 	private Integer sales;
+
+	private Integer brandId;
+
+	//猫的类型
+	private String typeName;
+
 
 	@Transient
 	private String categoryName;
