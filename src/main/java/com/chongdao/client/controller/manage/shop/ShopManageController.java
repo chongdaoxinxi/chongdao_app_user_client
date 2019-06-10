@@ -35,7 +35,7 @@ public class ShopManageController {
      * 商家登录
      * @return
      */
-    @GetMapping("/shopLogin")
+    @GetMapping("shopLogin")
     public ResultResponse shopLogin(String name, String password) {
         return shopManageService.shopLogin(name, password);
     }
@@ -45,7 +45,7 @@ public class ShopManageController {
      * @param token
      * @return
      */
-    @GetMapping("/shopLogout")
+    @GetMapping("shopLogout")
     public ResultResponse shopLogout(String token) {
         // token缓存在前端  登出建议前端主动销毁token, 页面直接跳转到登录页
 //        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
@@ -58,7 +58,7 @@ public class ShopManageController {
      * @param token
      * @return
      */
-    @GetMapping("/getShopInfo")
+    @GetMapping("getShopInfo")
     public ResultResponse<ShopManageVO> getShopInfo(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return shopManageService.getShopInfo(tokenVo.getUserId());
@@ -69,7 +69,7 @@ public class ShopManageController {
      * @param s
      * @return
      */
-    @GetMapping("/saveShopInfo")
+    @GetMapping("saveShopInfo")
     public ResultResponse saveShopInfo(Shop s) {
         return shopManageService.saveShopInfo(s);
     }
@@ -79,6 +79,7 @@ public class ShopManageController {
      * @param token
      * @return
      */
+    @GetMapping("getShopOrderStatistics")
     public ResultResponse getShopOrderStatistics(String token) {
         return null;
     }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/setting")
+@RequestMapping("/api/setting/")
 public class UserSettingController {
     @Autowired
     private UserService userService;
@@ -27,7 +27,7 @@ public class UserSettingController {
      * @param token
      * @return
      */
-    @GetMapping("/getUserSettingInfo")
+    @GetMapping("getUserSettingInfo")
     public ResultResponse<UserSettingVO> getUserSettingInfo(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userService.getUserSettingInfo(tokenVo.getUserId());
@@ -38,7 +38,7 @@ public class UserSettingController {
      * @param uso
      * @return
      */
-    @GetMapping("/saveUserSetting")
+    @GetMapping("saveUserSetting")
     public ResultResponse saveUserSetting(UserSettingVO uso){
         return userService.saveUserSetting(uso);
     };

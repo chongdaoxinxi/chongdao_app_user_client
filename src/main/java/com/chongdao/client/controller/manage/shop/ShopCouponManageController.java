@@ -30,7 +30,7 @@ public class ShopCouponManageController {
      * @param couponVO
      * @return
      */
-    @GetMapping("/addCoupon")
+    @GetMapping("addCoupon")
     public ResultResponse<CouponVO> addCoupon(String token, CouponVO couponVO, Integer type, Integer shopId){
         LoginUserUtil.resultTokenVo(token);
         couponService.save(shopId, couponVO, type);
@@ -44,7 +44,7 @@ public class ShopCouponManageController {
      * @param type 0 店铺满减 2 优惠券
      * @return
      */
-    @GetMapping("/findCouponByShopId")
+    @GetMapping("findCouponByShopId")
     public ResultResponse<List<CouponVO>> findCouponByShopId(Integer shopId, Integer type){
         return  couponService.findByShopId(shopId, type);
     }
@@ -55,7 +55,7 @@ public class ShopCouponManageController {
      * @param couponId
      * @return
      */
-    @GetMapping("/updateCouponStatusById")
+    @GetMapping("updateCouponStatusById")
     public ResultResponse<Integer> updateCouponStatusById(String token, Integer couponId, Integer status){
         LoginUserUtil.resultTokenVo(token);
         couponService.updateCouponStatusById(couponId, status);

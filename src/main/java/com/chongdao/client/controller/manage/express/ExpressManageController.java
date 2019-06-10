@@ -34,7 +34,7 @@ public class ExpressManageController {
      * @param password
      * @return
      */
-    @GetMapping("/login")
+    @GetMapping("login")
     public ResultResponse login(String username, String password) {
         return expressManageService.expressLogin(username, password);
     }
@@ -44,7 +44,7 @@ public class ExpressManageController {
      * @param token
      * @return
      */
-    @GetMapping("/logout")
+    @GetMapping("logout")
     public ResultResponse logout(String token) {
         return null;
     }
@@ -57,7 +57,7 @@ public class ExpressManageController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/getExpressOrderList")
+    @GetMapping("getExpressOrderList")
     public ResultResponse<PageInfo> getExpressOrderList(String token, String type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.expressOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
@@ -71,7 +71,7 @@ public class ExpressManageController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/getExpressManageOrderList")
+    @GetMapping("getExpressManageOrderList")
     public ResultResponse<PageInfo> getExpressManageOrderList(String token, String type, Integer pageNum, Integer pageSize) {
         return orderService.expressAdminOrderList(type, pageNum, pageSize);
     }
@@ -82,7 +82,7 @@ public class ExpressManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/expressAcceptOrder")
+    @GetMapping("expressAcceptOrder")
     public ResultResponse expressAcceptOrder(String token, Integer orderId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.expressAcceptOrder(tokenVo.getUserId(), orderId);
@@ -94,7 +94,7 @@ public class ExpressManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/cancelOrder")
+    @GetMapping("cancelOrder")
     public ResultResponse cancelOrder(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.cancelOrder(tokenVo.getUserId(), orderId);
@@ -106,7 +106,7 @@ public class ExpressManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/arriveShop")
+    @GetMapping("arriveShop")
     public ResultResponse arriveShop(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.arriveShop(tokenVo.getUserId(), orderId);
@@ -118,7 +118,7 @@ public class ExpressManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/serviceComplete")
+    @GetMapping("serviceComplete")
     public ResultResponse serviceComplete(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.serviceComplete(tokenVo.getUserId(), orderId);
@@ -130,7 +130,7 @@ public class ExpressManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/expressStartServiceInSingleTripNotice")
+    @GetMapping("expressStartServiceInSingleTripNotice")
     public ResultResponse expressStartServiceInSingleTripNotice(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.expressStartServiceInSingleTripNotice(tokenVo.getUserId(), orderId);

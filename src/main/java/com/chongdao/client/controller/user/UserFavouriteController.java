@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/favourite")
+@RequestMapping("/api/favourite/")
 public class UserFavouriteController {
     @Autowired
     private UserService userService;
@@ -26,7 +26,7 @@ public class UserFavouriteController {
      * @param token
      * @return
      */
-    @GetMapping("/getFavouriteShopList")
+    @GetMapping("getFavouriteShopList")
     public ResultResponse getFavouriteShopList(String  token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userService.getFavouriteShopList(tokenVo.getUserId());
@@ -37,7 +37,7 @@ public class UserFavouriteController {
      * @param token
      * @return
      */
-    @GetMapping("/getFavouriteGoodList")
+    @GetMapping("getFavouriteGoodList")
     public ResultResponse getFavouriteGoodList(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userService.getFavouriteGoodList(tokenVo.getUserId());

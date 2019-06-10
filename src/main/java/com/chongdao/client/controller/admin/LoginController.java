@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Description TODO
+ * @Description PC端登录
  * @Author onlineS
  * @Date 2019/6/10
  * @Versio.0
  **/
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/")
 public class LoginController {
     @Autowired
     private AdminService adminService;
 
-    @RequestMapping("/login")
+    @RequestMapping("login")
     public ResultResponse login(String username, String password) {
         return adminService.adminLogin(username, password);
     }
 
-    @GetMapping("/getAdminInfo")
+    @GetMapping("getAdminInfo")
     public ResultResponse getAdminInfo(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return adminService.getAdminInfo(tokenVo.getUserId(), tokenVo.getRole());

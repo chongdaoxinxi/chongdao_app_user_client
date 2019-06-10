@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/account/")
 public class UserAccountController {
     @Autowired
     private UserAccountService userAccountService;
@@ -33,7 +33,7 @@ public class UserAccountController {
      * @param token
      * @return
      */
-    @GetMapping("/getUserAccount")
+    @GetMapping("getUserAccount")
     public ResultResponse<UserAccount> getUserAccount(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userAccountService.getUserAccountByUserId(tokenVo.getUserId());
@@ -44,7 +44,7 @@ public class UserAccountController {
      * @param ua
      * @return
      */
-    @GetMapping("/saveUserAccount")
+    @GetMapping("saveUserAccount")
     public ResultResponse saveUserAccount(UserAccount ua) {
         return userAccountService.saveUserAccount(ua);
     }
@@ -57,7 +57,7 @@ public class UserAccountController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/getUserTrans")
+    @GetMapping("getUserTrans")
     public ResultResponse<Page<UserTrans>> getUserTrans(String token, Integer type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userTransService.getUserTrans(tokenVo.getUserId(), type, pageNum, pageSize);

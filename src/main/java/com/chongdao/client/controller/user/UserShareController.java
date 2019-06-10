@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/share")
+@RequestMapping("/api/share/")
 public class UserShareController {
     @Autowired
     private UserShareService userShareService;
@@ -27,7 +27,7 @@ public class UserShareController {
      * @param type
      * @return
      */
-    @GetMapping("/userShareCallBack")
+    @GetMapping("userShareCallBack")
     public ResultResponse userShareCallBack(String token, Integer type) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userShareService.userShare(tokenVo.getUserId(), type);

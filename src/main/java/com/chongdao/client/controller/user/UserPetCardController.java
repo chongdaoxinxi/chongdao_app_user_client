@@ -19,7 +19,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/petCard")
+@RequestMapping("/api/petCard/")
 public class UserPetCardController {
     @Autowired
     private PetCardService petCardService;
@@ -30,7 +30,7 @@ public class UserPetCardController {
      * @param status
      * @return
      */
-    @GetMapping("/getPetCardList")
+    @GetMapping("getPetCardList")
     public ResultResponse<List<PetCard>> getPetCardList(String token, Integer status) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return petCardService.getPetCardByUserIdAndStatus(tokenVo.getUserId(), status);
@@ -41,7 +41,7 @@ public class UserPetCardController {
      * @param cardId
      * @return
      */
-    @GetMapping("/getPetCardInfo")
+    @GetMapping("getPetCardInfo")
     public ResultResponse<PetCard> getPetCardInfo(Integer cardId) {
         return petCardService.getPetCardById(cardId);
     }
@@ -51,7 +51,7 @@ public class UserPetCardController {
      * @param petCard
      * @return
      */
-    @GetMapping("/savePetCard")
+    @GetMapping("savePetCard")
     public ResultResponse savePetCard(PetCard petCard) {
         return petCardService.savePetCard(petCard);
     }

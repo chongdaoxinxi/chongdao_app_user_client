@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @RestController
-@RequestMapping("/api/address")
+@RequestMapping("/api/address/")
 public class UserAddressController {
     @Autowired
     private UserAddressService userAddressService;
@@ -28,7 +28,7 @@ public class UserAddressController {
      * @param uAddr
      * @return
      */
-    @GetMapping("/saveUserAddress")
+    @GetMapping("saveUserAddress")
     public ResultResponse saveUserAddress(UserAddress uAddr) {
         return userAddressService.saveUserAddress(uAddr);
     }
@@ -38,7 +38,7 @@ public class UserAddressController {
      * @param uAddrId
      * @return
      */
-    @GetMapping("/getUserAddressInfo")
+    @GetMapping("getUserAddressInfo")
     public ResultResponse<UserAddress> getUserAddressInfoById(Integer uAddrId) {
         return userAddressService.getUserAddressById(uAddrId);
     }
@@ -48,7 +48,7 @@ public class UserAddressController {
      * @param token
      * @return
      */
-    @GetMapping("/getUserAddressList")
+    @GetMapping("getUserAddressList")
     public ResultResponse<Page<UserAddress>> getUserAddressList(String token, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userAddressService.getUserAddressList(tokenVo.getUserId(), pageNum, pageSize);

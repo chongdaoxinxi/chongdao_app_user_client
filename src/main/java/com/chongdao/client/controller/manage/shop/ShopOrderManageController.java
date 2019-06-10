@@ -29,7 +29,7 @@ public class ShopOrderManageController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/getOrderList")
+    @GetMapping("getOrderList")
     public ResultResponse getOrderList(String token, String type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.getShopOrderTypeList(tokenVo.getUserId(), type, pageNum, pageSize);
@@ -40,7 +40,7 @@ public class ShopOrderManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/acceptOrder")
+    @GetMapping("acceptOrder")
     public ResultResponse acceptOrder(Integer orderId) {
         return orderService.shopAcceptOrder(orderId);
     }
@@ -50,7 +50,7 @@ public class ShopOrderManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/refuseOrder")
+    @GetMapping("refuseOrder")
     public ResultResponse refuseOrder(Integer orderId) {
         return orderService.shopRefuseOrder(orderId);
     }
@@ -60,7 +60,7 @@ public class ShopOrderManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/refundOrder")
+    @GetMapping("refundOrder")
     public ResultResponse refundOrder(Integer orderId) {
         return orderService.shopRefundOrder(orderId);
     }
@@ -70,6 +70,6 @@ public class ShopOrderManageController {
      * @param orderId
      * @return
      */
-    @GetMapping("/shopServiceCompleted")
+    @GetMapping("shopServiceCompleted")
     public ResultResponse shopServiceCompleted(Integer orderId) { return orderService.shopServiceCompleted(orderId);}
 }
