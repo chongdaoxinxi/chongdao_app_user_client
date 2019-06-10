@@ -27,6 +27,7 @@ public class ShopManageController {
      * 商家注册
      * @return
      */
+    @GetMapping("shopSign")
     public ResultResponse shopSign() {
         return null;
     }

@@ -29,7 +29,7 @@ public class ShopGoodManageController {
      * @param token
      * @return
      */
-    @GetMapping("/get_good_category_list")
+    @GetMapping("get_good_category_list")
     public ResultResponse getGoodCategoryList(String token, Integer shopId) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.getGoodCategoryList(shopId);
