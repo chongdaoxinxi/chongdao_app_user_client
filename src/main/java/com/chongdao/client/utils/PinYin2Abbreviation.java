@@ -1,7 +1,7 @@
 package com.chongdao.client.utils;
 
 /**
- * @Description TODO
+ * @Description 根据中文获取首字母拼接成的字符串
  * @Author onlineS
  * @Date 2019/6/10
  * @Version 1.0
