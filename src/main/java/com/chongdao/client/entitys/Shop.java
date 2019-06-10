@@ -2,6 +2,7 @@ package com.chongdao.client.entitys;
 
 import com.chongdao.client.common.PageParams;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Shop extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;
 
