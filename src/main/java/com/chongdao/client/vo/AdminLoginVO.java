@@ -20,7 +20,6 @@ public class AdminLoginVO {
     private Integer managementId;
     private String username;
     private String token;
-
     @JsonIgnore
     private String password;
     /**
