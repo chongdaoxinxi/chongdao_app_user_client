@@ -46,6 +46,9 @@ public class GoodsListVO {
     /** 品牌id */
     private Integer brandId;
 
+    private String unit;
+
+    private Byte status;
 
     private String typeName;
 

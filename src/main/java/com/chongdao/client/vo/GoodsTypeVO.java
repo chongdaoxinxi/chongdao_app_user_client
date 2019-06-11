@@ -19,5 +19,9 @@ public class GoodsTypeVO {
 
     private Integer goodsTypeId;
 
+    private Integer sort;
+
+    private Byte status;
+
     private List<GoodsListVO> goodsListVOList;
 }

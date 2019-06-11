@@ -79,7 +79,7 @@ public class Good {
 	private Integer couponId;
 
 	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodTypeId,
-				Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId,Integer sales) {
+				Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId,Integer sales, Integer brandId, String typeName) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
@@ -98,6 +98,8 @@ public class Good {
 		this.moduleId = moduleId;
 		this.categoryId = categoryId;
 		this.sales = sales;
+		this.brandId = brandId;
+		this.typeName = typeName;
 	}
 
 	@Override

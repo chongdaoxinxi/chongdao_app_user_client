@@ -352,4 +352,9 @@
     update good set discount=#{discount}
     where good_type_id = #{goodsTypeId} and shop_id = #{shopId}
   </update>
+
+  <update id="updateGoodTypeStatus" parameterType="map">
+    update goods_type set status=#{status}
+    where id = #{goodTypeId}
+  </update>
 </mapper>

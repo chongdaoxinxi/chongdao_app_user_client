@@ -146,7 +146,7 @@
   <select id="selectByCategoryId" resultMap="BaseResultMap">
   select
   <include refid="Base_Column_List"/>
-  from goods_type where status = 1 and shop_id=#{shopId} and category_id=#{categoryId}
+  from goods_type where status in (0,1) and shop_id=#{shopId} and category_id=#{categoryId}
   order by sort asc
 </select>
 
@@ -154,7 +154,12 @@
   <select id="getGoodCategoryList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from goods_type where status = 1 and shop_id=#{shopId}
+    from goods_type where status in (0,1) and shop_id=#{shopId}
     order by sort asc
   </select>
+
+  <update id="updateGoodTypeStatus" parameterType="map">
+    update goods_type set status=#{status}
+    where id = #{goodTypeId}
+  </update>
 </mapper>

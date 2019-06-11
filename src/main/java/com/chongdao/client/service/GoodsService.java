@@ -44,7 +44,7 @@ public interface GoodsService {
      * @param pageSize
      * @return
      */
-    ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, Integer goodName, int pageNum, int pageSize);
+    ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, String goodName, int pageNum, int pageSize);
 
 
     /**
@@ -100,4 +100,6 @@ public interface GoodsService {
      * @return
      */
     ResultResponse recoverAll(Integer shopId);
+
+    ResultResponse updateGoodTypeStatus(Integer goodTypeId, Integer status);
 }

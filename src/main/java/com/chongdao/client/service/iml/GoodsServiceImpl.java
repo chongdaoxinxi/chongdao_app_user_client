@@ -208,6 +208,8 @@ public class GoodsServiceImpl implements GoodsService {
             goodsTypeVO.setGoodsTypeName(goodsType.getName());
             goodsTypeVO.setGoodsTypeId(goodsType.getId());
             goodsTypeVO.setCategoryId(goodsType.getCategoryId());
+            goodsTypeVO.setSort(goodsType.getSort());
+            goodsTypeVO.setStatus(goodsType.getStatus());
             goodsTypeVOList.add(goodsTypeVO);
         });
         return ResultResponse.createBySuccess(goodsTypeVOList);
@@ -223,7 +225,7 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, Integer goodName, int pageNum, int pageSize) {
+    public ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, String goodName, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<Good> goodList = goodMapper.getGoodList(shopId,goodsTypeId, goodName);
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
@@ -234,8 +236,6 @@ public class GoodsServiceImpl implements GoodsService {
         });
         return ResultResponse.createBySuccess(goodsListVOList);
     }
-
-
 
     /**
      * 商品下架
@@ -373,5 +373,21 @@ public class GoodsServiceImpl implements GoodsService {
         }
         return ResultResponse.createBySuccess();
     }
+
+    /**
+     * 启用/禁用/删除 商品类别
+     * @param goodTypeId
+     * @param status
+     * @return
+     */
+    @Override
+    public ResultResponse updateGoodTypeStatus(Integer goodTypeId, Integer status) {
+        if (goodTypeId == null || status == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        goodsTypeMapper.updateGoodTypeStatus(goodTypeId,status);
+        return ResultResponse.createBySuccess();
+    }
+
 
 }

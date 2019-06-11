@@ -48,7 +48,7 @@ public class ShopGoodManageController {
     public ResultResponse getGoodList(String token,
                                       @RequestParam(value = "shopId") Integer shopId,
                                       @RequestParam(required = false) Integer goodsTypeId,
-                                      @RequestParam(required = false) Integer goodName,
+                                      @RequestParam(required = false) String goodName,
                                       @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         LoginUserUtil.resultTokenVo(token);
@@ -144,7 +144,17 @@ public class ShopGoodManageController {
         return goodsService.recoverAll(shopId);
     }
 
-
-
+    /**
+     * 启用/禁用/删除 商品类别
+     * @param token
+     * @param goodTypeId
+     * @param status
+     * @return
+     */
+    @GetMapping("updateGoodTypeStatus")
+    public ResultResponse updateGoodTypeStatus(String token, Integer goodTypeId, Integer status) {
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.updateGoodTypeStatus(goodTypeId, status);
+    }
 
 }
