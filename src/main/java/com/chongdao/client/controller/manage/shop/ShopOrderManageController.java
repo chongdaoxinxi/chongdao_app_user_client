@@ -36,6 +36,24 @@ public class ShopOrderManageController {
     }
 
     /**
+     * 获取订单列表Pc
+     * @param token
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param orderStatus
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getOrderListPc")
+    public ResultResponse getOrderListPc(String token, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) {
+//        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+//        return orderService.getShopOrderTypeList(tokenVo.getUserId(), orderStatus, pageNum, pageSize);
+        return null;
+    }
+
+    /**
      * 接单
      * @param orderId
      * @return
