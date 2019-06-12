@@ -37,4 +37,5 @@ public class Management implements Serializable {
     private Integer type;
     private Integer level;
     private Date createDate;
+    private String areaCode;
 }

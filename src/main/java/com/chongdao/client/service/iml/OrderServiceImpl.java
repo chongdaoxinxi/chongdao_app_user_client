@@ -101,6 +101,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private SMSUtil smsUtil;
 
+    @Autowired
+    private ManagementRepository managementRepository;
+
     /**
      * 预下单
      *
@@ -207,6 +210,31 @@ public class OrderServiceImpl implements OrderService {
         return ResultResponse.createBySuccess(pageResult);
     }
 
+    /**
+     * 获取订单列表PC端
+     * @param mgtId
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param orderStatus
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ResultResponse<PageInfo> getOrderListPc(Integer mgtId, String orderNo, String username, String phone, String orderStatus, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        Management management = managementRepository.findById(mgtId).orElse(null);
+        String areaCode = "";
+        if(management != null) {
+            areaCode = management.getAreaCode();
+        }
+        List<OrderInfo> orderInfoList = orderInfoMapper.getOrderListPc(areaCode, orderNo, username, phone, orderStatus);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
+        PageInfo pageResult = new PageInfo(orderInfoList);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
+    }
 
     /**
      * 创建订单
@@ -552,7 +580,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResultResponse<PageInfo> getShopOrderTypeListPc(Integer shopId, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) {
+    public ResultResponse<PageInfo> getShopOrderTypeListPc(String role, Integer shopId, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) {
+        if(StringUtils.isNotBlank(role)) {
+            //管理员
+            if(role.equals("ADMIN_PC")) {
+                return getOrderListPc(shopId, orderNo, username, phone, orderStatus, pageNum, pageSize);
+            }
+        }
         PageHelper.startPage(pageNum, pageSize);
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdListPc(shopId, orderNo, username, phone, orderStatus);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);

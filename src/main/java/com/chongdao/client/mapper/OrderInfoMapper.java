@@ -31,6 +31,8 @@ public interface OrderInfoMapper {
 
     List<OrderInfo> selectByShopIdListPc(@Param("shopId") Integer userId, @Param("orderNo")String orderNo, @Param("username")String username, @Param("phone")String phone, @Param("orderStatus")String orderStatus);
 
+    List<OrderInfo> getOrderListPc(@Param("areaCode") String areaCode, @Param("orderNo")String orderNo, @Param("username")String username, @Param("phone")String phone, @Param("orderStatus")String orderStatus);
+
     /**
      * 计算店铺的准时率
      * 获取该店铺所有已完成的订单
