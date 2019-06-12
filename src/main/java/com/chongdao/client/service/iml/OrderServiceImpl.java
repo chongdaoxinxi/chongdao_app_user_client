@@ -298,9 +298,13 @@ public class OrderServiceImpl implements OrderService {
         UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
         if (receiveAddress != null) {
             orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+            orderVo.setPhone(receiveAddress.getPhone());
         }
         if (deliverAddress != null) {
             orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+            if(receiveAddress == null) {
+                orderVo.setPhone(deliverAddress.getPhone());
+            }
         }
         //订单明细
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
@@ -316,6 +320,23 @@ public class OrderServiceImpl implements OrderService {
             orderGoodsVo.setTotalPrice(orderDetail.getTotalPrice());
             orderGoodsVoList.add(orderGoodsVo);
         });
+        //设置订单总价
+        BigDecimal goodsPrice = order.getGoodsPrice();
+        BigDecimal servicePrice = order.getServicePrice();
+        if(goodsPrice != null && servicePrice!= null) {
+            orderVo.setTotalPrice(goodsPrice.add(servicePrice));
+        } else {
+            if(goodsPrice != null) {
+                orderVo.setTotalPrice(goodsPrice);
+            } else if(servicePrice != null) {
+                orderVo.setTotalPrice(servicePrice);
+            }
+        }
+        //设置用户人姓名
+        User user = userRepository.findById(order.getUserId()).orElse(null);
+        if(user != null) {
+            orderVo.setUsername(user.getName());
+        }
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
         return orderVo;
     }
@@ -524,6 +545,16 @@ public class OrderServiceImpl implements OrderService {
             type = "";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdList(shopId, type);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
+        PageInfo pageResult = new PageInfo(orderInfoList);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ResultResponse<PageInfo> getShopOrderTypeListPc(Integer shopId, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdListPc(shopId, orderNo, username, phone, orderStatus);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);

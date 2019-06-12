@@ -38,10 +38,17 @@
     </resultMap>
     <sql id="Base_Column_List">
         id, service_type, order_no, user_id, shop_id, order_status, goods_price, service_price,
-    total_discount, is_service, payment, follow, card_id, remark, area_code deliver_time, payment_time,
+    total_discount, is_service, payment, follow, card_id, remark, area_code, deliver_time, payment_time,
     payment_type, shop_receive_time, shop_finish_time, express_id, express_receive_time, express_finish_time,
     reward, receive_address_id, deliver_address_id, receive_time, coupon_id, create_time,
     single_service_type, update_time
+    </sql>
+    <sql id="Base_Alias_Column_List">
+        o.id, o.service_type, o.order_no, o.user_id, o.shop_id, o.order_status, o.goods_price, o.service_price,
+    o.total_discount, o.is_service, o.payment, o.follow, o.card_id, o.remark, o.area_code, o.deliver_time, o.payment_time,
+    o.payment_type, o.shop_receive_time, o.shop_finish_time, o.express_id, o.express_receive_time, o.express_finish_time,
+    o.reward, o.receive_address_id, o.deliver_address_id, o.receive_time, o.coupon_id, o.create_time,
+    o.single_service_type, o.update_time
     </sql>
     <select id="selectByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo" resultMap="BaseResultMap">
         select
@@ -434,6 +441,30 @@
         </if>
         order by order_info.create_time
     </select>
+
+    <select id="selectByShopIdListPc" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Alias_Column_List"/>
+        from order_info o
+        left join user u on o.user_id = u.id
+        left join order_address oaddr on o.id = oaddr.order_id
+        where shop_id = #{shopId}
+        <if test="orderNo != null and orderNo != ''">
+            and o.order_no like concat('%',#{orderNo},'%')
+        </if>
+        <if test="username != null and username != ''">
+            and u.name like concat('%',#{username},'%')
+        </if>
+        <if test="phone != null and phone != ''">
+            and oaddr.phone like concat('%',#{phone},'%')
+        </if>
+        <if test="orderStatus != null and orderStatus != ''">
+            and o.order_status in (${orderStatus})
+        </if>
+        group by o.id
+        order by o.create_time desc
+    </select>
+
     <select id="findByShopIdAll" parameterType="int" resultType="integer">
         select count(1)
         from order_info

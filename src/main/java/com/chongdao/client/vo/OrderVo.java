@@ -91,9 +91,12 @@ public class OrderVo {
 
     private String areaCode;
 
+    private String phone;
+
+    private String username;
+
     //订单商品Vo
     private List<OrderGoodsVo> orderGoodsVoList;
-
 
 
 }

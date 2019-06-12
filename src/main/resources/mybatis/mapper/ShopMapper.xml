@@ -15,6 +15,7 @@
       <arg column="logo" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
       <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="address" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="grade" javaType="java.lang.Double" jdbcType="DOUBLE" />
       <arg column="wx_no" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="zfb_no" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -27,24 +28,26 @@
       <arg column="stop_note" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="is_hot" javaType="java.lang.Byte" jdbcType="TINYINT" />
       <arg column="is_auto_accept" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="is_stop" javaType="java.lang.Byte" jdbcType="TINYINT" />
       <arg column="is_join_common_weal" javaType="java.lang.Byte" jdbcType="TINYINT" />
       <arg column="start_business_hours" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="end_business_hours" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
       <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List">
     id, shop_name, phone, account_name, password, area_id, area_code, lat, lng, logo, 
-    money, type, grade, wx_no, zfb_no, bank_no, qr_code_url, des, show_img, status, service_price_ratio, 
-    stop_note, is_hot, is_auto_accept, is_join_common_weal, start_business_hours, end_business_hours, 
-    create_time, update_time
+    money, type, address, grade, wx_no, zfb_no, bank_no, qr_code_url, des, show_img, status, service_price_ratio,
+    stop_note, is_hot, is_auto_accept, is_stop, is_join_common_weal, start_business_hours, end_business_hours,
+    create_time, update_time, last_login_time
   </sql>
   <sql id="Base_Column_Lists">
     s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
-    s.money, s.type, s.grade, s.wx_no, s.zfb_no, s.bank_no, qr_code_url, s.des, show_img, s.status, service_price_ratio,
-    stop_note, is_hot, is_auto_accept, is_join_common_weal, s.start_business_hours, s.end_business_hours,
-    s.create_time, s.update_time
+    s.money, s.type, s.address, s.grade, s.wx_no, s.zfb_no, s.bank_no, qr_code_url, s.des, show_img, s.status, service_price_ratio,
+    stop_note, is_hot, is_auto_accept, s.is_stop, is_join_common_weal, s.start_business_hours, s.end_business_hours,
+    s.create_time, s.update_time, s.last_login_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
