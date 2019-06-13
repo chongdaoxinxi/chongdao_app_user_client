@@ -9,6 +9,7 @@ import com.chongdao.client.service.OrderRefundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -30,5 +31,10 @@ public class OrderRefundServiceImpl implements OrderRefundService {
         or.setNote(note);
         or.setCreateTime(new Date());
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderRefundRepository.saveAndFlush(or));
+    }
+
+    @Override
+    public ResultResponse getRefundData(Integer orderId) {
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderRefundRepository.findByOrderId(orderId).orElse(new ArrayList<>()));
     }
 }

@@ -79,4 +79,6 @@ public interface OrderService {
      * @return
      */
     ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize);
+
+    ResultResponse getRefundData(Integer orderId);
 }

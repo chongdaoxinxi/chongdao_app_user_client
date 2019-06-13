@@ -692,7 +692,7 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setOrderStatus(OrderStatusEnum.REFUND_COMPLETE.getStatus());
         orderInfoRepository.saveAndFlush(orderInfo);
         //添加退款记录
-        orderRefundService.addOrderRefundRecord(orderInfo, 3, OrderStatusEnum.REFUND_COMPLETE.getMessage());
+        orderRefundService.addOrderRefundRecord(orderInfo, 4, OrderStatusEnum.REFUND_COMPLETE.getMessage());
         //从商家余额扣款
         Integer shopId = orderInfo.getShopId();
         BigDecimal realMoney = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
@@ -742,7 +742,11 @@ public class OrderServiceImpl implements OrderService {
         o.setOrderStatus(targetStatus);
         orderInfoRepository.saveAndFlush(o);
         //添加退款记录
-        orderRefundService.addOrderRefundRecord(o, 2, refundNote);
+        Integer type = 2;
+        if(isRefuseOrder) {
+            type = 3;
+        }
+        orderRefundService.addOrderRefundRecord(o, type, refundNote);
         //发送短信
         refundOrderSmsSender(o, isRefuseOrder);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
@@ -890,5 +894,10 @@ public class OrderServiceImpl implements OrderService {
         PageInfo pageResult = new PageInfo(orderInfos);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ResultResponse getRefundData(Integer orderId) {
+        return orderRefundService.getRefundData(orderId);
     }
 }

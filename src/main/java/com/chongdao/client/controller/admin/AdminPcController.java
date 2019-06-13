@@ -32,4 +32,15 @@ public class AdminPcController {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
     }
+
+    @GetMapping("getRefundData")
+    public ResultResponse getRefundData(String token, Integer orderId) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(role != null) {
+            return orderService.getRefundData(orderId);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
 }
