@@ -27,11 +27,11 @@ public class ShopBillServiceImpl implements ShopBillService {
     public ResultResponse addShopBillRecord(OrderInfo orderInfo, Integer type, String note,  BigDecimal realMoney) {
         ShopBill sb = new ShopBill();
         sb.setShopId(orderInfo.getShopId());
-        sb.setUserId(orderInfo.getUserId());
+        sb.setOrderId(orderInfo.getId());
         sb.setPrice(realMoney);
         sb.setType(type);
         sb.setNote(note);
-        sb.setCreatedate(new Date());
+        sb.setCreateTime(new Date());
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopBillRepository.saveAndFlush(sb));
     }
 }

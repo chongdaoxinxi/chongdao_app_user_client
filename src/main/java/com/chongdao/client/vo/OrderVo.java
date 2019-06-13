@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderVo {
+    private Integer id;
 
     private String orderNo;
 

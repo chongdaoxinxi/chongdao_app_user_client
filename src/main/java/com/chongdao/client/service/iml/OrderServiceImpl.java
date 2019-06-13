@@ -677,6 +677,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse adminConfirmRefund(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> adminConfirmRefundData(o))
@@ -710,7 +711,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 管理员确认退款短信通知
+     * 管理员确认退款短信通知(商家+用户)
      * @return
      */
     private void adminConfirmRefundSms(OrderInfo orderInfo) {

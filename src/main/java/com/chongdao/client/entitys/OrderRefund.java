@@ -23,23 +23,10 @@ public class OrderRefund implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	@Column(name="order_id")
 	private Integer orderId;//订单id
 	private String note;//退款信息
 	private Integer type;//1: 用户;2:商家;3:系统;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;
-
-	@Override
-	public String toString() {
-		return "OrderRefund{" +
-				"id=" + id +
-				", createdate=" + createdate +
-				", note='" + note + '\'' +
-				", orderId=" + orderId +
-				", type=" + type +
-				'}';
-	}
+	private Date createTime;
 }

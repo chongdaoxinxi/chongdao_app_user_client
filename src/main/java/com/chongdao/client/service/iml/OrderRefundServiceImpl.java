@@ -28,7 +28,7 @@ public class OrderRefundServiceImpl implements OrderRefundService {
         or.setOrderId(orderInfo.getId());
         or.setType(type);
         or.setNote(note);
-        or.setCreatedate(new Date());
+        or.setCreateTime(new Date());
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderRefundRepository.saveAndFlush(or));
     }
 }
