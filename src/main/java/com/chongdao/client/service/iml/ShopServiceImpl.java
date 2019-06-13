@@ -7,6 +7,7 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.CouponRepository;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.vo.GoodsListVO;
@@ -55,6 +56,9 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private OrderInfoMapper orderInfoMapper;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     /**
      * 根据条件展示商店(首页)
@@ -199,6 +203,14 @@ public class ShopServiceImpl implements ShopService {
         orderEvalVOS.add(orderEvalVO);
         orderEvalVOList.addAll(orderEvalVOS);
         return ResultResponse.createBySuccess(orderEvalVOList);
+    }
+
+    @Override
+    public ResultResponse updateShopMoney(Integer shopId, BigDecimal money) {
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        BigDecimal oldMoney = shop.getMoney();
+        shop.setMoney(oldMoney.add(money));
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.saveAndFlush(shop));
     }
 
     /**

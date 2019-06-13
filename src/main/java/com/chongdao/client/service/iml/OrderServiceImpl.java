@@ -7,8 +7,7 @@ import com.chongdao.client.enums.*;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.*;
-import com.chongdao.client.service.OrderService;
-import com.chongdao.client.service.SmsService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
@@ -75,13 +74,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderRefundRepository orderRefundRepository;
 
     @Autowired
-    private ShopBillRepository shopBillRepository;
-
-    @Autowired
     private OrderTranRepository orderTranRepository;
-
-    @Autowired
-    private ExpressRepository expressRepository;
 
     @Autowired
     private SmsService smsService;
@@ -90,19 +83,22 @@ public class OrderServiceImpl implements OrderService {
     private ShopRepository shopRepository;
 
     @Autowired
-    private DicInfoRepository dicInfoRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private OrderAddressRepository orderAddressRepository;
 
     @Autowired
     private SMSUtil smsUtil;
 
     @Autowired
     private ManagementRepository managementRepository;
+
+    @Autowired
+    private ShopService shopService;
+
+    @Autowired
+    private ShopBillService shopBillService;
+
+    @Autowired
+    private OrderRefundService orderRefundService;
 
     /**
      * 预下单
@@ -619,17 +615,10 @@ public class OrderServiceImpl implements OrderService {
         o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
         OrderInfo orderInfo = orderInfoRepository.saveAndFlush(o);
         //计算将要转入商家账户的资金(扣除满减, 折扣, 商家的优惠券)
-        BigDecimal realPrice = new BigDecimal(0);
+        BigDecimal realPrice = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
         //将钱转入商家账户, 生成流水记录(shopBill)
-        ShopBill sb = new ShopBill();
-        sb.setUserId(orderInfo.getUserId());
-        sb.setOrderId(orderInfo.getId());
-        sb.setPrice(realPrice);
-        sb.setNote("用户订单消费");
-        sb.setShopId(orderInfo.getShopId());
-        sb.setType(1);//订单消费
-        sb.setCreatedate(new Date());
-        shopBillRepository.saveAndFlush(sb);
+        shopService.updateShopMoney(orderInfo.getShopId(), realPrice);
+        shopBillService.addShopBillRecord(orderInfo, 1, "客户订单", realPrice);
         //生成订单资金交易记录(order_tran)
         OrderTran ot = new OrderTran();
         ot.setOrderId(orderInfo.getId());
@@ -683,6 +672,52 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 管理员确认退款
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse adminConfirmRefund(Integer orderId) {
+        return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
+                .map(o -> adminConfirmRefundData(o))
+                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    /**
+     * 管理员确认退款数据处理
+     * @return
+     */
+    private ResultResponse adminConfirmRefundData(OrderInfo orderInfo) {
+        orderInfo.setOrderStatus(OrderStatusEnum.REFUND_COMPLETE.getStatus());
+        orderInfoRepository.saveAndFlush(orderInfo);
+        //添加退款记录
+        orderRefundService.addOrderRefundRecord(orderInfo, 3, OrderStatusEnum.REFUND_COMPLETE.getMessage());
+        //从商家余额扣款
+        Integer shopId = orderInfo.getShopId();
+        BigDecimal realMoney = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
+        shopService.updateShopMoney(shopId, realMoney.multiply(new BigDecimal(-1)));
+        //并添加流水记录
+        shopBillService.addShopBillRecord(orderInfo, 2, "订单退款", realMoney.multiply(new BigDecimal(-1)));
+        //生成订单资金交易记录
+        OrderTran ot = new OrderTran();
+        ot.setOrderId(orderInfo.getId());
+        ot.setComment("订单退款" + orderInfo.getPayment() + "," + "订单号:" + orderInfo.getOrderNo());
+        ot.setCreateTime(new Date());
+        orderTranRepository.saveAndFlush(ot);
+        //短信通知
+        adminConfirmRefundSms(orderInfo);
+        return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+    }
+
+    /**
+     * 管理员确认退款短信通知
+     * @return
+     */
+    private void adminConfirmRefundSms(OrderInfo orderInfo) {
+        //TODO
+    }
+
+    /**
      * 拒单
      *
      * @param orderId
@@ -706,12 +741,7 @@ public class OrderServiceImpl implements OrderService {
         o.setOrderStatus(targetStatus);
         orderInfoRepository.saveAndFlush(o);
         //添加退款记录
-        OrderRefund or = new OrderRefund();
-        or.setOrderId(o.getId());
-        or.setType(2);//商家
-        or.setNote(refundNote);
-        or.setCreatedate(new Date());
-        orderRefundRepository.saveAndFlush(or);
+        orderRefundService.addOrderRefundRecord(o, 2, refundNote);
         //发送短信
         refundOrderSmsSender(o, isRefuseOrder);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());

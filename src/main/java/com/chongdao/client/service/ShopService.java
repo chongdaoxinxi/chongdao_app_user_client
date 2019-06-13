@@ -3,6 +3,8 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 import com.github.pagehelper.PageInfo;
 
+import java.math.BigDecimal;
+
 public interface ShopService{
     /**
      * 首页商铺展示
@@ -39,7 +41,13 @@ public interface ShopService{
      */
     ResultResponse getShopEvalAll(Integer shopId);
 
-
+    /**
+     * 更新商店余额
+     * @param shopId
+     * @param money
+     * @return
+     */
+    ResultResponse updateShopMoney(Integer shopId, BigDecimal money);
 
 
 

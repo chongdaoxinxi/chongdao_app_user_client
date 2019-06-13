@@ -41,6 +41,13 @@ public interface OrderService {
     ResultResponse shopRefundOrder(Integer orderId);
 
     /**
+     * 管理员确认退款
+     * @param orderId
+     * @return
+     */
+    ResultResponse adminConfirmRefund(Integer orderId);
+
+    /**
      * 商家手动接单
      * @param orderId
      * @return
