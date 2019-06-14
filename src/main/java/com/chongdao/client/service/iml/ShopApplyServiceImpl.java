@@ -4,17 +4,19 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.ShopApply;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.mapper.ShopApplyMapper;
 import com.chongdao.client.repository.ShopApplyRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopApplyService;
 import com.chongdao.client.service.ShopBillService;
 import com.chongdao.client.service.ShopService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Description TODO
@@ -32,6 +34,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     private ShopService shopService;
     @Autowired
     private ShopBillService shopBillService;
+    @Autowired
+    private ShopApplyMapper shopApplyMapper;
 
     /**
      * 添加提现记录
@@ -101,7 +105,7 @@ public class ShopApplyServiceImpl implements ShopApplyService {
 
     @Override
     public ResultResponse getShopApplyList(String shopName, Integer pageNum, Integer pageSize) {
-        List<ShopApply> shopAppliesByShopName = shopApplyRepository.getShopAppliesByShopName(shopName, pageNum * pageSize, (pageNum + 1) * pageSize);
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopApplyRepository.getShopAppliesByShopName(shopName, pageNum*pageSize, (pageNum+1)*pageSize));
+        PageHelper.startPage(pageNum, pageSize);
+        return ResultResponse.createBySuccess(new PageInfo(shopApplyMapper.getShopAppliesByShopName(shopName)));
     }
 }

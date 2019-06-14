@@ -1,427 +1,429 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chongdao.client.mapper.ShopMapper">
-  <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.Shop">
-    <constructor>
-      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="shop_name" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="account_name" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="area_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="lat" javaType="java.lang.Double" jdbcType="DOUBLE" />
-      <arg column="lng" javaType="java.lang.Double" jdbcType="DOUBLE" />
-      <arg column="logo" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-      <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="address" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="grade" javaType="java.lang.Double" jdbcType="DOUBLE" />
-      <arg column="wx_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="zfb_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="bank_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="qr_code_url" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="show_img" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="service_price_ratio" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="stop_note" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="is_hot" javaType="java.lang.Byte" jdbcType="TINYINT" />
-      <arg column="is_auto_accept" javaType="java.lang.Byte" jdbcType="TINYINT" />
-      <arg column="is_stop" javaType="java.lang.Byte" jdbcType="TINYINT" />
-      <arg column="is_join_common_weal" javaType="java.lang.Byte" jdbcType="TINYINT" />
-      <arg column="start_business_hours" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="end_business_hours" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-    </constructor>
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, shop_name, phone, account_name, password, area_id, area_code, lat, lng, logo, 
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.Shop">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="shop_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="account_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="area_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="lat" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+            <arg column="lng" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+            <arg column="logo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="address" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="grade" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+            <arg column="wx_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="zfb_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="bank_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="qr_code_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="show_img" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="service_price_ratio" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="stop_note" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="is_hot" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="is_auto_accept" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="is_stop" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="is_join_common_weal" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="start_business_hours" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="end_business_hours" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, shop_name, phone, account_name, password, area_id, area_code, lat, lng, logo,
     money, type, address, grade, wx_no, zfb_no, bank_no, qr_code_url, des, show_img, status, service_price_ratio,
     stop_note, is_hot, is_auto_accept, is_stop, is_join_common_weal, start_business_hours, end_business_hours,
     create_time, update_time, last_login_time
-  </sql>
-  <sql id="Base_Column_Lists">
-    s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
+    </sql>
+    <sql id="Base_Column_Lists">
+        s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
     s.money, s.type, s.address, s.grade, s.wx_no, s.zfb_no, s.bank_no, qr_code_url, s.des, show_img, s.status, service_price_ratio,
     stop_note, is_hot, is_auto_accept, s.is_stop, is_join_common_weal, s.start_business_hours, s.end_business_hours,
     s.create_time, s.update_time, s.last_login_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from shop
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from shop
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.chongdao.client.entitys.Shop">
-    insert into shop (id, shop_name, phone, 
-      account_name, password, area_id, 
-      area_code, lat, lng, logo, 
-      money, type, grade, 
-      wx_no, zfb_no, bank_no, 
-      qr_code_url, des, show_img, 
-      status, service_price_ratio, stop_note, 
-      is_hot, is_auto_accept, is_join_common_weal, 
-      start_business_hours, end_business_hours, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{accountName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{areaId,jdbcType=INTEGER}, 
-      #{areaCode,jdbcType=VARCHAR}, #{lat,jdbcType=DOUBLE}, #{lng,jdbcType=DOUBLE}, #{logo,jdbcType=VARCHAR}, 
-      #{money,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, #{grade,jdbcType=DOUBLE}, 
-      #{wxNo,jdbcType=VARCHAR}, #{zfbNo,jdbcType=VARCHAR}, #{bankNo,jdbcType=VARCHAR}, 
-      #{qrCodeUrl,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR}, #{showImg,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{servicePriceRatio,jdbcType=INTEGER}, #{stopNote,jdbcType=VARCHAR}, 
-      #{isHot,jdbcType=TINYINT}, #{isAutoAccept,jdbcType=TINYINT}, #{isJoinCommonWeal,jdbcType=TINYINT}, 
-      #{startBusinessHours,jdbcType=VARCHAR}, #{endBusinessHours,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Shop">
-    insert into shop
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="shopName != null">
-        shop_name,
-      </if>
-      <if test="phone != null">
-        phone,
-      </if>
-      <if test="accountName != null">
-        account_name,
-      </if>
-      <if test="password != null">
-        password,
-      </if>
-      <if test="areaId != null">
-        area_id,
-      </if>
-      <if test="areaCode != null">
-        area_code,
-      </if>
-      <if test="lat != null">
-        lat,
-      </if>
-      <if test="lng != null">
-        lng,
-      </if>
-      <if test="logo != null">
-        logo,
-      </if>
-      <if test="money != null">
-        money,
-      </if>
-      <if test="type != null">
-        type,
-      </if>
-      <if test="grade != null">
-        grade,
-      </if>
-      <if test="wxNo != null">
-        wx_no,
-      </if>
-      <if test="zfbNo != null">
-        zfb_no,
-      </if>
-      <if test="bankNo != null">
-        bank_no,
-      </if>
-      <if test="qrCodeUrl != null">
-        qr_code_url,
-      </if>
-      <if test="des != null">
-        des,
-      </if>
-      <if test="showImg != null">
-        show_img,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="servicePriceRatio != null">
-        service_price_ratio,
-      </if>
-      <if test="stopNote != null">
-        stop_note,
-      </if>
-      <if test="isHot != null">
-        is_hot,
-      </if>
-      <if test="isAutoAccept != null">
-        is_auto_accept,
-      </if>
-      <if test="isJoinCommonWeal != null">
-        is_join_common_weal,
-      </if>
-      <if test="startBusinessHours != null">
-        start_business_hours,
-      </if>
-      <if test="endBusinessHours != null">
-        end_business_hours,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="shopName != null">
-        #{shopName,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="accountName != null">
-        #{accountName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="areaId != null">
-        #{areaId,jdbcType=INTEGER},
-      </if>
-      <if test="areaCode != null">
-        #{areaCode,jdbcType=VARCHAR},
-      </if>
-      <if test="lat != null">
-        #{lat,jdbcType=DOUBLE},
-      </if>
-      <if test="lng != null">
-        #{lng,jdbcType=DOUBLE},
-      </if>
-      <if test="logo != null">
-        #{logo,jdbcType=VARCHAR},
-      </if>
-      <if test="money != null">
-        #{money,jdbcType=DECIMAL},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
-      </if>
-      <if test="grade != null">
-        #{grade,jdbcType=DOUBLE},
-      </if>
-      <if test="wxNo != null">
-        #{wxNo,jdbcType=VARCHAR},
-      </if>
-      <if test="zfbNo != null">
-        #{zfbNo,jdbcType=VARCHAR},
-      </if>
-      <if test="bankNo != null">
-        #{bankNo,jdbcType=VARCHAR},
-      </if>
-      <if test="qrCodeUrl != null">
-        #{qrCodeUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="des != null">
-        #{des,jdbcType=VARCHAR},
-      </if>
-      <if test="showImg != null">
-        #{showImg,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="servicePriceRatio != null">
-        #{servicePriceRatio,jdbcType=INTEGER},
-      </if>
-      <if test="stopNote != null">
-        #{stopNote,jdbcType=VARCHAR},
-      </if>
-      <if test="isHot != null">
-        #{isHot,jdbcType=TINYINT},
-      </if>
-      <if test="isAutoAccept != null">
-        #{isAutoAccept,jdbcType=TINYINT},
-      </if>
-      <if test="isJoinCommonWeal != null">
-        #{isJoinCommonWeal,jdbcType=TINYINT},
-      </if>
-      <if test="startBusinessHours != null">
-        #{startBusinessHours,jdbcType=VARCHAR},
-      </if>
-      <if test="endBusinessHours != null">
-        #{endBusinessHours,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.Shop">
-    update shop
-    <set>
-      <if test="shopName != null">
-        shop_name = #{shopName,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="accountName != null">
-        account_name = #{accountName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="areaId != null">
-        area_id = #{areaId,jdbcType=INTEGER},
-      </if>
-      <if test="areaCode != null">
-        area_code = #{areaCode,jdbcType=VARCHAR},
-      </if>
-      <if test="lat != null">
-        lat = #{lat,jdbcType=DOUBLE},
-      </if>
-      <if test="lng != null">
-        lng = #{lng,jdbcType=DOUBLE},
-      </if>
-      <if test="logo != null">
-        logo = #{logo,jdbcType=VARCHAR},
-      </if>
-      <if test="money != null">
-        money = #{money,jdbcType=DECIMAL},
-      </if>
-      <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="grade != null">
-        grade = #{grade,jdbcType=DOUBLE},
-      </if>
-      <if test="wxNo != null">
-        wx_no = #{wxNo,jdbcType=VARCHAR},
-      </if>
-      <if test="zfbNo != null">
-        zfb_no = #{zfbNo,jdbcType=VARCHAR},
-      </if>
-      <if test="bankNo != null">
-        bank_no = #{bankNo,jdbcType=VARCHAR},
-      </if>
-      <if test="qrCodeUrl != null">
-        qr_code_url = #{qrCodeUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="des != null">
-        des = #{des,jdbcType=VARCHAR},
-      </if>
-      <if test="showImg != null">
-        show_img = #{showImg,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="servicePriceRatio != null">
-        service_price_ratio = #{servicePriceRatio,jdbcType=INTEGER},
-      </if>
-      <if test="stopNote != null">
-        stop_note = #{stopNote,jdbcType=VARCHAR},
-      </if>
-      <if test="isHot != null">
-        is_hot = #{isHot,jdbcType=TINYINT},
-      </if>
-      <if test="isAutoAccept != null">
-        is_auto_accept = #{isAutoAccept,jdbcType=TINYINT},
-      </if>
-      <if test="isJoinCommonWeal != null">
-        is_join_common_weal = #{isJoinCommonWeal,jdbcType=TINYINT},
-      </if>
-      <if test="startBusinessHours != null">
-        start_business_hours = #{startBusinessHours,jdbcType=VARCHAR},
-      </if>
-      <if test="endBusinessHours != null">
-        end_business_hours = #{endBusinessHours,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.Shop">
-    update shop
-    set shop_name = #{shopName,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      account_name = #{accountName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      area_id = #{areaId,jdbcType=INTEGER},
-      area_code = #{areaCode,jdbcType=VARCHAR},
-      lat = #{lat,jdbcType=DOUBLE},
-      lng = #{lng,jdbcType=DOUBLE},
-      logo = #{logo,jdbcType=VARCHAR},
-      money = #{money,jdbcType=DECIMAL},
-      type = #{type,jdbcType=INTEGER},
-      grade = #{grade,jdbcType=DOUBLE},
-      wx_no = #{wxNo,jdbcType=VARCHAR},
-      zfb_no = #{zfbNo,jdbcType=VARCHAR},
-      bank_no = #{bankNo,jdbcType=VARCHAR},
-      qr_code_url = #{qrCodeUrl,jdbcType=VARCHAR},
-      des = #{des,jdbcType=VARCHAR},
-      show_img = #{showImg,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      service_price_ratio = #{servicePriceRatio,jdbcType=INTEGER},
-      stop_note = #{stopNote,jdbcType=VARCHAR},
-      is_hot = #{isHot,jdbcType=TINYINT},
-      is_auto_accept = #{isAutoAccept,jdbcType=TINYINT},
-      is_join_common_weal = #{isJoinCommonWeal,jdbcType=TINYINT},
-      start_business_hours = #{startBusinessHours,jdbcType=VARCHAR},
-      end_business_hours = #{endBusinessHours,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from shop
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from shop
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.chongdao.client.entitys.Shop">
+        insert into shop (id, shop_name, phone,
+                          account_name, password, area_id,
+                          area_code, lat, lng, logo,
+                          money, type, grade,
+                          wx_no, zfb_no, bank_no,
+                          qr_code_url, des, show_img,
+                          status, service_price_ratio, stop_note,
+                          is_hot, is_auto_accept, is_join_common_weal,
+                          start_business_hours, end_business_hours, create_time,
+                          update_time)
+        values (#{id,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+                #{accountName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{areaId,jdbcType=INTEGER},
+                #{areaCode,jdbcType=VARCHAR}, #{lat,jdbcType=DOUBLE}, #{lng,jdbcType=DOUBLE}, #{logo,jdbcType=VARCHAR},
+                #{money,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, #{grade,jdbcType=DOUBLE},
+                #{wxNo,jdbcType=VARCHAR}, #{zfbNo,jdbcType=VARCHAR}, #{bankNo,jdbcType=VARCHAR},
+                #{qrCodeUrl,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR}, #{showImg,jdbcType=VARCHAR},
+                #{status,jdbcType=INTEGER}, #{servicePriceRatio,jdbcType=INTEGER}, #{stopNote,jdbcType=VARCHAR},
+                #{isHot,jdbcType=TINYINT}, #{isAutoAccept,jdbcType=TINYINT}, #{isJoinCommonWeal,jdbcType=TINYINT},
+                #{startBusinessHours,jdbcType=VARCHAR}, #{endBusinessHours,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Shop">
+        insert into shop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="shopName != null">
+                shop_name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="accountName != null">
+                account_name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="areaId != null">
+                area_id,
+            </if>
+            <if test="areaCode != null">
+                area_code,
+            </if>
+            <if test="lat != null">
+                lat,
+            </if>
+            <if test="lng != null">
+                lng,
+            </if>
+            <if test="logo != null">
+                logo,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="wxNo != null">
+                wx_no,
+            </if>
+            <if test="zfbNo != null">
+                zfb_no,
+            </if>
+            <if test="bankNo != null">
+                bank_no,
+            </if>
+            <if test="qrCodeUrl != null">
+                qr_code_url,
+            </if>
+            <if test="des != null">
+                des,
+            </if>
+            <if test="showImg != null">
+                show_img,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="servicePriceRatio != null">
+                service_price_ratio,
+            </if>
+            <if test="stopNote != null">
+                stop_note,
+            </if>
+            <if test="isHot != null">
+                is_hot,
+            </if>
+            <if test="isAutoAccept != null">
+                is_auto_accept,
+            </if>
+            <if test="isJoinCommonWeal != null">
+                is_join_common_weal,
+            </if>
+            <if test="startBusinessHours != null">
+                start_business_hours,
+            </if>
+            <if test="endBusinessHours != null">
+                end_business_hours,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="shopName != null">
+                #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null">
+                #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="areaId != null">
+                #{areaId,jdbcType=INTEGER},
+            </if>
+            <if test="areaCode != null">
+                #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="lat != null">
+                #{lat,jdbcType=DOUBLE},
+            </if>
+            <if test="lng != null">
+                #{lng,jdbcType=DOUBLE},
+            </if>
+            <if test="logo != null">
+                #{logo,jdbcType=VARCHAR},
+            </if>
+            <if test="money != null">
+                #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=DOUBLE},
+            </if>
+            <if test="wxNo != null">
+                #{wxNo,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbNo != null">
+                #{zfbNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bankNo != null">
+                #{bankNo,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCodeUrl != null">
+                #{qrCodeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="des != null">
+                #{des,jdbcType=VARCHAR},
+            </if>
+            <if test="showImg != null">
+                #{showImg,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="servicePriceRatio != null">
+                #{servicePriceRatio,jdbcType=INTEGER},
+            </if>
+            <if test="stopNote != null">
+                #{stopNote,jdbcType=VARCHAR},
+            </if>
+            <if test="isHot != null">
+                #{isHot,jdbcType=TINYINT},
+            </if>
+            <if test="isAutoAccept != null">
+                #{isAutoAccept,jdbcType=TINYINT},
+            </if>
+            <if test="isJoinCommonWeal != null">
+                #{isJoinCommonWeal,jdbcType=TINYINT},
+            </if>
+            <if test="startBusinessHours != null">
+                #{startBusinessHours,jdbcType=VARCHAR},
+            </if>
+            <if test="endBusinessHours != null">
+                #{endBusinessHours,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.Shop">
+        update shop
+        <set>
+            <if test="shopName != null">
+                shop_name = #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null">
+                account_name = #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="areaId != null">
+                area_id = #{areaId,jdbcType=INTEGER},
+            </if>
+            <if test="areaCode != null">
+                area_code = #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="lat != null">
+                lat = #{lat,jdbcType=DOUBLE},
+            </if>
+            <if test="lng != null">
+                lng = #{lng,jdbcType=DOUBLE},
+            </if>
+            <if test="logo != null">
+                logo = #{logo,jdbcType=VARCHAR},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=DOUBLE},
+            </if>
+            <if test="wxNo != null">
+                wx_no = #{wxNo,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbNo != null">
+                zfb_no = #{zfbNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bankNo != null">
+                bank_no = #{bankNo,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCodeUrl != null">
+                qr_code_url = #{qrCodeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="des != null">
+                des = #{des,jdbcType=VARCHAR},
+            </if>
+            <if test="showImg != null">
+                show_img = #{showImg,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="servicePriceRatio != null">
+                service_price_ratio = #{servicePriceRatio,jdbcType=INTEGER},
+            </if>
+            <if test="stopNote != null">
+                stop_note = #{stopNote,jdbcType=VARCHAR},
+            </if>
+            <if test="isHot != null">
+                is_hot = #{isHot,jdbcType=TINYINT},
+            </if>
+            <if test="isAutoAccept != null">
+                is_auto_accept = #{isAutoAccept,jdbcType=TINYINT},
+            </if>
+            <if test="isJoinCommonWeal != null">
+                is_join_common_weal = #{isJoinCommonWeal,jdbcType=TINYINT},
+            </if>
+            <if test="startBusinessHours != null">
+                start_business_hours = #{startBusinessHours,jdbcType=VARCHAR},
+            </if>
+            <if test="endBusinessHours != null">
+                end_business_hours = #{endBusinessHours,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.Shop">
+        update shop
+        set shop_name            = #{shopName,jdbcType=VARCHAR},
+            phone                = #{phone,jdbcType=VARCHAR},
+            account_name         = #{accountName,jdbcType=VARCHAR},
+            password             = #{password,jdbcType=VARCHAR},
+            area_id              = #{areaId,jdbcType=INTEGER},
+            area_code            = #{areaCode,jdbcType=VARCHAR},
+            lat                  = #{lat,jdbcType=DOUBLE},
+            lng                  = #{lng,jdbcType=DOUBLE},
+            logo                 = #{logo,jdbcType=VARCHAR},
+            money                = #{money,jdbcType=DECIMAL},
+            type                 = #{type,jdbcType=INTEGER},
+            grade                = #{grade,jdbcType=DOUBLE},
+            wx_no                = #{wxNo,jdbcType=VARCHAR},
+            zfb_no               = #{zfbNo,jdbcType=VARCHAR},
+            bank_no              = #{bankNo,jdbcType=VARCHAR},
+            qr_code_url          = #{qrCodeUrl,jdbcType=VARCHAR},
+            des                  = #{des,jdbcType=VARCHAR},
+            show_img             = #{showImg,jdbcType=VARCHAR},
+            status               = #{status,jdbcType=INTEGER},
+            service_price_ratio  = #{servicePriceRatio,jdbcType=INTEGER},
+            stop_note            = #{stopNote,jdbcType=VARCHAR},
+            is_hot               = #{isHot,jdbcType=TINYINT},
+            is_auto_accept       = #{isAutoAccept,jdbcType=TINYINT},
+            is_join_common_weal  = #{isJoinCommonWeal,jdbcType=TINYINT},
+            start_business_hours = #{startBusinessHours,jdbcType=VARCHAR},
+            end_business_hours   = #{endBusinessHours,jdbcType=VARCHAR},
+            create_time          = #{createTime,jdbcType=TIMESTAMP},
+            update_time          = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 
-  <!-- 用于join, shop别名为s-->
-  <sql id="Join_Column_List">
-    s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
+    <!-- 用于join, shop别名为s-->
+    <sql id="Join_Column_List">
+        s.id, s.shop_name, s.phone, s.account_name, s.password, s.area_id, s.area_code, s.lat, s.lng, s.logo,
     s.money, s.type, s.grade, s.wx_no, s.zfb_no, s.bank_no, s.qr_code_url, s.des, s.show_img, s.status, s.service_price_ratio,
     s.stop_note, s.is_hot, s.is_auto_accept, s.is_join_common_weal, s.start_business_hours, s.end_business_hours,
     s.create_time, s.update_time
-  </sql>
-  <!-- 获取用户收藏店铺列表 -->
-  <select id="getMyFavouriteShopList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from shop s
-    LEFT JOIN favourite_shop fs on s.id = fs.shop_id
-    where fs.user_id = #{userId} and fs.status = 1
-    order by fs.create_time desc
-  </select>
+    </sql>
+    <!-- 获取用户收藏店铺列表 -->
+    <select id="getMyFavouriteShopList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from shop s
+        LEFT JOIN favourite_shop fs on s.id = fs.shop_id
+        where fs.user_id = #{userId} and fs.status = 1
+        order by fs.create_time desc
+    </select>
 
-  <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
-    select
-    <include refid="Base_Column_Lists"/>,
-    p.id coupon_id,p.coupon_name,p.type
-    from  shop s left join coupon p on s.id = p.shop_id
-    where s.status in (0,1)
-    <if test="shopName != null">
-      and s.shop_name like #{shopName}
-    </if>
-    <if test="categoryId != null">
-      or (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
-    </if>
-    <if test="discount >0">
-      or  (select discount from good g where g.shop_id=s.id and discount > 0 limit 0,1)  > 0
-    </if>
-    <if test="proActivities != null">
-      or  p.type  in (${proActivities})
-    </if>
-    order by ${orderBy}
-  </select>
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
+        select
+        <include refid="Base_Column_Lists"/>,
+        p.id coupon_id,p.coupon_name,p.type
+        from shop s left join coupon p on s.id = p.shop_id
+        where s.status in (0,1)
+        <if test="shopName != null">
+            and s.shop_name like #{shopName}
+        </if>
+        <if test="categoryId != null">
+            or (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+        </if>
+        <if test="discount >0">
+            or (select discount from good g where g.shop_id=s.id and discount > 0 limit 0,1) > 0
+        </if>
+        <if test="proActivities != null">
+            or p.type in (${proActivities})
+        </if>
+        order by ${orderBy}
+    </select>
 
 
 </mapper>
