@@ -2,12 +2,15 @@ package com.chongdao.client.controller.manage.shop;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.OrderService;
+import com.chongdao.client.service.ShopApplyService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 /**
  * @Description 商家端订单管理
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShopOrderManageController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ShopApplyService shopApplyService;
 
     /**
      * 获取订单列表
@@ -89,4 +94,14 @@ public class ShopOrderManageController {
      */
     @GetMapping("shopServiceCompleted")
     public ResultResponse shopServiceCompleted(Integer orderId) { return orderService.shopServiceCompleted(orderId);}
+
+    /**
+     * 申请提现
+     * @param token
+     * @return
+     */
+    @GetMapping("applyWithdrawal")
+    public ResultResponse applyWithdrawal(String token, BigDecimal money, String applyNote){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopApplyService.addShopApplyRecord(tokenVo.getUserId(), money, applyNote);}
 }

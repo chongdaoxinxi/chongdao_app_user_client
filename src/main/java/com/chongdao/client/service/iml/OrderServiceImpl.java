@@ -618,7 +618,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal realPrice = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
         //将钱转入商家账户, 生成流水记录(shopBill)
         shopService.updateShopMoney(orderInfo.getShopId(), realPrice);
-        shopBillService.addShopBillRecord(orderInfo, 1, "客户订单", realPrice);
+        shopBillService.addShopBillRecord(orderInfo.getShopId(), orderInfo.getId(), 1, "客户订单", realPrice);
         //生成订单资金交易记录(order_tran)
         OrderTran ot = new OrderTran();
         ot.setOrderId(orderInfo.getId());
@@ -698,7 +698,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal realMoney = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
         shopService.updateShopMoney(shopId, realMoney.multiply(new BigDecimal(-1)));
         //并添加流水记录
-        shopBillService.addShopBillRecord(orderInfo, 2, "订单退款", realMoney.multiply(new BigDecimal(-1)));
+        shopBillService.addShopBillRecord(orderInfo.getShopId(), orderInfo.getId(), 2, "订单退款", realMoney.multiply(new BigDecimal(-1)));
         //生成订单资金交易记录
         OrderTran ot = new OrderTran();
         ot.setOrderId(orderInfo.getId());

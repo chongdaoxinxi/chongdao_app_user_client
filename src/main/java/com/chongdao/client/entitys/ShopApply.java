@@ -20,51 +20,25 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name="shop_apply")
+@Table(name = "shop_apply")
 public class ShopApply extends PageParams implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
-	private Integer id;
-	@Column(name="shop_id")
-	private Integer shopId;
-	@Transient
-	private String shopName;
-	@Column(name="apply_money")
-	private BigDecimal applyMoney;//申请提现金额
-	@Column(name="apply_note")
-	private String applyNote;//申请备注
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="check_time")
-	private Date checkTime;//审核时间
-	@Column(name="check_note")
-	private String checkNote;//审核备注
-	@Column(name="realy_money")
-	private BigDecimal realyMoney;//真实提现金额
-	@Transient
-    private String wxNo;
-	@Transient
-    private String zfbNo;
-	private Integer status;//
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdate;//申请创建时间
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer shopId;
+    private BigDecimal applyMoney;//申请提现金额
+    private String applyNote;//申请备注
+    private Date checkTime;//审核时间
+    private String checkNote;//审核备注
+    private BigDecimal realMoney;//实际提现金额
+    private Integer status;//-1:拒绝;0:待审核;1:通过;
+    private Date createTime;//创建时间
+    private Date updateTime;
 
-	@Override
-	public String toString() {
-		return "ShopApply{" +
-				"id=" + id +
-				", applyMoney=" + applyMoney +
-				", applyNote='" + applyNote + '\'' +
-				", checkNote='" + checkNote + '\'' +
-				", checkTime=" + checkTime +
-				", createdate=" + createdate +
-				", realyMoney=" + realyMoney +
-				", shopId=" + shopId +
-				", status=" + status +
-				", shopName='" + shopName + '\'' +
-				", wxNo='" + wxNo + '\'' +
-				", zfbNo='" + zfbNo + '\'' +
-				'}';
-	}
+    @Transient
+    private String shopName;//商店名称
+    @Transient
+    private Integer deductRate;//提现扣费比例
 }

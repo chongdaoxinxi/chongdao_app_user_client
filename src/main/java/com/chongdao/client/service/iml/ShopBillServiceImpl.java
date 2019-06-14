@@ -1,7 +1,6 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.entitys.ShopBill;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.ShopBillRepository;
@@ -24,10 +23,14 @@ public class ShopBillServiceImpl implements ShopBillService {
     private ShopBillRepository shopBillRepository;
 
     @Override
-    public ResultResponse addShopBillRecord(OrderInfo orderInfo, Integer type, String note,  BigDecimal realMoney) {
+    public ResultResponse addShopBillRecord(Integer orderId, Integer shopId, Integer type, String note,  BigDecimal realMoney) {
         ShopBill sb = new ShopBill();
-        sb.setShopId(orderInfo.getShopId());
-        sb.setOrderId(orderInfo.getId());
+        sb.setShopId(shopId);
+        if(orderId != null) {
+            sb.setOrderId(orderId);
+        } else {
+            sb.setOrderId(0);
+        }
         sb.setPrice(realMoney);
         sb.setType(type);
         sb.setNote(note);

@@ -3,12 +3,15 @@ package com.chongdao.client.controller.admin;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.OrderService;
+import com.chongdao.client.service.ShopApplyService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 /**
  * @Description 管理员pc端
@@ -21,7 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminPcController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ShopApplyService shopApplyService;
 
+    /**
+     * 确认退款完成
+     * @param token
+     * @param orderId
+     * @return
+     */
     @GetMapping("confirmRefund")
     public ResultResponse confirmRefund(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
@@ -33,12 +44,66 @@ public class AdminPcController {
         }
     }
 
+    /**
+     * 获取退款记录
+     * @param token
+     * @param orderId
+     * @return
+     */
     @GetMapping("getRefundData")
     public ResultResponse getRefundData(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if(role != null) {
             return orderService.getRefundData(orderId);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    @GetMapping("getWithdrawalList")
+    public ResultResponse getWithdrawalList(String token, String shopName, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(role != null && role.equals("ADMIN_PC")) {
+            return shopApplyService.getShopApplyList(shopName, pageNum, pageSize);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 同意提现
+     * @param token
+     * @param shopApplyId
+     * @param money
+     * @param checkNote
+     * @return
+     */
+    @GetMapping("acceptWithdrawal")
+    public ResultResponse acceptWithdrawal(String token, Integer shopApplyId, BigDecimal money, String checkNote) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(role != null && role.equals("ADMIN_PC")) {
+            return shopApplyService.acceptShopApplyRecord(shopApplyId, money, checkNote);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 拒绝提现
+     * @param token
+     * @param shopApplyId
+     * @param checkNote
+     * @return
+     */
+    @GetMapping("refuseWithdrawal")
+    public ResultResponse refuseWithdrawal(String token, Integer shopApplyId, String checkNote) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(role != null && role.equals("ADMIN_PC")) {
+            return shopApplyService.refuseShopApplyRecord(shopApplyId, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
