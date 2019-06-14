@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ShopApplyService;
+import com.chongdao.client.service.ShopManageService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class AdminPcController {
     private OrderService orderService;
     @Autowired
     private ShopApplyService shopApplyService;
+    @Autowired
+    private ShopManageService shopManageService;
 
     /**
      * 确认退款完成
@@ -104,6 +107,17 @@ public class AdminPcController {
         String role = tokenVo.getRole();
         if(role != null && role.equals("ADMIN_PC")) {
             return shopApplyService.refuseShopApplyRecord(shopApplyId, checkNote);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    @GetMapping("getShopInfo")
+    public ResultResponse getShopInfo(String token, Integer shopId) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(role != null && role.equals("ADMIN_PC")) {
+            return shopManageService.getShopInfo(shopId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
