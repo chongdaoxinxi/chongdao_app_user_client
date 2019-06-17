@@ -1,14 +1,18 @@
 package com.chongdao.client.controller.manage.shop;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.GoodsListVO;
+import com.chongdao.client.vo.PetCategoryAndScopeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description TODO
@@ -142,6 +146,34 @@ public class ShopGoodManageController {
     public ResultResponse recoverAll(String token,Integer shopId){
         LoginUserUtil.resultTokenVo(token);
         return goodsService.recoverAll(shopId);
+    }
+
+    /**
+     * 获取品牌
+     * @return
+     */
+    @GetMapping("get_brand_list")
+    public ResultResponse<List<Brand>> getBrandList(){
+        return goodsService.getBrandList();
+    }
+
+    /**
+     * 获取宠物试用期以及使用范围分类
+     * @param petCategoryId
+     * @return
+     */
+    @GetMapping("get_pet_category")
+    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer petCategoryId){
+        return goodsService.getPetCategory(categoryId,petCategoryId);
+    }
+
+    /**
+     * 获取洗澡服务内容
+     * @return
+     */
+    @GetMapping("get_bathing_service")
+    public ResultResponse getBathingService(){
+        return goodsService.getBathingService();
     }
 
 

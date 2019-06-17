@@ -1,5 +1,6 @@
 package com.chongdao.client.vo;
 
+import com.chongdao.client.entitys.BathingService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,8 +47,27 @@ public class GoodsListVO {
     /** 品牌id */
     private Integer brandId;
 
+    private String brandName;
+
+    private String type;
+
 
     private String typeName;
+
+
+    //猫狗粮适用范围id
+    private Integer scopeId;
+
+    private String scopeName;
+
+    //宠物类型id
+    private Integer petCategoryId;
+
+    private String petCategoryName;
+
+    //洗澡服务内容id （多选）
+
+    List<BathingService> bathingServiceList;
 
     private List<CouponVO> couponVOList;
 

@@ -7,6 +7,7 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.CouponRepository;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.vo.GoodsListVO;
@@ -19,6 +20,10 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -56,6 +61,9 @@ public class ShopServiceImpl implements ShopService {
     @Autowired
     private OrderInfoMapper orderInfoMapper;
 
+    @Autowired
+    private ShopRepository shopRepository;
+
     /**
      * 根据条件展示商店(首页)
      * @param pageNum
@@ -63,11 +71,7 @@ public class ShopServiceImpl implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> list(String keyword, String categoryId, String  proActivities, String orderBy ,int pageNum, int pageSize) {
-        //搜索关键词不为空
-        if (StringUtils.isNotBlank(keyword)){
-            keyword =new StringBuilder().append("%").append(keyword).append("%").toString();
-        }
+    public ResultResponse<PageInfo> list(String categoryId, String  proActivities, String orderBy ,int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         //排序规则
         if (StringUtils.isNotBlank(orderBy)){
@@ -81,6 +85,8 @@ public class ShopServiceImpl implements ShopService {
             }else if (ARRANGEMENT_KEY.contains(orderBy)){
                 //综合排序
                 orderBy =  ARRANGEMENT_VALUE_SHOP;
+            }else{
+                return null;
             }
         }
         //初始化折扣筛选条件，方便sql拼接
@@ -95,7 +101,7 @@ public class ShopServiceImpl implements ShopService {
             }
         }
         //查询所有上架店铺(综合排序)
-        List<Shop> shopList = shopMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
+        List<Shop> shopList = shopMapper.selectByName(
                 orderBy,StringUtils.isBlank(categoryId) ? null : categoryId,
                 discount,StringUtils.isBlank(proActivities) ? null: proActivities);
         PageInfo pageInfo = new PageInfo(shopList);
@@ -194,11 +200,38 @@ public class ShopServiceImpl implements ShopService {
         Integer countAll = orderInfoMapper.findByShopIdAll(shopId);
         //获取准时完成的订单
         Integer count = orderInfoMapper.findByShopIdPunctuality(shopId);
-        Double punctuality = Double.valueOf((count / countAll));
+        Double punctuality = 100.0d;
+        if (countAll != 0){
+            punctuality = Double.valueOf((count / countAll));
+        }
         orderEvalVO.setShopPunctuality(punctuality);
         orderEvalVOS.add(orderEvalVO);
         orderEvalVOList.addAll(orderEvalVOS);
         return ResultResponse.createBySuccess(orderEvalVOList);
+    }
+
+    /**
+     * 搜索店铺
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<Shop> pageQuery(String keyword, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum-1,pageSize);
+        //keyword为空查询所有店铺
+        if (StringUtils.isBlank(keyword)){
+            Page<Shop> shopPage = shopRepository.findAllByStatusNot(-1,pageable);
+            return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
+        }
+        Page<Shop> shopPage = shopRepository.findByShopNameLikeAndStatusNot("%" + keyword + "%", -1, pageable);
+        return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
+    }
+
+
+    private List<Shop> shopList(Page<Shop> shopPage){
+        return shopPage.getContent();
     }
 
     /**

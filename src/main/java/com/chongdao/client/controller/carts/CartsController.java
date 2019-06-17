@@ -7,11 +7,7 @@ import com.chongdao.client.vo.CartVo;
 import com.chongdao.client.vo.ResultTokenVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -28,11 +24,11 @@ public class CartsController {
      * @param goodsId
      * @return
      */
-    @GetMapping("add")
-    public ResultResponse<CartVo> add(String token,Integer count, Integer goodsId){
+    @PostMapping("add")
+    public ResultResponse<CartVo> add(String token,Integer count, Integer goodsId,Integer shopId){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartsService.add(tokenVo.getUserId(),count,goodsId);
+        return cartsService.add(tokenVo.getUserId(),count,goodsId,shopId);
     }
 
 
@@ -42,10 +38,10 @@ public class CartsController {
      * @return
      */
     @GetMapping("list")
-    public ResultResponse<CartVo> list(String token){
+    public ResultResponse<CartVo> list(String token,Integer shopId){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartsService.list(tokenVo.getUserId());
+        return cartsService.list(tokenVo.getUserId(),shopId);
     }
 
 
@@ -55,10 +51,10 @@ public class CartsController {
      * @param goodsIds
      * @return
      */
-    @RequestMapping("delete_goods")
-    public ResultResponse<CartVo> deleteGoods(String token, String goodsIds){
+    @DeleteMapping("delete")
+    public ResultResponse<CartVo> deleteGoods(String token, String goodsIds,Integer shopId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds);
+        return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds,shopId);
     }
 
 

@@ -6,6 +6,7 @@
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="goods_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="quantity" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="checked" jdbcType="TINYINT" javaType="java.lang.Byte" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
@@ -13,7 +14,7 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, goods_id, quantity, checked, create_time, update_time
+    id, user_id, goods_id,shop_id, quantity, checked, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,10 +27,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.chongdao.client.entitys.Carts" >
-    insert into cart (id, user_id, goods_id, 
+    insert into cart (id, user_id, goods_id, shop_id,
       quantity, checked, create_time, 
       update_time)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
+      #{shopId,jdbcType=INTEGER},
       #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -44,6 +46,9 @@
       </if>
       <if test="goodsId != null" >
         goods_id,
+      </if>
+      <if test="shopId != null" >
+        shop_id,
       </if>
       <if test="quantity != null" >
         quantity,
@@ -68,6 +73,9 @@
       <if test="goodsId != null" >
         #{goodsId,jdbcType=INTEGER},
       </if>
+      <if test="shopId != null" >
+        #{shopId,jdbcType=INTEGER},
+      </if>
       <if test="quantity != null" >
         #{quantity,jdbcType=INTEGER},
       </if>
@@ -91,6 +99,9 @@
       <if test="goodsId != null" >
         goods_id = #{goodsId,jdbcType=INTEGER},
       </if>
+      <if test="shopId != null" >
+        shop_id = #{shopId,jdbcType=INTEGER},
+      </if>
       <if test="quantity != null" >
         quantity = #{quantity,jdbcType=INTEGER},
       </if>
@@ -110,6 +121,7 @@
     update cart
     set user_id = #{userId,jdbcType=INTEGER},
       goods_id = #{goodsId,jdbcType=INTEGER},
+      shop_id = #{shopId,jdbcType=INTEGER},
       quantity = #{quantity,jdbcType=INTEGER},
       checked = #{checked,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -124,13 +136,14 @@
     from cart
     where  user_id = #{userId}
     and goods_id = #{goodsId}
+    and shop_id = #{shopId}
   </select>
 
   <select id="selectCartByUserId" resultMap="BaseResultMap" parameterType="int">
     select
     <include refid="Base_Column_List"/>
     from cart
-    where user_id = #{userId}
+    where user_id = #{userId} and shop_id = #{shopId}
   </select>
 
 
@@ -154,7 +167,7 @@
     select <include refid="Base_Column_List"/>
     from  cart
     where user_id = #{userId}
-    and checked = 1
+    and checked = 1 and shop_id = #{shopId}
   </select>
 
 </mapper>

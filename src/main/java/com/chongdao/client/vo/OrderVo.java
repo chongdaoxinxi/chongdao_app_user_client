@@ -1,5 +1,6 @@
 package com.chongdao.client.vo;
 
+import com.chongdao.client.entitys.UserAddress;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -93,6 +94,8 @@ public class OrderVo {
 
     //订单商品Vo
     private List<OrderGoodsVo> orderGoodsVoList;
+
+    private UserAddress userAddress;
 
 
 

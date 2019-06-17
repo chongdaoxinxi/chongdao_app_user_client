@@ -1,39 +1,353 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.chongdao.client.mapper.GoodMapper" >
-  <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.Good" >
-    <constructor >
-      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="icon" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
-      <arg column="discount" jdbcType="DOUBLE" javaType="java.lang.Double" />
-      <arg column="unit" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="des" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="good_type_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="ratio" jdbcType="DOUBLE" javaType="java.lang.Double" />
-      <arg column="ratio_price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
-      <arg column="stock" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="status" jdbcType="TINYINT" javaType="java.lang.Byte" />
-      <arg column="module_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="sales" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="brand_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="type_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chongdao.client.mapper.GoodMapper">
+  <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.Good">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="icon" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="unit" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="good_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="shop_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ratio" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="ratio_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="stock" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="module_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="category_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="sales" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="type_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="brand_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="scope_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="pet_category_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="bathing_service_id" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     id, name, icon, price, discount, unit, des, good_type_id, shop_id, ratio, ratio_price,
-    stock, create_time, update_time, status, module_id, category_id,sales,brand_id,type_name
+    stock, create_time, update_time, status, module_id, category_id, sales, type_name,
+    brand_id, scope_id, pet_category_id, bathing_service_id
   </sql>
+  <sql id="Base_Column_Lists">
+    g.id, g.name, g.icon, g.price, g.discount, g.unit, g.des, g.good_type_id, g.shop_id, g.ratio, g.ratio_price,
+    g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id, g.sales, g.type_name,
+    g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from good
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from good
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.chongdao.client.entitys.Good">
+    insert into good (id, name, icon, 
+      price, discount, unit, 
+      des, good_type_id, shop_id, 
+      ratio, ratio_price, stock, 
+      create_time, update_time, status, 
+      module_id, category_id, sales, 
+      type_name, brand_id, scope_id, 
+      pet_category_id, bathing_service_id)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, 
+      #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR}, 
+      #{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, 
+      #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, 
+      #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER}, 
+      #{typeName,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, #{scopeId,jdbcType=INTEGER}, 
+      #{petCategoryId,jdbcType=INTEGER}, #{bathingServiceId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Good">
+    insert into good
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="discount != null">
+        discount,
+      </if>
+      <if test="unit != null">
+        unit,
+      </if>
+      <if test="des != null">
+        des,
+      </if>
+      <if test="goodTypeId != null">
+        good_type_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="ratio != null">
+        ratio,
+      </if>
+      <if test="ratioPrice != null">
+        ratio_price,
+      </if>
+      <if test="stock != null">
+        stock,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="moduleId != null">
+        module_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="sales != null">
+        sales,
+      </if>
+      <if test="typeName != null">
+        type_name,
+      </if>
+      <if test="brandId != null">
+        brand_id,
+      </if>
+      <if test="scopeId != null">
+        scope_id,
+      </if>
+      <if test="petCategoryId != null">
+        pet_category_id,
+      </if>
+      <if test="bathingServiceId != null">
+        bathing_service_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null">
+        #{discount,jdbcType=DOUBLE},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="des != null">
+        #{des,jdbcType=VARCHAR},
+      </if>
+      <if test="goodTypeId != null">
+        #{goodTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="ratio != null">
+        #{ratio,jdbcType=DOUBLE},
+      </if>
+      <if test="ratioPrice != null">
+        #{ratioPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="moduleId != null">
+        #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="sales != null">
+        #{sales,jdbcType=INTEGER},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="scopeId != null">
+        #{scopeId,jdbcType=INTEGER},
+      </if>
+      <if test="petCategoryId != null">
+        #{petCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="bathingServiceId != null">
+        #{bathingServiceId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.Good">
+    update good
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null">
+        discount = #{discount,jdbcType=DOUBLE},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="des != null">
+        des = #{des,jdbcType=VARCHAR},
+      </if>
+      <if test="goodTypeId != null">
+        good_type_id = #{goodTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null">
+        shop_id = #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="ratio != null">
+        ratio = #{ratio,jdbcType=DOUBLE},
+      </if>
+      <if test="ratioPrice != null">
+        ratio_price = #{ratioPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        stock = #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="moduleId != null">
+        module_id = #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="sales != null">
+        sales = #{sales,jdbcType=INTEGER},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="scopeId != null">
+        scope_id = #{scopeId,jdbcType=INTEGER},
+      </if>
+      <if test="petCategoryId != null">
+        pet_category_id = #{petCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="bathingServiceId != null">
+        bathing_service_id = #{bathingServiceId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.Good">
+    update good
+    set name = #{name,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      discount = #{discount,jdbcType=DOUBLE},
+      unit = #{unit,jdbcType=VARCHAR},
+      des = #{des,jdbcType=VARCHAR},
+      good_type_id = #{goodTypeId,jdbcType=INTEGER},
+      shop_id = #{shopId,jdbcType=INTEGER},
+      ratio = #{ratio,jdbcType=DOUBLE},
+      ratio_price = #{ratioPrice,jdbcType=DECIMAL},
+      stock = #{stock,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=TINYINT},
+      module_id = #{moduleId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      sales = #{sales,jdbcType=INTEGER},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      brand_id = #{brandId,jdbcType=INTEGER},
+      scope_id = #{scopeId,jdbcType=INTEGER},
+      pet_category_id = #{petCategoryId,jdbcType=INTEGER},
+      bathing_service_id = #{bathingServiceId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 
-  <sql id="Base_Column_Lists" >
-    g.id, g.name, g.icon,g.price, g.discount, g.unit, g.des, g.good_type_id, g.shop_id, g.ratio, g.ratio_price,
-    g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id,g.sales,g.brand_id,g.type_name
-  </sql>
+
+  <!-- 获取我的收藏商品 -->
+  <select id="getFavouriteGoodList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_Lists" />,
+    (select name from category c where c.id=g.category_id ) categoryName,
+    p.id coupon_id,p.coupon_name,p.type
+    from  good g
+    left join coupon p on g.shop_id = p.shop_id
+    left join favourite_good fg on g.id = fg.good_id
+    where g.status = 1 and p.status=0 and fs.status = 1 and fs.user_id = #{userId}
+    order by g.create_time desc
+  </select>
+
+  <select id="getGoodList" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from good where status in (0,1) and shop_id = #{shopId}
+    <if test="goodName != null ">
+      and name like concat(concat("%",#{goodName}),"%")
+    </if>
+    <if test="goodsTypeId != null ">
+      and good_type_id = #{goodsTypeId}
+    </if>
+    order by create_time asc
+  </select>
+
+  <update id="updateGoodsStatus" parameterType="map">
+    update good set status=#{status}
+    where id = #{goodId}
+  </update>
+
+  <update id="goodsDiscount" parameterType="map">
+    update good set discount=#{discount}
+    where good_type_id = #{goodsTypeId} and shop_id = #{shopId}
+  </update>
+
+
+
 
   <select id="selectList" resultMap="BaseResultMap">
     select
@@ -55,7 +369,7 @@
     (select name from category c where c.id=g.category_id ) categoryName,
     p.id coupon_id,p.coupon_name,p.type
     from  good g left join coupon p on g.shop_id = p.shop_id
-    where g.status = 1 and p.status=0
+    where g.status = 1
     <if test="goodsName != null">
       and g.name like #{goodsName}
     </if>
@@ -78,278 +392,4 @@
     from good where status = 1 and shop_id=#{shopId} and category_id=#{categoryId}
     order by id asc
   </select>
-
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select
-    <include refid="Base_Column_List" />
-    from good
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from good
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.chongdao.client.entitys.Good" >
-    insert into good (id, name, icon,
-      price, discount, unit,
-      des, good_type_id, shop_id,
-      ratio, ratio_price, stock,
-      create_time, update_time, status,
-      module_id, category_id,sales,brand_id,type_name)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
-      #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
-      #{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
-      #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
-      #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER}, #{brandId,jdbcType=INTEGER},
-       #{typeName,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Good" >
-    insert into good
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="icon != null" >
-        icon,
-      </if>
-      <if test="price != null" >
-        price,
-      </if>
-      <if test="discount != null" >
-        discount,
-      </if>
-      <if test="unit != null" >
-        unit,
-      </if>
-      <if test="des != null" >
-        des,
-      </if>
-      <if test="goodTypeId != null" >
-        good_type_id,
-      </if>
-      <if test="shopId != null" >
-        shop_id,
-      </if>
-      <if test="ratio != null" >
-        ratio,
-      </if>
-      <if test="ratioPrice != null" >
-        ratio_price,
-      </if>
-      <if test="stock != null" >
-        stock,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="moduleId != null" >
-        module_id,
-      </if>
-      <if test="categoryId != null" >
-        category_id,
-      </if>
-      <if test="sales != null" >
-        sales,
-      </if>
-      <if test="brandId != null" >
-        brand_id,
-      </if>
-      <if test="typeName != null" >
-        type_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="icon != null" >
-        #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null" >
-        #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="discount != null" >
-        #{discount,jdbcType=DOUBLE},
-      </if>
-      <if test="unit != null" >
-        #{unit,jdbcType=VARCHAR},
-      </if>
-      <if test="des != null" >
-        #{des,jdbcType=VARCHAR},
-      </if>
-      <if test="goodTypeId != null" >
-        #{goodTypeId,jdbcType=INTEGER},
-      </if>
-      <if test="shopId != null" >
-        #{shopId,jdbcType=INTEGER},
-      </if>
-      <if test="ratio != null" >
-        #{ratio,jdbcType=DOUBLE},
-      </if>
-      <if test="ratioPrice != null" >
-        #{ratioPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="stock != null" >
-        #{stock,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="moduleId != null" >
-        #{moduleId,jdbcType=INTEGER},
-      </if>
-      <if test="categoryId != null" >
-        #{categoryId,jdbcType=INTEGER},
-      </if>
-      <if test="sales != null" >
-        #{sales,jdbcType=INTEGER},
-      </if>
-      <if test="brandId != null" >
-        #{brandId,jdbcType=INTEGER},
-      </if>
-      <if test="typeName != null" >
-        #{typeName,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.Good" >
-    update good
-    <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="icon != null" >
-        icon = #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null" >
-        price = #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="discount != null" >
-        discount = #{discount,jdbcType=DOUBLE},
-      </if>
-      <if test="unit != null" >
-        unit = #{unit,jdbcType=VARCHAR},
-      </if>
-      <if test="des != null" >
-        des = #{des,jdbcType=VARCHAR},
-      </if>
-      <if test="goodTypeId != null" >
-        good_type_id = #{goodTypeId,jdbcType=INTEGER},
-      </if>
-      <if test="shopId != null" >
-        shop_id = #{shopId,jdbcType=INTEGER},
-      </if>
-      <if test="ratio != null" >
-        ratio = #{ratio,jdbcType=DOUBLE},
-      </if>
-      <if test="ratioPrice != null" >
-        ratio_price = #{ratioPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="stock != null" >
-        stock = #{stock,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="moduleId != null" >
-        module_id = #{moduleId,jdbcType=INTEGER},
-      </if>
-      <if test="categoryId != null" >
-        category_id = #{categoryId,jdbcType=INTEGER},
-      </if>
-      <if test="sales != null" >
-        sales = #{sales,jdbcType=INTEGER},
-      </if>
-      <if test="brandId != null" >
-        brand_id = #{brandId,jdbcType=INTEGER},
-      </if>
-      <if test="typeName != null" >
-        type_name = #{typeName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.Good" >
-    update good
-    set name = #{name,jdbcType=VARCHAR},
-      icon = #{icon,jdbcType=VARCHAR},
-      price = #{price,jdbcType=DECIMAL},
-      discount = #{discount,jdbcType=DOUBLE},
-      unit = #{unit,jdbcType=VARCHAR},
-      des = #{des,jdbcType=VARCHAR},
-      good_type_id = #{goodTypeId,jdbcType=INTEGER},
-      shop_id = #{shopId,jdbcType=INTEGER},
-      ratio = #{ratio,jdbcType=DOUBLE},
-      ratio_price = #{ratioPrice,jdbcType=DECIMAL},
-      stock = #{stock,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=TINYINT},
-      module_id = #{moduleId,jdbcType=INTEGER},
-      category_id = #{categoryId,jdbcType=INTEGER},
-       sales = #{categoryId,jdbcType=INTEGER},
-       brand_id = #{brandId,jdbcType=INTEGER},
-        type_name = #{typeName,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
-  <!-- 获取我的收藏商品 -->
-  <select id="getFavouriteGoodList" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-    select
-    <include refid="Base_Column_Lists"/>,
-    (select name from category c where c.id=g.category_id ) categoryName,
-    p.id coupon_id,p.coupon_name,p.type
-    from  good g
-    left join coupon p on g.shop_id = p.shop_id
-    left join favourite_good fg on g.id = fg.good_id
-    where g.status = 1 and p.status=0 and fs.status = 1 and fs.user_id = #{userId}
-    order by g.create_time desc
-  </select>
-
-  <select id="getGoodList" resultMap="BaseResultMap" parameterType="map">
-    select <include refid="Base_Column_List"/>
-    from good where status in (0,1) and shop_id = #{shopId}
-    <if test="goodName != null " >
-      and name like concat(concat("%",#{goodName}),"%")
-    </if>
-    <if test="goodsTypeId != null " >
-      and good_type_id = #{goodsTypeId}
-    </if>
-    order by create_time asc
-  </select>
-
-  <update id="updateGoodsStatus" parameterType="map">
-    update good set status=#{status}
-    where id = #{goodId}
-  </update>
-
-  <update id="goodsDiscount" parameterType="map">
-    update good set discount=#{discount}
-    where good_type_id = #{goodsTypeId} and shop_id = #{shopId}
-  </update>
 </mapper>

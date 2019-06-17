@@ -20,9 +20,9 @@ public interface CartsMapper {
 
     int updateByPrimaryKey(Carts record);
 
-    Carts selectCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId);
+    Carts selectCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId,@Param("shopId")Integer shopId);
 
-    List<Carts> selectCartByUserId(Integer userId);
+    List<Carts> selectCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId);
 
     int selectCartProductCheckedStatusByUserId(Integer userId);
 
@@ -33,5 +33,5 @@ public interface CartsMapper {
      */
     void deleteByUserIdAndProductIds(Integer userId, List<String> goodsList);
 
-    List<Carts> selectCheckedCartByUserId(Integer userId);
+    List<Carts> selectCheckedCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId);
 }

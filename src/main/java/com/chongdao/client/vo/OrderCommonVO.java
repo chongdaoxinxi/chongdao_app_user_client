@@ -28,4 +28,9 @@ public class OrderCommonVO {
     //单程 服务类型:1.家到宠物店，2.宠物店到家
     private Integer singleServiceType;
 
+    private Integer shopId;
+
+
+    private Integer orderType;
+
 }

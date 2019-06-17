@@ -8,7 +8,7 @@ import com.github.pagehelper.PageInfo;
 ;
 
 public interface OrderService {
-    ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO, Integer orderType);
+    ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO);
 
     /**
      * 根据type 获取订单列表

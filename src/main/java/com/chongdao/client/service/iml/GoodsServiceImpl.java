@@ -10,14 +10,9 @@ import com.chongdao.client.mapper.CategoryMapper;
 import com.chongdao.client.mapper.GoodMapper;
 import com.chongdao.client.mapper.GoodsTypeMapper;
 import com.chongdao.client.mapper.ShopMapper;
-import com.chongdao.client.repository.CategoryRepository;
-import com.chongdao.client.repository.CouponRepository;
-import com.chongdao.client.repository.GoodsRepository;
+import com.chongdao.client.repository.*;
 import com.chongdao.client.service.GoodsService;
-import com.chongdao.client.vo.CouponVO;
-import com.chongdao.client.vo.GoodsDetailVo;
-import com.chongdao.client.vo.GoodsListVO;
-import com.chongdao.client.vo.GoodsTypeVO;
+import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -56,6 +51,18 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsRepository goodsRepository;
+
+    @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
+    private ScopeApplicationRepository applicationRepository;
+
+    @Autowired
+    private PetCategoryRepository petCategoryRepository;
+
+    @Autowired
+    private BathingServiceRepository bathingServiceRepository;
 
 
     /**
@@ -125,7 +132,7 @@ public class GoodsServiceImpl implements GoodsService {
         }
         //查询优惠券（属于该商品可以使用或者领取的）
         List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
-        List<CouponVO> couponVOList = assembleCouponVo(couponList);
+        List<CouponVO> couponVOList = this.assembleCouponVo(couponList);
         //封装详情VO类
         GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
         goodsDetailVo.setGoodsId(goodsId);
@@ -166,7 +173,7 @@ public class GoodsServiceImpl implements GoodsService {
             //封装优惠券
             //根据店铺查询在架状态的优惠券
             List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
-            goodsListVO.setCouponVOList(assembleCouponVo(couponList));
+            goodsListVO.setCouponVOList(this.assembleCouponVo(couponList));
             goodsListVOList.add(goodsListVO);
         });
         return goodsListVOList;
@@ -328,6 +335,18 @@ public class GoodsServiceImpl implements GoodsService {
         Good good = goodMapper.selectByPrimaryKey(goodsId);
         GoodsListVO goodsListVO = new GoodsListVO();
         BeanUtils.copyProperties(good,goodsListVO);
+        PetCategory petCategory = petCategoryRepository.findById(good.getCategoryId()).get();
+        goodsListVO.setPetCategoryName(petCategory.getName());
+        ScopeApplication application = applicationRepository.findById(good.getScopeId()).get();
+        goodsListVO.setScopeName(application.getName());
+        Brand brand = brandRepository.findById(good.getBrandId()).get();
+        goodsListVO.setBrandName(brand.getName());
+        //如果无洗澡服务内容则展示所有
+        if (StringUtils.isBlank(good.getBathingServiceId())){
+            goodsListVO.setBathingServiceList(bathingServiceRepository.findAll());
+        }else{
+            goodsListVO.setBathingServiceList(bathingServiceRepository.findByIdIn(good.getBathingServiceId()));
+        }
         return ResultResponse.createBySuccess(goodsListVO);
     }
 
@@ -372,6 +391,55 @@ public class GoodsServiceImpl implements GoodsService {
             return ResultResponse.createByErrorMessage("一键恢复失败");
         }
         return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 获取所有品牌
+     * @return
+     */
+    @Override
+    public ResultResponse<List<Brand>> getBrandList() {
+        List<Brand> brandList = brandRepository.findAll();
+        return ResultResponse.createBySuccess(brandList);
+    }
+
+    /**
+     * 获取宠物试用期以及使用范围分类
+     * @param petCategoryId
+     * @return
+     */
+    @Override
+    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer petCategoryId) {
+        List<PetCategory> categoryList = petCategoryRepository.findByCategoryId(categoryId);
+        List<PetCategoryAndScopeVO> petCategoryAndScopeVOList = Lists.newArrayList();
+        categoryList.forEach(e->{
+            //填充宠物分类
+            PetCategoryAndScopeVO petCategoryAndScopeVO = new PetCategoryAndScopeVO();
+            petCategoryAndScopeVO.setId(e.getId());
+            petCategoryAndScopeVO.setPetCategoryName(e.getName());
+            if (petCategoryId != null){
+                //填充适应期分类
+                List<ScopeApplication> scopeApplicationList = applicationRepository.findByPetCategoryId(petCategoryId);
+                for (ScopeApplication scopeApplication : scopeApplicationList) {
+                    if (scopeApplication.getPetCategoryId() == e.getId()) {
+                        petCategoryAndScopeVO.setScopeId(scopeApplication.getId());
+                        petCategoryAndScopeVO.setScopeName(scopeApplication.getName());
+                    }
+                }
+            }
+            petCategoryAndScopeVOList.add(petCategoryAndScopeVO);
+        });
+        return ResultResponse.createBySuccess(petCategoryAndScopeVOList);
+    }
+
+    /**
+     * 获取洗澡服务内容
+     * @return
+     */
+    @Override
+    public ResultResponse getBathingService() {
+        List<BathingService> bathingServiceList = bathingServiceRepository.findAll();
+        return ResultResponse.createBySuccess(bathingServiceList);
     }
 
 }

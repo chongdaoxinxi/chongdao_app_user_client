@@ -1,12 +1,13 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Shop;
 import com.github.pagehelper.PageInfo;
+import org.springframework.data.domain.Page;
 
 public interface ShopService{
     /**
      * 首页商铺展示
-     * @param keyword
      * @param categoryId
      * @param proActivities
      * @param orderBy
@@ -14,7 +15,7 @@ public interface ShopService{
      * @param pageSize
      * @return
      */
-    ResultResponse<PageInfo> list(String keyword, String categoryId, String  proActivities, String orderBy, int pageNum, int pageSize);
+    ResultResponse<PageInfo> list( String categoryId, String  proActivities, String orderBy, int pageNum, int pageSize);
 
     /**
      * 获取店铺
@@ -40,7 +41,12 @@ public interface ShopService{
     ResultResponse getShopEvalAll(Integer shopId);
 
 
-
-
-
+    /**
+     * 搜索店铺
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Page<Shop> pageQuery(String keyword, int pageNum, int pageSize);
 }

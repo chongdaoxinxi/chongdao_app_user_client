@@ -1,6 +1,5 @@
 package com.chongdao.client.mapper;
 
-import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Good;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

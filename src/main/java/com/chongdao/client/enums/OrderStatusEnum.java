@@ -27,6 +27,7 @@ public enum OrderStatusEnum {
 
     ORDER_PRE(1,"预下单"),
     ORDER_CREATE(2,"提交订单"),
+    ORDER_SPELL(3,"拼单"),
 
 
     ADDRESS_NOT_EMPTY(501,"请选择地址后下单"),

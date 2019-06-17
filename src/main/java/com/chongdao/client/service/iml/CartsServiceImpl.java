@@ -43,12 +43,12 @@ public class CartsServiceImpl implements CartsService {
      */
     @Transactional
     @Override
-    public ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId) {
-        if (count == null || goodsId == null){
+    public ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId) {
+        if (count == null || goodsId == null || shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
         //查询当前用户的购物车是否存在该商品
-        Carts cart = cartsMapper.selectCartByUserIdAndGoodsId(userId,goodsId);
+        Carts cart = cartsMapper.selectCartByUserIdAndGoodsId(userId,goodsId,shopId);
         if (cart == null){
             //这个产品不在这个购物车里,需要新增一个这个产品的记录
             Carts cartItem = new Carts();
@@ -58,6 +58,7 @@ public class CartsServiceImpl implements CartsService {
             cartItem.setUserId(userId);
             cartItem.setCreateTime(new Date());
             cartItem.setUpdateTime(new Date());
+            cartItem.setShopId(shopId);
             cartsMapper.insert(cartItem);
         }else{
             //这个产品已经在购物车里了.
@@ -67,7 +68,7 @@ public class CartsServiceImpl implements CartsService {
             cart.setUpdateTime(new Date());
             cartsMapper.updateByPrimaryKeySelective(cart);
         }
-        return list(userId);
+        return list(userId,shopId);
     }
 
     /**
@@ -76,8 +77,8 @@ public class CartsServiceImpl implements CartsService {
      * @return
      */
     @Override
-    public ResultResponse<CartVo> list(Integer userId) {
-        CartVo cartVo = getCartVoLimit(userId);
+    public ResultResponse<CartVo> list(Integer userId,Integer shopId) {
+        CartVo cartVo = getCartVoLimit(userId,shopId);
         return ResultResponse.createBySuccess(cartVo);
     }
 
@@ -89,13 +90,13 @@ public class CartsServiceImpl implements CartsService {
      */
     @Transactional
     @Override
-    public ResultResponse<CartVo> deleteGoods(Integer userId, String goodsIds) {
+    public ResultResponse<CartVo> deleteGoods(Integer userId, String goodsIds,Integer shopId) {
         List<String> goodsList = Splitter.on(",").splitToList(goodsIds);
         if (CollectionUtils.isEmpty(goodsList)){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
         cartsMapper.deleteByUserIdAndProductIds(userId,goodsList);
-        return this.list(userId);
+        return this.list(userId,shopId);
     }
 
 
@@ -104,10 +105,10 @@ public class CartsServiceImpl implements CartsService {
      * @param userId
      * @return
      */
-    private CartVo getCartVoLimit(Integer userId){
+    private CartVo getCartVoLimit(Integer userId,Integer shopId){
         CartVo cartVo = new CartVo();
         //查询当前用户的购物车
-        List<Carts> cartList = cartsMapper.selectCartByUserId(userId);
+        List<Carts> cartList = cartsMapper.selectCartByUserId(userId,shopId);
         List<CartGoodsVo> cartGoodsVoList = Lists.newArrayList();
         //购物车总价
         BigDecimal cartTotalPrice = new BigDecimal(BigInteger.ZERO);
