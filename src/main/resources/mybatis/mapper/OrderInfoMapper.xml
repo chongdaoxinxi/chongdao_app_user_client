@@ -49,7 +49,7 @@
     o.total_discount, o.is_service, o.payment, o.follow, o.card_id, o.remark, o.area_code, o.deliver_time, o.payment_time,
     o.payment_type, o.shop_receive_time, o.shop_finish_time, o.express_id, o.express_receive_time, o.express_finish_time,
     o.reward, o.receive_address_id, o.deliver_address_id, o.receive_time, o.coupon_id, o.create_time,
-    o.single_service_type, o.update_time
+    o.single_service_type, o.update_time,enabled_spell
     </sql>
     <select id="selectByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo" resultMap="BaseResultMap">
         select
@@ -72,7 +72,7 @@
                                 express_id, express_receive_time, express_finish_time,
                                 reward, receive_address_id, deliver_address_id,
                                 receive_time, coupon_id, create_time,
-                                single_service_type, update_time,enabled_spell)
+                                single_service_type, update_time, enabled_spell)
         values (#{id,jdbcType=INTEGER}, #{serviceType,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR},
                 #{userId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, #{orderStatus,jdbcType=INTEGER},
                 #{goodsPrice,jdbcType=DECIMAL}, #{servicePrice,jdbcType=DECIMAL}, #{totalDiscount,jdbcType=DECIMAL},
@@ -86,7 +86,8 @@
                 #{expressFinishTime,jdbcType=TIMESTAMP},
                 #{reward,jdbcType=DECIMAL}, #{receiveAddressId,jdbcType=INTEGER}, #{deliverAddressId,jdbcType=INTEGER},
                 #{receiveTime,jdbcType=TIMESTAMP}, #{couponId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-                #{singleServiceType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{enabledSpell,jdbcType=INTEGER})
+                #{singleServiceType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
+                #{enabledSpell,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderInfo">
         insert into order_info
@@ -415,7 +416,7 @@
             create_time          = #{createTime,jdbcType=TIMESTAMP},
             single_service_type  = #{singleServiceType,jdbcType=INTEGER},
             update_time          = #{updateTime,jdbcType=TIMESTAMP},
-            enabled_spell = #{enabledSpell,jdbcType=INTEGER}
+            enabled_spell        = #{enabledSpell,jdbcType=INTEGER}
         where id = #{id,jdbcType=INTEGER}
     </update>
 

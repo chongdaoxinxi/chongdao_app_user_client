@@ -87,12 +87,12 @@ public class OrderInfo {
     private Integer enabledSpell;
 
     public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
-                     BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark,
+                     BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
                      Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
                      BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
-                     Date updateTime,String areaCode, Integer enabledSpell) {
+                     Date updateTime, Integer enabledSpell) {
         this.id = id;
-        this.serviceType=serviceType;
+        this.serviceType = serviceType;
         this.orderNo = orderNo;
         this.userId = userId;
         this.shopId = shopId;
