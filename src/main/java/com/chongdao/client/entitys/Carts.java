@@ -24,6 +24,8 @@ public class Carts {
 
     private Integer goodsId;
 
+    private Integer shopId;
+
     private Integer quantity;
 
     private Byte checked;
@@ -32,10 +34,11 @@ public class Carts {
 
     private Date updateTime;
 
-    public Carts(Integer id, Integer userId, Integer goodsId, Integer quantity, Byte checked, Date createTime, Date updateTime) {
+    public Carts(Integer id, Integer userId, Integer goodsId, Integer shopId, Integer quantity, Byte checked, Date createTime, Date updateTime) {
         this.id = id;
         this.userId = userId;
         this.goodsId = goodsId;
+        this.shopId = shopId;
         this.quantity = quantity;
         this.checked = checked;
         this.createTime = createTime;

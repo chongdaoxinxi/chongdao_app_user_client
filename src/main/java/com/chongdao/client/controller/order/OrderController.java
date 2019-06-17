@@ -6,10 +6,7 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/order/")
@@ -24,11 +21,11 @@ public class OrderController {
      * @param orderType 1代表预下单 2代表下单
      * @return
      */
-    @GetMapping("pre_or_create_order")
-    public ResultResponse<OrderVo> preOrCreateOrder(String token, OrderCommonVO orderCommonVO, Integer orderType){
+    @PostMapping("preOrCreateOrder")
+    public ResultResponse<OrderVo> preOrCreateOrder(String token, OrderCommonVO orderCommonVO){
         //校验用户是否登录
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return orderService.preOrCreateOrder(tokenVo.getUserId(),orderCommonVO,orderType);
+        return orderService.preOrCreateOrder(tokenVo.getUserId(),orderCommonVO);
     }
 
 

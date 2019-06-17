@@ -27,17 +27,17 @@ public class Good {
 
 	private String name;
 
-	private String icon; //图片
+	private String icon;
 
 	private BigDecimal price = BigDecimal.ZERO;
 
 	private Double discount = 0.0D;
 
-	private String unit; //计量单位
+	private String unit;
 
-	private String des; //商品介绍
+	private String des;
 
-	private Integer goodTypeId; //所属分类id
+	private Integer goodTypeId;
 
 	private Integer shopId;
 
@@ -52,18 +52,29 @@ public class Good {
 
 	private Date updateTime;
 
-	private Byte status; //-1: 删除, 0:下架, 1:上架
+	private Byte status;
 
-	private Integer moduleId; //所属模块id
+	private Integer moduleId;
 
-	private Integer categoryId; //所属类别id
+	private Integer categoryId;
 
 	private Integer sales;
 
+
+	//猫、狗的类型
+	private String typeName;
+
 	private Integer brandId;
 
-	//猫的类型
-	private String typeName;
+	//猫狗粮适用范围id
+	private Integer scopeId;
+
+	//宠物类型id
+	private Integer petCategoryId;
+
+	//洗澡服务内容id （多选）
+	private String bathingServiceId;
+
 
 
 	@Transient
@@ -78,8 +89,7 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
-	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodTypeId,
-				Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId,Integer sales, Integer brandId, String typeName) {
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
@@ -98,9 +108,13 @@ public class Good {
 		this.moduleId = moduleId;
 		this.categoryId = categoryId;
 		this.sales = sales;
-		this.brandId = brandId;
 		this.typeName = typeName;
+		this.brandId = brandId;
+		this.scopeId = scopeId;
+		this.petCategoryId = petCategoryId;
+		this.bathingServiceId = bathingServiceId;
 	}
+
 
 	@Override
 	public String toString() {

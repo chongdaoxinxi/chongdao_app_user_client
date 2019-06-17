@@ -100,27 +100,35 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRefundService orderRefundService;
 
+    @Autowired
+    private UserAddressRepository userAddressRepository;
+
     /**
      * 预下单
      *
      * @param userId
-     * @param orderType 1代表预下单 2代表下单
+     * @param orderType 1代表预下单 2代表下单 3拼单
      * @return
      */
     @Override
-    public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO, Integer orderType) {
-        if (orderCommonVO.getDeliverAddressId() == null) {
-            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
-        }
+    public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO) {
+//        if (orderCommonVO.getDeliverAddressId() == null) {
+//            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
+//        }
         if (userId == null) {
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
         //订单总价
         BigDecimal cartTotalPrice = new BigDecimal(BigInteger.ZERO);
         OrderVo orderVo = new OrderVo();
+        //默认地址
+        UserAddress address = userAddressRepository.findByUserIdAndIsDefaultAddress(userId, 1);
+        if (address != null){
+            orderVo.setUserAddress(address);
+        }
         Double count = 1.0D;
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId);
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
         for (Carts cart : cartList) {
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
@@ -172,8 +180,8 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
         orderVo.setPayment(cartTotalPrice);
-        //如果orderType为2代表提交订单
-        if (orderType == OrderStatusEnum.ORDER_CREATE.getStatus()) {
+        //如果orderType为2代表提交订单 3代表拼单
+        if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //创建订单
             this.createOrder(orderVo, orderCommonVO);
         }
@@ -249,7 +257,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId());
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId(),orderCommonVO.getShopId());
 
         //计算这个订单的总价
         ResultResponse serverResponse = this.getCartOrderItem(orderVo.getUserId(), cartList);
@@ -424,6 +432,10 @@ public class OrderServiceImpl implements OrderService {
         BeanUtils.copyProperties(orderVo, order);
         BeanUtils.copyProperties(orderCommonVO, orderVo);
         order.setPaymentType(orderCommonVO.getPayType());
+        if(orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()){
+            //拼单
+            order.setEnabledSpell(0);
+        }
         int rowCount = orderInfoMapper.insert(order);
         if (rowCount > 0) {
             return order;

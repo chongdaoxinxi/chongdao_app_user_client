@@ -1,9 +1,13 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
+import com.chongdao.client.vo.PetCategoryAndScopeVO;
 import com.github.pagehelper.PageInfo;
+
+import java.util.List;
 
 public interface GoodsService {
 
@@ -102,4 +106,24 @@ public interface GoodsService {
     ResultResponse recoverAll(Integer shopId);
 
     ResultResponse updateGoodTypeStatus(Integer goodTypeId, Integer status);
+
+    /**
+     * 获取品牌
+     * @return
+     */
+    ResultResponse<List<Brand>> getBrandList();
+
+    /**
+     * 获取宠物试用期以及使用范围分类
+     * @param petCategoryId
+     * @return
+     */
+    ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer petCategoryId);
+
+
+    /**
+     * 获取洗澡服务内容
+     * @return
+     */
+    ResultResponse getBathingService();
 }

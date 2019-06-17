@@ -28,7 +28,7 @@ public class UserAddress implements Serializable {
 	private Double lat;//经度
 	private Double lng;//纬度
 	private Integer isDefaultAddress;//是否默认地址
-	private Integer status;//-1:失效;1:生效
+	private Integer status = 1;//-1:失效;1:生效
 	private Date createTime;
 	private Date updateTime;
 

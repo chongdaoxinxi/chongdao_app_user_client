@@ -83,12 +83,16 @@ public class OrderInfo {
     //单程服务类型:1.家到宠物店，2.宠物店到家
     private Integer singleServiceType;
 
+    //0 不拼单 1 拼单
+    private Integer enabledSpell;
+
     public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
-                     BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
+                     BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark,
                      Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
-                     BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType, Date updateTime) {
+                     BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
+                     Date updateTime,String areaCode, Integer enabledSpell) {
         this.id = id;
-        this.serviceType = serviceType;
+        this.serviceType=serviceType;
         this.orderNo = orderNo;
         this.userId = userId;
         this.shopId = shopId;
@@ -118,6 +122,7 @@ public class OrderInfo {
         this.singleServiceType = singleServiceType;
         this.updateTime = updateTime;
         this.areaCode = areaCode;
+        this.enabledSpell = enabledSpell;
     }
 
 

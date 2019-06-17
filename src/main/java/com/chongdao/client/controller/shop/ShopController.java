@@ -4,10 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.ShopService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/shop/")
@@ -19,21 +16,27 @@ public class ShopController {
 
     /**
      * 首页(分页获取所有商铺)
-     * @param keyword 搜索关键词
      * @param pageNum 页数
      * @param pageSize 每页数据数量
      * @param orderBy 排序方式(价格、销量、好评等)
      * @param proActivities 1.满减活动 2.店铺打折 3.店铺红包
      */
     @GetMapping("list")
-    public ResultResponse<PageInfo> list( @RequestParam(value = "keyword",required = false) String keyword,
-                                          @RequestParam(value = "categoryId",required = false) String categoryId,
+    public ResultResponse<PageInfo> list(@RequestParam(value = "categoryId",required = false) String categoryId,
                                           @RequestParam(value = "proActivities",required = false) String  proActivities,
                                           @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy,
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
 
-        return shopService.list(keyword,categoryId,proActivities,orderBy,pageNum,pageSize);
+        return shopService.list(categoryId,proActivities,orderBy,pageNum,pageSize);
+
+    }
+
+    @GetMapping("search")
+    public ResultResponse pageQuery(String keyword,
+                                    @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return ResultResponse.createBySuccess(shopService.pageQuery(keyword,pageNum,pageSize));
 
     }
 
@@ -43,8 +46,8 @@ public class ShopController {
      * @param shopId
      * @return
      */
-    @GetMapping("get_shop_info")
-    public ResultResponse getShopById(Integer shopId){
+    @GetMapping("{shopId}")
+    public ResultResponse getShopById(@PathVariable Integer shopId){
         return shopService.getShopById(shopId);
     }
 
@@ -54,8 +57,9 @@ public class ShopController {
      * @param categoryId 0 商品 1 服务
      * @return
      */
-    @GetMapping("get_shop_type")
-    public ResultResponse getShopService(Integer shopId, Integer categoryId){
+    @GetMapping("{shopId}/{categoryId}")
+    public ResultResponse getShopService(@PathVariable Integer shopId,
+                                         @PathVariable Integer categoryId){
         return shopService.getShopService(shopId,categoryId);
     }
 
@@ -65,8 +69,8 @@ public class ShopController {
      * @param shopId
      * @return
      */
-    @GetMapping("eval_all")
-    public ResultResponse getShopEvalAll(Integer shopId){
+    @GetMapping("getEvalAll/{shopId}")
+    public ResultResponse getShopEvalAll(@PathVariable Integer shopId){
         return shopService.getShopEvalAll(shopId);
     }
 

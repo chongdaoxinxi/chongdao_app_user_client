@@ -12,14 +12,13 @@ import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserLoginVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user/")
+@RequestMapping("/api/user")
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -33,8 +32,8 @@ public class UserController {
      * 用户登录接口
      * @return
      */
-    @GetMapping("login")
-    public ResultResponse<UserLoginVO> login(String phone, String code){
+    @PostMapping("/login")
+    public ResultResponse<UserLoginVO> login(@RequestParam("phone") String phone,@RequestParam("code") String code){
         return userService.login(phone, code);
     }
 
@@ -44,7 +43,7 @@ public class UserController {
      * @param type 1:优惠券;2:配送券
      * @return
      */
-    @GetMapping("getUserCard")
+    @GetMapping("/getUserCard")
     public ResultResponse<PageInfo<CardUserVo>> getUserCard(String token, Integer type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userCardService.getUserCard(tokenVo.getUserId(), type, pageNum, pageSize);
@@ -54,7 +53,7 @@ public class UserController {
      * 获取礼包列表
      * @return
      */
-    @GetMapping("getPackage")
+    @GetMapping("/getPackage")
     public ResultResponse<List<Package>> getPackage() {
         return packageService.getPackageList();
     }

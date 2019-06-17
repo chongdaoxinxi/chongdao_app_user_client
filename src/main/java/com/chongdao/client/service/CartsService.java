@@ -12,14 +12,14 @@ public interface CartsService {
      * @param goodsId
      * @return
      */
-    ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId);
+    ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId);
 
     /**
      * 查询购物车
      * @param userId
      * @return
      */
-    ResultResponse<CartVo> list(Integer userId);
+    ResultResponse<CartVo> list(Integer userId,Integer shopId);
 
     /**
      * 删除购物车
@@ -27,5 +27,5 @@ public interface CartsService {
      * @param goodsIds
      * @return
      */
-    ResultResponse<CartVo> deleteGoods(Integer userId, String goodsIds);
+    ResultResponse<CartVo> deleteGoods(Integer userId, String goodsIds,Integer shopId);
 }
