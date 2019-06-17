@@ -5,12 +5,11 @@ import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.UserStatusEnum;
-import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
+import com.chongdao.client.service.UserService;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.UserLoginVO;
-import com.chongdao.client.service.UserService;
 import com.chongdao.client.vo.UserSettingVO;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
         }
         //更新用户登录时间
         userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getName());
-        userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),user.getName(),userLoginVO.getLastLoginTime()));
+        userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),user.getName(),userLoginVO.getLastLoginTime(), "USER"));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userLoginVO);
     }
     /**

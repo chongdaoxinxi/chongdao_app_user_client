@@ -64,7 +64,7 @@ public class ShopManageServiceImpl implements ShopManageService {
         s.setLastLoginTime(current);
         shopRepository.saveAndFlush(s);
         //生成token
-        sVo.setToken(TokenUtil.generateToken(shopId, accountName, current));
+        sVo.setToken(TokenUtil.generateToken(shopId, accountName, current, "SHOP_APP"));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), sVo);
     }
 

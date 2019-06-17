@@ -33,13 +33,14 @@ public class TokenUtil {
     static final String HEADER_STRING = "Authorization";
     private final String MESSAGE = "message";
 
-    public static String generateToken(Integer userId,String username, Date generateTime) {
+    public static String generateToken(Integer userId,String username, Date generateTime, String role) {
 
         HashMap<String, Object> map = new HashMap<>();
         //可以把任何安全的数据放到map里面
         map.put("username", username);
         map.put("userId",userId);
         map.put("generateTime", generateTime);
+        map.put("role", role);
         String jwt = Jwts.builder()
                 .setClaims(map)
                 .setExpiration(new Date(generateTime.getTime() + EXPIRATION_TIME))
@@ -66,6 +67,7 @@ public class TokenUtil {
                 String username = (String) (body.get("username"));
                 Integer userId = (Integer)(body.get("userId"));
                 Date generateTime = new Date((Long)body.get("generateTime"));
+                String role = (String) (body.get("role"));
                 if(username == null || username.isEmpty()){
                     resp.put("status", UserStatusEnum.USERNAME_NOT_EMPTY.getStatus());
                     resp.put("message",UserStatusEnum.USERNAME_NOT_EMPTY.getMessage());
@@ -78,6 +80,7 @@ public class TokenUtil {
                     return resp;
                 }*/
                 resp.put("userId",userId);
+                resp.put("role", role);
                 resp.put("status",ResultEnum.SUCCESS.getStatus());
                 resp.put("message",ResultEnum.SUCCESS.getMessage());
                 return resp;

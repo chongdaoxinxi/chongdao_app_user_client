@@ -58,7 +58,7 @@ public class ExpressManageServiceImpl implements ExpressManageService {
             eVo.setPassword(password);
             Date date = new Date();
             eVo.setLastLoginTime(date);
-            eVo.setToken(TokenUtil.generateToken(id, username, date));
+            eVo.setToken(TokenUtil.generateToken(id, username, date, "EXPRESS"));
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), eVo);
         } else {
             return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ACCOUNT_INFO_ERROR.getStatus(), ManageStatusEnum.ACCOUNT_INFO_ERROR.getMessage());
