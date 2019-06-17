@@ -7,10 +7,7 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.PetCategoryAndScopeVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,8 +30,8 @@ public class ShopGoodManageController {
      * @param token
      * @return
      */
-    @GetMapping("get_good_category_list")
-    public ResultResponse getGoodCategoryList(String token, Integer shopId) {
+    @GetMapping("getGoodCategoryList/{shopId}")
+    public ResultResponse getGoodCategoryList(@PathVariable Integer shopId,String token) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.getGoodCategoryList(shopId);
     }
@@ -48,10 +45,10 @@ public class ShopGoodManageController {
      * @param pageSize
      * @return
      */
-    @GetMapping("get_good_list")
-    public ResultResponse getGoodList(String token,
-                                      @RequestParam(value = "shopId") Integer shopId,
-                                      @RequestParam(required = false) Integer goodsTypeId,
+    @GetMapping("getGoodList")
+    public ResultResponse getGoodList( @RequestParam(value = "shopId") Integer shopId,
+                                       @RequestParam(required = false) Integer goodsTypeId,
+                                       String token,
                                       @RequestParam(required = false) String goodName,
                                       @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
@@ -65,8 +62,8 @@ public class ShopGoodManageController {
      * @param status 1:上架,0下架，-1删除
      * @return
      */
-    @GetMapping("update_goods_status")
-    public ResultResponse offShelveGood(String token,Integer goodId,Integer status) {
+    @GetMapping("updateGoodsStatus/{goodId}")
+    public ResultResponse offShelveGood(@PathVariable Integer goodId,String token,Integer status) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.updateGoodsStatus(goodId, status);
     }
@@ -78,8 +75,8 @@ public class ShopGoodManageController {
      * @param goodsTypeId
      * @return
      */
-    @GetMapping("goods_discount")
-    public ResultResponse discountGood(String token,Integer shopId, Integer goodsTypeId, Double discount) {
+    @GetMapping("goodsDiscount")
+    public ResultResponse discountGood(@PathVariable Integer shopId, @PathVariable Integer goodsTypeId,String token, Double discount) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.discountGood(shopId,goodsTypeId,discount);
     }
@@ -91,8 +88,8 @@ public class ShopGoodManageController {
      * @param shopId
      * @return
      */
-    @GetMapping("category_list")
-    public ResultResponse categoryList(String token,Integer shopId){
+    @GetMapping("categoryList/{shopId}")
+    public ResultResponse categoryList(@PathVariable Integer shopId,String token){
         LoginUserUtil.resultTokenVo(token);
         return goodsService.categoryList(shopId);
     }
@@ -105,8 +102,8 @@ public class ShopGoodManageController {
      * @param goodsListVO
      * @return
      */
-    @GetMapping("add_goods")
-    public ResultResponse addOrEditGoods(String token, Integer shopId, GoodsListVO goodsListVO){
+    @PostMapping("addGoods/{shopId}")
+    public ResultResponse addOrEditGoods(@PathVariable Integer shopId,String token,  GoodsListVO goodsListVO){
         LoginUserUtil.resultTokenVo(token);
         return goodsService.saveOrEditGoods(shopId,goodsListVO);
     }
@@ -119,8 +116,8 @@ public class ShopGoodManageController {
      * @param goodsId
      * @return
      */
-    @GetMapping("select_goods_by_id")
-    public ResultResponse selectGoodsById(String token, Integer shopId, Integer goodsId){
+    @GetMapping("selectGoodsById/{shopId}/{goodsId}")
+    public ResultResponse selectGoodsById( @PathVariable Integer shopId, @PathVariable Integer goodsId,String token){
         LoginUserUtil.resultTokenVo(token);
         return goodsService.selectGoodsById(shopId,goodsId);
     }
@@ -130,8 +127,8 @@ public class ShopGoodManageController {
      * @param goodsTypeId (0代表全部)
      * @return
      */
-    @GetMapping("improve_ratio")
-    public ResultResponse improveRatio(String token,Double ratio,Integer goodsTypeId,Integer shopId){
+    @GetMapping("improveRatio/{goodsTypeId}/{shopId}")
+    public ResultResponse improveRatio(@PathVariable Integer goodsTypeId,@PathVariable Integer shopId,String token,Double ratio){
         LoginUserUtil.resultTokenVo(token);
         return goodsService.improveRatio(ratio,goodsTypeId,shopId);
     }
@@ -142,8 +139,8 @@ public class ShopGoodManageController {
      * @param shopId
      * @return
      */
-    @GetMapping("recover_all")
-    public ResultResponse recoverAll(String token,Integer shopId){
+    @PutMapping("recoverAll/{shopId}")
+    public ResultResponse recoverAll(@PathVariable Integer shopId,String token){
         LoginUserUtil.resultTokenVo(token);
         return goodsService.recoverAll(shopId);
     }
@@ -155,8 +152,8 @@ public class ShopGoodManageController {
      * @param status
      * @return
      */
-    @GetMapping("updateGoodTypeStatus")
-    public ResultResponse updateGoodTypeStatus(String token, Integer goodTypeId, Integer status) {
+    @PutMapping("updateGoodTypeStatus/{goodTypeId}")
+    public ResultResponse updateGoodTypeStatus(@PathVariable Integer goodTypeId,String token, Integer status) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.updateGoodTypeStatus(goodTypeId, status);
     }
@@ -165,7 +162,7 @@ public class ShopGoodManageController {
      * 获取品牌
      * @return
      */
-    @GetMapping("get_brand_list")
+    @GetMapping("getBrandList")
     public ResultResponse<List<Brand>> getBrandList(){
         return goodsService.getBrandList();
     }
@@ -175,8 +172,8 @@ public class ShopGoodManageController {
      * @param petCategoryId
      * @return
      */
-    @GetMapping("get_pet_category")
-    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer petCategoryId){
+    @GetMapping("getPetCategory/{categoryId}/{petCategoryId}")
+    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(@PathVariable Integer categoryId, @PathVariable Integer petCategoryId){
         return goodsService.getPetCategory(categoryId,petCategoryId);
     }
 
@@ -184,7 +181,7 @@ public class ShopGoodManageController {
      * 获取洗澡服务内容
      * @return
      */
-    @GetMapping("get_bathing_service")
+    @GetMapping("getBathingService")
     public ResultResponse getBathingService(){
         return goodsService.getBathingService();
     }

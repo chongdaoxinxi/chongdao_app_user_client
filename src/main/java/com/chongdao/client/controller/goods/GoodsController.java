@@ -5,10 +5,7 @@ import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -46,8 +43,8 @@ public class GoodsController {
      * @param goodsId
      * @return
      */
-    @GetMapping("getGoodsDetail")
-    public ResultResponse<GoodsDetailVo>  getGoodsDetail(Integer goodsId){
+    @GetMapping("getGoodsDetail/{goodsId}")
+    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId){
         return goodsService.getGoodsDetail(goodsId);
     }
 
