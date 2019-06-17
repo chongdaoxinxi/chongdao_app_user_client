@@ -9,7 +9,7 @@
             <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="sort" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-            <arg column="status" jdbcType="TINYINT" javaType="java.lang.Byte"/>
+            <arg column="status" jdbcType="TINYINT" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>

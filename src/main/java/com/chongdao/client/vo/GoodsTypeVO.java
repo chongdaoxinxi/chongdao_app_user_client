@@ -21,7 +21,7 @@ public class GoodsTypeVO {
 
     private Integer sort;
 
-    private Byte status;
+    private Integer status;
 
     private List<GoodsListVO> goodsListVOList;
 }

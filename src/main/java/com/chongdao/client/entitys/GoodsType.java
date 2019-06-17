@@ -23,7 +23,7 @@ public class GoodsType implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
 
 	private String name;
@@ -36,13 +36,13 @@ public class GoodsType implements Serializable {
 
 	private Integer sort;
 
-	private Byte status;
+	private Integer status;
 
 	private Date createTime;
 
 	private Date updateTime;
 
-	public GoodsType(Integer id, String name, Integer moduleId, Integer categoryId, Integer shopId, Integer sort, Byte status, Date createTime, Date updateTime) {
+	public GoodsType(Integer id, String name, Integer moduleId, Integer categoryId, Integer shopId, Integer sort, Integer status, Date createTime, Date updateTime) {
 		this.id = id;
 		this.name = name;
 		this.moduleId = moduleId;

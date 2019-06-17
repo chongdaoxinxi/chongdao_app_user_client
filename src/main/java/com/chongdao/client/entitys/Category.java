@@ -1,6 +1,7 @@
 package com.chongdao.client.entitys;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -22,7 +24,7 @@ public class Category {
 
     private String remark;
 
-    private Byte status;
+    private Integer status;
 
     private Integer sort;
 
@@ -30,7 +32,7 @@ public class Category {
 
     private Date updateTime;
 
-    public Category(Integer id, String name, String remark, Byte status, Integer sort, Date createTime, Date updateTime) {
+    public Category(Integer id, String name, String remark, Integer status, Integer sort, Date createTime, Date updateTime) {
         this.id = id;
         this.name = name;
         this.remark = remark;
