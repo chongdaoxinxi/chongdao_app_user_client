@@ -6,6 +6,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.CategoryService;
 import com.chongdao.client.service.GoodsTypeService;
 import com.chongdao.client.service.ModuleService;
+import com.chongdao.client.service.UnitService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class ShopPcController {
     private CategoryService categoryService;
     @Autowired
     private GoodsTypeService goodsTypeService;
+    @Autowired
+    private UnitService unitService;
 
     @GetMapping("getModuleData")
     public ResultResponse getModuleData(String token){
@@ -60,5 +63,16 @@ public class ShopPcController {
 //        } else {
 //            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
 //        }
+    }
+
+    /**
+     * 获取规格单位
+     * @param moduleId
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("getUnitList")
+    public ResultResponse getUnitList(Integer moduleId, Integer categoryId) {
+        return unitService.getUnitList(moduleId, categoryId);
     }
 }

@@ -3,6 +3,7 @@ package com.chongdao.client.controller.manage.shop;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.service.GoodsService;
+import com.chongdao.client.service.UnitService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.PetCategoryAndScopeVO;
@@ -21,7 +22,8 @@ import java.util.List;
 @RequestMapping("/api/shop_good_manage/")
 
 public class ShopGoodManageController {
-
+    @Autowired
+    private UnitService unitService;
     @Autowired
     private GoodsService goodsService;
 
@@ -184,5 +186,16 @@ public class ShopGoodManageController {
     @GetMapping("getBathingService")
     public ResultResponse getBathingService(){
         return goodsService.getBathingService();
+    }
+
+    /**
+     * 获取规格单位
+     * @param moduleId
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("getUnitList")
+    public ResultResponse getUnitList(Integer moduleId, Integer categoryId) {
+        return unitService.getUnitList(moduleId, categoryId);
     }
 }
