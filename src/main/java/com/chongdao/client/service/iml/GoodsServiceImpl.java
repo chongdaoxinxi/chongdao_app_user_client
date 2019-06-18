@@ -217,6 +217,7 @@ public class GoodsServiceImpl implements GoodsService {
             goodsTypeVO.setCategoryId(goodsType.getCategoryId());
             goodsTypeVO.setSort(goodsType.getSort());
             goodsTypeVO.setStatus(goodsType.getStatus());
+            goodsTypeVO.setModuleId(goodsType.getModuleId());
             goodsTypeVOList.add(goodsTypeVO);
         });
         return ResultResponse.createBySuccess(goodsTypeVOList);
@@ -413,8 +414,9 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse<List<Brand>> getBrandList() {
-        List<Brand> brandList = brandRepository.findAll();
+    public ResultResponse<List<Brand>> getBrandList(Integer goodsTypeId) {
+//        List<Brand> brandList = brandRepository.findAll();
+        List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsTypeId).orElse(null);
         return ResultResponse.createBySuccess(brandList);
     }
 

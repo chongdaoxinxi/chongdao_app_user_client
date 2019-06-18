@@ -165,8 +165,8 @@ public class ShopGoodManageController {
      * @return
      */
     @GetMapping("getBrandList")
-    public ResultResponse<List<Brand>> getBrandList(){
-        return goodsService.getBrandList();
+    public ResultResponse<List<Brand>> getBrandList(Integer goodsTypeId){
+        return goodsService.getBrandList(goodsTypeId);
     }
 
     /**

@@ -23,5 +23,7 @@ public class GoodsTypeVO {
 
     private Integer status;
 
+    private Integer moduleId;
+
     private List<GoodsListVO> goodsListVOList;
 }

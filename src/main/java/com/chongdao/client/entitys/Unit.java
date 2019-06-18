@@ -26,6 +26,6 @@ public class Unit {
     private BigDecimal min;
     private BigDecimal max;
     private String label;
-    private Byte type;//1:商品;2:服务(洗澡/美容/spa/寄样)
+    private Integer type;//1:商品;2:服务(洗澡/美容/spa/寄样)
     private String categoryIdList;//可以使用的服务类分类id
 }

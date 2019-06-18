@@ -152,7 +152,7 @@
     <select id="getGoodCategoryList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from goods_type where status in (0,1) and shop_id=#{shopId}
+        from goods_type where status in (0,1)
         order by sort asc
     </select>
 

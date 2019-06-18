@@ -75,4 +75,15 @@ public class ShopPcController {
     public ResultResponse getUnitList(Integer moduleId, Integer categoryId) {
         return unitService.getUnitList(moduleId, categoryId);
     }
+
+    /**
+     * getGoodCategoryList
+     * @param moduleId
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("getSelectGoodsTypeSpecialConfig")
+    public ResultResponse getSelectGoodsTypeSpecialConfig(Integer moduleId, Integer categoryId, Integer goodsTypeId) {
+        return goodsTypeService.getSelectGoodsTypeSpecialConfig(moduleId, categoryId, goodsTypeId);
+    }
 }

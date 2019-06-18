@@ -111,7 +111,7 @@ public interface GoodsService {
      * 获取品牌
      * @return
      */
-    ResultResponse<List<Brand>> getBrandList();
+    ResultResponse<List<Brand>> getBrandList(Integer goodsTypeId);
 
     /**
      * 获取宠物试用期以及使用范围分类

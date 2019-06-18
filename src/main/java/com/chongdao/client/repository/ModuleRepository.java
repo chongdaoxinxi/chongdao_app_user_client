@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ModuleRepository extends JpaRepository<Module, Integer> {
     Optional<List<Module>> findByStatus(Integer status);
+
+    Optional<List<Module>> findByIdAndStatus(Integer id, Integer status);
 }

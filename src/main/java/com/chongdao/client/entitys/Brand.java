@@ -19,6 +19,8 @@ public class Brand {
 
     private String type;
 
+    private Integer goodsTypeId;
+
     private String createTime;
 
     private String updateTime;

@@ -5,4 +5,6 @@ import com.chongdao.client.entitys.GoodsType;
 
 public interface GoodsTypeService {
     ResultResponse addGoodsType(GoodsType goodsType);
+
+    ResultResponse getSelectGoodsTypeSpecialConfig(Integer moduleId, Integer categoryId, Integer goodsTypeId);
 }
