@@ -164,8 +164,8 @@ public class ShopGoodManageController {
      * 获取品牌
      * @return
      */
-    @GetMapping("getBrandList")
-    public ResultResponse<List<Brand>> getBrandList(Integer goodsTypeId){
+    @GetMapping("getBrandList/{goodsTypeId}")
+    public ResultResponse<List<Brand>> getBrandList(@PathVariable Integer goodsTypeId){
         return goodsService.getBrandList(goodsTypeId);
     }
 

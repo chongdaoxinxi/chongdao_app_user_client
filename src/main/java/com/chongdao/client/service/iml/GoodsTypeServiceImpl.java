@@ -55,11 +55,18 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
                     resp.put("isCatFood", false);
                     resp.put("isDogFood", true);
                     resp.put("isAppointService", false);
+                    resp.put("isGood", true);
                 } else if (goodsTypeId == DogFoodGoodsTypeId) {
                     //是猫粮
                     resp.put("isCatFood", true);
                     resp.put("isDogFood", false);
                     resp.put("isAppointService", false);
+                    resp.put("isGood", true);
+                } else {
+                    resp.put("isCatFood", false);
+                    resp.put("isDogFood", false);
+                    resp.put("isAppointService", false);
+                    resp.put("isGood", true);
                 }
             } else if(type == 2) {
                 //服务
@@ -69,11 +76,13 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
                     resp.put("isCatFood", false);
                     resp.put("isDogFood", false);
                     resp.put("isAppointService", true);
+                    resp.put("isGood", false);
                 } else {
                     //不是指定服务
                     resp.put("isCatFood", false);
                     resp.put("isDogFood", false);
                     resp.put("isAppointService", false);
+                    resp.put("isGood", false);
                 }
             }
         }
