@@ -149,7 +149,7 @@ public class ShopServiceImpl implements ShopService {
             List<GoodsListVO> goodsListVOList = Lists.newArrayList();
             List<Good> goodList = goodMapper.selectByShopIdAndCategoryId(shopId, categoryId);
             for (Good good : goodList) {
-                if (e.getId() == good.getGoodTypeId()){
+                if (e.getId() == good.getGoodsTypeId()){
                     GoodsListVO goodsListVO = new GoodsListVO();
                     goodsTypeVO.setGoodsTypeId(e.getId());
                     goodsTypeVO.setCategoryId(e.getCategoryId());

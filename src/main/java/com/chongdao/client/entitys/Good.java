@@ -37,7 +37,7 @@ public class Good {
 
 	private String des;
 
-	private Integer goodTypeId;
+	private Integer goodsTypeId;
 
 	private Integer shopId;
 
@@ -89,7 +89,7 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
-	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
@@ -97,7 +97,7 @@ public class Good {
 		this.discount = discount;
 		this.unit = unit;
 		this.des = des;
-		this.goodTypeId = goodTypeId;
+		this.goodsTypeId = goodsTypeId;
 		this.shopId = shopId;
 		this.ratio = ratio;
 		this.ratioPrice = ratioPrice;
@@ -130,7 +130,7 @@ public class Good {
 				", status=" + status +
 				", categoryId=" + categoryId +
 				", unit='" + unit + '\'' +
-				", goodsType=" + goodTypeId +
+				", goodsType=" + goodsTypeId +
 				", ratio=" + ratio +
 				", ratioPrice=" + ratioPrice +
 				'}';

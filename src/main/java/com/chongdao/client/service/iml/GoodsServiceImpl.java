@@ -370,7 +370,7 @@ public class GoodsServiceImpl implements GoodsService {
             }
             return ResultResponse.createBySuccess();
         }
-        Integer integer = goodsRepository.updateRatioAndGoodTypeIdAndShopId(ratio, goodsTypeId, shopId);
+        Integer integer = goodsRepository.updateRatioAndGoodsTypeIdAndShopId(ratio, goodsTypeId, shopId);
         if (integer == 0){
             return ResultResponse.createByErrorMessage("提高系数失败");
         }

@@ -150,14 +150,14 @@ public class ShopGoodManageController {
     /**
      * 启用/禁用/删除 商品类别
      * @param token
-     * @param goodTypeId
+     * @param goodsTypeId
      * @param status
      * @return
      */
-    @PutMapping("updateGoodTypeStatus/{goodTypeId}")
-    public ResultResponse updateGoodTypeStatus(@PathVariable Integer goodTypeId,String token, Integer status) {
+    @PutMapping("updateGoodTypeStatus/{goodsTypeId}")
+    public ResultResponse updateGoodTypeStatus(@PathVariable Integer goodsTypeId,String token, Integer status) {
         LoginUserUtil.resultTokenVo(token);
-        return goodsService.updateGoodTypeStatus(goodTypeId, status);
+        return goodsService.updateGoodTypeStatus(goodsTypeId, status);
     }
 
     /**

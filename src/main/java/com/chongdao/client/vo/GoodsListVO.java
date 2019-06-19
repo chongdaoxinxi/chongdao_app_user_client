@@ -16,7 +16,7 @@ public class GoodsListVO {
     private String name;
 
     /** 商品分类 ->商家自定义*/
-    private Integer goodTypeId;
+    private Integer goodsTypeId;
 
     /** 商品分类 ->官方定义*/
     private Integer categoryId;

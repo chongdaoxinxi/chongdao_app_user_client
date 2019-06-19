@@ -10,7 +10,7 @@
             <arg column="discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
             <arg column="unit" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="good_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="goods_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="shop_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="ratio" javaType="java.lang.Double" jdbcType="DOUBLE" />
             <arg column="ratio_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
@@ -29,12 +29,12 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, name, icon, price, discount, unit, des, good_type_id, shop_id, ratio, ratio_price,
+        id, name, icon, price, discount, unit, des, goods_type_id, shop_id, ratio, ratio_price,
     stock, create_time, update_time, status, module_id, category_id, sales, type_name,
     brand_id, scope_id, pet_category_id, bathing_service_id
     </sql>
     <sql id="Base_Column_Lists">
-        g.id, g.name, g.icon, g.price, g.discount, g.unit, g.des, g.good_type_id, g.shop_id, g.ratio, g.ratio_price,
+        g.id, g.name, g.icon, g.price, g.discount, g.unit, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
     g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id, g.sales, g.type_name,
     g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id
     </sql>
@@ -51,7 +51,7 @@
     <insert id="insert" parameterType="com.chongdao.client.entitys.Good">
         insert into good (id, name, icon,
                           price, discount, unit,
-                          des, good_type_id, shop_id,
+                          des, goods_type_id, shop_id,
                           ratio, ratio_price, stock,
                           create_time, update_time, status,
                           module_id, category_id, sales,
@@ -91,7 +91,7 @@
                 des,
             </if>
             <if test="goodTypeId != null">
-                good_type_id,
+                goods_type_id,
             </if>
             <if test="shopId != null">
                 shop_id,
@@ -233,7 +233,7 @@
                 des = #{des,jdbcType=VARCHAR},
             </if>
             <if test="goodTypeId != null">
-                good_type_id = #{goodTypeId,jdbcType=INTEGER},
+                goods_type_id = #{goodTypeId,jdbcType=INTEGER},
             </if>
             <if test="shopId != null">
                 shop_id = #{shopId,jdbcType=INTEGER},
@@ -291,7 +291,7 @@
             discount = #{discount,jdbcType=DOUBLE},
             unit = #{unit,jdbcType=VARCHAR},
             des = #{des,jdbcType=VARCHAR},
-            good_type_id = #{goodTypeId,jdbcType=INTEGER},
+            goods_type_id = #{goodTypeId,jdbcType=INTEGER},
             shop_id = #{shopId,jdbcType=INTEGER},
             ratio = #{ratio,jdbcType=DOUBLE},
             ratio_price = #{ratioPrice,jdbcType=DECIMAL},
@@ -331,7 +331,7 @@
             and name like concat(concat("%",#{goodName}),"%")
         </if>
         <if test="goodsTypeId != null ">
-            and good_type_id = #{goodsTypeId}
+            and goods_type_id = #{goodsTypeId}
         </if>
         order by create_time asc
     </select>
@@ -343,7 +343,7 @@
 
     <update id="goodsDiscount" parameterType="map">
         update good set discount=#{discount}
-        where good_type_id = #{goodsTypeId} and shop_id = #{shopId}
+        where goods_type_id = #{goodsTypeId} and shop_id = #{shopId}
     </update>
 
 
