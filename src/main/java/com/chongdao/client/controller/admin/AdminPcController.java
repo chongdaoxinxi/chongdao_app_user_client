@@ -5,6 +5,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ShopApplyService;
 import com.chongdao.client.service.ShopManageService;
+import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class AdminPcController {
     private ShopApplyService shopApplyService;
     @Autowired
     private ShopManageService shopManageService;
+    @Autowired
+    private ShopService shopService;
 
     /**
      * 确认退款完成
@@ -112,12 +115,37 @@ public class AdminPcController {
         }
     }
 
+    /**
+     * 获取商店详细数据
+     * @param token
+     * @param shopId
+     * @return
+     */
     @GetMapping("getShopInfo")
     public ResultResponse getShopInfo(String token, Integer shopId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if(role != null && role.equals("ADMIN_PC")) {
             return shopManageService.getShopInfo(shopId);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 获取地区商店列表
+     * @param token
+     * @param shopName
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getShopDataList")
+    public ResultResponse getShopDataList(String token, String shopName, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(role != null && role.equals("ADMIN_PC")) {
+            return shopService.getShopDataList(tokenVo.getUserId(), shopName, pageNum, pageSize);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }

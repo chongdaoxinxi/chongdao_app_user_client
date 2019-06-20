@@ -7,6 +7,7 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.CouponRepository;
+import com.chongdao.client.repository.ManagementRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.ShopService;
@@ -63,6 +64,8 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private ManagementRepository managementRepository;
 
     /**
      * 根据条件展示商店(首页)
@@ -107,6 +110,22 @@ public class ShopServiceImpl implements ShopService {
         PageInfo pageInfo = new PageInfo(shopList);
         pageInfo.setList(shopListVOList(shopList));
         return ResultResponse.createBySuccess(pageInfo);
+    }
+
+    @Override
+    public ResultResponse<PageInfo> getShopDataList(Integer managementId, String shopName, Integer pageNum, Integer pageSize) {
+        Management management = managementRepository.findById(managementId).orElse(null);
+        if(management != null) {
+            String areaCode = management.getAreaCode();
+            if(StringUtils.isNotBlank(areaCode)) {
+                PageHelper.startPage(pageNum,pageSize);
+                List<Shop> shops = shopMapper.selectByAreaCodeAndShopName(areaCode, shopName);
+                PageInfo pageInfo = new PageInfo(shops);
+                pageInfo.setList(shopListVOList(shops));
+                return ResultResponse.createBySuccess(pageInfo);
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
     }
 
     /**

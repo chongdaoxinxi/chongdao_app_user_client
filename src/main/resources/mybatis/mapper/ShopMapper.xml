@@ -455,6 +455,19 @@
         order by ${orderBy}
     </select>
 
+    <select id="selectByAreaCodeAndShopName" parameterType="String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Lists" />
+        from shop s
+        where 1 = 1
+        <if test="areaCode != null">
+            and s.area_code = #{areaCode}
+        </if>
+        <if test="shopName != null">
+            and s.shop_name like concat('%', {shopName}, '%')
+        </if>
+        order by s.create_time asc
+    </select>
 
 
 </mapper>

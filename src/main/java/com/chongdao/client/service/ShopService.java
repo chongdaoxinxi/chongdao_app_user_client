@@ -20,6 +20,16 @@ public interface ShopService{
     ResultResponse<PageInfo> list( String categoryId, String  proActivities, String orderBy, int pageNum, int pageSize);
 
     /**
+     * 获取商店列表(管理员)
+     * @param managementId
+     * @param shopName
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultResponse<PageInfo> getShopDataList(Integer managementId, String shopName, Integer pageNum, Integer pageSize);
+
+    /**
      * 获取店铺
      * @param shopId
      * @return
