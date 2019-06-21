@@ -464,7 +464,7 @@
             and s.area_code = #{areaCode}
         </if>
         <if test="shopName != null">
-            and s.shop_name like concat('%', {shopName}, '%')
+            and s.shop_name like concat('%', #{shopName}, '%')
         </if>
         order by s.create_time asc
     </select>
