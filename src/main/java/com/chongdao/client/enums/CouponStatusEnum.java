@@ -21,6 +21,8 @@ public enum CouponStatusEnum {
 
 
 
+
+
     ;
 
     /** 错误码 */

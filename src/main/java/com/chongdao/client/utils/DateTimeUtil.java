@@ -67,8 +67,8 @@ public class DateTimeUtil {
         long from = 0;
         long to = 0;
         try {
-            from = getDateFormat("yyyy-MM-dd").parse(startTime).getTime();
-            to = getDateFormat("yyyy-MM-dd").parse(endTime).getTime();
+            from = getDateFormat(STANDARD_FORMAT).parse(startTime).getTime();
+            to = getDateFormat(STANDARD_FORMAT).parse(endTime).getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -76,6 +76,19 @@ public class DateTimeUtil {
         return Math.abs(days);
     }
 
+
+    public static long costTime(String  endTime, String  startTime) {
+        long from = 0;
+        long to = 0;
+        try {
+            from = getDateFormat(STANDARD_FORMAT).parse(startTime).getTime();
+            to = getDateFormat(STANDARD_FORMAT).parse(endTime).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long time = (to - from)/1000;
+        return time;
+    }
     protected static DateFormat getDateFormat(String format) {
         return new SimpleDateFormat(format);
     }

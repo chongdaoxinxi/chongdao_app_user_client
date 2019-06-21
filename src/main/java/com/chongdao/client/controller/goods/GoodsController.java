@@ -1,11 +1,15 @@
 package com.chongdao.client.controller.goods;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Category;
+import com.chongdao.client.repository.CategoryRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -14,6 +18,9 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
 
     /**
@@ -46,6 +53,17 @@ public class GoodsController {
     @GetMapping("getGoodsDetail/{goodsId}")
     public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId){
         return goodsService.getGoodsDetail(goodsId);
+    }
+
+
+    /**
+     * 筛选商品分类
+     * @return
+     */
+    @GetMapping("getCategory")
+    public ResultResponse getCategory(){
+        List<Category> categoryList = categoryRepository.findAllByStatus(1);
+        return ResultResponse.createBySuccess(categoryList);
     }
 
 

@@ -26,17 +26,20 @@ public class Category {
 
     private Integer status;
 
+    private Integer type;
+
     private Integer sort;
 
     private Date createTime;
 
     private Date updateTime;
 
-    public Category(Integer id, String name, String remark, Integer status, Integer sort, Date createTime, Date updateTime) {
+    public Category(Integer id, String name, String remark, Integer status,Integer type, Integer sort, Date createTime, Date updateTime) {
         this.id = id;
         this.name = name;
         this.remark = remark;
         this.status = status;
+        this.type = type;
         this.sort = sort;
         this.createTime = createTime;
         this.updateTime = updateTime;

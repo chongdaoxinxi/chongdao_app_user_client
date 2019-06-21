@@ -1,17 +1,15 @@
 package com.chongdao.client.service.iml;
 
 
+import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.*;
 import com.chongdao.client.exception.PetException;
-import com.chongdao.client.mapper.*;
-import com.chongdao.client.repository.*;
-import com.chongdao.client.service.*;
+import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
-import com.chongdao.client.utils.sms.SMSUtil;
 import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderGoodsVo;
@@ -22,7 +20,6 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,70 +35,7 @@ import static com.chongdao.client.enums.CouponStatusEnum.COUPON_FULL_AC;
 
 @Slf4j
 @Service
-public class OrderServiceImpl implements OrderService {
-
-    @Autowired
-    private GoodMapper goodMapper;
-
-    @Autowired
-    private ShopMapper shopMapper;
-
-    @Autowired
-    private CouponRepository couponRepository;
-
-    @Autowired
-    private CardUserRepository cardUserRepository;
-
-    @Autowired
-    private CardRepository cardRepository;
-
-    @Autowired
-    private CartsMapper cartsMapper;
-
-    @Autowired
-    private OrderInfoMapper orderInfoMapper;
-
-    @Autowired
-    private OrderDetailMapper orderDetailMapper;
-
-    @Autowired
-    private UserAddressMapper addressMapper;
-
-    @Autowired
-    private OrderInfoRepository orderInfoRepository;
-
-    @Autowired
-    private OrderRefundRepository orderRefundRepository;
-
-    @Autowired
-    private OrderTranRepository orderTranRepository;
-
-    @Autowired
-    private SmsService smsService;
-
-    @Autowired
-    private ShopRepository shopRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private SMSUtil smsUtil;
-
-    @Autowired
-    private ManagementRepository managementRepository;
-
-    @Autowired
-    private ShopService shopService;
-
-    @Autowired
-    private ShopBillService shopBillService;
-
-    @Autowired
-    private OrderRefundService orderRefundService;
-
-    @Autowired
-    private UserAddressRepository userAddressRepository;
+public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     /**
      * 预下单
@@ -130,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
         for (Carts cart : cartList) {
+            //todo 待优化 循环内查询数据库
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
             //查询店铺

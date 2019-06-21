@@ -7,4 +7,14 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category,Integer> {
     List<Category> findByStatus(Integer status);
+
+    List<Category> findAllByStatus(Integer status);
+
+    /**
+     * 查询商品分类
+     * @param type
+     * @param status
+     * @return
+     */
+    List<Category> findAllByTypeAndStatus(Integer type, Integer status);
 }
