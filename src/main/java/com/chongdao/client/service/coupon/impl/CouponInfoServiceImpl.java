@@ -7,6 +7,7 @@ import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CouponScopeRule;
 import com.chongdao.client.entitys.coupon.CpnSuperpositionRule;
 import com.chongdao.client.entitys.coupon.CpnThresholdRule;
+import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.coupon.CouponInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.chongdao.client.common.CouponConst.LIMITED_GOODS;
-import static com.chongdao.client.common.CouponConst.THRESHOLD;
 
 /**
  * @author fenglong
@@ -41,9 +41,9 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
         //优惠券叠加
         this.saveCpnSuperpositionRule(couponInfo);
         //门槛规则叠加
-        if (couponInfo.getRuleType() == THRESHOLD) {//有门槛
+        //if (couponInfo.getRuleType() == THRESHOLD) {//有门槛
             this.saveCpnThresholdRule(couponInfo);
-        }
+       // }
         //适用范围类型
         this.saveCouponScopeRule(couponInfo);
         return ResultResponse.createBySuccess();
@@ -63,6 +63,47 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
         }
         //服务
         return ResultResponse.createBySuccess(categoryRepository.findAllByTypeAndStatus(1, 1));
+    }
+
+
+    /**
+     * 根据商品id更新相应状态
+     * @param cpnId
+     * @param state 状态-1 已删除 0待发布 1已发布 2已下架
+     * @return
+     */
+    @Override
+    public ResultResponse updateState(Integer cpnId, Integer state) {
+        if (cpnId == null || state == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        //如果删除，其余表也要更新状态
+        if (state == -1){
+            //修改优惠券叠加规则 删除
+            superpositionRuleRepository.updateState(cpnId);
+            //修改门槛规则 删除
+            thresholdRuleRepository.updateState(cpnId);
+            //修改适用范围类型 删除
+            scopeRuleRepository.updateState(cpnId);
+            //修改用户领取优惠券表 删除
+            cpnUserRepository.updateState(cpnId);
+        }
+        couponInfoRepository.updateState(cpnId,state);
+        return null;
+    }
+
+    /**
+     * 查询商家所有优惠券
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse list(Integer shopId) {
+        if (shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByShopId(shopId);
+        return ResultResponse.createBySuccess(couponInfoList);
     }
 
 
@@ -103,7 +144,7 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
         CouponScopeRule couponScopeRule = new CouponScopeRule();
         couponScopeRule.setCpnId(couponInfo.getId());
         couponScopeRule.setKindName(couponInfo.getScopeTypeName());
-        couponScopeRule.setKindId(couponInfo.getGoodsId());
+        couponScopeRule.setGoodsId(couponInfo.getGoodsId());
         couponScopeRule.setCategoryId(couponInfo.getCategoryId());
         couponScopeRule.setScopeType(couponInfo.getScopeType());
         couponScopeRule.setCreateDate(new Date());

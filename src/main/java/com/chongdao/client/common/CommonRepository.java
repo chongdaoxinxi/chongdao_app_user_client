@@ -2,10 +2,7 @@ package com.chongdao.client.common;
 
 import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.*;
-import com.chongdao.client.repository.coupon.CouponInfoRepository;
-import com.chongdao.client.repository.coupon.CouponScopeRuleRepository;
-import com.chongdao.client.repository.coupon.CpnSuperpositionRuleRepository;
-import com.chongdao.client.repository.coupon.CpnThresholdRuleRepository;
+import com.chongdao.client.repository.coupon.*;
 import com.chongdao.client.service.OrderRefundService;
 import com.chongdao.client.service.ShopBillService;
 import com.chongdao.client.service.ShopService;
@@ -95,6 +92,27 @@ public class CommonRepository {
 
     @Autowired
     protected CategoryRepository categoryRepository;
+
+    @Autowired
+    protected GoodsTypeMapper goodsTypeMapper;
+
+    @Autowired
+    protected OrderEvalMapper orderEvalMapper;
+
+    @Autowired
+    protected GoodsRepository goodsRepository;
+
+    @Autowired
+    protected CpnUserRepository cpnUserRepository;
+
+    @Autowired
+    protected GoodsTypeRepository goodsTypeRepository;
+
+
+
+
+
+
 
 
 

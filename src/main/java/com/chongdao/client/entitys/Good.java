@@ -1,6 +1,8 @@
 package com.chongdao.client.entitys;
 
 
+import com.chongdao.client.utils.Date2LongSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,8 +50,10 @@ public class Good {
 
 	private Integer stock;
 
+	@JsonSerialize(using = Date2LongSerializer.class)
 	private Date createTime;
 
+	@JsonSerialize(using = Date2LongSerializer.class)
 	private Date updateTime;
 
 	private Byte status;

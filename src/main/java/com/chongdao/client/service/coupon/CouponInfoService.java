@@ -18,4 +18,20 @@ public interface CouponInfoService {
      * @return
      */
     ResultResponse getCategory(Integer categoryId);
+
+
+    /**
+     * 根据商品id更新相应状态
+     * @param cpnId
+     * @param state 状态-1 已删除 0待发布 1已发布 2已下架
+     * @return
+     */
+    ResultResponse updateState(Integer cpnId, Integer state);
+
+    /**
+     * 查询商家所有优惠券
+     * @param shopId
+     * @return
+     */
+    ResultResponse list(Integer shopId);
 }

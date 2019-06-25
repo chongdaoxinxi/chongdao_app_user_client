@@ -1,9 +1,9 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.vo.CouponVO;
+import com.chongdao.client.entitys.coupon.CouponInfo;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 /**
  * 优惠券功能接口
@@ -11,63 +11,30 @@ import java.util.List;
 public interface CouponService {
 
     /**
-     * 商品详情中的优惠券列表
+     * 订单优惠券列表
      * @param shopId 商品id
-     * @param type 优惠券类型(1：商品 2: 服务)
+     * @param type 优惠券类型(0：商品以及服务优惠券 1: 配送优惠券)
+     * @param serviceType 服务类型 1.双程 2.单程 3.到店自取
      * @return
      */
-    ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer userId, Integer shopId, Integer type);
+    ResultResponse getCouponListByShopIdAndType(Integer userId, String shopId, String categoryId,
+                                                BigDecimal totalPrice, Integer type,
+                                                Integer serviceType);
 
     /**
      * 领取优惠券
      * @param userId
-     * @param shopId
-     * @param couponId
+     * @param couponInfo
      * @return
      */
-    ResultResponse receiveCoupon(Integer userId, Integer shopId, Integer couponId);
-
-    /**
-     * 查询已领取优惠券
-     * @param userId
-     * @param shopId
-     * @return
-     */
-    ResultResponse receiveCouponComplete(Integer userId, Integer shopId);
+    ResultResponse receiveCoupon(Integer userId, CouponInfo couponInfo);
 
 
-    /**
-     * 查询配送券列表
-     * @param userId
-     * @param param
-     * @return
-     */
-    ResultResponse getCardServiceList(Integer userId,  String param);
 
 
 
 
     //---------------------------------------------------------- 商户端 -----------------------------------------------
 
-    /**
-     * 添加优惠券
-     * @param shopId
-     * @param couponVO
-     * @param type
-     */
-    ResultResponse save(Integer shopId, CouponVO couponVO, Integer type);
 
-    /**
-     * 优惠券状态（上下架、删除）
-     * @param couponId
-     */
-    ResultResponse updateCouponStatusById(Integer couponId, Integer status);
-
-
-    /**
-     * 根据shopId查找满减优惠券
-     * @param shopId
-     * @return
-     */
-    ResultResponse<List<CouponVO>> findByShopId(Integer shopId, Integer type);
 }

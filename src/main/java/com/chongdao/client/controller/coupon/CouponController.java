@@ -1,14 +1,14 @@
 package com.chongdao.client.controller.coupon;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.service.CouponService;
 import com.chongdao.client.utils.LoginUserUtil;
-import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/coupon/")
@@ -19,72 +19,32 @@ public class CouponController {
 
 
     /**
-     * 商品详情中的优惠券列表
+     * 订单优惠券列表
      * @param shopId 商品id
-     * @param type 优惠券类型(0：商品 1: 服务)
+     * @param type 优惠券类型(0：商品以及服务优惠券 1: 配送券)
+     * @param serviceType 服务类型 1.双程 2.单程 3.到店自取
      * @return
      */
-    @GetMapping("getCouponListByShopId")
-    public ResultResponse<List<CouponVO>> getCouponListByShopId(Integer shopId, Integer type,String token){
+    @PostMapping("getCouponListByShopId/{shopId}/{type}")
+    public ResultResponse getCouponListByShopId(@PathVariable String shopId,
+                                                @PathVariable Integer type,
+                                                String categoryId,
+                                                BigDecimal totalPrice,
+                                                Integer serviceType,
+                                                String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return couponService.getCouponListByShopIdAndType(tokenVo.getUserId(),shopId, type);
+        return couponService.getCouponListByShopIdAndType(tokenVo.getUserId(),shopId,categoryId, totalPrice,type,serviceType);
     }
 
 
     /**
      * 领取优惠券
-     * @param shopId
-     * @param couponId
      * @return
      */
-    @GetMapping("receive_coupon")
-    public ResultResponse receiveCoupon(@RequestParam("shopId") Integer shopId,
-                                        @RequestParam("couponId") Integer couponId,
-                                        @RequestParam("token") String token){
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return couponService.receiveCoupon(tokenVo.getUserId(), shopId, couponId);
+    @PostMapping("receiveCoupon")
+    public ResultResponse receiveCoupon(@RequestBody CouponInfo couponInfo){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(couponInfo.getToken());
+        return couponService.receiveCoupon(tokenVo.getUserId(), couponInfo);
     }
-
-
-    /**
-     * 查询已领取优惠券(商品)
-     * @param shopId
-     * @param token
-     * @return
-     */
-    @GetMapping("receive_coupon_complete")
-    public ResultResponse receiveCouponComplete(@RequestParam("shopId") Integer shopId,
-                                                @RequestParam("token") String token){
-
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return couponService.receiveCouponComplete(tokenVo.getUserId(), shopId);
-    }
-
-
-    /**
-     * 查询已领取的配送优惠券
-     * @param token
-     * @param param 0双程 1 单程
-     * @return
-     */
-    @GetMapping("card_service_list")
-    public ResultResponse getCardServiceList(@RequestParam("param") String param,
-                                                @RequestParam("token") String token){
-
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return couponService.getCardServiceList(tokenVo.getUserId(), param);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

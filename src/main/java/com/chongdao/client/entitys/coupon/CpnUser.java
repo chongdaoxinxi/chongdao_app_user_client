@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys.coupon;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -28,11 +29,13 @@ public class CpnUser {
 
     private Integer cpnId;               //优惠券ID
 
+    private String shopId;
+
     private String cpnCode;              //优惠券编码;可选
 
     private String cpnBatchId;           //优惠券批次ID
 
-    private Integer cpnType;             //优惠券类型 1现金券 2满减券 3折扣券
+    private Integer cpnType;             //优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
 
     private BigDecimal cpnValue;         //面值 XX元/满XX元/XX折
 
@@ -40,12 +43,16 @@ public class CpnUser {
 
     private Integer userCpnState;        //用户优惠券状态 0未使用 1已使用 2已过期
 
+    private Integer count;               //优惠券数量
+
     private Date useTime;                //使用时间
 
     private String useDesc;              //使用说明
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date validityStartDate;      //有效期开始时间
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date validityEndDate;        //有效期结束时间
 
     private Date gainDate;               //领取时间
@@ -57,6 +64,11 @@ public class CpnUser {
     private Date updateDate;             //更新时间
 
     private Integer isDelete;            //是否删除 0否 1是
+
+    private Integer ruleType;
+
+    @Transient
+    private Integer enabled = 0;    //是否可用 0否 1是
 
 
 }

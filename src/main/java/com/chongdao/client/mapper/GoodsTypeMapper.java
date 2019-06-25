@@ -20,7 +20,7 @@ public interface GoodsTypeMapper {
 
     int updateByPrimaryKey(GoodsType record);
 
-    List<GoodsType> selectByCategoryId(@Param("shopId") Integer shopId, @Param("categoryId") Integer categoryId);
+    List<GoodsType> selectByCategoryId(@Param("shopId") Integer shopId, @Param("categoryId") List<Integer> categoryId);
 
 
 

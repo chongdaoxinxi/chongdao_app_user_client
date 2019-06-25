@@ -28,7 +28,7 @@ public class CouponScopeRule {
      * 注意：主表的scope_type字段表示适用范围的类型，
      * 它决定着适用范围表中kind_id存放什么ID，kind_id是一个业务ID，
      */
-    private Integer kindId;     //业务（商品）ID （商品ID/类目ID/...）
+    private Integer goodsId;     //业务（商品）ID （商品ID/类目ID/...）
 
     private Integer scopeType;  //适用范围类型 1全场通用 2限品类(暂定) 3限商品 4限服务 5配送单程 6配送双程
 

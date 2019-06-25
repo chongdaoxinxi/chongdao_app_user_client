@@ -20,16 +20,40 @@ public class CouponManagerController {
     @Autowired
     private CouponInfoService couponInfoService;
 
-
     /**
      * 添加优惠券
      * @param couponInfo
      * @return
      */
     @PostMapping("add")
-    public ResultResponse add(String token,CouponInfo couponInfo){
-        LoginUserUtil.resultTokenVo(token);
+    public ResultResponse add(@RequestBody CouponInfo couponInfo){
+        LoginUserUtil.resultTokenVo(couponInfo.getToken());
         return couponInfoService.add(couponInfo);
+    }
+
+    /**
+     * 根据商品id更新相应状态
+     * @param cpnId
+     * @param state 状态-1 已删除 0待发布 1已发布 2已下架
+     * @param token
+     * @return
+     */
+    @PutMapping("updateState/{cpnId}/{state}")
+    public ResultResponse updateState(@PathVariable Integer cpnId,@PathVariable Integer state,String token){
+        LoginUserUtil.resultTokenVo(token);
+        return couponInfoService.updateState(cpnId,state);
+    }
+
+    /**
+     * 查询商家所有优惠券
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @GetMapping("list/{shopId}")
+    public ResultResponse list(@PathVariable Integer shopId,String token){
+        LoginUserUtil.resultTokenVo(token);
+        return couponInfoService.list(shopId);
     }
 
 

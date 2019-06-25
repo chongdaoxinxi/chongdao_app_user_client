@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface GoodsTypeRepository extends JpaRepository<GoodsType,Integer> {
     List<GoodsType> findAllByCategoryIdAndStatus(Integer categoryId, Integer status);
+
+    List<GoodsType> findByShopIdAndCategoryIdInAndStatus(Integer shopId,List<Integer> categoryIds, Integer status);
 }

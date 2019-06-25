@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface GoodsRepository extends JpaRepository<Good, Integer> {
 
 
@@ -29,4 +31,30 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
     @Modifying
     @Transactional
     Integer updateRatio(Integer shopId);
+
+    /**
+     * 获取店铺销量
+     * @param shopId
+     * @return
+     */
+    @Query(value = "select sum(sales) from good where shop_id=?1",nativeQuery = true)
+    Integer findBySalesSum(Integer shopId);
+
+    /**
+     * 查询店铺所有商品
+     * @param shopId
+     * @return
+     */
+    List<Good> findAllByShopIdIn(List<Integer> shopId);
+
+
+    /**
+     * 查询商品
+     * @param goodsId
+     * @return
+     */
+    List<Good> findAllById(List<Integer> goodsId);
+
+
+    List<Good> findByShopIdAndCategoryIdIn(Integer shopId, List<Integer> categoryIds);
 }

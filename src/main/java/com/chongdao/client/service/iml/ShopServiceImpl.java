@@ -1,15 +1,11 @@
 package com.chongdao.client.service.iml;
 
+import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
+import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.enums.CouponStatusEnum;
-import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.mapper.*;
-import com.chongdao.client.repository.CouponRepository;
-import com.chongdao.client.repository.ManagementRepository;
-import com.chongdao.client.repository.ShopRepository;
-import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.GoodsTypeVO;
@@ -20,7 +16,6 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -29,43 +24,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.chongdao.client.common.Const.OrderBy.*;
 import static com.chongdao.client.common.Const.goodsListProActivities.DISCOUNT;
-import static com.chongdao.client.service.iml.GoodsServiceImpl.assembleCouponVo;
 
 @Service
-public class ShopServiceImpl implements ShopService {
+public class ShopServiceImpl extends CommonRepository implements ShopService {
 
-    @Autowired
-    private ShopMapper shopMapper;
 
-    @Autowired
-    private GoodMapper goodMapper;
-
-    @Autowired
-    private CouponRepository couponRepository;
-
-    @Autowired
-    private GoodsTypeMapper goodsTypeMapper;
-
-    @Autowired
-    private OrderEvalMapper orderEvalMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private OrderDetailMapper orderDetailMapper;
-
-    @Autowired
-    private OrderInfoMapper orderInfoMapper;
-
-    @Autowired
-    private ShopRepository shopRepository;
-    @Autowired
-    private ManagementRepository managementRepository;
 
     /**
      * 根据条件展示商店(首页)
@@ -141,9 +110,11 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
         ShopVO shopVO = new ShopVO();
         BeanUtils.copyProperties(shop,shopVO);
-        //封装优惠券
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
-        shopVO.setCouponVOList(assembleCouponVo(couponList));
+        //获取店铺销量
+        shopVO.setSales(goodsRepository.findBySalesSum(shopId));
+        //封装优惠券(店铺满减除外(cpnType = 4))
+        List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
+        shopVO.setCouponInfoList(couponList);
         return ResultResponse.createBySuccess(shopVO);
     }
 
@@ -160,13 +131,24 @@ public class ShopServiceImpl implements ShopService {
         }
 
         List<GoodsTypeVO> goodsTypeVOList = Lists.newArrayList();
+        List<Integer> categoryIds = Lists.newArrayList();
         //获取当前店铺的类别如:服务类:洗澡，美容等
-        List<GoodsType> goodsTypeList = goodsTypeMapper.selectByCategoryId(shopId, categoryId);
-        goodsTypeList.forEach(e -> {
+        if (categoryId == 0){
+            //商品
+            categoryIds = Arrays.asList(3);
+        }else if (categoryId == 1){
+            //服务
+            categoryIds = Arrays.asList(1,2,4,5,6,7,8);
+        }else{
+            //筛选条件
+            categoryIds = Arrays.asList(categoryId);
+        }
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByShopIdAndCategoryIdInAndStatus(shopId, categoryIds,1);
+        for (GoodsType e : goodsTypeList) {
             GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
             //获取当前类别的商品
             List<GoodsListVO> goodsListVOList = Lists.newArrayList();
-            List<Good> goodList = goodMapper.selectByShopIdAndCategoryId(shopId, categoryId);
+            List<Good> goodList = goodsRepository.findByShopIdAndCategoryIdIn(shopId, categoryIds);
             for (Good good : goodList) {
                 if (e.getId() == good.getGoodsTypeId()){
                     GoodsListVO goodsListVO = new GoodsListVO();
@@ -178,8 +160,10 @@ public class ShopServiceImpl implements ShopService {
                     goodsTypeVO.setGoodsListVOList(goodsListVOList);
                 }
             }
-            goodsTypeVOList.add(goodsTypeVO);
-        });
+            if (goodsTypeVO.getCategoryId() != null) {
+                goodsTypeVOList.add(goodsTypeVO);
+            }
+        }
         return ResultResponse.createBySuccess(goodsTypeVOList);
     }
 
@@ -268,20 +252,25 @@ public class ShopServiceImpl implements ShopService {
      */
     private List<ShopVO> shopListVOList(List<Shop> shopList){
         List<ShopVO> shopVOList = Lists.newArrayList();
+        List<Integer> shopIdList = new ArrayList<>();
+        List<String> stringList = new ArrayList<>();
         shopList.forEach(shop -> {
             ShopVO shopVO = new ShopVO();
             BeanUtils.copyProperties(shop,shopVO);
-            List<Good> goodList = goodMapper.selectListByShopId(shop.getId());
-            for (Good good : goodList) {
-            //折扣大于0时，才会显示折扣价
-            if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
-                shopVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
-                shopVO.setDiscount(good.getDiscount());
-            }
+            shopIdList.add(shopVO.getId());
+            stringList.add(String.valueOf(shopVO.getId()));
+//            //查询商品
+//            List<Good> goodList = goodsRepository.findAllByShopIdIn(shopIdList);
+//            for (Good good : goodList) {
+//                //折扣大于0时，才会显示折扣价
+//                if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
+//                    shopVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+//                    shopVO.setDiscount(good.getDiscount());
+//                }
+//            }
             //封装优惠券
-            List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
-            shopVO.setCouponVOList(assembleCouponVo(couponList));
-            }
+            List<CouponInfo> couponList = couponInfoRepository.findByShopIdInAndCpnState(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus());
+            shopVO.setCouponInfoList(couponList);
             shopVOList.add(shopVO);
         });
         return shopVOList;

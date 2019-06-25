@@ -1,36 +1,32 @@
 package com.chongdao.client.service.iml;
 
-import com.chongdao.client.common.Const;
+import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Card;
-import com.chongdao.client.entitys.CardUser;
-import com.chongdao.client.entitys.Coupon;
-import com.chongdao.client.entitys.CouponUser;
+import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.entitys.coupon.CpnThresholdRule;
+import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.CardRepository;
 import com.chongdao.client.repository.CardUserRepository;
-import com.chongdao.client.repository.CouponRepository;
 import com.chongdao.client.repository.CouponUserRepository;
 import com.chongdao.client.service.CouponService;
-import com.chongdao.client.utils.DateTimeUtil;
-import com.chongdao.client.vo.CouponVO;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static com.chongdao.client.common.CouponConst.*;
 
 @Service
-public class CouponServiceImpl implements CouponService {
+public class CouponServiceImpl extends CommonRepository implements CouponService {
 
-    @Autowired
-    private CouponRepository couponRepository;
+
 
     @Autowired
     private CardUserRepository cardUserRepository;
@@ -44,246 +40,158 @@ public class CouponServiceImpl implements CouponService {
 
 
 
+
     /**
-     * 商品详情中的优惠券列表
+     * 订单优惠券列表
      * @param shopId 商品id
-     * @param type 优惠券类型(0：商品 1: 服务)
+     * @param type 优惠券类型(0：商品以及服务优惠券 1: 配送优惠券)
+     * @param serviceType 服务类型 1.双程 2.单程 3.到店自取
+     * @param categoryId 商品（服务）分类0,1
+     * @param totalPrice 订单金额（商品或者服务折扣后的价格）
      * @return
      */
     @Override
-    public ResultResponse<List<CouponVO>> getCouponListByShopIdAndType(Integer userId,Integer shopId, Integer type) {
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), type);
-        List<CouponVO> couponVOList = Lists.newArrayList();
-        couponList.stream().forEach(coupon -> {
-            CouponVO couponVO = new CouponVO();
-            BeanUtils.copyProperties(coupon, couponVO);
-            CouponUser couponUser = couponUserRepository.findByUserIdAndCouponIdAndShopId(userId, coupon.getId(), shopId);
-            if (couponUser != null){
-                //该优惠券已领取
-                couponVO.setReceiveStatus(1);
-            }
-            couponVOList.add(couponVO);
-        });
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),couponVOList);
+    public ResultResponse getCouponListByShopIdAndType(Integer userId, String shopId, String categoryId,
+                                                       BigDecimal totalPrice, Integer type,
+                                                       Integer serviceType) {
+        List<CpnUser> cpnUsers = Lists.newArrayList();
+        //商品以及服务优惠券 类型为 1现金券（红包）3折扣券
+        if (type.equals(CouponStatusEnum.COUPON_GOODS.getStatus())) {
+            //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
+            //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
+            List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(1,3,4));
+            List<CouponInfo> couponInfoList = Lists.newArrayList();
+            cpnUserList.stream().forEach(cpnUser -> {
+                //逻辑处理
+                this.getCpnUser(cpnUser,totalPrice,categoryId);
+                CouponInfo couponInfo = couponInfoRepository.findById(cpnUser.getCpnId()).get();
+                if (cpnUser.getEnabled() == 1){//优惠券可用
+                    couponInfo.setEnabled(1);
+                }
+                couponInfoList.add(couponInfo);
+            });
+
+
+            return ResultResponse.createBySuccess(couponInfoList);
+        }
+        //配送优惠券(双程)
+        if (serviceType == 1){
+            //6配送双程  8仅限服务（双程）10仅限商品（配送双程）
+            List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
+            cpnUserList.stream().forEach(cpnUser -> {
+                    //优惠券可用
+                    cpnUser.setEnabled(1);
+            });
+            return ResultResponse.createBySuccess(cpnUserList);
+        }else if (serviceType == 2){//单程
+            //5配送单程  7仅限服务（单程）9仅限商品（配送单程）
+            List<CpnUser> cpnUserList =cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(5,7,9));
+            cpnUserList.stream().forEach(cpnUser -> {
+                    //优惠券可用
+                    cpnUser.setEnabled(1);
+            });
+            return ResultResponse.createBySuccess(cpnUserList);
+        }
+        return ResultResponse.createBySuccess();
     }
 
     /**
      * 领取优惠券
      * @param userId
-     * @param shopId
-     * @param couponId
+     * @param couponInfo
      * @return
      */
     @Override
-    public ResultResponse receiveCoupon(Integer userId, Integer shopId, Integer couponId) {
-        if (userId == null || shopId == null || couponId == null){
+    @Transactional
+    public ResultResponse receiveCoupon(Integer userId, CouponInfo couponInfo) {
+        if (userId == null || couponInfo.getShopId() == null || couponInfo.getId() == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
                     ResultEnum.PARAM_ERROR.getMessage());
         }
         //判断该优惠券是否被领取过
-        CardUser result = cardUserRepository.findByCouponIdAndShopIdAndUserId(couponId, shopId, userId);
-        if (result != null){
+        CpnUser cpnUser = cpnUserRepository.findByUserIdAndCpnIdAndShopId(userId, couponInfo.getId(), String.valueOf(couponInfo.getShopId()));
+        if (cpnUser != null){
             return ResultResponse.createByErrorCodeMessage(CouponStatusEnum.RECEIVED_COUPON_CARD.getStatus(),
                     CouponStatusEnum.RECEIVED_COUPON_CARD.getMessage());
         }
         //领取数量+1
-        couponRepository.updateReceiveCountByCouponId(couponId,shopId);
-        //插入card表记录
-        CardUser card = new CardUser();
-        card.setCount(1);
-        card.setCouponId(couponId);
-        card.setCreateTime(new Date());
-        card.setUpdateTime(new Date());
-        card.setStatus(1);
-        card.setShopId(shopId);
-        card.setUserId(userId);
-        cardUserRepository.save(card);
+        couponInfoRepository.updateReceiveCountByCouponId(couponInfo.getId(),String.valueOf(couponInfo.getShopId()));
+        //插入用户优惠券表记录
+        cpnUser = new CpnUser();
+        cpnUser.setCount(1);
+        cpnUser.setCpnBatchId(couponInfo.getBatchId());
+        cpnUser.setCpnCode(couponInfo.getCpnCode());
+        cpnUser.setCpnId(couponInfo.getId());
+        cpnUser.setCpnScopeType(couponInfo.getScopeType());
+        cpnUser.setCpnType(couponInfo.getCpnType());
+        cpnUser.setCpnValue(couponInfo.getCpnValue());
+        cpnUser.setGainDate(new Date());
+        cpnUser.setGainDesc(couponInfo.getCpnDesc());
+        cpnUser.setRuleType(couponInfo.getRuleType());
 
-        //插入coupon_user表方便展示优惠券时使用
-        CouponUser couponUser = new CouponUser();
-        couponUser.setCouponId(couponId);
-        couponUser.setCreateTime(new Date());
-        couponUser.setReceiveStatus(1);
-        couponUser.setShopId(shopId);
-        couponUser.setUserId(userId);
-        couponUserRepository.save(couponUser);
-        return ResultResponse.createBySuccess();
-    }
-
-    /**
-     * 查询已领取的优惠券
-     * @param userId
-     * @param shopId
-     * @return
-     */
-    @Override
-    public ResultResponse receiveCouponComplete(Integer userId, Integer shopId) {
-        if (userId == null || shopId == null){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
-                    ResultEnum.PARAM_ERROR.getMessage());
-        }
-        List<Coupon> couponList = couponRepository.findByUserIdCoupons(userId, shopId);
-        return ResultResponse.createBySuccess(couponList);
-    }
-
-
-    /**
-     * 查询配送券
-     * @param userId
-     * @param param
-     * @return
-     */
-    @Override
-    public ResultResponse getCardServiceList(Integer userId, String param) {
-        if (userId == null  || StringUtils.isBlank(param)){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
-                    ResultEnum.PARAM_ERROR.getMessage());
-        }
-        //根据param参数判断是双程还是单程，商品默认单程
-        if (Const.DUAL.equals(param)){
-            //双程
-            List<Card> cardList = cardRepository.findByUserIdAndRoundTripList(userId);
-            return ResultResponse.createBySuccess(cardList);
-        }else{
-            //单程
-            List<Card> cardList = cardRepository.findByUserIdAndSingleTripList(userId);
-            return ResultResponse.createBySuccess(cardList);
-        }
-    }
-
-
-
-
-
-    //--------------------------------------------商户端----------------------------------
-
-    /**
-     * 添加优惠券
-     * @param shopId
-     * @param couponVO
-     * @param type
-     */
-    @Override
-    public ResultResponse save(Integer shopId, CouponVO couponVO, Integer type) {
-        if (shopId == null || couponVO == null || type == null){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
-                    ResultEnum.PARAM_ERROR.getMessage());
-        }
-        Coupon coupon = new Coupon();
-        BeanUtils.copyProperties(couponVO, coupon);
-        coupon.setCreateTime(new Date());
-        coupon.setUpdateTime(new Date());
-        coupon.setReceiveCouponCount(0);
-        coupon.setUsedCouponCount(0);
-        if (type == CouponStatusEnum.COUPON_FULL_AC.getStatus()){
-            //店铺满减
-            coupon.setCouponName("满" + couponVO.getFullPrice().setScale(0) + "元" + "减" + couponVO.getDecreasePrice().setScale(0) + "元");
-            coupon.setType(CouponStatusEnum.COUPON_FULL_AC.getStatus());
-        }else {
-            //优惠券
-            coupon.setCouponName("满" + couponVO.getFullPrice().setScale(0) + "元" + "减" + couponVO.getDecreasePrice().setScale(0) + "元");
-            coupon.setType(CouponStatusEnum.COUPON_TICKET.getStatus());
-        }
-        couponRepository.save(coupon);
-        computerTimeSub(coupon);
+        //默认未删除
+        cpnUser.setIsDelete(0);
+        //默认未使用
+        cpnUser.setUserCpnState(0);
+        cpnUser.setUseDesc("");
+        cpnUser.setValidityStartDate(couponInfo.getValidityStartDate());
+        cpnUser.setValidityEndDate(couponInfo.getValidityEndDate());
+        cpnUser.setCreateDate(new Date());
+        cpnUser.setUpdateDate(new Date());
+        cpnUser.setUserId(userId);
+        cpnUser.setShopId(String.valueOf(couponInfo.getShopId()));
+        cpnUserRepository.save(cpnUser);
         return ResultResponse.createBySuccess();
     }
 
 
-
-
     /**
-     * 优惠券上架、下架、删除（1，0，-1）
-     * @param couponId
+     * 封装优惠券逻辑代码（商品和服务）
+     * @param cpnUser
      * @return
      */
-    @Override
-    public ResultResponse updateCouponStatusById(Integer couponId, Integer status) {
-        if (couponId == null){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
-                    ResultEnum.PARAM_ERROR.getMessage());
-        }
-        couponRepository.updateCouponStatusById(couponId, status);
-        return ResultResponse.createBySuccess();
-
-    }
-
-
-    /**
-     * 根据shopId查找满减优惠券
-     * @param shopId
-     * @param type 0 店铺满减 2 优惠券
-     * @return
-     */
-    @Override
-    public ResultResponse<List<CouponVO>> findByShopId(Integer shopId, Integer type) {
-        List<Coupon> couponList = Lists.newArrayList();
-        if (type == 1){
-            //店铺满减
-            couponList = couponRepository.findByShopIdAndTypeInAndStatusNotOrderByCreateTimeDesc(shopId, Arrays.asList(0),CouponStatusEnum.COUPON_FULL_AC.getStatus());
-        }else{
-            //优惠券
-            couponList = couponRepository.findByShopIdAndTypeInAndStatusNotOrderByCreateTimeDesc(shopId, Arrays.asList(2),CouponStatusEnum.COUPON_TICKET.getStatus());
-        }
-
-        if (CollectionUtils.isEmpty(couponList)){
-            return ResultResponse.createBySuccess();
-        }
-        List<CouponVO> couponVOList = Lists.newArrayList();
-        couponList.stream().forEach(coupon -> {
-            CouponVO couponVO = new CouponVO();
-            BeanUtils.copyProperties(coupon,couponVO);
-            couponVOList.add(couponVO);
-        });
-        return ResultResponse.createBySuccess(couponVOList );
-    }
-
-
-
-
-
-
-
-    /**
-     * 计算优惠券有效时间
-     * @param coupon
-     */
-    private void computerTimeSub(Coupon coupon){
-        //计算优惠券有效时间
-        //获取当前创建时间
-        String curTime = DateTimeUtil.dateToStr(coupon.getCreateTime());
-        long time = DateTimeUtil.costTimeDay(coupon.getStartTime(),curTime)*24*60*60;
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                computerTime(coupon);
+    private CpnUser getCpnUser(CpnUser cpnUser, BigDecimal totalPrice, String categoryId){
+        //获取使用范围
+        Integer cpnScopeType = cpnUser.getCpnScopeType();
+        //获取门槛规则，当前需要满足的条件
+        CpnThresholdRule cpnRule = thresholdRuleRepository.findByCpnId(cpnUser.getCpnId());
+        if (cpnScopeType == EXPERT && cpnUser.getRuleType() == NO_THRESHOLD){//全场通用（无门槛）
+            cpnUser.setEnabled(1);
+        }else if (cpnScopeType == EXPERT && cpnUser.getRuleType() == THRESHOLD){//全场通用（有门槛）
+            //满减判断
+            this.compare(cpnUser,totalPrice,cpnRule.getMinPrice());
+        }else if (cpnScopeType == LIMITED_GOODS && categoryId.contains("0")){//限制商品 categoryId包含0即可
+            //无门槛
+            if (cpnUser.getRuleType() == NO_THRESHOLD){
+                cpnUser.setEnabled(1);
+            }else {//有门槛
+                //满减判断
+                this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
             }
-        }, time);
-
-
-    }
-
-    private void computerTime(Coupon coupon){
-        //生效时间
-        String activeDate = coupon.getStartTime();
-        //失效时间
-        String missDate = coupon.getEndTime();
-        long time = DateTimeUtil.costTimeDay(missDate,activeDate)*24*60*60 * 1000;
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //回查
-                Coupon result = couponRepository.findById(coupon.getId()).get();
-                if (result == null){
-                    throw new PetException(ResultEnum.PARAM_ERROR);
-                }
-                if (result.getStatus().equals(CouponStatusEnum.UP_COUPON.getStatus())){
-                    result.setStatus(CouponStatusEnum.DOWN_COUPON.getStatus());
-                    couponRepository.save(result);
-                }
+        }else if (cpnScopeType == LIMITED_SERVICE && categoryId.contains("1")){//限制服务 categoryId包含1即可
+            //无门槛
+            if (cpnUser.getRuleType() == NO_THRESHOLD){
+                cpnUser.setEnabled(1);
+            }else {//有门槛
+                //满减判断
+                this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
             }
-        }, time);
+        }
+        return cpnUser;
     }
+
+    /**
+     * 满减判断
+     * @param cpnUser
+     * @param totalPrice
+     * @param conditionPrice
+     * @return
+     */
+    private CpnUser compare(CpnUser cpnUser,BigDecimal totalPrice,BigDecimal conditionPrice){
+        if (totalPrice.compareTo(conditionPrice) == 0 || totalPrice.compareTo(conditionPrice) == 1){
+            cpnUser.setEnabled(1);
+        }
+        return cpnUser;
+    }
+
 }

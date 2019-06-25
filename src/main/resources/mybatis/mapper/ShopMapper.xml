@@ -440,7 +440,9 @@
     <select id="selectByName" parameterType="String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_Lists" />,
-        p.id coupon_id,p.coupon_name,p.type
+        p.id coupon_id,p.coupon_name,p.type,
+        (select discount from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
         from  shop s left join coupon p on s.id = p.shop_id
         where s.status in (0,1)
         <if test="categoryId != null">

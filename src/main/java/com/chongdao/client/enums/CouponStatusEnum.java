@@ -16,8 +16,11 @@ public enum CouponStatusEnum {
 
     RECEIVED_COUPON_CARD(5001,"您已领取过该优惠券，不能再次领取"),
 
-    COUPON_GOODS(0,"商品类优惠券"),
-    COUPON_SERVICE(1,"服务类优惠券"),
+    COUPON_GOODS(0,"商品以及服务（洗澡美容等）优惠券"),
+    COUPON_SERVICE_DELIVERY(1,"配送优惠券"),
+
+
+    COUPON_PUBLISHED(1,"已发布");
 
 
 
