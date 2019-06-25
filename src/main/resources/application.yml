@@ -11,18 +11,13 @@ spring:
     url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull
     username: pet
     password: ABcd12#$
-  #为null的字段不需要穿给前端
-  jackson:
-    default-property-inclusion: non_null
-#  profiles:
-#    active: sms
-
-mybatis:
-  mapper-locations: classpath*:mybatis/mapper/*.xml
-  type-aliases-package: com.chongdao.client.entitys
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+  #hikari数据源配置，
+  hikari:
+    connection-test-query: SELECT 1 FROM DUAL
+    connection-timeout: 30000
+    maximum-pool-size: 20
+    max-lifetime: 1800000
+    minimum-idle: 5
   #tomcat配置
   tomcat:
     max-wait: 20000
@@ -37,6 +32,17 @@ mybatis:
     properties:
       hibernate:
         format_sql: true
+  #为null的字段不需要穿给前端
+  jackson:
+    default-property-inclusion: non_null
+#  profiles:
+#    active: sms
+
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  type-aliases-package: com.chongdao.client.entitys
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #创蓝短信服务
 sms:
