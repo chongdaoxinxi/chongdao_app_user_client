@@ -144,7 +144,7 @@
     <select id="selectByCategoryId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from goods_type where status in (0,1) and shop_id=#{shopId} and category_id=#{categoryId}
+        from goods_type where status in (0,1) and shop_id=#{shopId} and category_id in (#{categoryId})
         order by sort asc
     </select>
 

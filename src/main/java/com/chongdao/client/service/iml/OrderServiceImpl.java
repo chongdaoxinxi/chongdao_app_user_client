@@ -64,7 +64,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
         for (Carts cart : cartList) {
-            //todo 待优化 循环内查询数据库
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
             //查询店铺
@@ -86,21 +85,29 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     //计算总价（无打折）
                     orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
+                //查询该商品是否存在优惠券
+                if (good.getCouponId() != null){
+                    //查询符合当前用户的优惠券个数
+                    int result = cpnUserRepository.countByUserIdAndCpnIdAndShopId(userId, good.getCouponId(), String.valueOf(shop.getId()));
+                    //查询属于用户优惠券并且该商品符合优惠
+                   // List<CpnUser> cpnUser = cpnUserRepository.findAllByUserIdAndCpnIdAndShopId(userId, good.getCouponId(), String.valueOf(shop.getId()));
+
+                }
             }
             orderVo.setAreaCode(shop.getAreaCode());
             orderVo.setUserId(userId);
             orderVo.setShopId(shop.getId());
             //获取符合当前条件商品的满减
-            List<CouponVO> couponVOList = this.getCouponVo(shop.getId(), cartTotalPrice);
-            orderVo.setCouponList(couponVOList);
-            BigDecimal decreasePrice = BigDecimal.ZERO;
-            if (!CollectionUtils.isEmpty(couponVOList)) {
-                decreasePrice = couponVOList.get(0).getDecreasePrice();
-            }
+//            List<CouponVO> couponVOList = this.getCouponVo(shop.getId(), cartTotalPrice);
+//            orderVo.setCouponList(couponVOList);
+//            BigDecimal decreasePrice = BigDecimal.ZERO;
+//            if (!CollectionUtils.isEmpty(couponVOList)) {
+//                decreasePrice = couponVOList.get(0).getDecreasePrice();
+//            }
             //总价
-            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(decreasePrice);
+            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(new BigDecimal(0));
             if (orderCommonVO.getCouponId() != null) {
-                //TODO 计算使用商品 a 优惠券后的价格
+                //TODO 计算使用商品优惠券后的价格
 
             }
             if (orderCommonVO.getCardId() != null) {
@@ -110,7 +117,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //配送优惠券数量 0:双程 1:单程（商品默认为单程）
         orderVo.setServiceCouponCount(this.getServiceCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
         //商品优惠券数量
-        orderVo.setGoodsCouponCount(this.getCouponCount(orderVo.getUserId(), orderVo.getShopId()));
+       // orderVo.setGoodsCouponCount(this.getCouponCount(orderVo.getUserId(), orderVo.getShopId()));
         orderVo.setTotalPrice(cartTotalPrice);
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());

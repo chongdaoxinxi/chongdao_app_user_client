@@ -1,5 +1,6 @@
 package com.chongdao.client.vo;
 
+import com.chongdao.client.entitys.coupon.CouponInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,9 +50,14 @@ public class ShopVO {
     /** 结束营业时间 */
     private String  endBusinessHours;
 
+    //待删除
     private List<CouponVO> couponVOList;
+
+    private List<CouponInfo> couponInfoList;
 
     private Double discount;
 
     private BigDecimal discountPrice;
+
+    private Integer sales;
 }
