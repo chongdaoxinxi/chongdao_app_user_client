@@ -38,8 +38,8 @@ public class Express extends PageParams implements Serializable {
 	private Double lastLng;
 	private Double lastLat;
 	private Date createTime;
-
-	//暂时废弃
-	private String headImg;
-	private String openId;
+//
+//	//暂时废弃
+//	private String headImg;
+//	private String openId;
 }
