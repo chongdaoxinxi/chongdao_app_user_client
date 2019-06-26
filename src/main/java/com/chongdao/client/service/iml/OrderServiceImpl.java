@@ -474,6 +474,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse shopAcceptOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), acceptOrderData(o)))

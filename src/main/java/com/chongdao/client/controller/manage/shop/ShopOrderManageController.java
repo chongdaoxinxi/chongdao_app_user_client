@@ -52,7 +52,7 @@ public class ShopOrderManageController {
      * @return
      */
     @GetMapping("getOrderListPc")
-    public ResultResponse getOrderListPc(String token, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) {
+    public ResultResponse getOrderListPc(String token, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) throws Exception {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.getShopOrderTypeListPc(tokenVo.getRole(), tokenVo.getUserId(), orderNo, username, phone, orderStatus, pageNum, pageSize);
     }

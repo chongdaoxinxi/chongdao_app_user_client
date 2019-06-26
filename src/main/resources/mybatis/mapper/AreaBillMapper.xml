@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.AreaBillMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.AreaBill">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="order_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="note" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="type" jdbcType="TINYINT" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ab.id, ab.shop_id, ab.order_id, ab.price, ab.note, ab.type, ab.create_time
+    </sql>
+</mapper>

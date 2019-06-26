@@ -11,13 +11,12 @@ spring:
     url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull
     username: pet
     password: ABcd12#$
-#  #hikari数据源配置，
-#  hikari:
-#    connection-test-query: SELECT 1 FROM DUAL
-#    connection-timeout: 30000
-#    maximum-pool-size: 20
-#    max-lifetime: 1800000
-#    minimum-idle: 5
+  #hikari数据源配置，
+  hikari:
+    connection-timeout: 30000
+    maximum-pool-size: 30
+    max-lifetime: 600000
+    minimum-idle: 5
 #  #tomcat配置
 #  tomcat:
 #    max-wait: 20000

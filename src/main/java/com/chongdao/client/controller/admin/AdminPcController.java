@@ -2,10 +2,7 @@ package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.service.OrderService;
-import com.chongdao.client.service.ShopApplyService;
-import com.chongdao.client.service.ShopManageService;
-import com.chongdao.client.service.ShopService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @Description 管理员pc端
@@ -32,6 +30,10 @@ public class AdminPcController {
     private ShopManageService shopManageService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private AreaService areaService;
+    @Autowired
+    private ShopBillService shopBillService;
 
     /**
      * 确认退款完成
@@ -149,5 +151,78 @@ public class AdminPcController {
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
+    }
+
+    /**
+     * 获取一级市
+     * @param token
+     * @param level
+     * @param isOpen
+     * @return
+     */
+    @GetMapping("getTopLevelAreaDataList")
+    public ResultResponse getTopLevelAreaDataList(String token, Integer level, Integer isOpen) {
+        return areaService.getTopLevelAreaDataList(level, isOpen);
+    }
+
+    /**
+     * 根据父id, 级联获取下级地区
+     * @param token
+     * @param level
+     * @param isOpen
+     * @param pid
+     * @return
+     */
+    @GetMapping("getAreaDataByParentId")
+    public ResultResponse getAreaDataByParentId(String token, Integer level, Integer isOpen, Integer pid) {
+        return areaService.getAreaDataByParentId(level, isOpen, pid);
+    }
+
+    /**
+     * 获取商家的流水记录
+     * @param token
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("getShopBillByShopId")
+    public ResultResponse getShopBillByShopId(String token, Date startDate, Date endDate, Integer pageNum, Integer pageIndex){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageNum, pageIndex);
+    }
+
+    /**
+     * 获取区域内商家的所有流水记录
+     * @param token
+     * @param shopName
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("getShopBillByAreaCode")
+    public ResultResponse getShopBillByAreaCode(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageIndex);
+    }
+
+    /**
+     * 获取地区账户流水记录
+     * @param token
+     * @param shopName
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("getShopBillByAreaCode")
+    public ResultResponse getAreaBill(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+//        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+//        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageIndex);
+        return null;
     }
 }
