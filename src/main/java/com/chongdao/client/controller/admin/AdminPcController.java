@@ -219,7 +219,7 @@ public class AdminPcController {
      * @param pageIndex
      * @return
      */
-    @GetMapping("getShopBillByAreaCode")
+    @GetMapping("getAreaBill")
     public ResultResponse getAreaBill(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
 //        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
 //        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageIndex);
