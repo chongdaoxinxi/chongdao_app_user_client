@@ -34,7 +34,7 @@ public class ShopPcController {
     public ResultResponse getModuleData(String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("SHOP_PC")) {
+        if(role != null) {
             return moduleService.getModuleData();
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());

@@ -2,10 +2,7 @@ package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.service.OrderService;
-import com.chongdao.client.service.ShopApplyService;
-import com.chongdao.client.service.ShopManageService;
-import com.chongdao.client.service.ShopService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,8 @@ public class AdminPcController {
     private ShopManageService shopManageService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private AreaService areaService;
 
     /**
      * 确认退款完成
@@ -149,5 +148,30 @@ public class AdminPcController {
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
+    }
+
+    /**
+     * 获取一级市
+     * @param token
+     * @param level
+     * @param isOpen
+     * @return
+     */
+    @GetMapping("getTopLevelAreaDataList")
+    public ResultResponse getTopLevelAreaDataList(String token, Integer level, Integer isOpen) {
+        return areaService.getTopLevelAreaDataList(level, isOpen);
+    }
+
+    /**
+     * 根据父id, 级联获取下级地区
+     * @param token
+     * @param level
+     * @param isOpen
+     * @param pid
+     * @return
+     */
+    @GetMapping("getAreaDataByParentId")
+    public ResultResponse getAreaDataByParentId(String token, Integer level, Integer isOpen, Integer pid) {
+        return areaService.getAreaDataByParentId(level, isOpen, pid);
     }
 }
