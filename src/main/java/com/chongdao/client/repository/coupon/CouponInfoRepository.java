@@ -46,6 +46,8 @@ public interface CouponInfoRepository extends JpaRepository<CouponInfo,Integer> 
 
 
 
+
+
     //-------------------------用户------------------------------------
 
 }

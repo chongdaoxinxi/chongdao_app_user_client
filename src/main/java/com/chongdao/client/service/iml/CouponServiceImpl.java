@@ -1,7 +1,9 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.common.CouponConst;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.entitys.coupon.CpnUser;
@@ -75,7 +77,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             return ResultResponse.createBySuccess(couponInfoList);
         }
         //配送优惠券(双程)
-        if (serviceType == 1){
+        if (serviceType == 1 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){
             //6配送双程  8仅限服务（双程）10仅限商品（配送双程）
             List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
             cpnUserList.stream().forEach(cpnUser -> {
@@ -83,7 +85,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                     cpnUser.setEnabled(1);
             });
             return ResultResponse.createBySuccess(cpnUserList);
-        }else if (serviceType == 2){//单程
+        }else if (serviceType == 2 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){//单程
             //5配送单程  7仅限服务（单程）9仅限商品（配送单程）
             List<CpnUser> cpnUserList =cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(5,7,9));
             cpnUserList.stream().forEach(cpnUser -> {
@@ -144,7 +146,46 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         return ResultResponse.createBySuccess();
     }
 
+    /**
+     * 获取优惠券数量(商品/服务)
+     * @param userId
+     * @return
+     */
+    @Override
+    public int countByUserIdAndIsDeleteAndAndCpnType(Integer userId, Integer shopId,List<Integer> categoryIds,BigDecimal totalPrice) {
+        Integer count = 0;
+        //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
+        //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
+        List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String.valueOf(shopId), userId, 0, 0, Arrays.asList(1,2,3), Arrays.asList(1,3,4));
+        for (CpnUser cpnUser : cpnUserList) {
+            Integer userCount = this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
+            count = userCount;
+        };
+        Shop shop = shopMapper.selectByPrimaryKey(shopId);
+        //查询是否参加公益
+        if (shop.getIsJoinCommonWeal() == 1) {
+            int result = cpnUserRepository.countByUserIdAndIsDeleteAndCpnType(userId, 0, CouponConst.COMMON);
+            count = count + result;
+        }
+        return count;
+    }
 
+
+    /**
+     * 获取配送优惠券
+     * @param userId
+     * @param serviceType
+     * @return
+     */
+    public int getExpressCouponCount(Integer userId,Integer serviceType){
+        if (serviceType == 1){ //双程
+            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnTypeIn(userId, 0, Arrays.asList(6, 8, 10));
+            return count;
+        }else{
+            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnTypeIn(userId, 0, Arrays.asList(5, 7, 9));
+            return count;
+        }
+    }
     /**
      * 封装优惠券逻辑代码（商品和服务）
      * @param cpnUser
@@ -160,7 +201,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         }else if (cpnScopeType == EXPERT && cpnUser.getRuleType() == THRESHOLD){//全场通用（有门槛）
             //满减判断
             this.compare(cpnUser,totalPrice,cpnRule.getMinPrice());
-        }else if (cpnScopeType == LIMITED_GOODS && categoryId.contains("0")){//限制商品 categoryId包含0即可
+        }else if (cpnScopeType == LIMITED_GOODS && categoryId.contains("3")){//限制商品 categoryId包含3即可
             //无门槛
             if (cpnUser.getRuleType() == NO_THRESHOLD){
                 cpnUser.setEnabled(1);
@@ -168,7 +209,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 //满减判断
                 this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
             }
-        }else if (cpnScopeType == LIMITED_SERVICE && categoryId.contains("1")){//限制服务 categoryId包含1即可
+        }else if (cpnScopeType == LIMITED_SERVICE && !categoryId.contains("3")){//限制服务 categoryId不包含3即可
             //无门槛
             if (cpnUser.getRuleType() == NO_THRESHOLD){
                 cpnUser.setEnabled(1);
@@ -192,6 +233,58 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             cpnUser.setEnabled(1);
         }
         return cpnUser;
+    }
+
+
+    /**
+     * 计算满足条件的优惠券个数
+     * @param cpnUser
+     * @param totalPrice
+     * @param categoryId
+     * @return
+     */
+    protected Integer getCpnUserCount(CpnUser cpnUser, BigDecimal totalPrice, List<Integer> categoryId){
+        System.err.println(!categoryId.contains(3));
+        //获取使用范围
+        Integer cpnScopeType = cpnUser.getCpnScopeType();
+        //获取门槛规则，当前需要满足的条件
+        CpnThresholdRule cpnRule = thresholdRuleRepository.findByCpnId(cpnUser.getCpnId());
+        List<CpnUser> count = Lists.newArrayList();
+        if (cpnScopeType == EXPERT && cpnUser.getRuleType() == NO_THRESHOLD){//全场通用（无门槛）
+            cpnUser.setEnabled(1);
+            count.add(cpnUser);
+        }else if (cpnScopeType == EXPERT && cpnUser.getRuleType() == THRESHOLD){//全场通用（有门槛）
+            //满减判断
+            CpnUser compare = this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
+            if (compare.getEnabled() == 1){
+                count.add(compare);
+            }
+        }else if (cpnScopeType == LIMITED_GOODS && categoryId.contains(3)){//限制商品 categoryId包含3即可
+            //无门槛
+            if (cpnUser.getRuleType() == NO_THRESHOLD){
+                cpnUser.setEnabled(1);
+                count.add(cpnUser);
+            }else {//有门槛
+                //满减判断
+                CpnUser compare = this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
+                if (compare.getEnabled() == 1){
+                    count.add(compare);
+                }
+            }
+        }else if (cpnScopeType == LIMITED_SERVICE && !categoryId.contains(3)){//限制服务 categoryId不包含3即可
+            //无门槛
+            if (cpnUser.getRuleType() == NO_THRESHOLD){
+                cpnUser.setEnabled(1);
+                count.add(cpnUser);
+            }else {//有门槛
+                //满减判断
+                CpnUser compare = this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
+                if (compare.getEnabled() == 1){
+                    count.add(compare);
+                }
+            }
+        }
+        return count.size();
     }
 
 }

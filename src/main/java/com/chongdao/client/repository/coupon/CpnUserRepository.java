@@ -32,6 +32,16 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
                                                                   Integer cpnState,Integer isDelete,List<Integer> cpnType,List<Integer> scopeTypes);
 
 
+    /***
+     * 获取优惠券数量
+     * @param userId
+     * @param delete
+     * @param cpnType
+     * @return
+     */
+    int countByUserIdAndIsDeleteAndCpnType(Integer userId, Integer delete,Integer cpnType);
+
+    int countByUserIdAndIsDeleteAndCpnTypeIn(Integer userId, Integer delete,List<Integer> cpnTypes);
 
 
 

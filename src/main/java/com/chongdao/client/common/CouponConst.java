@@ -14,6 +14,7 @@ public class CouponConst {
     public static final Integer FULL_REDUCTION = 2;     //满减券
     public static final Integer DISCOUNT = 3;      //折扣
     public static final Integer SHOP_FULL_REDUCTION = 4; //店铺满减
+    public static final Integer COMMON = 5; //公益
 
 
     /**

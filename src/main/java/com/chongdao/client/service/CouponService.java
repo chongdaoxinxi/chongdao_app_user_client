@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 优惠券功能接口
@@ -28,6 +29,13 @@ public interface CouponService {
      * @return
      */
     ResultResponse receiveCoupon(Integer userId, CouponInfo couponInfo);
+
+    /**
+     * 获取优惠券数量
+     * @param userId
+     * @return
+     */
+    int countByUserIdAndIsDeleteAndAndCpnType(Integer userId, Integer shopId, List<Integer> categoryIds, BigDecimal totalPrice);
 
 
 

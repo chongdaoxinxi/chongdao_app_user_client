@@ -39,7 +39,7 @@ public class CouponInfo {
 
     private BigDecimal cpnValue; //优惠券面值：面值 XX元/满XX元/XX折
 
-    private Integer cpnType; //优惠券类型 1现金券 2满减券 3折扣券
+    private Integer cpnType; //优惠券类型 1现金券 2满减券 3折扣券 4 店铺满减 5 公益券
 
     private Integer cpnState = 0; //状态  -1 已作废 0待发布 1已发布 2已下架
 

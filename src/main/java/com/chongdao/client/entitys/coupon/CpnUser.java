@@ -35,7 +35,7 @@ public class CpnUser {
 
     private String cpnBatchId;           //优惠券批次ID
 
-    private Integer cpnType;             //优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
+    private Integer cpnType;             //优惠券类型 1现金券 2满减券 3折扣券 4店铺满减 5 公益券
 
     private BigDecimal cpnValue;         //面值 XX元/满XX元/XX折
 

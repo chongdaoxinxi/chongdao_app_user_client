@@ -39,7 +39,7 @@ public class CpnSuperpositionRule {
 
     private Integer cpnId;          //优惠券ID
 
-    private Integer spnCpnType;     //可叠加优惠券类型：1现金券(红包) 2满减券 3折扣券 ->(主表 cpn_type类型一致)
+    private Integer spnCpnType;     //可叠加优惠券类型：1现金券(红包) 2满减券 3折扣券 4店铺满减 ->(主表 cpn_type类型一致)
 
     private Integer spnCount;       //可叠加次数 >0
 

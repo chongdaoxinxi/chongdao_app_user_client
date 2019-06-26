@@ -18,7 +18,8 @@ public class OrderController {
 
     /**
      * 预下单/提交订单
-     * @param orderType 1代表预下单 2代表下单
+     *  orderType 1代表预下单 2代表下单
+     *  serviceType 服务类型 1.双程 2.单程 3.到店自取
      * @return
      */
     @PostMapping("preOrCreateOrder")

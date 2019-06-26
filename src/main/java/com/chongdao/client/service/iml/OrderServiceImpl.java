@@ -4,13 +4,16 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
-import com.chongdao.client.enums.*;
+import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.enums.GoodsStatusEnum;
+import com.chongdao.client.enums.OrderStatusEnum;
+import com.chongdao.client.enums.PaymentTypeEnum;
+import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
-import com.chongdao.client.vo.CouponVO;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderGoodsVo;
 import com.chongdao.client.vo.OrderVo;
@@ -20,6 +23,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,18 +34,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static com.chongdao.client.common.Const.DUAL;
-import static com.chongdao.client.enums.CouponStatusEnum.COUPON_FULL_AC;
-
 @Slf4j
 @Service
 public class OrderServiceImpl extends CommonRepository implements OrderService{
+
+    @Autowired
+    private CouponServiceImpl couponService;
+
 
     /**
      * 预下单
      *
      * @param userId
-     * @param orderType 1代表预下单 2代表下单 3拼单
+     * orderType 1代表预下单 2代表下单 3拼单
+     * serviceType 服务类型 1.双程 2.单程 3.到店自取
      * @return
      */
     @Override
@@ -60,6 +66,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if (address != null){
             orderVo.setUserAddress(address);
         }
+        List<Integer> categoryIds = Lists.newArrayList();
         Double count = 1.0D;
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
@@ -70,6 +77,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
             orderVo.setShopName(shop.getShopName());
             if (good != null) {
+                categoryIds.add(good.getCategoryId());
                 orderVo.setGoodsName(good.getName());
                 orderVo.setGoodsPrice(good.getPrice());
                 //用户购买的商品数量
@@ -85,39 +93,24 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     //计算总价（无打折）
                     orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
-                //查询该商品是否存在优惠券
-                if (good.getCouponId() != null){
-                    //查询符合当前用户的优惠券个数
-                    int result = cpnUserRepository.countByUserIdAndCpnIdAndShopId(userId, good.getCouponId(), String.valueOf(shop.getId()));
-                    //查询属于用户优惠券并且该商品符合优惠
-                   // List<CpnUser> cpnUser = cpnUserRepository.findAllByUserIdAndCpnIdAndShopId(userId, good.getCouponId(), String.valueOf(shop.getId()));
-
-                }
             }
             orderVo.setAreaCode(shop.getAreaCode());
             orderVo.setUserId(userId);
             orderVo.setShopId(shop.getId());
-            //获取符合当前条件商品的满减
-//            List<CouponVO> couponVOList = this.getCouponVo(shop.getId(), cartTotalPrice);
-//            orderVo.setCouponList(couponVOList);
-//            BigDecimal decreasePrice = BigDecimal.ZERO;
-//            if (!CollectionUtils.isEmpty(couponVOList)) {
-//                decreasePrice = couponVOList.get(0).getDecreasePrice();
-//            }
             //总价
-            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(new BigDecimal(0));
+            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity());
             if (orderCommonVO.getCouponId() != null) {
-                //TODO 计算使用商品优惠券后的价格
-
-            }
-            if (orderCommonVO.getCardId() != null) {
-                //TODO 计算使用配送优惠券后的价格
+                //计算使用商品优惠券后的价格
+                CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).get();
+                if (couponInfo != null){
+                    cartTotalPrice.subtract(couponInfo.getCpnValue());
+                }
             }
         }
         //配送优惠券数量 0:双程 1:单程（商品默认为单程）
-        orderVo.setServiceCouponCount(this.getServiceCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
+        orderVo.setServiceCouponCount(couponService.getExpressCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
         //商品优惠券数量
-       // orderVo.setGoodsCouponCount(this.getCouponCount(orderVo.getUserId(), orderVo.getShopId()));
+        orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(orderVo.getUserId(), orderVo.getShopId(),categoryIds,cartTotalPrice));
         orderVo.setTotalPrice(cartTotalPrice);
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
@@ -131,6 +124,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
 
     }
+
+
 
     /**
      * 根据type 获取订单列表
@@ -396,25 +391,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
     }
 
-    /**
-     * 封装符合当前商品满减活动
-     *
-     * @param shopId
-     * @param cartTotalPrice
-     * @return
-     */
-    private List<CouponVO> getCouponVo(Integer shopId, BigDecimal cartTotalPrice) {
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(shopId, CouponStatusEnum.UP_COUPON.getStatus(), COUPON_FULL_AC.getStatus());
-        List<CouponVO> couponVOList = Lists.newArrayList();
-        CouponVO couponVO = new CouponVO();
-        couponList.forEach(coupon -> {
-            if (cartTotalPrice.compareTo(coupon.getFullPrice()) == 1) {
-                BeanUtils.copyProperties(coupon, couponVO);
-                couponVOList.add(couponVO);
-            }
-        });
-        return couponVOList;
-    }
+
 
 
     /**
@@ -432,64 +409,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         return servicePrice;
     }
 
-    /**
-     * 获取所有商品优惠券数量包含官方
-     *
-     * @param userId
-     * @param shopId
-     * @return
-     */
-    private Integer getCouponCount(Integer userId, Integer shopId) {
-        Integer count = 0;
-        //官方免费洗等优惠券数量 + 商家优惠券数量
-        count = couponRepository.findByCouponCount(userId, shopId) + getGoodsCouponCount(userId);
-        Shop shop = shopMapper.selectByPrimaryKey(shopId);
-        //查询是否参加公益
-        if (shop.getIsJoinCommonWeal() == 1) {
-            count = count + getCommonShopCount(userId);
-        }
-        return count;
-    }
 
-    /**
-     * 获取配送券数量(官方)
-     *
-     * @param userId
-     * @param param  双程：0，单程，1
-     * @return
-     */
-    private Integer getServiceCouponCount(Integer userId, Integer param) {
-        Integer count = 0;
-        if (param == DUAL) {
-            //双程数量
-            count = cardUserRepository.findByUserIdAndRoundTrip(userId);
-        } else {
-            count = cardUserRepository.findByUserIdAndSingleTrip(userId);
-        }
-        return count;
-    }
 
-    /**
-     * 获取商品优惠券数量(官方)包含免费洗等不含公益
-     *
-     * @param userId
-     * @return
-     */
-    private Integer getGoodsCouponCount(Integer userId) {
-        Integer count = cardUserRepository.findByUserIdAndShopIdsIsNull(userId);
-        return count == null ? 0 : count;
-    }
 
-    /**
-     * 获取公益优惠券数量
-     *
-     * @param userId
-     * @return
-     */
-    private Integer getCommonShopCount(Integer userId) {
-        Integer count = cardUserRepository.findByUserIdCommon(userId);
-        return count == null ? 0 : count;
-    }
 
 
 ////////////////////////////////////////////////商家端获取订单////////////////////////////////////////////////////////////////////
