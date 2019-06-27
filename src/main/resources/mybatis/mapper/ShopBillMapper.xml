@@ -25,6 +25,7 @@
         select
         <include refid="Base_Column_List"/>
         from shop_bill sb left join shop s on sb.shop_id = s.id
-        where sb.createDate &gt; #{startDate} and sb.createDate &lt; #{endDate} and s.area_code = #{areaCode} and s.shop_name like concat('%',#{shopName},'%')
+        where sb.createDate &gt; #{startDate} and sb.createDate &lt; #{endDate} and s.area_code = #{areaCode} and
+        s.shop_name like concat('%',#{shopName},'%')
     </select>
 </mapper>
