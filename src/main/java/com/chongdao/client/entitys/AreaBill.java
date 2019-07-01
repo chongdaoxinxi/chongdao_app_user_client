@@ -33,5 +33,6 @@ public class AreaBill implements Serializable {
     private BigDecimal price;
     private String note;
     private Integer type;//1:客户订单, 2:订单退款, 3:我的提现
+    private String areaCode;
     private Date createTime;
 }

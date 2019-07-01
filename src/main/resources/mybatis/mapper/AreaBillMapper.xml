@@ -9,10 +9,17 @@
             <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="note" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="type" jdbcType="TINYINT" javaType="java.lang.Integer"/>
+            <arg column="area_code" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
         ab.id, ab.shop_id, ab.order_id, ab.price, ab.note, ab.type, ab.create_time
     </sql>
+    <select id="getAreaBillByAreaCode" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from area_bill ab
+        where ab.area_code = #{areaCode} and ab.create_time &gt; #{createDate} and ab.create_time &lt; #{endDate}
+    </select>
 </mapper>

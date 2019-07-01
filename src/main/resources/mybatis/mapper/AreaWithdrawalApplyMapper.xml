@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.AreaWithdrawalApplyMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.AreaWithdrawalApply">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="management_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="apply_money" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="apply_note" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="check_note" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="check_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="real_money" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="areaName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        awa.id, awa.management_id, awa.apply_money, awa.apply_note, awa.check_note, awa.check_time, awa.real_money, awa.status, awa.create_time, awa.areaName
+    </sql>
+    <select id="getAreaWithdrawApplyList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from area_withdrawal_apply awa
+        where awa.management_id = #{managementId} and awa.create_time &gt; #{createDate} and awa.create_time &lt; #{endDate}
+    </select>
+</mapper>
