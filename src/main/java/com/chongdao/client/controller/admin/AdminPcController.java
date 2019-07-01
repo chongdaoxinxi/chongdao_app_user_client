@@ -37,6 +37,7 @@ public class AdminPcController {
 
     /**
      * 确认退款完成
+     *
      * @param token
      * @param orderId
      * @return
@@ -45,7 +46,7 @@ public class AdminPcController {
     public ResultResponse confirmRefund(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals("ADMIN_PC")) {
             return orderService.adminConfirmRefund(orderId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -54,6 +55,7 @@ public class AdminPcController {
 
     /**
      * 获取退款记录
+     *
      * @param token
      * @param orderId
      * @return
@@ -62,7 +64,7 @@ public class AdminPcController {
     public ResultResponse getRefundData(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null) {
+        if (role != null) {
             return orderService.getRefundData(orderId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -73,7 +75,7 @@ public class AdminPcController {
     public ResultResponse getWithdrawalList(String token, String shopName, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals("ADMIN_PC")) {
             return shopApplyService.getShopApplyList(shopName, pageNum, pageSize);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -82,6 +84,7 @@ public class AdminPcController {
 
     /**
      * 同意提现
+     *
      * @param token
      * @param shopApplyId
      * @param money
@@ -92,7 +95,7 @@ public class AdminPcController {
     public ResultResponse acceptWithdrawal(String token, Integer shopApplyId, BigDecimal money, String checkNote) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals("ADMIN_PC")) {
             return shopApplyService.acceptShopApplyRecord(shopApplyId, money, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -101,6 +104,7 @@ public class AdminPcController {
 
     /**
      * 拒绝提现
+     *
      * @param token
      * @param shopApplyId
      * @param checkNote
@@ -110,7 +114,7 @@ public class AdminPcController {
     public ResultResponse refuseWithdrawal(String token, Integer shopApplyId, String checkNote) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals("ADMIN_PC")) {
             return shopApplyService.refuseShopApplyRecord(shopApplyId, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -119,6 +123,7 @@ public class AdminPcController {
 
     /**
      * 获取商店详细数据
+     *
      * @param token
      * @param shopId
      * @return
@@ -127,7 +132,7 @@ public class AdminPcController {
     public ResultResponse getShopInfo(String token, Integer shopId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals("ADMIN_PC")) {
             return shopManageService.getShopInfo(shopId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -136,6 +141,7 @@ public class AdminPcController {
 
     /**
      * 获取地区商店列表
+     *
      * @param token
      * @param shopName
      * @param pageNum
@@ -146,7 +152,7 @@ public class AdminPcController {
     public ResultResponse getShopDataList(String token, String shopName, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals("ADMIN_PC")) {
             return shopService.getShopDataList(tokenVo.getUserId(), shopName, pageNum, pageSize);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -155,6 +161,7 @@ public class AdminPcController {
 
     /**
      * 获取一级市
+     *
      * @param token
      * @param level
      * @param isOpen
@@ -167,6 +174,7 @@ public class AdminPcController {
 
     /**
      * 根据父id, 级联获取下级地区
+     *
      * @param token
      * @param level
      * @param isOpen
@@ -180,6 +188,7 @@ public class AdminPcController {
 
     /**
      * 获取商家的流水记录
+     *
      * @param token
      * @param startDate
      * @param endDate
@@ -188,13 +197,14 @@ public class AdminPcController {
      * @return
      */
     @GetMapping("getShopBillByShopId")
-    public ResultResponse getShopBillByShopId(String token, Date startDate, Date endDate, Integer pageNum, Integer pageIndex){
+    public ResultResponse getShopBillByShopId(String token, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageNum, pageIndex);
     }
 
     /**
      * 获取区域内商家的所有流水记录
+     *
      * @param token
      * @param shopName
      * @param startDate
@@ -211,6 +221,7 @@ public class AdminPcController {
 
     /**
      * 获取地区账户流水记录
+     *
      * @param token
      * @param shopName
      * @param startDate
@@ -224,5 +235,23 @@ public class AdminPcController {
 //        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
 //        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageIndex);
         return null;
+    }
+
+    /**
+     * 获取使用过优惠券的订单
+     *
+     * @param token
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("getOnSaleOrderListData")
+    public ResultResponse getOnSaleOrderListData(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+        return orderService.getOnSaleOrderListData(token, orderNo, username, phone, startDate, endDate, pageNum, pageIndex);
     }
 }

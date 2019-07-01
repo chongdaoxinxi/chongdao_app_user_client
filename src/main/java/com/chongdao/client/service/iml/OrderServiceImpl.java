@@ -14,9 +14,11 @@ import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
+import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderGoodsVo;
 import com.chongdao.client.vo.OrderVo;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -776,5 +778,67 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Override
     public ResultResponse getRefundData(Integer orderId) {
         return orderRefundService.getRefundData(orderId);
+    }
+
+    /**
+     * 获取使用过优惠券的订单
+     * @param token
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    @Override
+    public ResultResponse getOnSaleOrderListData(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if(StringUtils.isNotBlank(role)) {
+            Integer userId = tokenVo.getUserId();
+            if(role.equals("ADMIN_PC")) {
+                Management management = managementRepository.findById(userId).orElse(null);
+                if(management != null) {
+                    return getOnSaleOrderListDataAdmin(management.getAreaCode(), orderNo, username, phone, startDate, endDate, pageNum, pageIndex);
+                }
+            } else if(role.equals("SHOP_PC")) {
+                getOnSaleOrderListDataShop(userId, orderNo, username, phone, startDate, endDate, pageNum, pageIndex);
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+    }
+
+    /**
+     * 获取使用过优惠券的订单(管理员)
+     * @param areaCode
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    private ResultResponse getOnSaleOrderListDataAdmin(String areaCode, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+        return null;
+    }
+
+    /**
+     * 获取使用过优惠券的订单(商店)
+     * @param shopId
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageIndex
+     * @return
+     */
+    private ResultResponse getOnSaleOrderListDataShop(Integer shopId, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+        return null;
     }
 }

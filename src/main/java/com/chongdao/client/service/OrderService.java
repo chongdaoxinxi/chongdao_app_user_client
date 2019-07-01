@@ -5,6 +5,8 @@ import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageInfo;
 
+import java.util.Date;
+
 ;
 
 public interface OrderService {
@@ -81,4 +83,7 @@ public interface OrderService {
     ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize);
 
     ResultResponse getRefundData(Integer orderId);
+
+    ResultResponse getOnSaleOrderListData(String areaCode, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex);
+
 }
