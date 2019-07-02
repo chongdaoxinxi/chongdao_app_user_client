@@ -11,6 +11,7 @@
     <groupId>com.chongdao.client</groupId>
     <artifactId>chongdao_app_user_client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>chongdao_app_user_client</name>
     <description>chongdao_app_user_client</description>
 
@@ -73,10 +74,11 @@
 
 
         <!-- 分页插件 -->
+        <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-            <version>4.1.0</version>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.10</version>
         </dependency>
 
         <dependency>
