@@ -108,7 +108,6 @@ public class GoodsServiceImpl implements GoodsService {
                 orderBy,StringUtils.isBlank(categoryId) ? null : categoryId,
                 discount,StringUtils.isBlank(proActivities) ? null: proActivities);
         PageInfo pageInfo = new PageInfo(goodList);
-        pageInfo.setOrderBy(orderBy);
         pageInfo.setList(this.goodsListVOList(goodList));
         return ResultResponse.createBySuccess(pageInfo);
     }

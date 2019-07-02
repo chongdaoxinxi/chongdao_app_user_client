@@ -24,12 +24,13 @@ public class ShopController {
      */
     @GetMapping("list")
     public ResultResponse<PageInfo> list(@RequestParam(value = "categoryId",required = false) String categoryId,
+                                         @RequestParam(value = "userId",required = false) Integer userId,
                                           @RequestParam(value = "proActivities",required = false) String  proActivities,
                                           @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy,
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
 
-        return shopService.list(categoryId,proActivities,orderBy,pageNum,pageSize);
+        return shopService.list(userId,categoryId,proActivities,orderBy,pageNum,pageSize);
 
     }
 
