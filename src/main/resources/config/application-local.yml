@@ -1,0 +1,42 @@
+server:
+   port: 8086
+   servlet:
+      context-path: /app_client
+#数据库链接
+spring:
+   datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull
+      username: pet
+      password: ABcd12#$
+      #hikari数据源配置，
+      hikari:
+         connection-test-query: SELECT 1
+         connection-timeout: 30000
+         maximum-pool-size: 30
+         max-lifetime: 600000
+         minimum-idle: 5
+   jpa:
+      hibernate:
+         ddl-auto: none
+      show-sql: true   #是否输出sql
+      properties:
+         hibernate:
+            format_sql: true
+   #为null的字段不需要传给前端
+   jackson:
+      default-property-inclusion: non_null
+
+#mybatis
+mybatis:
+   mapper-locations: classpath*:mybatis/mapper/*.xml
+   type-aliases-package: com.chongdao.client.entitys
+   configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#日志
+logging:
+   pattern:
+      console: "%d - %msg%n"
+#  path: /var/log/
+#  file: /var/log/tomcat/app_client.log
