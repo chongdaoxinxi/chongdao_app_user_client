@@ -19,6 +19,9 @@ public class CommonRepository {
     protected GoodMapper goodMapper;
 
     @Autowired
+    protected CartRepository cartRepository;
+
+    @Autowired
     protected ShopMapper shopMapper;
 
     @Autowired

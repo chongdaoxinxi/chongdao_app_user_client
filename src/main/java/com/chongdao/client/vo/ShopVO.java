@@ -60,4 +60,10 @@ public class ShopVO {
     private BigDecimal discountPrice;
 
     private Integer sales;
+
+
+    //购物车中选中商品或者服务数目
+    private Integer checkedCount;
+
+    private Integer userId;
 }

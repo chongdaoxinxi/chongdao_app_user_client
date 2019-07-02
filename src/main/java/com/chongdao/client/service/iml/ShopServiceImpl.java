@@ -1,6 +1,7 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> list(String categoryId, String  proActivities, String orderBy ,int pageNum, int pageSize) {
+    public ResultResponse<PageInfo> list(Integer userId,String categoryId, String  proActivities, String orderBy ,int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         //排序规则
         if (StringUtils.isNotBlank(orderBy)){
@@ -77,7 +77,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 orderBy,StringUtils.isBlank(categoryId) ? null : categoryId,
                 discount,StringUtils.isBlank(proActivities) ? null: proActivities);
         PageInfo pageInfo = new PageInfo(shopList);
-        pageInfo.setList(shopListVOList(shopList));
+        pageInfo.setList(shopListVOList(shopList,userId));
         return ResultResponse.createBySuccess(pageInfo);
     }
 
@@ -90,7 +90,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 PageHelper.startPage(pageNum,pageSize);
                 List<Shop> shops = shopMapper.selectByAreaCodeAndShopName(areaCode, shopName);
                 PageInfo pageInfo = new PageInfo(shops);
-                pageInfo.setList(shopListVOList(shops));
+                pageInfo.setList(shopListVOList(shops,null));
                 return ResultResponse.createBySuccess(pageInfo);
             }
         }
@@ -250,24 +250,16 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @param shopList
      * @return
      */
-    private List<ShopVO> shopListVOList(List<Shop> shopList){
+    private List<ShopVO> shopListVOList(List<Shop> shopList,Integer userId){
         List<ShopVO> shopVOList = Lists.newArrayList();
-        List<Integer> shopIdList = new ArrayList<>();
-        List<String> stringList = new ArrayList<>();
         shopList.forEach(shop -> {
             ShopVO shopVO = new ShopVO();
             BeanUtils.copyProperties(shop,shopVO);
-            shopIdList.add(shopVO.getId());
-            stringList.add(String.valueOf(shopVO.getId()));
-//            //查询商品
-//            List<Good> goodList = goodsRepository.findAllByShopIdIn(shopIdList);
-//            for (Good good : goodList) {
-//                //折扣大于0时，才会显示折扣价
-//                if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
-//                    shopVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
-//                    shopVO.setDiscount(good.getDiscount());
-//                }
-//            }
+            //查询用户购物车数目
+            if (userId != null){
+                int count = cartRepository.countByUserIdAndShopIdAndChecked(userId, shop.getId(), Integer.valueOf(Const.Cart.CHECKED));
+                shopVO.setCheckedCount(count);
+            }
             //封装优惠券
             List<CouponInfo> couponList = couponInfoRepository.findByShopIdInAndCpnState(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus());
             shopVO.setCouponInfoList(couponList);
