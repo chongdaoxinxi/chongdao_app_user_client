@@ -3,14 +3,13 @@ package com.chongdao.client.controller.shop;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.service.CategoryService;
-import com.chongdao.client.service.GoodsTypeService;
-import com.chongdao.client.service.ModuleService;
-import com.chongdao.client.service.UnitService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * @Description 商家PC端
@@ -29,6 +28,8 @@ public class ShopPcController {
     private GoodsTypeService goodsTypeService;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private ShopBillService shopBillService;
 
     @GetMapping("getModuleData")
     public ResultResponse getModuleData(String token){
@@ -85,5 +86,32 @@ public class ShopPcController {
     @GetMapping("getSelectGoodsTypeSpecialConfig")
     public ResultResponse getSelectGoodsTypeSpecialConfig(Integer moduleId, Integer categoryId, Integer goodsTypeId) {
         return goodsTypeService.getSelectGoodsTypeSpecialConfig(moduleId, categoryId, goodsTypeId);
+    }
+
+    /**
+     * 获取商店的流水记录
+     * @param token
+     * @param startDate
+     * @param endDate
+     * @param pageIndex
+     * @param pageNum
+     * @return
+     */
+    public ResultResponse getShopBillListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageIndex, pageNum);
+    }
+
+    /**
+     * 获取商店提现记录
+     * @param token
+     * @param startDate
+     * @param endDate
+     * @param pageIndex
+     * @param pageNum
+     * @return
+     */
+    public ResultResponse getShopApplyListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
+        return null;
     }
 }

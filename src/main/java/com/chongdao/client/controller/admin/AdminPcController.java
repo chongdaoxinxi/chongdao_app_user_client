@@ -237,6 +237,10 @@ public class AdminPcController {
         return null;
     }
 
+    public ResultResponse getAreaWithdrawApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+        return null;
+    }
+
     /**
      * 获取使用过优惠券的订单
      *
