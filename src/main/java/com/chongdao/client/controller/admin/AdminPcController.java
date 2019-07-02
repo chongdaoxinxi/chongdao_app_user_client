@@ -72,11 +72,11 @@ public class AdminPcController {
     }
 
     @GetMapping("getWithdrawalList")
-    public ResultResponse getWithdrawalList(String token, String shopName, Integer pageNum, Integer pageSize) {
+    public ResultResponse getWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if (role != null && role.equals("ADMIN_PC")) {
-            return shopApplyService.getShopApplyList(shopName, pageNum, pageSize);
+            return shopApplyService.getShopApplyList(null, shopName, startDate, endDate, pageNum, pageSize);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }

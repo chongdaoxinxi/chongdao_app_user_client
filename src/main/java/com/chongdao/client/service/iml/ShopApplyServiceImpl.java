@@ -104,8 +104,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     }
 
     @Override
-    public ResultResponse getShopApplyList(String shopName, Integer pageNum, Integer pageSize) {
+    public ResultResponse getShopApplyList(Integer shopId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        return ResultResponse.createBySuccess(new PageInfo(shopApplyMapper.getShopAppliesByShopName(shopName)));
+        return ResultResponse.createBySuccess(new PageInfo(shopApplyMapper.getShopApplyListPc(shopId, shopName, startDate, endDate)));
     }
 }

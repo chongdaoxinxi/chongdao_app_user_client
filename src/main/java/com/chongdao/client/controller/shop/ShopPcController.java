@@ -30,6 +30,8 @@ public class ShopPcController {
     private UnitService unitService;
     @Autowired
     private ShopBillService shopBillService;
+    @Autowired
+    private ShopApplyService shopApplyService;
 
     @GetMapping("getModuleData")
     public ResultResponse getModuleData(String token){
@@ -97,6 +99,7 @@ public class ShopPcController {
      * @param pageNum
      * @return
      */
+    @GetMapping("getShopBillListData")
     public ResultResponse getShopBillListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageIndex, pageNum);
@@ -111,7 +114,9 @@ public class ShopPcController {
      * @param pageNum
      * @return
      */
+    @GetMapping("getShopApplyListData")
     public ResultResponse getShopApplyListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, startDate, endDate, pageIndex, pageNum);
     }
 }
