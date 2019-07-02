@@ -1,3 +1,4 @@
+#创蓝短信服务
 sms:
   url: http://smssh1.253.com/msg/variable/json
   account: N2434702
@@ -9,11 +10,13 @@ sms:
 ## 用户下单
   NewOrderUser: 【养宠有道】您已下单成功，订单：{$var} 正在等待商家确认
   NewOrderShop: 【养宠有道】您有新订单了，请接单, 订单号：{$var}
+
 ## 商家接单
   OrderAutoAcceptShop: 【养宠有道】您的订单：{$var} 已被自动确认，请进入商家管理平台查看详情并及时安排服务时间
   OrderAcceptUser: 【养宠有道】您的订单：{$var}商家已确认，即将安排配送员配送，请耐心等待
   OrderAcceptShop: 【养宠有道】订单：{$var}接单成功，即将安排配送员配送，请耐心等待
   NewOrderExpress: 【养宠有道】有新订单了，请接单, 订单号：{$var}，店铺名：{$var}
+
 ## 商家超时未接
   OrderTimeOutNotAcceptUser: 【养宠有道】订单号：{$var}, 商家：{$var} 超时未接单, 您可以选择联系商家后继续等待或重新选择店铺下单。
   OrderTimeoutNotAcceptShop: 【养宠有道】您的订单：{$var} 由于超时未接单，已被退回，请进入商家管理平台查看详情，及时联系客户。
@@ -22,29 +25,29 @@ sms:
 ## 配送员接单
   OrderAssignedExpress: 【养宠有道】您已拿到新的订单, 订单号：{$var}
   OrderAssignedUser: 【养宠有道】您的订单：{$var}配送员已经出发，请耐心等待
-## 配送员到店
+
+  ## 配送员到店
   ## 单程(订单完成)
-    ## 商品
-    OrderGoodsServedUser: 【养宠有道】您购买的商品已送达, 欢迎下次惠顾, 订单号：{$var}
-    ## 服务(有狗, 店->家)
-    OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 欢迎下次惠顾, 订单号：{$var}
-    ## 服务(有狗, 家->店)
-    OrderPetsServedUser: 【养宠有道】您的爱宠已安全送达商家, 欢迎下次惠顾, 订单号：{$var}
+  ## 商品
+  OrderGoodsServedUser: 【养宠有道】您购买的商品已送达, 欢迎下次惠顾, 订单号：{$var}
+  ## 服务(有狗, 店->家)
+  OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 欢迎下次惠顾, 订单号：{$var}
+  ## 服务(有狗, 家->店)
+  OrderPetsServedUser: 【养宠有道】您的爱宠已安全送达商家, 欢迎下次惠顾, 订单号：{$var}
   ## 双程
   OrderPetArrivedShop: 【养宠有道】您服务的宠物已到店, 请准备服务, 订单号：{$var}
-## 商家服务完成(双程)
-    OrderShopServiceCompleteUser: 【养宠有道】商家{$var}完成服务，等待接回，订单号：{$var}
-    OrderShopServiceCompleteExpress: 【养宠有道】店铺服务已结束, 宠物可以开始送回, 订单号：{$var}, 店铺名：{$var}
-## 配送员开始送回
-    OrderPickUpPetsUser: 【养宠有道】您的爱宠正在由配送员送回途中，请耐心等待，订单号：{$var}
-## 订单完成
-#    OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 订单号：{$var}
+  ## 商家服务完成(双程)
+  OrderShopServiceCompleteUser: 【养宠有道】商家{$var}完成服务，等待接回，订单号：{$var}
+  OrderShopServiceCompleteExpress: 【养宠有道】店铺服务已结束, 宠物可以开始送回, 订单号：{$var}, 店铺名：{$var}
+  ## 配送员开始送回
+  OrderPickUpPetsUser: 【养宠有道】您的爱宠正在由配送员送回途中，请耐心等待，订单号：{$var}
 
-## 单程(店->家服务, 配送员拿到商品/服务完成后, 开始配送的短信通知)
-    SingleTripGoodServiceStartUser: 【养宠有道】您的商品已经取到, 正在由配送员配送中，请耐心等待，订单号：{$var}
-    SingleTripPetServiceStartUser: 【养宠有道】您的爱宠已经接到, 正在由配送员送回途中，请耐心等待，订单号：{$var}
+  ## 订单完成
+  ## 单程(店->家服务, 配送员拿到商品/服务完成后, 开始配送的短信通知)
+  SingleTripGoodServiceStartUser: 【养宠有道】您的商品已经取到, 正在由配送员配送中，请耐心等待，订单号：{$var}
+  SingleTripPetServiceStartUser: 【养宠有道】您的爱宠已经接到, 正在由配送员送回途中，请耐心等待，订单号：{$var}
 
-## 退款
+  ## 退款
   OrderUserRefundUser: 【养宠有道】客户要求退款，订单号：{$var}, 店铺名：{$var}
   OrderUserRefundShop: 【养宠有道】客户要求退款，订单号：{$var}
   OrderUserRefundExpress: 【养宠有道】您的已接订单{$var}由于客户退单, 该订单已取消，无需服务
@@ -59,8 +62,8 @@ sms:
   UserTopUpUser: 【养宠有道】您的充值已处理, 订单号：{$var}, 充值金额：{$var}, 余额：{$var}
   UserTopUpAdmin:  【养宠有道】订单号：{$var}, 用户ID：{$var}, 用户姓名：{$var}, 充值金额：{$var}, 余额：{$var}
 
- ShopNewAdtOrder: 【养宠有道】追加订单已下单成功, 订单号：{$var}, 追加订单号：{$var}
- UserNewAdtOrder: 【养宠有道】您的订单追加订单已下单成功，订单号：{$var}, 追加订单号：{$var}
- UserAcceptAdtOrder: 【养宠有道】您的追加订单商家已接受，订单号：{$var}, 追加订单号：{$var}
- UserRefuseAdtOrder: 【养宠有道】您的追加订单商家已拒绝，订单号：{$var}, 追加订单号：{$var}
- UserRefundAdtOrder: 【养宠有道】您的追加订单退款已处理，订单号：{$var}, 追加订单号：{$var}
+  ShopNewAdtOrder: 【养宠有道】追加订单已下单成功, 订单号：{$var}, 追加订单号：{$var}
+  UserNewAdtOrder: 【养宠有道】您的订单追加订单已下单成功，订单号：{$var}, 追加订单号：{$var}
+  UserAcceptAdtOrder: 【养宠有道】您的追加订单商家已接受，订单号：{$var}, 追加订单号：{$var}
+  UserRefuseAdtOrder: 【养宠有道】您的追加订单商家已拒绝，订单号：{$var}, 追加订单号：{$var}
+  UserRefundAdtOrder: 【养宠有道】您的追加订单退款已处理，订单号：{$var}, 追加订单号：{$var}

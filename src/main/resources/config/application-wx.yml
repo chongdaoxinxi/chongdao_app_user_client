@@ -1,0 +1,11 @@
+#微信配置
+wxconfig:
+   xcxAppid: wx601e284d89b5ad6b
+   mchId: 1513194061
+   notifyUrl: https://www.chongdaopet.com/weixin/pay
+   payUrl: https://api.mch.weixin.qq.com/pay/unifiedorder
+   apiUrl: https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code
+   secret: 95bc30c8e25484485b53b998bace1d1c
+   apiKey : 95bc30c8e25484485b53b998bace1d1c
+   gzhAppId: wxd69bd4ce033aca70
+   gzhSecret: 437dd549567811195afa051d3f49327a
