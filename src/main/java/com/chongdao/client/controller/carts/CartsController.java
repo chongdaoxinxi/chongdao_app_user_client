@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/cart/")
 @Slf4j
+@CrossOrigin
 public class CartsController {
 
     @Autowired

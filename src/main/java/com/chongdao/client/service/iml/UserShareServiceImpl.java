@@ -50,21 +50,21 @@ public class UserShareServiceImpl implements UserShareService {
             UserShare us = userShareRepository.findByUserId(userId);
             Map<String, Object> resp = new HashMap<>();
             if(us != null) {
-                Integer maxMun = us.getMaxMun();
-                us.setMaxMun(maxMun++);
+                Integer maxMun = us.getMaxNum();
+                us.setMaxNum(maxMun++);
                 us.setUpdateTime(new Date());
                 resp.put("is_full", true);
             } else {
                 us = new UserShare();
                 us.setUserId(userId);
-                us.setMaxMun(1);
+                us.setMaxNum(1);
                 // 这里的逻辑是什么
 //                us.setCardId();
 //                us.setCouponId();
                 us.setCreateTime(new Date());
                 resp.put("is_full", false);
             }
-                resp.put("times", us.getMaxMun());
+                resp.put("times", us.getMaxNum());
             userShareRepository.saveAndFlush(us);
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), resp);
         } else {

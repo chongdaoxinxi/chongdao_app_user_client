@@ -109,7 +109,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 }
             }
         }
-        //配送优惠券数量 0:双程 1:单程（商品默认为单程）
+        //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
         //商品优惠券数量
         orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(orderVo.getUserId(), orderVo.getShopId(),categoryIds,cartTotalPrice));
@@ -402,7 +402,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @param cardId
      * @return
      */
-    private BigDecimal couputerServiceFee(Integer cardId) {
+    private BigDecimal computerServiceFee(Integer cardId) {
         BigDecimal servicePrice = BigDecimal.ZERO;
         if (cardId != null) {
             Card card = cardRepository.findById(cardId).get();

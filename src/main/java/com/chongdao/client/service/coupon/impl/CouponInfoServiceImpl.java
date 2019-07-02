@@ -72,6 +72,7 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
      * @param state 状态-1 已删除 0待发布 1已发布 2已下架
      * @return
      */
+    @Transactional
     @Override
     public ResultResponse updateState(Integer cpnId, Integer state) {
         if (cpnId == null || state == null){

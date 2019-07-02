@@ -26,10 +26,10 @@ public class UserShare implements Serializable {
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
 	private Integer userId;
-	private Integer maxMun;//分享次数
+	private Integer maxNum;//分享次数
 	private Integer type;//1:分享店铺,2;分享商品;3:分享小程序
-	private Integer couponId;//配送券id
-	private Integer cardId;//优惠券id
+	private Integer couponId;//优惠券id包含(配送券)
+	//private Integer cardId;//优惠券id(废弃)
 	private Date createTime;
 	private Date updateTime;
 }
