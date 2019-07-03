@@ -34,6 +34,7 @@ public class AreaWithdrawalApply implements Serializable {
     private Integer status;//-1:拒绝;0:待审核;1:通过;
     private Date createTime;//创建时间
     private Date updateTime;
+    private Integer deductRate;//提现扣费比例
 
     @Transient
     private String areaName;

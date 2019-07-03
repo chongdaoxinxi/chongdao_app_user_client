@@ -26,4 +26,11 @@ public interface AreaRepository extends JpaRepository<Area, Integer> {
      * @return
      */
     Optional<List<Area>> findByLevelAndIsOpenAndPid(Integer level, Integer isOpen, Integer pId);
+
+    /**
+     * 根据编码和级别查询地区
+     * @param code
+     * @return
+     */
+    Optional<List<Area>> findByCodeAndLevel(String code, Integer level);
 }

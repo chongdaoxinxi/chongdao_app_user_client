@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -30,6 +31,7 @@ public class Management implements Serializable {
 
     private String name;
     private String password;
+    private BigDecimal money;
     private String icon;
     private String phone;
     private String mail;

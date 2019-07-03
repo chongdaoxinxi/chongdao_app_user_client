@@ -34,6 +34,10 @@ public class AdminPcController {
     private AreaService areaService;
     @Autowired
     private ShopBillService shopBillService;
+    @Autowired
+    private AreaWithdrawalApplyService areaWithdrawalApplyService;
+    @Autowired
+    private ManagementService managementService;
 
     /**
      * 确认退款完成
@@ -71,12 +75,48 @@ public class AdminPcController {
         }
     }
 
-    @GetMapping("getWithdrawalList")
-    public ResultResponse getWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    @GetMapping("getShopWithdrawalList")
+    public ResultResponse getShopWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if (role != null && role.equals("ADMIN_PC")) {
             return shopApplyService.getShopApplyList(null, shopName, startDate, endDate, pageNum, pageSize);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 获取地区账户提现记录
+     * @param token
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getAreaWithdrawalList")
+    public ResultResponse getAreaWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if (role != null && role.equals("ADMIN_PC")) {
+            return areaWithdrawalApplyService.getAreaWithdrawApplyListData(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 获取管理员信息
+     * @param token
+     * @return
+     */
+    @GetMapping("getManagementData")
+    public ResultResponse getManagementData(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if (role != null && role.equals("ADMIN_PC")) {
+            return managementService.getManagementById(tokenVo.getUserId());
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
