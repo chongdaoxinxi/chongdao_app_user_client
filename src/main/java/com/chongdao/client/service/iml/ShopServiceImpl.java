@@ -135,10 +135,10 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         //获取当前店铺的类别如:服务类:洗澡，美容等
         if (categoryId == 0){
             //商品
-            categoryIds = Arrays.asList(3);
+            categoryIds = Arrays.asList(3,15);
         }else if (categoryId == 1){
             //服务
-            List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdNotInAndStatus(Arrays.asList(3), 1);
+            List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdNotInAndStatus(Arrays.asList(3,15), 1);
             List<Integer> ids = Lists.newArrayList();
             goodsTypeList.stream().forEach(goodsType -> {
                 ids.add(goodsType.getCategoryId());
