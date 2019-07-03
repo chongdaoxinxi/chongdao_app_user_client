@@ -138,7 +138,12 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             categoryIds = Arrays.asList(3);
         }else if (categoryId == 1){
             //服务
-            categoryIds = Arrays.asList(1,2,4,5,6,7,8);
+            List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdNotInAndStatus(Arrays.asList(3), 1);
+            List<Integer> ids = Lists.newArrayList();
+            goodsTypeList.stream().forEach(goodsType -> {
+                ids.add(goodsType.getCategoryId());
+            });
+            categoryIds = ids;
         }else{
             //筛选条件
             categoryIds = Arrays.asList(categoryId);
