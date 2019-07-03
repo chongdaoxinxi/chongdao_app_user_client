@@ -143,7 +143,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             //筛选条件
             categoryIds = Arrays.asList(categoryId);
         }
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByShopIdAndCategoryIdInAndStatus(shopId, categoryIds,1);
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdInAndStatus(categoryIds,1);
         for (GoodsType e : goodsTypeList) {
             GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
             //获取当前类别的商品
