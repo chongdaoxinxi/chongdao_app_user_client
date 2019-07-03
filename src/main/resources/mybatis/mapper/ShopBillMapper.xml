@@ -19,13 +19,13 @@
         select
         <include refid="Base_Column_List"/>
         from shop_bill sb
-        where sb.createDate &gt; #{startDate} and sb.createDate &lt; #{endDate} and sb.shopId = #{shopId}
+        where sb.create_time &gt; #{startDate} and sb.create_time &lt; #{endDate} and sb.shop_id = #{shopId}
     </select>
     <select id="getShopBillByAreaCode" resultMap="BaseResultMap" parameterType="map">
         select
         <include refid="Base_Column_List"/>
         from shop_bill sb left join shop s on sb.shop_id = s.id
-        where sb.createDate &gt; #{startDate} and sb.createDate &lt; #{endDate} and s.area_code = #{areaCode} and
+        where sb.create_time &gt; #{startDate} and sb.create_time &lt; #{endDate} and s.area_code = #{areaCode} and
         s.shop_name like concat('%',#{shopName},'%')
     </select>
 </mapper>

@@ -114,7 +114,7 @@ public class ShopPcController {
      * @param pageNum
      * @return
      */
-    @GetMapping("getShopApplyListData")
+    @PostMapping("getShopApplyListData")
     public ResultResponse getShopApplyListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, startDate, endDate, pageIndex, pageNum);

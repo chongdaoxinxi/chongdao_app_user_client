@@ -18,7 +18,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        sa.id, sa.shop_id, sa.apply_money, sa.apply_note, sa.check_time, sa.check_note, sa.real_money, sa.status, sa.create_time, sa.update_time
+        sa.id, sa.shop_id, sa.apply_money, sa.apply_note, sa.check_time, sa.check_note, sa.real_money, sa.status, sa.deduct_rate, sa.create_time, sa.update_time
     </sql>
     <select id="getShopApplyListPc" resultMap="BaseResultMap" parameterType="map">
         select sa.*, s.shop_name, null as deduct_rate
@@ -26,16 +26,16 @@
         left join shop s on sa.shop_id = s.id
         where 1 = 1
         <if test="shopName != null and shopName != ''">
-            s.shop_name = #{shopName}
+            and s.shop_name = #{shopName}
         </if>
         <if test="shopId != null">
-            sa.shop_id = #{shopId}
+            and sa.shop_id = #{shopId}
         </if>
         <if test="startDate != null">
-            sa.create_time &gt; #{startDate}
+            and sa.create_time &gt; #{startDate}
         </if>
         <if test="endDate != null">
-            sa.create_time &lt; #{endDate}
+            and sa.create_time &lt; #{endDate}
         </if>
         order by sa.create_time desc
     </select>
