@@ -789,11 +789,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @Override
-    public ResultResponse getOnSaleOrderListData(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    public ResultResponse getConcessionalOrderList(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if(StringUtils.isNotBlank(role)) {
@@ -801,10 +801,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             if(role.equals("ADMIN_PC")) {
                 Management management = managementRepository.findById(userId).orElse(null);
                 if(management != null) {
-                    return getOnSaleOrderListDataAdmin(management.getAreaCode(), orderNo, username, phone, startDate, endDate, pageNum, pageIndex);
+                    return getConcessionalOrderListAdmin(management.getAreaCode(), shopName, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
                 }
             } else if(role.equals("SHOP_PC")) {
-                getOnSaleOrderListDataShop(userId, orderNo, username, phone, startDate, endDate, pageNum, pageIndex);
+                getConcessionalOrderListShop(userId, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
             }
         }
         return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -819,10 +819,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
-    private ResultResponse getOnSaleOrderListDataAdmin(String areaCode, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    private ResultResponse getConcessionalOrderListAdmin(String areaCode, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
     }
 
@@ -835,10 +835,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
-    private ResultResponse getOnSaleOrderListDataShop(Integer shopId, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    private ResultResponse getConcessionalOrderListShop(Integer shopId, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
     }
 }

@@ -84,6 +84,6 @@ public interface OrderService {
 
     ResultResponse getRefundData(Integer orderId);
 
-    ResultResponse getOnSaleOrderListData(String areaCode, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex);
+    ResultResponse getConcessionalOrderList(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
 }

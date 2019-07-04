@@ -17,7 +17,7 @@ import java.util.List;
 public class AreaBillServiceImpl implements AreaBillService {
 
     @Override
-    public List<AreaBill> getAreaBillByManagementId(Integer managementId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    public List<AreaBill> getAreaBillByManagementId(Integer managementId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
     }
 }

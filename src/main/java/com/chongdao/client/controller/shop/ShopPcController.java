@@ -32,6 +32,8 @@ public class ShopPcController {
     private ShopBillService shopBillService;
     @Autowired
     private ShopApplyService shopApplyService;
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("getModuleData")
     public ResultResponse getModuleData(String token){
@@ -95,14 +97,14 @@ public class ShopPcController {
      * @param token
      * @param startDate
      * @param endDate
-     * @param pageIndex
+     * @param pageSize
      * @param pageNum
      * @return
      */
     @GetMapping("getShopBillListData")
-    public ResultResponse getShopBillListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
+    public ResultResponse getShopBillListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageIndex, pageNum);
+        return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
     }
 
     /**
@@ -110,13 +112,30 @@ public class ShopPcController {
      * @param token
      * @param startDate
      * @param endDate
-     * @param pageIndex
+     * @param pageSize
      * @param pageNum
      * @return
      */
     @PostMapping("getShopApplyListData")
-    public ResultResponse getShopApplyListData(String token, Date startDate, Date endDate, Integer pageIndex, Integer pageNum) {
+    public ResultResponse getShopApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, startDate, endDate, pageIndex, pageNum);
+        return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, startDate, endDate, pageNum, pageSize);
+    }
+
+    /**
+     * 获取使用过优惠券的订单
+     * @param token
+     * @param orderNo
+     * @param username
+     * @param phone
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getConcessionalOrderListShop")
+    public ResultResponse getConcessionalOrderListShop(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return orderService.getConcessionalOrderList(token, null, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
     }
 }
