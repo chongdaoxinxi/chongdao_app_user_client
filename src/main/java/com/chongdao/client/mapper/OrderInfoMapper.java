@@ -4,6 +4,7 @@ import com.chongdao.client.entitys.OrderInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -52,4 +53,6 @@ public interface OrderInfoMapper {
     List<OrderInfo> selectExpressOrderList(@Param("expressId") Integer expressId, @Param("type")String type);
 
     List<OrderInfo> selectExpressAdminOrderList(@Param("type")String type);
+
+    List<OrderInfo> getConcessionalOrderList(@Param("areaCode") String areaCode, @Param("shopId") String shopId, @Param("shopName") String shopName, @Param("orderNo") String orderNo, @Param("username") String username, @Param("phone") String phone, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }
