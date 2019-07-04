@@ -823,7 +823,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     private ResultResponse getConcessionalOrderListAdmin(String areaCode, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return null;
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderInfo> list = orderInfoMapper.getConcessionalOrderList(areaCode, null, shopName, orderNo, username, phone, startDate, endDate);
+        List<OrderVo> orderVoList = assembleOrderVoList(list, null);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
     }
 
     /**
@@ -839,6 +844,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     private ResultResponse getConcessionalOrderListShop(Integer shopId, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return null;
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderInfo> list = orderInfoMapper.getConcessionalOrderList(null, shopId, null, orderNo, username, phone, startDate, endDate);
+        List<OrderVo> orderVoList = assembleOrderVoList(list, null);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
     }
 }
