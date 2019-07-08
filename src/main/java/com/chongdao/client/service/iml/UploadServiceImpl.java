@@ -32,7 +32,7 @@ public class UploadServiceImpl implements UploadService {
             }
             StorePath storePath = this.storageClient.uploadFile(file.getInputStream(), file.getSize(),
                     FilenameUtils.getExtension(file.getOriginalFilename()), null);
-            String fileUrl = hostAddress + storePath.getFullPath();
+            String fileUrl = hostAddress + "/" + storePath.getFullPath();
             return ResultResponse.createBySuccess(fileUrl);
         } catch (IOException e) {
             e.printStackTrace();
