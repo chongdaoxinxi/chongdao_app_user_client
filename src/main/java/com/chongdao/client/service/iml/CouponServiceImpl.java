@@ -13,6 +13,7 @@ import com.chongdao.client.repository.CardRepository;
 import com.chongdao.client.repository.CardUserRepository;
 import com.chongdao.client.repository.CouponUserRepository;
 import com.chongdao.client.service.CouponService;
+import com.chongdao.client.utils.DateTimeUtil;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,13 +65,17 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(1,3,4));
             List<CouponInfo> couponInfoList = Lists.newArrayList();
             cpnUserList.stream().forEach(cpnUser -> {
-                //逻辑处理
-                this.getCpnUser(cpnUser,totalPrice,categoryId);
-                CouponInfo couponInfo = couponInfoRepository.findById(cpnUser.getCpnId()).get();
-                if (cpnUser.getEnabled() == 1){//优惠券可用
-                    couponInfo.setEnabled(1);
+                //查询截止日期与当前日期差
+                long result = this.computerTime(cpnUser.getValidityEndDate());
+                if (result > 0) {
+                    //逻辑处理
+                    this.getCpnUser(cpnUser, totalPrice, categoryId);
+                    CouponInfo couponInfo = couponInfoRepository.findById(cpnUser.getCpnId()).get();
+                    if (cpnUser.getEnabled() == 1) {//优惠券可用
+                        couponInfo.setEnabled(1);
+                    }
+                    couponInfoList.add(couponInfo);
                 }
-                couponInfoList.add(couponInfo);
             });
 
 
@@ -81,16 +86,24 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             //6配送双程  8仅限服务（双程）10仅限商品（配送双程）
             List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
             cpnUserList.stream().forEach(cpnUser -> {
+                //查询截止日期与当前日期差
+                long result = this.computerTime(cpnUser.getValidityEndDate());
+                if (result > 0) {
                     //优惠券可用
                     cpnUser.setEnabled(1);
+                }
             });
             return ResultResponse.createBySuccess(cpnUserList);
         }else if (serviceType == 2 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){//单程
             //5配送单程  7仅限服务（单程）9仅限商品（配送单程）
             List<CpnUser> cpnUserList =cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(5,7,9));
             cpnUserList.stream().forEach(cpnUser -> {
+                //查询截止日期与当前日期差
+                long result = this.computerTime(cpnUser.getValidityEndDate());
+                if (result > 0) {
                     //优惠券可用
                     cpnUser.setEnabled(1);
+                }
             });
             return ResultResponse.createBySuccess(cpnUserList);
         }
@@ -147,6 +160,17 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
     }
 
     /**
+     * 计算优惠券有效期
+     * @param date
+     * @return
+     */
+    private long computerTime(Date date){
+        long result = DateTimeUtil.costTime(DateTimeUtil.dateToStr(date),
+                DateTimeUtil.dateToStr(new Date()));
+        return result;
+    }
+
+    /**
      * 获取优惠券数量(商品/服务)
      * @param userId
      * @return
@@ -158,8 +182,12 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
         List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String.valueOf(shopId), userId, 0, 0, Arrays.asList(1,2,3), Arrays.asList(1,3,4));
         for (CpnUser cpnUser : cpnUserList) {
-            Integer userCount = this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
-            count = userCount;
+            //查询截止日期与当前日期差
+            long result = this.computerTime(cpnUser.getValidityEndDate());
+            //二次校验，过滤过期的优惠券
+            if (result > 0){
+                count = this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
+            }
         };
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
         //查询是否参加公益
@@ -168,6 +196,26 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             count = count + result;
         }
         return count;
+    }
+
+    /**
+     * 卡包
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultResponse couponList(Integer userId) {
+        List<CpnUser> cpnUserList = cpnUserRepository.findByUserIdAndUserCpnStateAndIsDelete(userId, 0, 0);
+        List<CpnUser> cpnUsers = Lists.newArrayList();
+        cpnUserList.stream().forEach(e ->{
+            //二次校验，过滤过期的优惠券
+            //查询截止日期与当前日期差
+            long result = this.computerTime(e.getValidityEndDate());
+            if (result > 0){
+                cpnUsers.add(e);
+            }
+        });
+        return ResultResponse.createBySuccess(cpnUsers);
     }
 
 

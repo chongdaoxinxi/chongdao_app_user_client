@@ -35,14 +35,13 @@ public class OrderController {
      * @param type 1:已支付未接单,2:已接单,3:服务中,4.已完成
      * @return
      */
-    @GetMapping("order_type_list")
+    @GetMapping("orderTypeList")
     public ResultResponse<PageInfo> getOrderTypeList(@RequestParam("type") String type,
                                                      @RequestParam("token") String token,
                                                      @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.getOrderTypeList(tokenVo.getUserId(), type,pageNum,pageSize);
-
     }
 
 

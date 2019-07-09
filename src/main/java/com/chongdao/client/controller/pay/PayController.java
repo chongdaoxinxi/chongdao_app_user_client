@@ -8,16 +8,9 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.config.AliPayConfig;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.LoginUserUtil;
-import com.chongdao.client.utils.wxpay.BasicInfo;
-import com.chongdao.client.utils.wxpay.SignUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.google.common.collect.Maps;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,7 +41,7 @@ public class PayController {
      * @param token
      * @return
      */
-    @GetMapping("ali_pay")
+    @GetMapping("aliPay")
     public ResultResponse pay(String orderNo, String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return payService.aliPay(orderNo, tokenVo.getUserId());
@@ -65,7 +54,7 @@ public class PayController {
      * @param request
      * @return
      */
-    @RequestMapping("ali_pay_callback")
+    @RequestMapping("aliPayCallback")
     public Object aliPayCallback(HttpServletRequest request) {
         Map<String, String> params = Maps.newHashMap();
         Map requestParams = request.getParameterMap();

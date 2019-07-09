@@ -83,6 +83,8 @@ public class OrderVo {
 
     private List<CouponVO> couponList;
 
+    private Integer couponId;
+
     private Integer serviceCouponCount;
 
     private Integer goodsCouponCount;
