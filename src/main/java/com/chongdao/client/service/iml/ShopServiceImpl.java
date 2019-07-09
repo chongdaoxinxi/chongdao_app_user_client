@@ -8,6 +8,7 @@ import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.ShopService;
+import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.GoodsTypeVO;
 import com.chongdao.client.vo.OrderEvalVO;
@@ -26,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.chongdao.client.common.Const.OrderBy.*;
@@ -114,7 +116,16 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         shopVO.setSales(goodsRepository.findBySalesSum(shopId));
         //封装优惠券(店铺满减除外(cpnType = 4))
         List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
-        shopVO.setCouponInfoList(couponList);
+        List<CouponInfo> couponInfoList = Lists.newArrayList();
+        couponList.stream().forEach(e ->{
+            //二次校验，过滤失效的优惠券
+            long result = DateTimeUtil.costTime(DateTimeUtil.dateToStr(e.getValidityEndDate()),
+                    DateTimeUtil.dateToStr(new Date()));
+            if (result > 0){
+                couponInfoList.add(e);
+            }
+        });
+        shopVO.setCouponInfoList(couponInfoList);
         return ResultResponse.createBySuccess(shopVO);
     }
 
