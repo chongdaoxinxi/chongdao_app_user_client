@@ -12,16 +12,18 @@
             <arg column="real_money" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-            <arg column="areaName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="area_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="deduct_rate" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        awa.id, awa.management_id, awa.apply_money, awa.apply_note, awa.check_note, awa.check_time, awa.real_money, awa.status, awa.create_time, awa.areaName
+        awa.id, awa.management_id, awa.apply_money, awa.apply_note, awa.check_note, awa.check_time, awa.real_money, awa.status, awa.create_time, awa.update_time, awa.deduct_rate
     </sql>
     <select id="getAreaWithdrawApplyList" resultMap="BaseResultMap" parameterType="map">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List"/>, null as area_name
         from area_withdrawal_apply awa
-        where awa.management_id = #{managementId} and awa.create_time &gt; #{createDate} and awa.create_time &lt; #{endDate}
+        where awa.management_id = #{managementId} and awa.create_time &gt; #{startDate} and awa.create_time &lt; #{endDate}
     </select>
 </mapper>

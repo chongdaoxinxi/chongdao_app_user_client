@@ -49,38 +49,38 @@ public class ShopBillServiceImpl implements ShopBillService {
     }
 
     /**
-     * 获取指定商家的流水记录
-     * @param shopId
-     * @param startDate
-     * @param endDate
-     * @param pageNum
-     * @param pageIndex
-     * @return
-     */
-    @Override
-    public ResultResponse getShopBillByShopId(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
-        PageHelper.startPage(pageNum, pageIndex);
-        List<ShopBill> list = shopBillMapper.getShopBillByShopId(shopId, startDate, endDate);
-        PageInfo pageResult = new PageInfo(list);
-        pageResult.setList(list);
-        return ResultResponse.createBySuccess(pageResult);
-    }
-
-    /**
      * 获取指定区域的流水记录
      * @param managementId
      * @param shopName
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @Override
-    public ResultResponse getShopBillByAreaCode(Integer managementId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
-        PageHelper.startPage(pageNum, pageIndex);
+    public ResultResponse getShopBillByAreaCode(Integer managementId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         Management management = managementRepository.findById(managementId).orElse(null);
         List<ShopBill> list = shopBillMapper.getShopBillByAreaCode(management.getAreaCode(), shopName, startDate, endDate);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(list);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    /**
+     * 获取指定商家的流水记录
+     * @param shopId
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ResultResponse getShopBillByShopId(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ShopBill> list = shopBillMapper.getShopBillByShopId(shopId, startDate, endDate);
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);

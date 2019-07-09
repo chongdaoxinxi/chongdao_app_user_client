@@ -34,6 +34,10 @@ public class AdminPcController {
     private AreaService areaService;
     @Autowired
     private ShopBillService shopBillService;
+    @Autowired
+    private AreaWithdrawalApplyService areaWithdrawalApplyService;
+    @Autowired
+    private ManagementService managementService;
 
     /**
      * 确认退款完成
@@ -71,12 +75,48 @@ public class AdminPcController {
         }
     }
 
-    @GetMapping("getWithdrawalList")
-    public ResultResponse getWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    @GetMapping("getShopWithdrawalList")
+    public ResultResponse getShopWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if (role != null && role.equals("ADMIN_PC")) {
             return shopApplyService.getShopApplyList(null, shopName, startDate, endDate, pageNum, pageSize);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 获取地区账户提现记录
+     * @param token
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getAreaWithdrawalList")
+    public ResultResponse getAreaWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if (role != null && role.equals("ADMIN_PC")) {
+            return areaWithdrawalApplyService.getAreaWithdrawApplyListData(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
+    /**
+     * 获取管理员信息
+     * @param token
+     * @return
+     */
+    @GetMapping("getManagementData")
+    public ResultResponse getManagementData(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if (role != null && role.equals("ADMIN_PC")) {
+            return managementService.getManagementById(tokenVo.getUserId());
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
@@ -193,13 +233,13 @@ public class AdminPcController {
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @GetMapping("getShopBillByShopId")
-    public ResultResponse getShopBillByShopId(String token, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    public ResultResponse getShopBillByShopId(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageNum, pageIndex);
+        return shopBillService.getShopBillByShopId(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
     }
 
     /**
@@ -210,13 +250,13 @@ public class AdminPcController {
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @GetMapping("getShopBillByAreaCode")
-    public ResultResponse getShopBillByAreaCode(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    public ResultResponse getShopBillByAreaCode(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageIndex);
+        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageSize);
     }
 
     /**
@@ -227,35 +267,35 @@ public class AdminPcController {
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @GetMapping("getAreaBill")
-    public ResultResponse getAreaBill(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    public ResultResponse getAreaBill(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
 //        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-//        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageIndex);
+//        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageSize);
         return null;
     }
 
-    public ResultResponse getAreaWithdrawApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
+    public ResultResponse getAreaWithdrawApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
     }
 
     /**
      * 获取使用过优惠券的订单
-     *
      * @param token
+     * @param shopName
      * @param orderNo
      * @param username
      * @param phone
      * @param startDate
      * @param endDate
      * @param pageNum
-     * @param pageIndex
+     * @param pageSize
      * @return
      */
-    @GetMapping("getOnSaleOrderListData")
-    public ResultResponse getOnSaleOrderListData(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageIndex) {
-        return orderService.getOnSaleOrderListData(token, orderNo, username, phone, startDate, endDate, pageNum, pageIndex);
+    @GetMapping("getConcessionalOrderListAdmin")
+    public ResultResponse getConcessionalOrderListAdmin(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize){
+        return orderService.getConcessionalOrderList(token, shopName, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
     }
 }

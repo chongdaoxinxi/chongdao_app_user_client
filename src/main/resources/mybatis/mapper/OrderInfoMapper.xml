@@ -538,4 +538,35 @@
         </if>
         order by order_info.create_time desc, order_info.order_status desc
     </select>
+    <select id="getConcessionalOrderList" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Alias_Column_List"/>
+        from order_info o
+        left join shop s on o.shop_id = s.id
+        left join user u on o.user_id = u.id
+        where 1 = 1
+        and (o.card_id is not null or o.coupon_id is not null)
+        <if test="areaCode != null and areaCode != ''">
+            and o.area_code = #{areaCode}
+        </if>
+        <if test="shopId != null">
+            and o.shop_id = #{shopId}
+        </if>
+        <if test="shopName != null and shopName != ''">
+            and s.shop_name like concat('%',#{shopName},'%')
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and o.order_no like concat('%',#{orderNo},'%')
+        </if>
+        <if test="username != null and username != ''">
+            and u.name like concat('%',#{username},'%')
+        </if>
+        <if test="startDate != null">
+            and o.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and o.create_time &lt; #{endDate}
+        </if>
+        order by o.create_time desc
+    </select>
 </mapper>

@@ -32,4 +32,5 @@ public class Area implements Serializable {
 	private Double lng;
 	private Integer isOpen;//该地区是否开放
 	private Integer rate;
+	private String preciseCode;//精确编码
 }
