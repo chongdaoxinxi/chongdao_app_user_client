@@ -7,6 +7,7 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.GoodsTypeVO;
@@ -17,6 +18,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -33,8 +35,8 @@ import static com.chongdao.client.common.Const.goodsListProActivities.DISCOUNT;
 
 @Service
 public class ShopServiceImpl extends CommonRepository implements ShopService {
-
-
+    @Autowired
+    private ShopRepository shopRepository;
 
     /**
      * 根据条件展示商店(首页)
@@ -116,6 +118,22 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
         shopVO.setCouponInfoList(couponList);
         return ResultResponse.createBySuccess(shopVO);
+    }
+
+    public ResultResponse addShop(Shop shop) {
+        Shop s = new Shop();
+        BeanUtils.copyProperties(shop, s);
+        s.setMoney(new BigDecimal(0));
+        //根据areaId获取areaCode
+
+        s.setType(1);
+        s.setGrade(0.0);
+        s.setStatus(-1);
+        Integer i = -1;
+        s.setIsHot(i.byteValue());
+        s.setIsJoinCommonWeal(i.byteValue());
+        s.setIsStop(i.byteValue());
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.saveAndFlush(s));
     }
 
     /**
