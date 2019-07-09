@@ -14,7 +14,7 @@ public class AliPayConfig {
     public static final String ALI_PAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjqqGIIBWyUzKDBLvlj10s01QqSKt/dzWyeDq2kdLtxvFYIKIDfgsD0LOOorWTbDdiTyUb9pIxV5+ydwcFignVKF9qP8XgTqiwg0o2JtK5rx4I9XgOlYgCCzdMv0VS3TH3lPa9Gh/kajRzTSaAJRaBfo24+ZKJyRxuBVOkm4tYhprZltDpPVIA3j0NVGK7EeEsByuTSJ+bbhf585XTHQ7fFq0tqC7oATu3BUOOcTRi3HQuxzbU6PmxAgkV2JzoBZ1c2vxfAfSH6plqjXyF8jGE9v2qFB+yFsW+zUp9C89NfYsUZVHGdAdf4fAxHIxfp53vuF5zM63yQB5kdSbCGPPeQIDAQAB"; // 支付宝公钥
 
     //回调
-    public static final String NOTIFY_URL = "https://dev.chongdaopet.com/api/pay/aliPayCallback";
+    public static final String NOTIFY_URL = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallback";
      // 支付完成跳转页面
     public static final String RETURN_URL = "";
     // 请求网关地址（现为沙箱环境）
