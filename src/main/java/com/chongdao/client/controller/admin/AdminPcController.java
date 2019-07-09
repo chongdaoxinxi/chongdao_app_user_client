@@ -206,6 +206,11 @@ public class AdminPcController {
         return shopService.addShop(shop);
     }
 
+    @GetMapping("getParentAreaIdBySonAreaId")
+    public ResultResponse getParentAreaIdBySonAreaId(Integer sonAreaId) {
+        return areaService.getParentAreaIdBySonAreaId(sonAreaId);
+    }
+
     /**
      * 获取一级市
      *

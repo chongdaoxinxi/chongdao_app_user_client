@@ -6,4 +6,5 @@ public interface AreaService {
     ResultResponse getTopLevelAreaDataList(Integer level, Integer isOpen);
     ResultResponse getAreaDataByParentId(Integer level, Integer isOpen, Integer pid);
     ResultResponse getAreaDataByManagementId(Integer managementId);
+    ResultResponse getParentAreaIdBySonAreaId(Integer sonAreaId);
 }
