@@ -156,14 +156,20 @@ public class PayServiceImpl implements PayService {
         }
 
         //生成支付信息
-        PayInfo payInfo = new PayInfo();
-        payInfo.setUserId(order.getUserId());
-        payInfo.setOrderNo(order.getOrderNo());
-        payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
-        payInfo.setPlatformNumber(tradeNo);
-        payInfo.setPlatformStatus(tradeStatus);
 
-        payInfoRepository.save(payInfo);
+        try {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(order.getUserId());
+            payInfo.setOrderNo(order.getOrderNo());
+            payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+            payInfo.setPlatformNumber(tradeNo);
+            payInfo.setPlatformStatus(tradeStatus);
+
+            payInfoRepository.save(payInfo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}",orderNo);
+        }
 
         return ResultResponse.createBySuccess();
     }

@@ -368,8 +368,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             order.setPaymentType(PaymentTypeEnum.WX_PAY.getStatus());
         }
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
-        BeanUtils.copyProperties(orderVo, order);
         BeanUtils.copyProperties(orderCommonVO, orderVo);
+        BeanUtils.copyProperties(orderVo, order);
         order.setPaymentType(orderCommonVO.getPayType());
         if(orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()){
             //拼单
