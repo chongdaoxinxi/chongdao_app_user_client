@@ -36,6 +36,7 @@ public interface ShopService{
      */
     ResultResponse getShopById(Integer shopId);
 
+    ResultResponse addShop(Shop shop);
 
     /**
      * 获取店铺商品
