@@ -47,4 +47,18 @@ public class CouponController {
         return couponService.receiveCoupon(tokenVo.getUserId(), couponInfo);
     }
 
+    /**
+     * 卡包
+     * @param userId
+     * @param token
+     * @return
+     */
+    @GetMapping("couponList/{userId}")
+    public ResultResponse couponList(@PathVariable Integer userId,String token){
+        LoginUserUtil.resultTokenVo(token);
+        return couponService.couponList(userId);
+
+    }
+
+
 }

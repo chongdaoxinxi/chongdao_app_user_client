@@ -37,9 +37,12 @@ public interface CouponService {
      */
     int countByUserIdAndIsDeleteAndAndCpnType(Integer userId, Integer shopId, List<Integer> categoryIds, BigDecimal totalPrice);
 
-
-
-
+    /**
+     * 卡包
+     * @param userId
+     * @return
+     */
+    ResultResponse couponList(Integer userId);
 
 
     //---------------------------------------------------------- 商户端 -----------------------------------------------

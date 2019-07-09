@@ -14,7 +14,7 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
     @Query(value = "update cpn_user set is_delete=1 where cpn_id=?1",nativeQuery = true)
     void updateState(Integer cpnId);
 
-
+    Iterable<CpnUser> findAllByUserCpnState(Integer state);
 
 
 
@@ -42,6 +42,16 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
     int countByUserIdAndIsDeleteAndCpnType(Integer userId, Integer delete,Integer cpnType);
 
     int countByUserIdAndIsDeleteAndCpnTypeIn(Integer userId, Integer delete,List<Integer> cpnTypes);
+
+
+    /**
+     * 获取有效状态的优惠券（卡包）
+     * @param userId
+     * @param states
+     * @param isDelete
+     * @return
+     */
+    List<CpnUser> findByUserIdAndUserCpnStateAndIsDelete(Integer userId,Integer states,Integer isDelete);
 
 
 
