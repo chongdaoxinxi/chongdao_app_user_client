@@ -2,6 +2,7 @@ package com.chongdao.client.controller.order;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.OrderEval;
+import com.chongdao.client.entitys.OrderExpressEval;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.LoginUserUtil;
@@ -53,18 +54,31 @@ public class OrderController {
 
 
     /**
+     * 评价晒单 初始化
+     * @param orderNo
+     * @param token
+     * @return
+     */
+    @GetMapping("initOrderEval")
+    public ResultResponse initOrderEval(String orderNo,String token){
+        LoginUserUtil.resultTokenVo(token);
+        return orderService.initOrderEval(orderNo);
+    }
+
+    /**
      * 订单评价
      * @param orderEval
      * @return
      */
     @PostMapping("orderEval")
-    public ResultResponse evalOrder(@Valid OrderEval orderEval, BindingResult bindingResult){
+    public ResultResponse evalOrder(@Valid OrderEval orderEval, @Valid OrderExpressEval orderExpressEval,
+                                    BindingResult bindingResult){
         LoginUserUtil.resultTokenVo(orderEval.getToken());
         if (bindingResult.hasErrors()){
             log.error("【订单评价】参数不正确，orderEval={}:",orderEval);
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),bindingResult.getFieldError().getDefaultMessage());
         }
-        return orderService.orderEval(orderEval);
+        return orderService.orderEval(orderEval,orderExpressEval);
 
     }
 

@@ -36,4 +36,13 @@ public class OrderEvalVO {
     private Date createTime;
 
     private Date updateTime;
+
+    //配送员
+    private String expressName;
+
+    private String shopName;
+
+    private Integer expressId;
+
+    private Integer enabledAnonymous; //匿名 0 否 1是
 }

@@ -15,10 +15,7 @@ import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
 import com.chongdao.client.utils.LoginUserUtil;
-import com.chongdao.client.vo.OrderCommonVO;
-import com.chongdao.client.vo.OrderGoodsVo;
-import com.chongdao.client.vo.OrderVo;
-import com.chongdao.client.vo.ResultTokenVo;
+import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -186,9 +183,37 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
-    public ResultResponse orderEval(OrderEval orderEval) {
+    public ResultResponse orderEval(OrderEval orderEval,OrderExpressEval orderExpressEval) {
+        //商铺评价
+        orderEval.setCreateTime(new Date());
+        orderEval.setUpdateTime(new Date());
         orderEvalRepository.save(orderEval);
+        //配送员评价
+        orderExpressEval.setCreateTime(new Date());
+        orderExpressEval.setUpdateTime(new Date());
+        orderExpressEvalRepository.save(orderExpressEval);
         return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 评价晒单（初始数据加载）
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ResultResponse initOrderEval(String orderNo) {
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        OrderEvalVO orderEvalVO = null;
+        if (orderInfo != null){
+            Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+            Express express = expressRepository.findById(orderInfo.getExpressId()).get();
+            orderEvalVO = new OrderEvalVO();
+            orderEvalVO.setShopName(shop.getShopName());
+            orderEvalVO.setShopId(shop.getId());
+            orderEvalVO.setExpressName(express.getName());
+            orderEvalVO.setExpressId(express.getId());
+        }
+        return ResultResponse.createBySuccess(orderEvalVO);
     }
 
     /**
