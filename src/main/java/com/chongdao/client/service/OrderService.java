@@ -1,6 +1,7 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.OrderEval;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageInfo;
@@ -27,6 +28,14 @@ public interface OrderService {
     ResultResponse<PageInfo> getShopOrderTypeListPc(String role, Integer shopId, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize);
 
     ResultResponse<PageInfo> getOrderListPc(Integer mgtId, String orderNo, String username, String phone, String orderStatus, int pageNum, int pageSize);
+
+    /**
+     * 订单评价
+     * @param orderEval
+     * @return
+     */
+    ResultResponse orderEval(OrderEval orderEval);
+
 
     /**
      * 拒单
@@ -85,5 +94,6 @@ public interface OrderService {
     ResultResponse getRefundData(Integer orderId);
 
     ResultResponse getConcessionalOrderList(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+
 
 }

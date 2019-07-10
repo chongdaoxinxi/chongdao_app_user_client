@@ -58,6 +58,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 //            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
 //        }
         if (userId == null) {
+            log.error("【预下单】参数不正确, orderCommonVO={} ",orderCommonVO);
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
         //订单总价
@@ -177,6 +178,17 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
+    }
+
+    /**
+     * 订单评价
+     * @param orderEval
+     * @return
+     */
+    @Override
+    public ResultResponse orderEval(OrderEval orderEval) {
+        orderEvalRepository.save(orderEval);
+        return ResultResponse.createBySuccess();
     }
 
     /**

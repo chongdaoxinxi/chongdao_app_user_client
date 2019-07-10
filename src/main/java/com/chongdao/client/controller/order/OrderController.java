@@ -1,15 +1,22 @@
 package com.chongdao.client.controller.order;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.OrderEval;
+import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/order/")
+@Slf4j
 public class OrderController {
 
     @Autowired
@@ -42,6 +49,23 @@ public class OrderController {
                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.getOrderTypeList(tokenVo.getUserId(), type,pageNum,pageSize);
+    }
+
+
+    /**
+     * 订单评价
+     * @param orderEval
+     * @return
+     */
+    @PostMapping("orderEval")
+    public ResultResponse evalOrder(@Valid OrderEval orderEval, BindingResult bindingResult){
+        LoginUserUtil.resultTokenVo(orderEval.getToken());
+        if (bindingResult.hasErrors()){
+            log.error("【订单评价】参数不正确，orderEval={}:",orderEval);
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),bindingResult.getFieldError().getDefaultMessage());
+        }
+        return orderService.orderEval(orderEval);
+
     }
 
 

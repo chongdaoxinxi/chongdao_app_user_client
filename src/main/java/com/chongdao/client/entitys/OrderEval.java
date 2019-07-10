@@ -3,10 +3,8 @@ package com.chongdao.client.entitys;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -18,12 +16,16 @@ public class OrderEval {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotEmpty(message = "userId不能为空")
     private Integer userId;
 
+    @NotEmpty(message = "shopId不能为空")
     private Integer shopId;
 
+    @NotEmpty(message = "订单号必填")
     private String orderNo;
 
+    @NotEmpty(message = "评价内容必填")
     private String content;
 
     private Integer grade;
@@ -35,6 +37,9 @@ public class OrderEval {
     private Date createTime;
 
     private Date updateTime;
+
+    @Transient
+    private String token;
 
     public OrderEval(Integer id, Integer userId, Integer shopId, String orderNo, String content, Integer grade, Integer status, String img, Date createTime, Date updateTime) {
         this.id = id;
