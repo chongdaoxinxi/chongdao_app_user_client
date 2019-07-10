@@ -111,6 +111,14 @@ public class CommonRepository {
     @Autowired
     protected GoodsTypeRepository goodsTypeRepository;
 
+    @Autowired
+    protected OrderEvalRepository orderEvalRepository;
+
+    @Autowired
+    protected OrderExpressEvalRepository orderExpressEvalRepository;
+
+    protected ExpressRepository expressRepository;
+
 
 
 

@@ -3,14 +3,21 @@ package com.chongdao.client.entitys;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
+/**
+ * @author fenglong
+ * @date 2019-07-10 13:49
+ */
 @Entity
 @Getter
 @Setter
-public class OrderEval {
+public class OrderExpressEval {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,32 +35,17 @@ public class OrderEval {
     @NotEmpty(message = "评价内容必填")
     private String content;
 
-    private Integer grade; //评价等级
+    private Integer grade;
 
     private Integer status;
 
-    private String img; //图片地址
+    private String img;
 
     private Integer enabledAnonymous; //匿名 0 否 1是
+
+    private Integer expressId;
 
     private Date createTime;
 
     private Date updateTime;
-
-    @Transient
-    private String token;
-
-    public OrderEval(Integer id, Integer userId, Integer shopId, String orderNo, String content, Integer grade, Integer status, String img, Date createTime, Date updateTime) {
-        this.id = id;
-        this.userId = userId;
-        this.shopId = shopId;
-        this.orderNo = orderNo;
-        this.content = content;
-        this.grade = grade;
-        this.status = status;
-        this.img = img;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
-
 }
