@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.StatisticalMapper">
+    <resultMap id="UserVisitVO" type="com.chongdao.client.vo.UserVisitVO">
+        <constructor>
+            <arg column="visitTime" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="visitUserCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="newUserVisitTime" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="oldUserVisitTime" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="acceptedOrderCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="refundOrderCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="UserWeekVisitVO" type="com.chongdao.client.vo.UserVisitVO">
+        <constructor>
+            <arg column="mondayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="tuesdayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="wednesdayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="thursdayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="fridayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="saturdayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="sundayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="startDay" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="endDay" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="OrderStatisticalVO" type="com.chongdao.client.vo.UserVisitVO">
+        <constructor>
+            <arg column="goodOrderTotalMoney" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="serviceOrderTotalMoney" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="refundOrderTotalMoney" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        </constructor>
+    </resultMap>
+    <select id="getUserVisitStatisticalShop" resultMap="UserVisitVO" parameterType="map">
+        select *
+        from (select count(id) as visitTime, count(distinct usv.user_id) as visitPersonCount
+              from user_shop_visit usv
+              where usv.shop_id = #{shopId}
+                and usv.create_time &gt; #{startDate}
+                and usv.create_time &lt; #{endDate}) A
+                 left join (select count(distinct usv1.user_id) as newUserVisitTime
+                            FROM user_shop_visit usv1
+                            where usv1.shop_id = #{shopId}
+                              and usv1.create_time &gt; #{startDate}
+                              and usv1.create_time &lt; #{endDate}
+                              and usv1.is_old = true) B on 1 = 1
+                 left join (select count(distinct usv2.user_id) as oldUserVisitTime
+                            FROM user_shop_visit usv2
+                            where usv2.shop_id = #{shopId}
+                              and usv2.create_time &gt; #{startDate}
+                              and usv2.create_time &lt; #{endDate}
+                              and usv2.is_old = false) C on 1 = 1
+                 left join (select sum(case
+                                           when odi.order_status in (2, 7, 10, 11, 12, 13, 3, 6, 8, 9, 4, 5) then 1
+                                           else 0 end)                                                  as acceptedOrderCount,
+                                   sum(case when odi.order_status in (8, 0, 4, 5, 9) then 1 else 0 end) as refundOrderCount
+                            from order_info odi
+                            where odi.shop_id = #{shopId}
+                              and odi.create_time &gt; #{startDate}
+                              and odi.create_time &lt; #{endDate}) D on 1 = 1
+    </select>
+    <select id="getUserVisitStatisticalSystem" resultMap="UserVisitVO" parameterType="map">
+        select *
+        from (select count(id) as visitTime, count(distinct usv.user_id) as visitPersonCount
+              from user_system_visit usv
+              where usv.create_time &gt; #{startDate}
+                and usv.create_time &lt; #{endDate}) A
+                 left join (select count(distinct usv1.user_id) as newUserVisitTime
+                            FROM user_system_visit usv1
+                            where usv1.create_time &gt; #{startDate}
+                              and usv1.create_time &lt; #{endDate}
+                              and usv1.is_old = true) B on 1 = 1
+                 left join (select count(distinct usv2.user_id) as oldUserVisitTime
+                            FROM user_system_visit usv2
+                            where usv2.create_time &gt; #{startDate}
+                              and usv2.create_time &lt; #{endDate}
+                              and usv2.is_old = false) C on 1 = 1
+                 left join (select sum(case
+                                           when odi.order_status in (2, 7, 10, 11, 12, 13, 3, 6, 8, 9, 4, 5) then 1
+                                           else 0 end)                                                  as acceptedOrderCount,
+                                   sum(case when odi.order_status in (8, 0, 4, 5, 9) then 1 else 0 end) as refundOrderCount
+                            from order_info odi
+                            where odi.create_time &gt; #{startDate}
+                              and odi.create_time &lt; #{endDate}) D on 1 = 1
+    </select>
+    <select id="getUserWeekVisitStatisticalShop" resultMap="UserWeekVisitVO" parameterType="map">
+        select sum(case
+                       when usv.create_time &gt; #{mondayStart} and usv.create_time &lt; #{mondayEnd} then 1
+                       else 0 end) as mondayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{mondayEnd} and usv.create_time &lt; #{tuesdayEnd} then 1
+                       else 0 end) as tuesdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{tuesdayEnd} and usv.create_time &lt; #{wednesdayEnd} then 1
+                       else 0 end) as wednesdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{wednesdayEnd} and usv.create_time &lt; #{thursdayEnd} then 1
+                       else 0 end) as thursdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{thursdayEnd} and usv.create_time &lt; #{fridayEnd} then 1
+                       else 0 end) as fridayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{fridayEnd} and usv.create_time &lt; #{saturdayEnd} then 1
+                       else 0 end) as saturdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{saturdayEnd} and usv.create_time &lt; #{sundayEnd} then 1
+                       else 0 end) as sundayVisitCount,
+               #{startDate}        as startDay,
+               #{endDate}          as endDay
+        from user_shop_visit usv
+        where usv.shop_id = 1
+          and usv.create_time &gt; #{startDate}
+          and usv.create_time &lt; #{endDate}
+    </select>
+    <select id="getUserWeekVisitStatisticalSystem" resultMap="UserWeekVisitVO" parameterType="map">
+        select sum(case
+                       when usv.create_time &gt; #{mondayStart} and usv.create_time &lt; #{mondayEnd} then 1
+                       else 0 end) as mondayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{mondayEnd} and usv.create_time &lt; #{tuesdayEnd} then 1
+                       else 0 end) as tuesdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{tuesdayEnd} and usv.create_time &lt; #{wednesdayEnd} then 1
+                       else 0 end) as wednesdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{wednesdayEnd} and usv.create_time &lt; #{thursdayEnd} then 1
+                       else 0 end) as thursdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{thursdayEnd} and usv.create_time &lt; #{fridayEnd} then 1
+                       else 0 end) as fridayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{fridayEnd} and usv.create_time &lt; #{saturdayEnd} then 1
+                       else 0 end) as saturdayVisitCount,
+               sum(case
+                       when usv.create_time &gt; #{saturdayEnd} and usv.create_time &lt; #{sundayEnd} then 1
+                       else 0 end) as sundayVisitCount,
+               #{startDate}        as startDay,
+               #{endDate}          as endDay
+        from user_system_visit usv
+        where usv.create_time &gt; #{startDate}
+          and usv.create_time &lt; #{endDate}
+    </select>
+    <select id="getOrderStatisticalShop" resultMap="OrderStatisticalVO" parameterType="map">
+        select sum(case
+                       when c.id in (1, 2, 4, 5, 6, 7, 8, 11, 14, 17, 18) then odi.goods_price
+                       else 0 end)                                     as goodOrderTotalMoney,
+               sum(case when c.id = 3 then odi.goods_price else 0 end) as serviceOrderTotalMoney,
+               sum(case when c.id = 5 then odi.goods_price else 0 end) as refundTotalMoney
+        from order_info odi
+                 left join order_detail odt on odi.order_no = odt.order_no
+                 left join good g on odt.good_id = g.id
+                 left join goods_type gt on g.goods_type_id = gt.id
+                 left join category c on gt.category_id = c.id
+        where odi.shop_id = #{shopId}
+          and odi.order_status in (2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13)
+          and odi.create_time &gt; #{startDate}
+          and odi.create_time &lt; #{endDate}
+    </select>
+    <select id="getOrderStatisticalSystem" resultMap="OrderStatisticalVO" parameterType="map">
+        select sum(case
+                       when c.id in (1, 2, 4, 5, 6, 7, 8, 11, 14, 17, 18) then odi.payment
+                       else 0 end)                                 as goodOrderTotalMoney,
+               sum(case when c.id = 3 then odi.payment else 0 end) as serviceOrderTotalMoney,
+               sum(case when c.id = 5 then odi.payment else 0 end) as refundTotalMoney
+        from order_info odi
+                 left join order_detail odt on odi.order_no = odt.order_no
+                 left join good g on odt.good_id = g.id
+                 left join goods_type gt on g.goods_type_id = gt.id
+                 left join category c on gt.category_id = c.id
+        where odi.order_status in (2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13)
+          and odi.create_time &gt; #{startDate}
+          and odi.create_time &lt; #{endDate}
+    </select>
+</mapper>
