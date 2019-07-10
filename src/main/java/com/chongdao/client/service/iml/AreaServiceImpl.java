@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -55,5 +57,22 @@ public class AreaServiceImpl implements AreaService {
             }
         }
         return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+    }
+
+    @Override
+    public ResultResponse getParentAreaIdBySonAreaId(Integer sonAreaId) {
+        Area area = areaRepository.findById(sonAreaId).orElse(null);
+        Map<String, Integer> resp = new HashMap<>();
+        if(area != null) {
+            Area center = areaRepository.findById(area.getPid()).orElse(null);
+            if(center != null) {
+                resp.put("center", center.getId());
+                Area top = areaRepository.findById(center.getPid()).orElse(null);
+                if(top != null) {
+                    resp.put("top", top.getId());
+                }
+            }
+        }
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), resp);
     }
 }
