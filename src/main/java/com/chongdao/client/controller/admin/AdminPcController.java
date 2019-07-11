@@ -291,6 +291,7 @@ public class AdminPcController {
         return null;
     }
 
+    @GetMapping("getAreaWithdrawApplyListData")
     public ResultResponse getAreaWithdrawApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
     }

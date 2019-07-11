@@ -1,6 +1,7 @@
 package com.chongdao.client.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 public class UserVisitVO {
     private Integer visitTime;//人次
     private Integer visitUserCount;//人数
@@ -20,5 +22,5 @@ public class UserVisitVO {
     private Integer oldUserVisitTime;
     private Integer acceptedOrderCount;
     private Integer refundOrderCount;
-    private Integer type;//1:每日;2:每周;3:每月;4:每季;5:每年;
+//    private Integer type;//1:每日;2:每周;3:每月;4:每季;5:每年;
 }
