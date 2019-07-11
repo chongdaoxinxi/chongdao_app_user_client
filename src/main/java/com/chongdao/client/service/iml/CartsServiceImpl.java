@@ -78,7 +78,7 @@ public class CartsServiceImpl implements CartsService {
      */
     @Override
     public ResultResponse<CartVo> list(Integer userId,Integer shopId) {
-        CartVo cartVo = getCartVoLimit(userId,shopId);
+        CartVo cartVo = this.getCartVoLimit(userId,shopId);
         return ResultResponse.createBySuccess(cartVo);
     }
 

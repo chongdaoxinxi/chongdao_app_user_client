@@ -18,6 +18,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/order/")
 @Slf4j
+@CrossOrigin
 public class OrderController {
 
     @Autowired
