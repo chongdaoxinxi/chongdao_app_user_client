@@ -40,6 +40,8 @@ public class AdminPcController {
     private AreaWithdrawalApplyService areaWithdrawalApplyService;
     @Autowired
     private ManagementService managementService;
+    @Autowired
+    private StatisticalService statisticalService;
 
     /**
      * 确认退款完成
@@ -309,5 +311,16 @@ public class AdminPcController {
     @GetMapping("getConcessionalOrderListAdmin")
     public ResultResponse getConcessionalOrderListAdmin(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize){
         return orderService.getConcessionalOrderList(token, shopName, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
+    }
+
+    /**
+     * 获取首页统计数据
+     * @param token
+     * @param dateType
+     * @return
+     */
+    @GetMapping("getStatisticalHomeData")
+    public ResultResponse getStatisticalHomeData(String token, Integer dateType) {
+        return statisticalService.getStatisticalData(token, dateType);
     }
 }
