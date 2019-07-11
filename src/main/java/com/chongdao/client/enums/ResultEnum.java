@@ -8,7 +8,7 @@ public enum ResultEnum {
 
     SUCCESS(200, "成功"),
 
-    ERROR(500,"服务忙，请稍后重试"),
+    ERROR(500,"操作失败"),
     PARAM_ERROR(501, "参数不正确"),
 
     USER_TYPE_APP(1,"app用户"),

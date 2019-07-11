@@ -40,6 +40,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
     @Autowired
     private ShopRepository shopRepository;
 
+
     /**
      * 根据条件展示商店(首页)
      * @param pageNum
@@ -182,7 +183,8 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
             //获取当前类别的商品
             List<GoodsListVO> goodsListVOList = Lists.newArrayList();
-            List<Good> goodList = goodsRepository.findByShopIdAndCategoryIdIn(shopId, categoryIds);
+            //查询上架商品
+            List<Good> goodList = goodsRepository.findByShopIdAndCategoryIdInAndStatus(shopId, categoryIds,1);
             for (Good good : goodList) {
                 if (e.getId() == good.getGoodsTypeId()){
                     GoodsListVO goodsListVO = new GoodsListVO();

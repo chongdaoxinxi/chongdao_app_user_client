@@ -18,6 +18,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/order/")
 @Slf4j
+@CrossOrigin
 public class OrderController {
 
     @Autowired
@@ -35,6 +36,19 @@ public class OrderController {
         //校验用户是否登录
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.preOrCreateOrder(tokenVo.getUserId(),orderCommonVO);
+    }
+
+
+    /**
+     * 再来一单
+     * @param orderNo
+     * @param token
+     * @return
+     */
+    @GetMapping("anotherOrder/{shopId}")
+    public ResultResponse anotherOrder(@PathVariable Integer shopId,String orderNo,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.anotherOrder(tokenVo.getUserId(),orderNo,shopId);
     }
 
 
@@ -81,6 +95,8 @@ public class OrderController {
         return orderService.orderEval(orderEval,orderExpressEval);
 
     }
+
+
 
 
 }

@@ -10,6 +10,7 @@ import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
+import com.chongdao.client.service.CartsService;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -40,6 +41,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Autowired
     private CouponServiceImpl couponService;
 
+    @Autowired
+    private CartsService cartsService;
 
     /**
      * 预下单
@@ -125,6 +128,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     }
 
+    /**
+     * 再来一单
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ResultResponse anotherOrder(Integer userId, String orderNo,Integer shopId) {
+        return cartsService.anotherAdd(userId,orderNo,shopId);
+    }
 
 
     /**
@@ -145,7 +158,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             type = "1,2,3,4,5,6,7,8,9";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
-        List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, userId);
+        List<OrderVo> orderVoList = this.assembleOrderVoList(orderInfoList, userId);
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
@@ -279,7 +292,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             } else {
                 orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(), userId);
             }
-            OrderVo orderVo = assembleOrderVo(order, orderItemList);
+            OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
             orderVoList.add(orderVo);
         }
         return orderVoList;

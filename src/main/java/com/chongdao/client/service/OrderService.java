@@ -15,6 +15,14 @@ public interface OrderService {
     ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO);
 
     /**
+     * 再来一单
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ResultResponse anotherOrder(Integer userId, String orderNo,Integer shopId);
+
+    /**
      * 根据type 获取订单列表
      * @param userId
      * @param type
