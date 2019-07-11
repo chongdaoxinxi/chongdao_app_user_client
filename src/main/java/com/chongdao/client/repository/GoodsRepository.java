@@ -55,6 +55,8 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
      */
     List<Good> findAllByIdAndStatus(List<Integer> goodsId,Integer status);
 
+    Good findByIdAndStatus(Integer goodsId, Integer status);
+
 
     List<Good> findByShopIdAndCategoryIdInAndStatus(Integer shopId, List<Integer> categoryIds,Integer status);
 }

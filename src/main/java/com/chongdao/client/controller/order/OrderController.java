@@ -40,6 +40,19 @@ public class OrderController {
 
 
     /**
+     * 再来一单
+     * @param orderNo
+     * @param token
+     * @return
+     */
+    @GetMapping("anotherOrder/{shopId}")
+    public ResultResponse anotherOrder(@PathVariable Integer shopId,String orderNo,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.anotherOrder(tokenVo.getUserId(),orderNo,shopId);
+    }
+
+
+    /**
      * 根据type获取相应的订单
      * @param type 1:已支付未接单,2:已接单,3:服务中,4.已完成
      * @return
@@ -82,6 +95,8 @@ public class OrderController {
         return orderService.orderEval(orderEval,orderExpressEval);
 
     }
+
+
 
 
 }

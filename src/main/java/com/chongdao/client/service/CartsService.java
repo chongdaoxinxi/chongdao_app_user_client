@@ -14,6 +14,15 @@ public interface CartsService {
      */
     ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId);
 
+
+    /**
+     * 再来一单（添加购物车）
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ResultResponse anotherAdd(Integer userId, String orderNo,Integer shopId);
+
     /**
      * 查询购物车
      * @param userId

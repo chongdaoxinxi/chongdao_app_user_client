@@ -4,9 +4,14 @@ import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Carts;
 import com.chongdao.client.entitys.Good;
+import com.chongdao.client.entitys.OrderDetail;
+import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.CartsMapper;
 import com.chongdao.client.mapper.GoodMapper;
+import com.chongdao.client.repository.CartRepository;
+import com.chongdao.client.repository.GoodsRepository;
+import com.chongdao.client.repository.OrderDetailRepository;
 import com.chongdao.client.service.CartsService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.CartGoodsVo;
@@ -32,6 +37,18 @@ public class CartsServiceImpl implements CartsService {
 
     @Autowired
     private GoodMapper goodMapper;
+
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+
+
 
 
     /**
@@ -69,6 +86,39 @@ public class CartsServiceImpl implements CartsService {
             cartsMapper.updateByPrimaryKeySelective(cart);
         }
         return list(userId,shopId);
+    }
+
+    /**
+     * 再来一单（添加购物车）
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ResultResponse anotherAdd(Integer userId, String orderNo,Integer shopId) {
+        //再来一单为优先，清空之前选中的商品
+        cartRepository.deleteByUserIdAndShopId(userId, shopId);
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByUserIdAndOrderNo(userId, orderNo);
+        for (OrderDetail orderDetail : orderDetailList) {
+            //排除已下架或已删除的商品
+            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), 1);
+            if (good == null){
+                return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.GOODS_NOT_EXIST.getStatus(),GoodsStatusEnum.GOODS_NOT_EXIST.getMessage());
+            }
+            Carts cartItem = new Carts();
+            cartItem.setQuantity(orderDetail.getCount());
+            cartItem.setChecked(Const.Cart.CHECKED);
+            cartItem.setGoodsId(orderDetail.getGoodId());
+            cartItem.setUserId(userId);
+            cartItem.setCreateTime(new Date());
+            cartItem.setUpdateTime(new Date());
+            cartItem.setShopId(shopId);
+            int result = cartsMapper.insert(cartItem);
+            if (result > 0){
+                return list(userId,shopId);
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.GOODS_NOT_EXIST.getStatus(),GoodsStatusEnum.GOODS_NOT_EXIST.getMessage());
     }
 
     /**
