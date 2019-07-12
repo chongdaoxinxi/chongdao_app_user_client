@@ -188,6 +188,7 @@ public class CartsServiceImpl implements CartsService {
         }
         cartVo.setCartTotalPrice(cartTotalPrice);
         cartVo.setCartGoodsVoList(cartGoodsVoList);
+        cartVo.setCount(cartGoodsVoList.size());
         cartVo.setAllChecked(this.getAllCheckedStatus(userId));
         return cartVo;
     }

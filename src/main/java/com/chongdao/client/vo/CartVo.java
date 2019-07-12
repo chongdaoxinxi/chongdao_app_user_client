@@ -18,4 +18,6 @@ public class CartVo {
     private BigDecimal cartTotalPrice;
     private Boolean allChecked;
     private String imageHost;
+    private Integer count;  //当前用户购物车商品数目
+
 }
