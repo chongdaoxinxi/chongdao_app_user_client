@@ -854,7 +854,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     return getConcessionalOrderListAdmin(management.getAreaCode(), shopName, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
                 }
             } else if(role.equals("SHOP_PC")) {
-                getConcessionalOrderListShop(userId, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
+                return getConcessionalOrderListShop(userId, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
             }
         }
         return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());

@@ -11,24 +11,27 @@ import java.util.Date;
  * @Version 1.0
  **/
 public class StatisticalDateUtil {
-//    public static void main(String[] args) {
-//        // TODO Auto-generated method stub
-//        System.out.println("当天24点时间：" + getTimesNight().toLocaleString());
-//        System.out.println("当前时间：" + new Date().toLocaleString());
-//        System.out.println("当天0点时间：" + getTimesMorning().toLocaleString());
-//        System.out.println("昨天0点时间：" + getYesterdayMorning().toLocaleString());
-//        System.out.println("近7天时间：" + getWeekFromNow().toLocaleString());
-//        System.out.println("本周周一0点时间：" + getTimesWeekmorning().toLocaleString());
-//        System.out.println("本周周日24点时间：" + getTimesWeekNight().toLocaleString());
-//        System.out.println("本月初0点时间：" + getTimesMonthMorning().toLocaleString());
-//        System.out.println("本月未24点时间：" + getTimesMonthNight().toLocaleString());
-//        System.out.println("上月初0点时间：" + getLastMonthStartMorning().toLocaleString());
-//        System.out.println("本季度开始点时间：" + getCurrentQuarterStartTime().toLocaleString());
-//        System.out.println("本季度结束点时间：" + getCurrentQuarterEndTime().toLocaleString());
-//        System.out.println("本年开始点时间：" + getCurrentYearStartTime().toLocaleString());
-//        System.out.println("本年结束点时间：" + getCurrentYearEndTime().toLocaleString());
-//        System.out.println("上年开始点时间：" + getLastYearStartTime().toLocaleString());
-//    }
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        System.out.println("当天24点时间：" + getTimesNight().toLocaleString());
+        System.out.println("当前时间：" + new Date().toLocaleString());
+        System.out.println("当天0点时间：" + getTimesMorning().toLocaleString());
+        System.out.println("昨天0点时间：" + getYesterdayMorning().toLocaleString());
+        System.out.println("近7天时间：" + getWeekFromNow().toLocaleString());
+        System.out.println("本周周一0点时间：" + getTimesWeekMorning().toLocaleString());
+        System.out.println("本周周二0点时间: " + getTimesTuesdayMorning().toLocaleString());
+        System.out.println("本周周日0点时间: " + getTimesSunMorning().toLocaleString());
+        System.out.println("本周六0点时间: " + getTimesSaturdayMorning().toLocaleString()) ;
+        System.out.println("本周周日24点时间：" + getTimesWeekNight().toLocaleString());
+        System.out.println("本月初0点时间：" + getTimesMonthMorning().toLocaleString());
+        System.out.println("本月未24点时间：" + getTimesMonthNight().toLocaleString());
+        System.out.println("上月初0点时间：" + getLastMonthStartMorning().toLocaleString());
+        System.out.println("本季度开始点时间：" + getCurrentQuarterStartTime().toLocaleString());
+        System.out.println("本季度结束点时间：" + getCurrentQuarterEndTime().toLocaleString());
+        System.out.println("本年开始点时间：" + getCurrentYearStartTime().toLocaleString());
+        System.out.println("本年结束点时间：" + getCurrentYearEndTime().toLocaleString());
+        System.out.println("上年开始点时间：" + getLastYearStartTime().toLocaleString());
+    }
 
     /**
      * 获得当天0点时间
@@ -85,6 +88,48 @@ public class StatisticalDateUtil {
         Calendar cal = Calendar.getInstance();
         cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        return cal.getTime();
+    }
+
+    public static Date getTimesTuesdayMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getTimesWeekMorning());
+        cal.add(Calendar.DAY_OF_WEEK, 1);
+        return cal.getTime();
+    }
+
+    public static Date getTimesWednesdayMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getTimesWeekMorning());
+        cal.add(Calendar.DAY_OF_WEEK, 2);
+        return cal.getTime();
+    }
+
+    public static Date getTimesThursdayMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getTimesWeekMorning());
+        cal.add(Calendar.DAY_OF_WEEK, 3);
+        return cal.getTime();
+    }
+
+    public static Date getTimesFridayMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getTimesWeekMorning());
+        cal.add(Calendar.DAY_OF_WEEK, 4);
+        return cal.getTime();
+    }
+
+    public static Date getTimesSaturdayMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getTimesWeekMorning());
+        cal.add(Calendar.DAY_OF_WEEK, 5);
+        return cal.getTime();
+    }
+
+    public static Date getTimesSunMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getTimesWeekMorning());
+        cal.add(Calendar.DAY_OF_WEEK, 6);
         return cal.getTime();
     }
 

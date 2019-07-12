@@ -9,10 +9,10 @@
             <arg column="oldUserVisitTime" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="acceptedOrderCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="refundOrderCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-            <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <!--<arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>-->
         </constructor>
     </resultMap>
-    <resultMap id="UserWeekVisitVO" type="com.chongdao.client.vo.UserVisitVO">
+    <resultMap id="UserWeekVisitVO" type="com.chongdao.client.vo.UserWeekVisitVO">
         <constructor>
             <arg column="mondayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="tuesdayVisitCount" jdbcType="INTEGER" javaType="java.lang.Integer"/>
@@ -25,17 +25,17 @@
             <arg column="endDay" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
     </resultMap>
-    <resultMap id="OrderStatisticalVO" type="com.chongdao.client.vo.UserVisitVO">
+    <resultMap id="OrderStatisticalVO" type="com.chongdao.client.vo.OrderStatisticalVO">
         <constructor>
             <arg column="goodOrderTotalMoney" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="serviceOrderTotalMoney" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="refundOrderTotalMoney" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
-            <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <!--<arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>-->
         </constructor>
     </resultMap>
     <select id="getUserVisitStatisticalShop" resultMap="UserVisitVO" parameterType="map">
         select *
-        from (select count(id) as visitTime, count(distinct usv.user_id) as visitPersonCount
+        from (select count(id) as visitTime, count(distinct usv.user_id) as visitUserCount
               from user_shop_visit usv
               where usv.shop_id = #{shopId}
                 and usv.create_time &gt; #{startDate}
@@ -63,7 +63,7 @@
     </select>
     <select id="getUserVisitStatisticalSystem" resultMap="UserVisitVO" parameterType="map">
         select *
-        from (select count(id) as visitTime, count(distinct usv.user_id) as visitPersonCount
+        from (select count(id) as visitTime, count(distinct usv.user_id) as visitUserCount
               from user_system_visit usv
               where usv.create_time &gt; #{startDate}
                 and usv.create_time &lt; #{endDate}) A
@@ -107,12 +107,12 @@
                sum(case
                        when usv.create_time &gt; #{saturdayEnd} and usv.create_time &lt; #{sundayEnd} then 1
                        else 0 end) as sundayVisitCount,
-               #{startDate}        as startDay,
-               #{endDate}          as endDay
+               #{mondayStart}        as startDay,
+               #{sundayEnd}          as endDay
         from user_shop_visit usv
         where usv.shop_id = 1
-          and usv.create_time &gt; #{startDate}
-          and usv.create_time &lt; #{endDate}
+          and usv.create_time &gt; #{mondayStart}
+          and usv.create_time &lt; #{sundayEnd}
     </select>
     <select id="getUserWeekVisitStatisticalSystem" resultMap="UserWeekVisitVO" parameterType="map">
         select sum(case
@@ -136,18 +136,18 @@
                sum(case
                        when usv.create_time &gt; #{saturdayEnd} and usv.create_time &lt; #{sundayEnd} then 1
                        else 0 end) as sundayVisitCount,
-               #{startDate}        as startDay,
-               #{endDate}          as endDay
+               #{mondayStart}        as startDay,
+               #{sundayEnd}          as endDay
         from user_system_visit usv
-        where usv.create_time &gt; #{startDate}
-          and usv.create_time &lt; #{endDate}
+        where usv.create_time &gt; #{mondayStart}
+          and usv.create_time &lt; #{sundayEnd}
     </select>
     <select id="getOrderStatisticalShop" resultMap="OrderStatisticalVO" parameterType="map">
         select sum(case
                        when c.id in (1, 2, 4, 5, 6, 7, 8, 11, 14, 17, 18) then odi.goods_price
                        else 0 end)                                     as goodOrderTotalMoney,
                sum(case when c.id = 3 then odi.goods_price else 0 end) as serviceOrderTotalMoney,
-               sum(case when c.id = 5 then odi.goods_price else 0 end) as refundTotalMoney
+               sum(case when c.id = 5 then odi.goods_price else 0 end) as refundOrderTotalMoney
         from order_info odi
                  left join order_detail odt on odi.order_no = odt.order_no
                  left join good g on odt.good_id = g.id
@@ -163,7 +163,7 @@
                        when c.id in (1, 2, 4, 5, 6, 7, 8, 11, 14, 17, 18) then odi.payment
                        else 0 end)                                 as goodOrderTotalMoney,
                sum(case when c.id = 3 then odi.payment else 0 end) as serviceOrderTotalMoney,
-               sum(case when c.id = 5 then odi.payment else 0 end) as refundTotalMoney
+               sum(case when c.id = 5 then odi.payment else 0 end) as refundOrderTotalMoney
         from order_info odi
                  left join order_detail odt on odi.order_no = odt.order_no
                  left join good g on odt.good_id = g.id

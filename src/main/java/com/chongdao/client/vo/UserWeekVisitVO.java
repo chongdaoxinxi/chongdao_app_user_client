@@ -1,6 +1,7 @@
 package com.chongdao.client.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 public class UserWeekVisitVO {
     private Integer mondayVisitCount;
     private Integer tuesdayVisitCount;
