@@ -23,7 +23,7 @@ public class PetCategory {
 
     private String name;
 
-    private Integer categoryId;
+    private Integer goodsTypeId;
 
     private Date createTime;
 

@@ -366,22 +366,25 @@
     <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
         select
         <include refid="Base_Column_Lists"/>,
-        (select name from category c where c.id=g.category_id ) categoryName,
-        p.id coupon_id,p.coupon_name,p.type
-        from  good g left join coupon p on g.shop_id = p.shop_id
+        p.id coupon_id,p.cpn_name coupon_name,p.cpn_type type
+        from  good g left join cpn_info p on g.shop_id = p.shop_id
         where g.status = 1
         <if test="goodsName != null">
             and g.name like #{goodsName}
         </if>
-        <if test="categoryId != null">
-            or  g.category_id  in (${categoryId})
+        <if test="brandId != null">
+            and g.brand_id = #{brandId}
         </if>
-        <if test="discount >0">
-            or  g.discount  > 0
+        <if test="goodsTypeId != null">
+            and g.goods_type_id = #{goodsTypeId}
         </if>
-        <if test="proActivities != null">
-            or  p.type  in (${proActivities})
+        <if test="scopeId != null">
+            and g.scope_id = #{scopeId}
         </if>
+        <if test="petCategoryId != null">
+            and g.pet_category_id = #{petCategoryId}
+        </if>
+
         order by ${orderBy}
     </select>
 

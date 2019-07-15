@@ -120,7 +120,20 @@ public class CommonRepository {
     protected ExpressRepository expressRepository;
 
 
+    @Autowired
+    protected BrandRepository brandRepository;
 
+    @Autowired
+    protected ScopeApplicationRepository applicationRepository;
+
+    @Autowired
+    protected PetCategoryRepository petCategoryRepository;
+
+    @Autowired
+    protected BathingServiceRepository bathingServiceRepository;
+
+    @Autowired
+    protected ScopeApplicationRepository scopeApplicationRepository;
 
 
 

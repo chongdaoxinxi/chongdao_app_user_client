@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PetCategoryRepository extends JpaRepository<PetCategory,Integer> {
-    List<PetCategory> findByCategoryId(Integer categoryId);
+    List<PetCategory> findByGoodsTypeId(Integer goodsTypeId);
 }

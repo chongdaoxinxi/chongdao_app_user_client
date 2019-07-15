@@ -1,16 +1,13 @@
 package com.chongdao.client.service.iml;
 
+import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
-import com.chongdao.client.enums.CouponStatusEnum;
+import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
-import com.chongdao.client.mapper.CategoryMapper;
-import com.chongdao.client.mapper.GoodMapper;
-import com.chongdao.client.mapper.GoodsTypeMapper;
-import com.chongdao.client.mapper.ShopMapper;
-import com.chongdao.client.repository.*;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
@@ -18,51 +15,16 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static com.chongdao.client.common.Const.OrderBy.*;
-import static com.chongdao.client.common.Const.goodsListProActivities.*;
+import static com.chongdao.client.service.iml.CouponServiceImpl.computerTime;
 
 @Service
-public class GoodsServiceImpl implements GoodsService {
-
-
-    @Autowired
-    private GoodMapper goodMapper;
-
-    @Autowired
-    private CategoryMapper categoryMapper;
-
-    @Autowired
-    private  CouponRepository couponRepository;
-
-    @Autowired
-    private ShopMapper shopMapper;
-
-    @Autowired
-    private GoodsTypeMapper goodsTypeMapper;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private GoodsRepository goodsRepository;
-
-    @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
-    private ScopeApplicationRepository applicationRepository;
-
-    @Autowired
-    private PetCategoryRepository petCategoryRepository;
-
-    @Autowired
-    private BathingServiceRepository bathingServiceRepository;
+public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
 
     /**
@@ -71,11 +33,10 @@ public class GoodsServiceImpl implements GoodsService {
      * @param pageNum 页数
      * @param pageSize 每页数据数量
      * @param orderBy 排序方式(价格、销量、好评等)
-     * @param proActivities 1.满减活动 2.店铺打折 3.店铺红包
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,String categoryId,String  proActivities, String orderBy) {
+    public ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,Integer brandId,Integer goodsTypeId,Integer scopeId,Integer petCategoryId,String orderBy) {
         //搜索关键词不为空
         if (StringUtils.isNotBlank(keyword)){
             keyword =new StringBuilder().append("%").append(keyword).append("%").toString();
@@ -92,21 +53,10 @@ public class GoodsServiceImpl implements GoodsService {
                 orderBy = ARRANGEMENT_VALUE_GOODS;
             }
         }
-        //初始化折扣筛选条件，方便sql拼接
-        Integer discount = 0;
-        if (StringUtils.isNotBlank(proActivities)){
-            //传入的参数内容包含1表示为店铺打折
-            String[] strings = proActivities.split(",");
-            for (String s : strings) {
-                if (DISCOUNT.contains(s)) {
-                    discount = 1;
-                }
-            }
-        }
         //查询所有上架商品(综合排序)
         List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
-                orderBy,StringUtils.isBlank(categoryId) ? null : categoryId,
-                discount,StringUtils.isBlank(proActivities) ? null: proActivities);
+                brandId,goodsTypeId,scopeId,petCategoryId,
+                orderBy);
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setList(this.goodsListVOList(goodList));
         return ResultResponse.createBySuccess(pageInfo);
@@ -120,7 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse<GoodsDetailVo> getGoodsDetail(Integer goodsId) {
+    public ResultResponse<GoodsDetailVo> getGoodsDetail(Integer goodsId, Integer userId) {
         if (goodsId == null){
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
@@ -129,18 +79,30 @@ public class GoodsServiceImpl implements GoodsService {
         if (good == null){
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
-        //查询优惠券（属于该商品可以使用或者领取的）
-        List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
-        List<CouponVO> couponVOList = this.assembleCouponVo(couponList);
         //封装详情VO类
         GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
         goodsDetailVo.setGoodsId(goodsId);
-        goodsDetailVo.setCouponVOList(couponVOList);
+        //产品重量
+        goodsDetailVo.setUnit(good.getUnit());
+        //产品品牌
+        Brand brand = brandRepository.findById(good.getBrandId()).get();
+        goodsDetailVo.setBrandName(brand.getName());
+        //适用范围
+        ScopeApplication application = scopeApplicationRepository.findById(good.getScopeId()).get();
+        goodsDetailVo.setScopeName(application.getName());
+        //categoryId:2 即洗澡类 才会有服务内容
+        if (good.getCategoryId() == 2) {
+            goodsDetailVo.setServiceContent(bathingServiceRepository.findAll());
+        }
+
         BeanUtils.copyProperties(good, goodsDetailVo);
         //计算打折后的价格。折扣必须大于0且不能为空
         if (good.getDiscount() > 0 && good.getDiscount() !=null){
             goodsDetailVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
         }
+        //查询优惠券（属于该商品可以使用或者领取的）
+        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnState(good.getShopId(), 1);
+        goodsDetailVo.setCouponInfoList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
         //查询店铺信息
         Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
         if (shop == null){
@@ -171,8 +133,7 @@ public class GoodsServiceImpl implements GoodsService {
             }
             //封装优惠券
             //根据店铺查询在架状态的优惠券
-            List<Coupon> couponList = couponRepository.findByShopIdAndStatusAndType(good.getShopId(), CouponStatusEnum.UP_COUPON.getStatus(), GoodsStatusEnum.GOODS.getStatus());
-            goodsListVO.setCouponVOList(this.assembleCouponVo(couponList));
+            goodsListVO.setCouponInfoList(this.assembleCouponVo(good.getShopId()));
             goodsListVOList.add(goodsListVO);
         });
         return goodsListVOList;
@@ -182,21 +143,59 @@ public class GoodsServiceImpl implements GoodsService {
     /**
      * 封装优惠券功能方便复用
      * type:0 代表店铺满减活动（不属于优惠券）;1代表优惠券
-     * @param couponList
      * @return
      */
 
-    public  static List<CouponVO> assembleCouponVo(List<Coupon> couponList){
-        List<CouponVO> couponVOS = Lists.newArrayList();
-        //封装优惠券
-        couponList.forEach(coupon -> {
-            CouponVO couponVO = new CouponVO();
-            BeanUtils.copyProperties(coupon,couponVO);
-            couponVOS.add(couponVO);
+    public List<CouponInfo> assembleCouponVo(Integer shopId){
+        //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
+        //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
+        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnState(shopId, 1);
+        List<CouponInfo> couponInfos = Lists.newArrayList();
+        couponInfoList.stream().forEach(couponInfo -> {
+            //查询截止日期与当前日期差
+            long result = computerTime(couponInfo.getValidityEndDate());
+            if (result > 0) {
+                //逻辑处理
+                couponInfos.add(couponInfo);
+            }
         });
-        return couponVOS;
+        return couponInfos;
     }
 
+
+    /**
+     * 商品详情 封装当前商品可使用的优惠券
+     * @param couponInfoList
+     * @return
+     */
+    public List<CouponInfo> assembleCpn(List<CouponInfo> couponInfoList,Integer userId,Integer categoryId,Integer shopId){
+        //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
+        //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
+        List<CouponInfo> couponInfos = Lists.newArrayList();
+        couponInfoList.stream().forEach(couponInfo -> {
+            CpnUser cpnUser = null;
+            if (userId != null) {
+                cpnUser = cpnUserRepository.findByUserIdAndCpnIdAndShopId(userId, couponInfo.getId(), String.valueOf(shopId));
+            }
+            //查询截止日期与当前日期差
+            long result = computerTime(couponInfo.getValidityEndDate());
+            if (result > 0) {
+                //逻辑处理
+                //适用范围与当前商品的范围比较，店铺满减除外(未登录用户，需展示未领取的优惠券)
+                if (couponInfo.getScopeType() == categoryId && userId == null && couponInfo.getCpnType() != 4){
+                    couponInfos.add(couponInfo);
+                }else if (couponInfo.getScopeType() == categoryId && userId != null && couponInfo.getCpnType() != 4){
+                    //用户未领取该优惠券才会展示
+                    if (cpnUser.getCpnId() != couponInfo.getId()){
+                        couponInfos.add(couponInfo);
+                    }
+                }else{
+                    couponInfos.add(couponInfo);
+                }
+            }
+        });
+        return couponInfos;
+    }
 
     //-------------------------------------------------------------------商户端实现--------------------------------------------------------------------------//
 
@@ -425,8 +424,8 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer petCategoryId) {
-        List<PetCategory> categoryList = petCategoryRepository.findByCategoryId(categoryId);
+    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer goodsTypeId,Integer petCategoryId) {
+        List<PetCategory> categoryList = petCategoryRepository.findByGoodsTypeId(goodsTypeId);
         List<PetCategoryAndScopeVO> petCategoryAndScopeVOList = Lists.newArrayList();
         categoryList.forEach(e->{
             //填充宠物分类
@@ -456,5 +455,39 @@ public class GoodsServiceImpl implements GoodsService {
     public ResultResponse getBathingService() {
         List<BathingService> bathingServiceList = bathingServiceRepository.findAll();
         return ResultResponse.createBySuccess(bathingServiceList);
+    }
+
+    /**
+     * 获取适用期和适用类型
+     * @param goodsTypeId
+     * @param brandId
+     * @return
+     */
+    @Override
+    public ResultResponse getScopeType(Integer goodsTypeId, Integer brandId) {
+        if (goodsTypeId == null && brandId == null){
+            return ResultResponse.createBySuccess();
+        }
+
+        List<ScopeApplication> scopeApplicationList = null;
+        List<PetCategory> petCategoryList = null;
+        //狗粮
+        if (goodsTypeId == 1) {
+            //获取狗粮适用类型
+            petCategoryList = petCategoryRepository.findByGoodsTypeId(2);
+            //获取狗粮适用期
+            scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,2);
+        }
+        //猫粮
+        else if (goodsTypeId == 2) {
+            //获取猫粮适用类型
+            petCategoryList = petCategoryRepository.findByGoodsTypeId(1);
+            //获取猫粮适用期
+            scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,1);
+        }
+        ScopeVO scopeVO = new ScopeVO();
+        scopeVO.setPetCategoryList(petCategoryList);
+        scopeVO.setScopeApplicationList(scopeApplicationList);
+        return ResultResponse.createBySuccess(scopeVO);
     }
 }

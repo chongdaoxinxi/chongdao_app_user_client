@@ -174,9 +174,9 @@ public class ShopGoodManageController {
      * @param petCategoryId
      * @return
      */
-    @GetMapping("getPetCategory/{categoryId}/{petCategoryId}")
-    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(@PathVariable Integer categoryId, @PathVariable Integer petCategoryId){
-        return goodsService.getPetCategory(categoryId,petCategoryId);
+    @GetMapping("getPetCategory/{goodsTypeId}/{petCategoryId}")
+    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(@PathVariable Integer goodsTypeId, @PathVariable Integer petCategoryId){
+        return goodsService.getPetCategory(goodsTypeId,petCategoryId);
     }
 
     /**

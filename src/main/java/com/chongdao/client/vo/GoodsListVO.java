@@ -1,6 +1,7 @@
 package com.chongdao.client.vo;
 
 import com.chongdao.client.entitys.BathingService;
+import com.chongdao.client.entitys.coupon.CouponInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +16,10 @@ public class GoodsListVO {
 
     private String name;
 
-    /** 商品分类 ->商家自定义*/
+    /** 商品分类 ->官方定义*/
     private Integer goodsTypeId;
+
+    private String goodsTypeName;
 
     /** 商品分类 ->官方定义*/
     private Integer categoryId;
@@ -69,7 +72,7 @@ public class GoodsListVO {
 
     List<BathingService> bathingServiceList;
 
-    private List<CouponVO> couponVOList;
+    private List<CouponInfo> couponInfoList;
 
 
 

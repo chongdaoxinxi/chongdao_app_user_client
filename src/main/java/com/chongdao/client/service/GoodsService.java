@@ -20,14 +20,14 @@ public interface GoodsService {
      * @param orderBy 排序方式(价格、销量、好评等)
      * @return
      */
-    ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize, String categoryId,String  proActivities, String orderBy);
+    ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,Integer brandId,Integer goodsTypeId,Integer scopeId,Integer petCategoryId, String orderBy);
 
     /**
      * 商品详情
      * @param goodsId
      * @return
      */
-    ResultResponse<GoodsDetailVo> getGoodsDetail(Integer goodsId);
+    ResultResponse<GoodsDetailVo> getGoodsDetail(Integer goodsId,Integer userId);
 
 
 
@@ -126,4 +126,12 @@ public interface GoodsService {
      * @return
      */
     ResultResponse getBathingService();
+
+    /**
+     * 获取适用期和使用类型
+     * @param goodsTypeId
+     * @param brandId
+     * @return
+     */
+    ResultResponse getScopeType(Integer goodsTypeId, Integer brandId);
 }
