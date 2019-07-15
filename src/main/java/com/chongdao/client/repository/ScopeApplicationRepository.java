@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ScopeApplicationRepository extends JpaRepository<ScopeApplication,Integer> {
     List<ScopeApplication> findByPetCategoryId(Integer petCategoryId);
+
+    List<ScopeApplication> findByBrandIdAndType(Integer brandId,Integer type);
 }

@@ -164,7 +164,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      * @param date
      * @return
      */
-    private long computerTime(Date date){
+    public static long computerTime(Date date){
         long result = DateTimeUtil.costTime(DateTimeUtil.dateToStr(date),
                 DateTimeUtil.dateToStr(new Date()));
         return result;

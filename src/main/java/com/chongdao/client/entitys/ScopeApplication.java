@@ -23,6 +23,10 @@ public class ScopeApplication {
 
     private Integer petCategoryId;
 
+    private Integer brandId;
+
+    private Integer type;
+
     private Date createTime;
 
     private Date updateTime;

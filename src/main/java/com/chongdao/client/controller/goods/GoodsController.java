@@ -1,8 +1,11 @@
 package com.chongdao.client.controller.goods;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Category;
+import com.chongdao.client.entitys.Brand;
+import com.chongdao.client.entitys.GoodsType;
+import com.chongdao.client.repository.BrandRepository;
 import com.chongdao.client.repository.CategoryRepository;
+import com.chongdao.client.repository.GoodsTypeRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.github.pagehelper.PageInfo;
@@ -23,26 +26,36 @@ public class GoodsController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
+    private GoodsTypeRepository goodsTypeRepository;
+
 
     /**
      * 商品列表展示
      * @param keyword 搜索关键词
-     * @param pageNum 页数
-     * @param pageSize 每页数据数量
+     * @param pageNum
+     * @param pageSize
+     * @param brandId
+     * @param goodsTypeId
+     * @param scopeId 适用期(仅猫/狗粮)
+     * @param petCategoryId 适用类型(仅狗粮)
      * @param orderBy 排序方式(价格、销量、好评等)
-     * @param categoryId  筛选条件(商品分类)
-     * @param  proActivities 筛选条件(优惠活动)
      * @return
      */
     @GetMapping("list")
     public ResultResponse<PageInfo> list(@RequestParam(value = "keyword",required = false) String keyword,
                                          @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                         @RequestParam(value = "categoryId",required = false) String categoryId,
-                                         @RequestParam(value = "proActivities",required = false) String  proActivities,
+                                         @RequestParam(value = "brandId", required = false) Integer brandId,
+                                         @RequestParam(value = "goodsTypeId", required = false) Integer goodsTypeId,
+                                         @RequestParam(value = "scopeId", required = false) Integer scopeId,
+                                         @RequestParam(value = "petCategoryId", required = false) Integer petCategoryId,
                                          @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy){
 
-        return goodsService.getGoodsByKeyword(keyword,pageNum,pageSize,categoryId,proActivities,orderBy);
+        return goodsService.getGoodsByKeyword(keyword,pageNum,pageSize,brandId,goodsTypeId,scopeId,petCategoryId,orderBy);
     }
 
 
@@ -52,20 +65,43 @@ public class GoodsController {
      * @return
      */
     @GetMapping("getGoodsDetail/{goodsId}")
-    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId){
-        return goodsService.getGoodsDetail(goodsId);
+    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId,@RequestParam(required = false) Integer userId){
+        return goodsService.getGoodsDetail(goodsId,userId);
     }
 
 
     /**
-     * 筛选商品分类
+     * 商品分类
      * @return
      */
     @GetMapping("getCategory")
-    public ResultResponse getCategory(){
-        List<Category> categoryList = categoryRepository.findAllByStatus(1);
-        return ResultResponse.createBySuccess(categoryList);
+    public ResultResponse getBrand(){
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
+        return ResultResponse.createBySuccess(goodsTypeList);
     }
+
+    /**
+     * 获取品牌
+     * @return
+     */
+    @GetMapping("getBrandList/{goodsTypeId}")
+    public ResultResponse<List<Brand>> getBrandList(@PathVariable Integer goodsTypeId){
+        return goodsService.getBrandList(goodsTypeId);
+    }
+
+
+    /**
+     * 获取适用期和使用类型
+     * @param goodsTypeId
+     * @param brandId
+     * @return
+     */
+    @GetMapping("getScopeType/{goodsTypeId}/{brandId}")
+    public ResultResponse getScopeType(@PathVariable Integer goodsTypeId, @PathVariable Integer brandId){
+        return goodsService.getScopeType(goodsTypeId, brandId);
+    }
+
+
 
 
 
