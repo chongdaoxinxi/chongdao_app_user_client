@@ -1,6 +1,7 @@
 package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.ExpressRule;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
@@ -42,6 +43,8 @@ public class AdminPcController {
     private ManagementService managementService;
     @Autowired
     private StatisticalService statisticalService;
+    @Autowired
+    private ExpressRuleService expressRuleService;
 
     /**
      * 确认退款完成
@@ -323,5 +326,26 @@ public class AdminPcController {
     @GetMapping("getStatisticalHomeData")
     public ResultResponse getStatisticalHomeData(String token, Integer dateType) {
         return statisticalService.getStatisticalData(token, dateType);
+    }
+
+    /**
+     * 获取配送规则(根据管理员token)
+     * @param token
+     * @return
+     */
+    @GetMapping("getExpressRule")
+    public ResultResponse getExpressRule(String token) {
+        return expressRuleService.getExpressRule(token);
+    }
+
+    /**
+     * 新增/保存配送规则
+     * @param token
+     * @param expressRule
+     * @return
+     */
+    @PostMapping("saveExpressRule")
+    public ResultResponse saveExpressRule(String token, ExpressRule expressRule) {
+        return expressRuleService.saveExpressRule(token, expressRule);
     }
 }
