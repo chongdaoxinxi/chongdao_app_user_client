@@ -4,11 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Time;
+import java.util.Date;
 
 /**
  * @Author onlineS
@@ -24,19 +23,11 @@ public class ExpressRule implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private String areaCode;//区域码
-    private String startTime;//工作开始时间
-    private String endTime;//工作结束时间
-
-    @Override
-    public String toString() {
-        return "ExpressRule{" +
-                "id=" + id +
-                ", areaCode='" + areaCode + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", endTime='" + endTime + '\'' +
-                '}';
-    }
+    private Time startTime;//工作开始时间
+    private Time endTime;//工作结束时间
+    private Date createTime;//创建时间
+    private Date updateTime;//更新时间
 }
