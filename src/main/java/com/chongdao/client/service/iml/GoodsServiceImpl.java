@@ -480,8 +480,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         }
         //猫粮
         else if (goodsTypeId == 2) {
-            //获取猫粮适用类型
-            petCategoryList = petCategoryRepository.findByGoodsTypeId(1);
+            //猫粮没有适用范围
             //获取猫粮适用期
             scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,1);
         }
