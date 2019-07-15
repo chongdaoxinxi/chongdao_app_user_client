@@ -1,7 +1,6 @@
 package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.ExpressRule;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
@@ -341,11 +340,23 @@ public class AdminPcController {
     /**
      * 新增/保存配送规则
      * @param token
-     * @param expressRule
+     * @param startTime
+     * @param endTime
      * @return
      */
     @PostMapping("saveExpressRule")
-    public ResultResponse saveExpressRule(String token, ExpressRule expressRule) {
-        return expressRuleService.saveExpressRule(token, expressRule);
+    public ResultResponse saveExpressRule(String token, String startTime, String endTime) {
+        return expressRuleService.saveExpressRule(token, startTime, endTime);
+    }
+
+    /**
+     * 获取管理员城市信息
+     * @param token
+     * @return
+     */
+    @GetMapping("getManagementCityInfo")
+    public ResultResponse getManagementCityInfo(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return managementService.getManagementById(tokenVo.getUserId());
     }
 }
