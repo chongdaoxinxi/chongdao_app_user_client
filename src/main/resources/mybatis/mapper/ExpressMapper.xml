@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.ExpressMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.vo.ExpressVO">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="username" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="native_password" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="area_code" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="area_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        exp.id, exp.username, exp.password, exp.native_password, exp.name, exp.phone, exp.type, exp.status, exp.area_code, exp.area_name
+    </sql>
+    <select id="getExpressListByAreaCodeAndName" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from express exp
+        where exp.area_code = #{areaCode}
+        <if test="name != null and name != ''">
+            and exp.name like concat("%", #{name}, "%")
+        </if>
+        <if test="status != null">
+            and exp.status = #{status}
+        </if>
+        <if test="type != null">
+            and exp.type = #{type}
+        </if>
+        order by exp.area_code asc, exp.status desc, exp.type desc, exp.id asc
+    </select>
+</mapper>

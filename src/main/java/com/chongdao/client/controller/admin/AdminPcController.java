@@ -1,6 +1,7 @@
 package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Express;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
@@ -44,6 +45,8 @@ public class AdminPcController {
     private StatisticalService statisticalService;
     @Autowired
     private ExpressRuleService expressRuleService;
+    @Autowired
+    private  ExpressService expressService;
 
     /**
      * 确认退款完成
@@ -358,5 +361,27 @@ public class AdminPcController {
     public ResultResponse getManagementCityInfo(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return managementService.getManagementById(tokenVo.getUserId());
+    }
+
+    /**
+     * 获取配送员数据
+     * @param token
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getExpressList")
+    public ResultResponse getExpressList(String token, String expressName, Integer pageNum, Integer pageSize) {
+        return expressService.getExpressList(token, expressName, pageNum, pageSize);
+    }
+
+    /**
+     * 保存配送员信息
+     * @param express
+     * @return
+     */
+    @PostMapping("saveExpress")
+    public ResultResponse saveExpress(Express express) {
+        return expressService.saveExpress(express);
     }
 }

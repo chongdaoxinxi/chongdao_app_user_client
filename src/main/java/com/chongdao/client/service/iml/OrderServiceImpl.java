@@ -308,11 +308,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
     private OrderVo assembleOrderVo(OrderInfo order, List<OrderDetail> orderItemList) {
         OrderVo orderVo = new OrderVo();
+        BeanUtils.copyProperties(order, orderVo);
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-        BeanUtils.copyProperties(order, orderVo);
-        orderVo.setShopName(shop.getShopName());
-        orderVo.setShopLogo(shop.getLogo());
+        if(shop != null) {
+            orderVo.setShopName(shop.getShopName());
+            orderVo.setShopLogo(shop.getLogo());
+        }
         //接宠地址
         UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
         //送宠地址
