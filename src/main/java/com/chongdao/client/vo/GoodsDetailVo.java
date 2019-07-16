@@ -52,12 +52,9 @@ public class GoodsDetailVo {
     /** 品牌id */
     private Integer brandId;
 
-    private String brandName;
-
-    private String unit;
-
-    private String scopeName;
-
-    private List<BathingService> serviceContent;
+    private String brandName; //品牌
+    private String unit;      //重量
+    private String scopeName; //适用阶段
+    private List<BathingService> serviceContent;   //洗澡服务内容
 
 }
