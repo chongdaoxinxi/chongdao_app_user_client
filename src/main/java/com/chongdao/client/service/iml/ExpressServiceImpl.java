@@ -38,7 +38,7 @@ public class ExpressServiceImpl implements ExpressService {
     private ExpressRepository expressRepository;
 
     @Override
-    public ResultResponse getExpressList(String token, String expressName, Integer pageNum, Integer pageSize) {
+    public ResultResponse getExpressList(String token, String expressName, Integer selectType, Integer selectStatus, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
@@ -48,7 +48,7 @@ public class ExpressServiceImpl implements ExpressService {
                     expressName = "";
                 }
                 PageHelper.startPage(pageNum, pageSize);
-                List<ExpressVO> list = expressMapper.getExpressListByAreaCodeAndName(management.getAreaCode(), expressName, null, null);
+                List<ExpressVO> list = expressMapper.getExpressListByAreaCodeAndName(management.getAreaCode(), expressName, selectType, selectStatus);
                 PageInfo pageResult = new PageInfo(list);
                 pageResult.setList(list);
                 return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), pageResult);

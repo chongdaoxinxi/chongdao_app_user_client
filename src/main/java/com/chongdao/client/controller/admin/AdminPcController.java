@@ -371,8 +371,8 @@ public class AdminPcController {
      * @return
      */
     @GetMapping("getExpressList")
-    public ResultResponse getExpressList(String token, String expressName, Integer pageNum, Integer pageSize) {
-        return expressService.getExpressList(token, expressName, pageNum, pageSize);
+    public ResultResponse getExpressList(String token, String expressName, Integer selectType, Integer selectStatus, Integer pageNum, Integer pageSize) {
+        return expressService.getExpressList(token, expressName, selectType, selectStatus, pageNum, pageSize);
     }
 
     /**
