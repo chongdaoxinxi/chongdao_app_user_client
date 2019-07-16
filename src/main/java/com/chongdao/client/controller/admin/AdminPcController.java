@@ -1,7 +1,7 @@
 package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.ExpressRule;
+import com.chongdao.client.entitys.Express;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
@@ -45,6 +45,8 @@ public class AdminPcController {
     private StatisticalService statisticalService;
     @Autowired
     private ExpressRuleService expressRuleService;
+    @Autowired
+    private  ExpressService expressService;
 
     /**
      * 确认退款完成
@@ -341,11 +343,55 @@ public class AdminPcController {
     /**
      * 新增/保存配送规则
      * @param token
-     * @param expressRule
+     * @param startTime
+     * @param endTime
      * @return
      */
     @PostMapping("saveExpressRule")
-    public ResultResponse saveExpressRule(String token, ExpressRule expressRule) {
-        return expressRuleService.saveExpressRule(token, expressRule);
+    public ResultResponse saveExpressRule(String token, String startTime, String endTime) {
+        return expressRuleService.saveExpressRule(token, startTime, endTime);
+    }
+
+    /**
+     * 获取管理员城市信息
+     * @param token
+     * @return
+     */
+    @GetMapping("getManagementCityInfo")
+    public ResultResponse getManagementCityInfo(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return managementService.getManagementById(tokenVo.getUserId());
+    }
+
+    /**
+     * 获取配送员数据
+     * @param token
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getExpressList")
+    public ResultResponse getExpressList(String token, String expressName, Integer selectType, Integer selectStatus, Integer pageNum, Integer pageSize) {
+        return expressService.getExpressList(token, expressName, selectType, selectStatus, pageNum, pageSize);
+    }
+
+    /**
+     * 保存配送员信息
+     * @param express
+     * @return
+     */
+    @PostMapping("saveExpress")
+    public ResultResponse saveExpress(Express express) {
+        return expressService.saveExpress(express);
+    }
+
+    /**
+     * 删除配送员
+     * @param expressId
+     * @return
+     */
+    @GetMapping("deleteExpress")
+    public ResultResponse deleteExpress(Integer expressId) {
+        return expressService.removeExpress(expressId);
     }
 }

@@ -28,6 +28,7 @@ public class Express extends PageParams implements Serializable {
 	private Integer id;
 	private String username;//用户名
 	private String password;
+	private String nativePassword;//未加密过的密码, 便于PC端编辑
 	private String name;//姓名
 	private String phone;
 	private Integer type;//1||2

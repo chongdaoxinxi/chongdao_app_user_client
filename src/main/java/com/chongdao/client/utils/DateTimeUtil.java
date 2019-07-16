@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,6 +63,20 @@ public class DateTimeUtil {
         return dateTime.toString(STANDARD_FORMAT);
     }
 
+    public static Time strToTime(String str) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        java.util.Date d = null;
+        if(StringUtils.isBlank(str)) {
+            return null;
+        }
+        try {
+            d = format.parse(str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        java.sql.Time time = new java.sql.Time(d.getTime());
+        return time.valueOf(str);
+    }
 
     public static int costTimeDay(String  endTime, String  startTime) {
         long from = 0;
