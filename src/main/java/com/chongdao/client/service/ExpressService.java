@@ -7,4 +7,6 @@ public interface ExpressService {
     ResultResponse getExpressList(String token, String expressName, Integer pageNum, Integer pageSize);
 
     ResultResponse saveExpress(Express express);
+
+    ResultResponse removeExpress(Integer expressId);
 }

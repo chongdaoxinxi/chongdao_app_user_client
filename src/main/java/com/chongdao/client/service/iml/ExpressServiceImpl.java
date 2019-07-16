@@ -49,7 +49,7 @@ public class ExpressServiceImpl implements ExpressService {
                 }
                 PageHelper.startPage(pageNum, pageSize);
                 List<ExpressVO> list = expressMapper.getExpressListByAreaCodeAndName(management.getAreaCode(), expressName, null, null);
-                PageInfo pageResult = new PageInfo();
+                PageInfo pageResult = new PageInfo(list);
                 pageResult.setList(list);
                 return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), pageResult);
             }
@@ -72,5 +72,15 @@ public class ExpressServiceImpl implements ExpressService {
             express.setPassword(MD5Util.MD5(express.getNativePassword()));
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), expressRepository.saveAndFlush(express));
         }
+    }
+
+    @Override
+    public ResultResponse removeExpress(Integer expressId) {
+        Express express = expressRepository.findById(expressId).orElse(null);
+        if(express != null) {
+            expressRepository.delete(express);
+            return ResultResponse.createBySuccess();
+        }
+        return ResultResponse.createByErrorMessage("删除失败!");
     }
 }

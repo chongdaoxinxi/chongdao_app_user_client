@@ -384,4 +384,14 @@ public class AdminPcController {
     public ResultResponse saveExpress(Express express) {
         return expressService.saveExpress(express);
     }
+
+    /**
+     * 删除配送员
+     * @param expressId
+     * @return
+     */
+    @GetMapping("deleteExpress")
+    public ResultResponse deleteExpress(Integer expressId) {
+        return expressService.removeExpress(expressId);
+    }
 }
