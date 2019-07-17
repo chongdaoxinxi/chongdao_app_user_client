@@ -240,7 +240,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             BeanUtils.copyProperties(good,goodsListVO);
             goodsListVOList.add(goodsListVO);
         });
-        return ResultResponse.createBySuccess(goodsListVOList);
+        PageInfo pageResult = new PageInfo(goodList);
+        pageResult.setList(goodsListVOList);
+        return ResultResponse.createBySuccess(pageResult);
     }
 
     /**
