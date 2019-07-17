@@ -73,9 +73,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         Double count = 1.0D;
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
-        List<OrderVo> orderVos = Lists.newArrayList();
+        List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
         for (Carts cart : cartList) {
-            OrderVo o = new OrderVo();
+            OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
             //查询店铺
@@ -83,27 +83,27 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderVo.setShopName(shop.getShopName());
             if (good != null) {
                 categoryIds.add(good.getCategoryId());
-                o.setGoodsName(good.getName());
-                o.setGoodsPrice(good.getPrice());
+                orderGoodsVo.setGoodsName(good.getName());
+                orderGoodsVo.setGoodsPrice(good.getPrice());
+                orderGoodsVo.setGoodsId(good.getId());
                 //用户购买的商品数量
-                o.setQuantity(cart.getQuantity());
+                orderGoodsVo.setQuantity(cart.getQuantity());
                 //折扣价
                 if (good.getDiscount() > 0) {
-                    o.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+                    orderGoodsVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
                     //计算总价(商品存在打折)
-                    o.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
+                    orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
                             cart.getQuantity().doubleValue()));
                     count = good.getDiscount();
                 } else {
                     //计算总价（无打折）
-                    o.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
+                    orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
             }
-            o.setAreaCode(shop.getAreaCode());
-            o.setUserId(userId);
-            o.setShopId(shop.getId());
+            orderGoodsVo.setAreaCode(shop.getAreaCode());
+            orderGoodsVo.setShopId(shop.getId());
             //总价
-            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity());
+            cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(cartTotalPrice);
             if (orderCommonVO.getCouponId() != null) {
                 //计算使用商品优惠券后的价格
                 CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).get();
@@ -111,23 +111,24 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     cartTotalPrice.subtract(couponInfo.getCpnValue());
                 }
             }
-            orderVos.add(o);
+            orderGoodsVoList.add(orderGoodsVo);
         }
+        orderVo.setOrderGoodsVoList(orderGoodsVoList);
+        orderVo.setUserId(userId);
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
-        orderVo.setServiceCouponCount(couponService.getExpressCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
+        orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量
-        orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(orderVo.getUserId(), orderVo.getShopId(),categoryIds,cartTotalPrice));
+        orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(userId, orderCommonVO.getShopId(),categoryIds,cartTotalPrice));
         orderVo.setTotalPrice(cartTotalPrice);
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
         orderVo.setPayment(cartTotalPrice);
-        orderVos.add(orderVo);
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //创建订单
             this.createOrder(orderVo, orderCommonVO);
         }
-        return ResultResponse.createBySuccess(orderVos);
+        return ResultResponse.createBySuccess(orderVo);
 
 
     }

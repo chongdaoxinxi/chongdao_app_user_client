@@ -1,6 +1,5 @@
 package com.chongdao.client.vo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -30,4 +29,12 @@ public class OrderGoodsVo {
     private Integer userId;
 
     private BigDecimal goodsPrice;
+
+    private BigDecimal discountPrice;
+
+    private BigDecimal goodsTotalPrice;
+
+    private String areaCode;
+
+    private Integer shopId;
 }
