@@ -53,7 +53,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
-    public ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO) {
+    public ResultResponse preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO) {
 //        if (orderCommonVO.getDeliverAddressId() == null) {
 //            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
 //        }
@@ -73,7 +73,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         Double count = 1.0D;
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
+        List<OrderVo> orderVos = Lists.newArrayList();
         for (Carts cart : cartList) {
+            OrderVo o = new OrderVo();
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
             //查询店铺
@@ -81,25 +83,25 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderVo.setShopName(shop.getShopName());
             if (good != null) {
                 categoryIds.add(good.getCategoryId());
-                orderVo.setGoodsName(good.getName());
-                orderVo.setGoodsPrice(good.getPrice());
+                o.setGoodsName(good.getName());
+                o.setGoodsPrice(good.getPrice());
                 //用户购买的商品数量
-                orderVo.setQuantity(cart.getQuantity());
+                o.setQuantity(cart.getQuantity());
                 //折扣价
                 if (good.getDiscount() > 0) {
-                    orderVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+                    o.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
                     //计算总价(商品存在打折)
-                    orderVo.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
+                    o.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
                             cart.getQuantity().doubleValue()));
                     count = good.getDiscount();
                 } else {
                     //计算总价（无打折）
-                    orderVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
+                    o.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
             }
-            orderVo.setAreaCode(shop.getAreaCode());
-            orderVo.setUserId(userId);
-            orderVo.setShopId(shop.getId());
+            o.setAreaCode(shop.getAreaCode());
+            o.setUserId(userId);
+            o.setShopId(shop.getId());
             //总价
             cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity());
             if (orderCommonVO.getCouponId() != null) {
@@ -109,6 +111,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     cartTotalPrice.subtract(couponInfo.getCpnValue());
                 }
             }
+            orderVos.add(o);
         }
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(orderVo.getUserId(), orderCommonVO.getServiceType()));
@@ -118,12 +121,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
         orderVo.setPayment(cartTotalPrice);
+        orderVos.add(orderVo);
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //创建订单
             this.createOrder(orderVo, orderCommonVO);
         }
-        return ResultResponse.createBySuccess(orderVo);
+        return ResultResponse.createBySuccess(orderVos);
 
 
     }
