@@ -104,9 +104,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setShopId(shop.getId());
             //总价
             cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(cartTotalPrice);
-            if (orderCommonVO.getCouponId() != null) {
+            if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
                 //计算使用商品优惠券后的价格
                 CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).get();
+                if (couponInfo != null){
+                    cartTotalPrice.subtract(couponInfo.getCpnValue());
+                }
+            }
+            if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0){
+                //计算使用配送优惠券后的价格
+                CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).get();
                 if (couponInfo != null){
                     cartTotalPrice.subtract(couponInfo.getCpnValue());
                 }
