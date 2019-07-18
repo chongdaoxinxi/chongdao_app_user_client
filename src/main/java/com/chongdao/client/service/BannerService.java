@@ -13,4 +13,10 @@ import java.util.List;
  **/
 public interface BannerService {
     ResultResponse<List<Banner>> getBannerByAreaCode(String areaCode);
+
+    ResultResponse getBannerList(String token, Integer status);
+
+    ResultResponse saveBanner(Banner banner);
+
+    ResultResponse deleteBanner(Integer id);
 }

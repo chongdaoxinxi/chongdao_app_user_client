@@ -35,6 +35,8 @@ public class UploadServiceImpl implements UploadService {
             StorePath storePath = this.storageClient.uploadFile(file.getInputStream(), file.getSize(),
                     FilenameUtils.getExtension(file.getOriginalFilename()), null);
             String fileUrl = hostAddress + "/" + storePath.getFullPath();
+            //加上http前缀
+            fileUrl = "http://" + fileUrl;
             return ResultResponse.createBySuccess(fileUrl);
         } catch (IOException e) {
             log.error("【上传图片】上传失败，error={}",e.getMessage());
