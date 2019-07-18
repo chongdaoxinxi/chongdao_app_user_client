@@ -29,6 +29,14 @@ public interface OrderService {
      */
     ResultResponse<PageInfo> getOrderTypeList(Integer userId, String type, int pageNum, int pageSize);
 
+    /**
+     * 订单详情
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ResultResponse orderDetail(Integer userId, String orderNo);
+
     // ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO);
 
     ResultResponse<PageInfo> getShopOrderTypeList(Integer shopId, String type, Integer pageNum, Integer pageSize);
