@@ -4,7 +4,6 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.OrderEval;
 import com.chongdao.client.entitys.OrderExpressEval;
 import com.chongdao.client.vo.OrderCommonVO;
-import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageInfo;
 
 import java.util.Date;
@@ -12,7 +11,7 @@ import java.util.Date;
 ;
 
 public interface OrderService {
-    ResultResponse<OrderVo> preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO);
+    ResultResponse preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO);
 
     /**
      * 再来一单
@@ -29,6 +28,14 @@ public interface OrderService {
      * @return
      */
     ResultResponse<PageInfo> getOrderTypeList(Integer userId, String type, int pageNum, int pageSize);
+
+    /**
+     * 订单详情
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ResultResponse orderDetail(Integer userId, String orderNo);
 
     // ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO);
 

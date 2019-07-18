@@ -68,6 +68,20 @@ public class OrderController {
 
 
     /**
+     * 订单详情
+     * @param token
+     * @param orderNo
+     * @return
+     */
+    @GetMapping("orderDetail")
+    public ResultResponse orderDetail(@RequestParam("token") String token,
+                                      @RequestParam("orderNo") String orderNo){
+
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.orderDetail(tokenVo.getUserId(), orderNo);
+    }
+
+    /**
      * 评价晒单 初始化
      * @param orderNo
      * @param token

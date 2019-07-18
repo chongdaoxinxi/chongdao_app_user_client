@@ -71,13 +71,15 @@ public class OrderVo {
 
     private String shopName;
 
+    private String shopPhone;
+
     private String shopLogo;
 
     private String goodsName;
 
     private BigDecimal discountPrice;
 
-    private BigDecimal GoodsTotalPrice;
+    private BigDecimal goodsTotalPrice;
 
     private Integer quantity;
 
@@ -103,6 +105,18 @@ public class OrderVo {
     private List<OrderGoodsVo> orderGoodsVoList;
 
     private UserAddress userAddress;
+
+    //配送员姓名
+    private String expressName;
+    private String expressPhone;
+
+    private List<OrderDetailVO> orderDetailVOList;
+
+    private Double discount;
+    //优惠价（满减）
+    private BigDecimal couponPrice;
+    //满减名称
+    private String couponName;
 
 
 }
