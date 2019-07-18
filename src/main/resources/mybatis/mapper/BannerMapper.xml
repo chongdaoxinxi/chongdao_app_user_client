@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.BannerMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.Banner">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="img" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="area_code" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="sort" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        b.id, b.img, b.area_code, b.status, b.sort, b.create_time
+    </sql>
+    <select id="getBannerListByAreaCodeAndStatus" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from banner b
+        where b.area_code = #{areaCode}
+        <if test="status != null">
+            and b.status = #{status}
+        </if>
+        order by b.sort asc, b.status desc
+    </select>
+</mapper>

@@ -1,6 +1,7 @@
 package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Banner;
 import com.chongdao.client.entitys.Express;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
@@ -47,6 +48,8 @@ public class AdminPcController {
     private ExpressRuleService expressRuleService;
     @Autowired
     private  ExpressService expressService;
+    @Autowired
+    private BannerService bannerService;
 
     /**
      * 确认退款完成
@@ -393,5 +396,36 @@ public class AdminPcController {
     @GetMapping("deleteExpress")
     public ResultResponse deleteExpress(Integer expressId) {
         return expressService.removeExpress(expressId);
+    }
+
+    /**
+     * 获取轮播图数据列表
+     * @param token
+     * @param status
+     * @return
+     */
+    @GetMapping("getBannerList")
+    public ResultResponse getBannerList(String token, Integer status) {
+        return bannerService.getBannerList(token, status);
+    }
+
+    /**
+     * 保存轮播图
+     * @param banner
+     * @return
+     */
+    @PostMapping("saveBanner")
+    public ResultResponse saveBanner(Banner banner) {
+        return bannerService.saveBanner(banner);
+    }
+
+    /**
+     * 删除轮播图
+     * @param id
+     * @return
+     */
+    @GetMapping("deleteBanner")
+    public ResultResponse deleteBanner(Integer id) {
+        return bannerService.deleteBanner(id);
     }
 }
