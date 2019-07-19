@@ -124,7 +124,7 @@ public class ShopGoodManageController {
      */
     @PostMapping("saveGood")
     public ResultResponse saveGood(Good good) {
-        return null;
+        return goodsService.saveGood(good);
     }
 
     /**
