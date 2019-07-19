@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Optional;
 
 /**
@@ -48,11 +48,27 @@ public class UserAddressServiceImpl implements UserAddressService {
     public ResultResponse saveUserAddress(UserAddress uAddr) {
         return Optional.ofNullable(uAddr).map(u -> {
             if(Optional.ofNullable(u.getId()).isPresent()) {
+                if(u.getIsDefaultAddress() == 1) {
+                    disableDefaultAddress();
+                }
                 u.setUpdateTime(new Date());
             } else {
                 u.setCreateTime(new Date());
             }
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAddressRepository.saveAndFlush(u));
         }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
+    }
+
+    /**
+     * 将现有的默认地址修改为非默认地址
+     */
+    private void disableDefaultAddress() {
+        Iterable<UserAddress> it = userAddressRepository.findByIsDefaultAddress(1);
+        Iterator<UserAddress> iterator = it.iterator();
+        while(iterator.hasNext()) {
+            UserAddress next = iterator.next();
+            next.setIsDefaultAddress(-1);
+        }
+        userAddressRepository.saveAll(it);
     }
 }
