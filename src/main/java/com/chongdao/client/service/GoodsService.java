@@ -2,6 +2,7 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
+import com.chongdao.client.entitys.Good;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.PetCategoryAndScopeVO;
@@ -82,6 +83,8 @@ public interface GoodsService {
      * @return
      */
     ResultResponse saveOrEditGoods(Integer shopId, GoodsListVO goodsListVO);
+
+    ResultResponse saveGood(Good good);
 
     /**
      * 根据商品id查询

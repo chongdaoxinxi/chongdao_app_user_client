@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import static com.chongdao.client.common.Const.OrderBy.*;
@@ -322,6 +323,14 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         return ResultResponse.createBySuccess();
     }
 
+    @Override
+    public ResultResponse saveGood(Good good) {
+        if(good.getId() == null) {
+            good.setCreateTime(new Date());
+        }
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), goodsRepository.saveAndFlush(good));
+    }
+
     /**
      * 根据商品id查询
      * @param shopId
@@ -478,7 +487,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             //获取狗粮适用类型
             petCategoryList = petCategoryRepository.findByGoodsTypeId(2);
             //获取狗粮适用期
-            scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,2);
+            scopeApplicationList = scopeApplicationRepository.findAll();
+//            scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,2);
         }
         //猫粮
         else if (goodsTypeId == 2) {
