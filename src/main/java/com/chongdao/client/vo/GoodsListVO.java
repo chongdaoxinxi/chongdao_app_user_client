@@ -46,6 +46,9 @@ public class GoodsListVO {
     /** 销量 */
     private Integer sales;
 
+    /** 单位 */
+    private Integer unit;
+    private Integer unitName;
 
     /** 品牌id */
     private Integer brandId;

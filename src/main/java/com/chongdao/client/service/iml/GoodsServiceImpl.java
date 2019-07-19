@@ -27,7 +27,6 @@ import static com.chongdao.client.service.iml.CouponServiceImpl.computerTime;
 @Service
 public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
-
     /**
      * 分页查询商品
      * @param keyword 搜索关键词
@@ -85,6 +84,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsDetailVo.setGoodsId(goodsId);
         //产品重量
         goodsDetailVo.setUnit(good.getUnit());
+        goodsDetailVo.setUnitName(good.getUnitName());
         //产品品牌
         Brand brand = brandRepository.findById(good.getBrandId()).get();
         goodsDetailVo.setBrandName(brand.getName());

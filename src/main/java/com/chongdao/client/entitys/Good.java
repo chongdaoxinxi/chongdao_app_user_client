@@ -35,7 +35,9 @@ public class Good {
 
 	private Double discount = 0.0D;
 
-	private String unit;
+	private Integer unit;
+
+	private String unitName;
 
 	private String des;
 
@@ -93,13 +95,14 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
-	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, Integer unit, String unitName, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.price = price;
 		this.discount = discount;
 		this.unit = unit;
+		this.unitName = unitName;
 		this.des = des;
 		this.goodsTypeId = goodsTypeId;
 		this.shopId = shopId;
@@ -117,26 +120,5 @@ public class Good {
 		this.scopeId = scopeId;
 		this.petCategoryId = petCategoryId;
 		this.bathingServiceId = bathingServiceId;
-	}
-
-
-	@Override
-	public String toString() {
-		return "Good{" +
-				"id=" + id +
-				", des='" + des + '\'' +
-				", discount=" + discount +
-				", icon='" + icon + '\'' +
-				", moduleId=" + moduleId +
-				", name='" + name + '\'' +
-				", price=" + price +
-				", shopId=" + shopId +
-				", status=" + status +
-				", categoryId=" + categoryId +
-				", unit='" + unit + '\'' +
-				", goodsType=" + goodsTypeId +
-				", ratio=" + ratio +
-				", ratioPrice=" + ratioPrice +
-				'}';
 	}
 }

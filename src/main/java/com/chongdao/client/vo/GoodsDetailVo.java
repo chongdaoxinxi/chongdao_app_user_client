@@ -53,7 +53,8 @@ public class GoodsDetailVo {
     private Integer brandId;
 
     private String brandName; //品牌
-    private String unit;      //重量
+    private Integer unit;      //重量id
+    private String unitName;   //重量显示
     private String scopeName; //适用阶段
     private List<BathingService> serviceContent;   //洗澡服务内容
 

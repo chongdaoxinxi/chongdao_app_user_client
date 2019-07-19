@@ -8,7 +8,8 @@
             <arg column="icon" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
             <arg column="discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
-            <arg column="unit" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="unit" javaType="java.lang.Integer" jdbcType="VARCHAR" />
+            <arg column="unit_name" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="goods_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="shop_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
@@ -29,12 +30,12 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, name, icon, price, discount, unit, des, goods_type_id, shop_id, ratio, ratio_price,
+        id, name, icon, price, discount, unit, unit_name, des, goods_type_id, shop_id, ratio, ratio_price,
     stock, create_time, update_time, status, module_id, category_id, sales, type_name,
     brand_id, scope_id, pet_category_id, bathing_service_id
     </sql>
     <sql id="Base_Column_Lists">
-        g.id, g.name, g.icon, g.price, g.discount, g.unit, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
+        g.id, g.name, g.icon, g.price, g.discount, g.unit, g.unit_name, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
     g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id, g.sales, g.type_name,
     g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id
     </sql>
