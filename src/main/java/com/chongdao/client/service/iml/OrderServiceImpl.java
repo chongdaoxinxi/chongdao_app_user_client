@@ -78,9 +78,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
-            //查询店铺
-            Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
-            orderVo.setShopName(shop.getShopName());
+
             if (good != null) {
                 categoryIds.add(good.getCategoryId());
                 orderGoodsVo.setGoodsName(good.getName());
@@ -100,8 +98,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
             }
-            orderGoodsVo.setAreaCode(shop.getAreaCode());
-            orderGoodsVo.setShopId(shop.getId());
             //总价
             cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(cartTotalPrice);
             if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
@@ -120,8 +116,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             }
             orderGoodsVoList.add(orderGoodsVo);
         }
+        //查询店铺
+        Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
+        orderVo.setShopName(shop.getShopName());
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
         orderVo.setUserId(userId);
+        orderVo.setAreaCode(shop.getAreaCode());
+        orderVo.setFollow(orderCommonVO.getFollow());
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量
@@ -490,13 +491,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         order.setCouponId(orderCommonVO.getCouponId());
         order.setCardId(orderCommonVO.getCardId());
-        order.setPaymentType(orderVo.getPaymentType());
         order.setPayment(orderVo.getPayment());
         order.setFollow(Integer.valueOf(orderVo.getFollow()));
-        order.setShopId(orderVo.getShopId());
+        order.setShopId(orderCommonVO.getShopId());
         order.setUserId(orderVo.getUserId());
         order.setAreaCode(orderVo.getAreaCode());
-        order.setGoodsPrice(orderVo.getGoodsTotalPrice());
+        order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
         order.setRemark(orderVo.getRemark());
         order.setServicePrice(orderVo.getServicePrice());
         order.setSingleServiceType(orderCommonVO.getSingleServiceType());

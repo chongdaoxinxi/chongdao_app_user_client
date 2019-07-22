@@ -26,11 +26,13 @@ public class OrderCommonVO {
     private Integer deliverAddressId;
 
     //单程 服务类型:1.家到宠物店，2.宠物店到家
-    private Integer singleServiceType;
+    private Integer singleServiceType = 0;
 
     private Integer shopId;
 
 
     private Integer orderType;
+
+    private Byte follow;
 
 }
