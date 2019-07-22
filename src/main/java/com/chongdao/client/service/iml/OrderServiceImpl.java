@@ -308,7 +308,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
 
     @Transactional
-    public ResultResponse<OrderVo> createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
+    public ResultResponse createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
 
         //下单类型为服务类型订单时，需判断地址
         if (orderCommonVO.getIsService().equals(GoodsStatusEnum.SERVICE.getStatus())) {
@@ -342,7 +342,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
         //清空一下购物车
         this.cleanCart(cartList);
-        return ResultResponse.createBySuccess();
+        return ResultResponse.createBySuccess(order);
     }
 
 
