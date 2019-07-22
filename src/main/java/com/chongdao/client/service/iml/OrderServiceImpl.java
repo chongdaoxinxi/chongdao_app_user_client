@@ -118,11 +118,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
-        orderVo.setShopName(shop.getShopName());
-        orderVo.setOrderGoodsVoList(orderGoodsVoList);
-        orderVo.setUserId(userId);
-        orderVo.setAreaCode(shop.getAreaCode());
-        orderVo.setFollow(orderCommonVO.getFollow());
+        if (shop != null) {
+            orderVo.setShopName(shop.getShopName());
+            orderVo.setOrderGoodsVoList(orderGoodsVoList);
+            orderVo.setUserId(userId);
+            orderVo.setAreaCode(shop.getAreaCode());
+            orderVo.setFollow(orderCommonVO.getFollow());
+            orderVo.setShopId(shop.getId());
+        }
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量
