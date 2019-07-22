@@ -133,7 +133,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //创建订单
-            this.createOrder(orderVo, orderCommonVO);
+            return this.createOrder(orderVo, orderCommonVO);
         }
         return ResultResponse.createBySuccess(orderVo);
 
@@ -440,10 +440,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     private ResultResponse getCartOrderItem(Integer userId, List<Carts> cartList) {
-        List<OrderDetail> orderItemList = Lists.newArrayList();
         if (CollectionUtils.isEmpty(cartList)) {
             return ResultResponse.createByErrorMessage("购物车为空");
         }
+        List<OrderDetail> orderItemList = Lists.newArrayList();
         //折扣
         Double count = 1.0D;
         //校验购物车的数据,包括产品的状态和数量
@@ -490,6 +490,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         BeanUtils.copyProperties(orderCommonVO, orderVo);
         BeanUtils.copyProperties(orderVo, order);
+
         order.setPaymentType(orderCommonVO.getPayType());
         if(orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()){
             //拼单

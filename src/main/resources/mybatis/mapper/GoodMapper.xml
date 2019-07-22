@@ -52,6 +52,7 @@
     <insert id="insert" parameterType="com.chongdao.client.entitys.Good">
         insert into good (id, name, icon,
                           price, discount, unit,
+                          unit_name,
                           des, goods_type_id, shop_id,
                           ratio, ratio_price, stock,
                           create_time, update_time, status,
@@ -60,7 +61,7 @@
                           pet_category_id, bathing_service_id)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
                 #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
-                #{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
+                #{unit,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
                 #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
                 #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER},
@@ -87,6 +88,9 @@
             </if>
             <if test="unit != null">
                 unit,
+            </if>
+            <if test="unitName != null">
+                unit_name,
             </if>
             <if test="des != null">
                 des,
@@ -159,6 +163,9 @@
             <if test="unit != null">
                 #{unit,jdbcType=VARCHAR},
             </if>
+            <if test="unitName != null">
+                #{unit_name,jdbcType=VARCHAR},
+            </if>
             <if test="des != null">
                 #{des,jdbcType=VARCHAR},
             </if>
@@ -230,6 +237,9 @@
             <if test="unit != null">
                 unit = #{unit,jdbcType=VARCHAR},
             </if>
+            <if test="unitName != null">
+                unit = #{unit_name,jdbcType=VARCHAR},
+            </if>
             <if test="des != null">
                 des = #{des,jdbcType=VARCHAR},
             </if>
@@ -291,6 +301,7 @@
             price = #{price,jdbcType=DECIMAL},
             discount = #{discount,jdbcType=DOUBLE},
             unit = #{unit,jdbcType=VARCHAR},
+            unit_name = #{unitName,jdbcType=VARCHAR},
             des = #{des,jdbcType=VARCHAR},
             goods_type_id = #{goodTypeId,jdbcType=INTEGER},
             shop_id = #{shopId,jdbcType=INTEGER},
