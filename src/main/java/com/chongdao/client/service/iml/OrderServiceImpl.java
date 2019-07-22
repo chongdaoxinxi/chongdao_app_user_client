@@ -488,10 +488,21 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             order.setPaymentType(PaymentTypeEnum.WX_PAY.getStatus());
         }
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
-        BeanUtils.copyProperties(orderCommonVO, orderVo);
-        BeanUtils.copyProperties(orderVo, order);
-
-        order.setPaymentType(orderCommonVO.getPayType());
+        order.setCouponId(orderCommonVO.getCouponId());
+        order.setCardId(orderCommonVO.getCardId());
+        order.setPaymentType(orderVo.getPaymentType());
+        order.setPayment(orderVo.getPayment());
+        order.setFollow(Integer.valueOf(orderVo.getFollow()));
+        order.setShopId(orderVo.getShopId());
+        order.setUserId(orderVo.getUserId());
+        order.setAreaCode(orderVo.getAreaCode());
+        order.setGoodsPrice(orderVo.getGoodsTotalPrice());
+        order.setRemark(orderVo.getRemark());
+        order.setServicePrice(orderVo.getServicePrice());
+        order.setSingleServiceType(orderCommonVO.getSingleServiceType());
+        order.setIsService(orderCommonVO.getIsService());
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
         if(orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()){
             //拼单
             order.setEnabledSpell(0);
