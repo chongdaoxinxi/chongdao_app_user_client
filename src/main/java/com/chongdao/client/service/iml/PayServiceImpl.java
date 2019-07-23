@@ -153,6 +153,9 @@ public class PayServiceImpl implements PayService {
             order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
             order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
             orderInfoMapper.updateByPrimaryKeySelective(order);
+
+            //短信推送
+
         }
 
         //生成支付信息
