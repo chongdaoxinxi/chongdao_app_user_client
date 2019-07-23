@@ -116,7 +116,11 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         ShopVO shopVO = new ShopVO();
         BeanUtils.copyProperties(shop,shopVO);
         //获取店铺销量
-        shopVO.setSales(goodsRepository.findBySalesSum(shopId));
+        Integer salesSum = goodsRepository.findBySalesSum(shopId);
+        if (salesSum == null){
+            salesSum = 0;
+        }
+        shopVO.setSales(salesSum);
         //封装优惠券(店铺满减除外(cpnType = 4))
         List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
         List<CouponInfo> couponInfoList = Lists.newArrayList();
