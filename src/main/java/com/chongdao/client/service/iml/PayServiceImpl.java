@@ -120,11 +120,11 @@ public class PayServiceImpl implements PayService {
             orderLog.setNote("支付宝预下单成功");
             orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
             logRepository.save(orderLog);
-            log.info("支付宝App支付:支付订单创建成功out_trade_no----", order.getOrderNo());
+            log.info("支付宝App支付:支付订单创建成功out_trade_no---- {}", order.getOrderNo());
         } catch (Exception e) {
             resultMap.put("status", "500");
             resultMap.put("message", "支付宝预下单失败!!!");
-            log.error("支付宝App支付：支付订单生成失败out_trade_no----", order.getOrderNo());
+            log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         return ResultResponse.createBySuccess(resultMap);
     }
