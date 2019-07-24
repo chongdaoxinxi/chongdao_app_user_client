@@ -96,7 +96,8 @@ public class PayUtil {
     public static SSLContext initSSLContext(HttpServletRequest req, String mchId) throws Exception {
         FileInputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(new File(req.getSession().getServletContext().getRealPath("") + "/WEB-INF/classes" + BasicInfo.KeyPath));
+//            inputStream = new FileInputStream(new File(req.getSession().getServletContext().getRealPath("") + "/WEB-INF/classes" + BasicInfo.KeyPath));
+            inputStream = new FileInputStream((new File("F://apiclient_cert.p12")));
         } catch (IOException e) {
             throw new RuntimeException("证书不正确！", e);
         }

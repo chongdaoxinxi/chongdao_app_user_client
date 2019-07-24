@@ -12,28 +12,28 @@ public class BasicInfo {
     /**
      * 公众号appId
      **/
-    public static final String appID = "";
+    public static final String appID = "wxd69bd4ce033aca70";
     /**
      * 公众号appSecret
      **/
-    public static final String AppSecret = "";
+    public static final String AppSecret = "437dd549567811195afa051d3f49327a";
     /**
      * 公众号商户号
      **/
-    public static final String MchId = "";
+    public static final String MchId = "1513194061";
     /**
      * 公众号商户号秘钥
      **/
-    public static final String MchKey = "";
+    public static final String MchKey = "95bc30c8e25484485b53b998bace1d1c";
 
     /***app应用appId***/
-    public static final String APP_AppID = "";
+    public static final String APP_AppID = "wxd69bd4ce033aca70";
     /***app应用appSecret***/
-    public static final String APP_AppSecret = "";
+    public static final String APP_AppSecret = "437dd549567811195afa051d3f49327a";
     /***app应用商户号***/
-    public static final String APP_MchId = "";
+    public static final String APP_MchId = "1513194061";
     /***app应用商户密钥***/
-    public static final String APP_MchKey = "";
+    public static final String APP_MchKey = "95bc30c8e25484485b53b998bace1d1c";
     /**
      * 应用服务器IP
      */
@@ -51,5 +51,5 @@ public class BasicInfo {
     public static final String NotifyUrl = "http://39.108.83.186/api/callBackController/wx_pay_callback";
 
     //微信统一下单接口
-    public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+    public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/sandboxnew/pay/unifiedorder";
 }
