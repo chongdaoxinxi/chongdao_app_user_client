@@ -24,7 +24,7 @@ public interface OrderInfoMapper {
 
     OrderInfo selectByOrderNo(String orderNo);
 
-    OrderInfo selectByUserIdAndOrderNo(@Param("userId")Integer userId, @Param("payOutTradeNo")String payOutTradeNo);
+    OrderInfo selectByUserIdAndOrderNo(@Param("userId")Integer userId, @Param("orderNo")String orderNo);
 
     List<OrderInfo> selectByUserIdList(@Param("userId") Integer userId, @Param("type")String type);
 
