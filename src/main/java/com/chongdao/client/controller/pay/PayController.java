@@ -77,6 +77,7 @@ public class PayController {
             boolean aliPayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, AliPayConfig.ALI_PAY_PUBLIC_KEY, AliPayConfig.CHARSET, AliPayConfig.SIGN_TYPE);
 
             if (!aliPayRSACheckedV2) {
+                log.error("【支付宝回调】非法请求,验证不通过 params = {}",params);
                 return ResultResponse.createByErrorMessage("非法请求,验证不通过");
             }
         } catch (AlipayApiException e) {

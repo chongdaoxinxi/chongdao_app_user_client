@@ -19,17 +19,17 @@ public class OrderVo {
 
     private Integer ShopId;
 
-    private BigDecimal goodsPrice;
+    private BigDecimal goodsPrice = BigDecimal.ZERO;
 
-    private BigDecimal servicePrice;
+    private BigDecimal servicePrice = BigDecimal.ZERO;
 
-    private BigDecimal totalDiscount;
+    private BigDecimal totalDiscount = BigDecimal.ZERO;
 
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
-    private BigDecimal payment;
+    private BigDecimal payment = BigDecimal.ZERO;
 
-    private Byte follow;
+    private Byte follow ;
 
     private Integer serviceType;
 

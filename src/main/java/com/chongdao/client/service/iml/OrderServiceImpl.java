@@ -78,9 +78,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
-            //查询店铺
-            Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
-            orderVo.setShopName(shop.getShopName());
+
             if (good != null) {
                 categoryIds.add(good.getCategoryId());
                 orderGoodsVo.setGoodsName(good.getName());
@@ -100,8 +98,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
             }
-            orderGoodsVo.setAreaCode(shop.getAreaCode());
-            orderGoodsVo.setShopId(shop.getId());
             //总价
             cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(cartTotalPrice);
             if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
@@ -120,8 +116,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             }
             orderGoodsVoList.add(orderGoodsVo);
         }
-        orderVo.setOrderGoodsVoList(orderGoodsVoList);
-        orderVo.setUserId(userId);
+        //查询店铺
+        Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
+        if (shop != null) {
+            orderVo.setShopName(shop.getShopName());
+            orderVo.setOrderGoodsVoList(orderGoodsVoList);
+            orderVo.setUserId(userId);
+            orderVo.setAreaCode(shop.getAreaCode());
+            orderVo.setFollow(orderCommonVO.getFollow());
+            orderVo.setShopId(shop.getId());
+        }
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量
@@ -133,7 +137,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //创建订单
-            this.createOrder(orderVo, orderCommonVO);
+            return this.createOrder(orderVo, orderCommonVO);
         }
         return ResultResponse.createBySuccess(orderVo);
 
@@ -304,7 +308,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
 
     @Transactional
-    public ResultResponse<OrderVo> createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
+    public ResultResponse createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
 
         //下单类型为服务类型订单时，需判断地址
         if (orderCommonVO.getIsService().equals(GoodsStatusEnum.SERVICE.getStatus())) {
@@ -338,7 +342,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
         //清空一下购物车
         this.cleanCart(cartList);
-        return ResultResponse.createBySuccess();
+        return ResultResponse.createBySuccess(order);
     }
 
 
@@ -440,10 +444,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     private ResultResponse getCartOrderItem(Integer userId, List<Carts> cartList) {
-        List<OrderDetail> orderItemList = Lists.newArrayList();
         if (CollectionUtils.isEmpty(cartList)) {
             return ResultResponse.createByErrorMessage("购物车为空");
         }
+        List<OrderDetail> orderItemList = Lists.newArrayList();
         //折扣
         Double count = 1.0D;
         //校验购物车的数据,包括产品的状态和数量
@@ -488,9 +492,20 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             order.setPaymentType(PaymentTypeEnum.WX_PAY.getStatus());
         }
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
-        BeanUtils.copyProperties(orderCommonVO, orderVo);
-        BeanUtils.copyProperties(orderVo, order);
-        order.setPaymentType(orderCommonVO.getPayType());
+        order.setCouponId(orderCommonVO.getCouponId());
+        order.setCardId(orderCommonVO.getCardId());
+        order.setPayment(orderVo.getPayment());
+        order.setFollow(Integer.valueOf(orderVo.getFollow()));
+        order.setShopId(orderCommonVO.getShopId());
+        order.setUserId(orderVo.getUserId());
+        order.setAreaCode(orderVo.getAreaCode());
+        order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
+        order.setRemark(orderVo.getRemark());
+        order.setServicePrice(orderVo.getServicePrice());
+        order.setSingleServiceType(orderCommonVO.getSingleServiceType());
+        order.setIsService(orderCommonVO.getIsService());
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
         if(orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()){
             //拼单
             order.setEnabledSpell(0);

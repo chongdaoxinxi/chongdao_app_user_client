@@ -35,7 +35,7 @@ public class Good {
 
 	private Double discount = 0.0D;
 
-	private Integer unit;
+	private String unit;
 
 	private String unitName;
 
@@ -95,7 +95,7 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
-	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, Integer unit, String unitName, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String unitName, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
