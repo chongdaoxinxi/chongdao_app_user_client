@@ -17,6 +17,7 @@ import com.chongdao.client.entitys.OrderLog;
 import com.chongdao.client.entitys.PayInfo;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
+import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.mapper.OrderDetailMapper;
 import com.chongdao.client.mapper.OrderInfoMapper;
 import com.chongdao.client.repository.OrderLogRepository;
@@ -152,6 +153,7 @@ public class PayServiceImpl implements PayService {
         if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
             order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
             order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+            order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
             orderInfoMapper.updateByPrimaryKeySelective(order);
 
             //短信推送

@@ -86,11 +86,15 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsDetailVo.setUnit(good.getUnit());
         goodsDetailVo.setUnitName(good.getUnitName());
         //产品品牌
-        Brand brand = brandRepository.findById(good.getBrandId()).get();
-        goodsDetailVo.setBrandName(brand.getName());
+        if (good.getBrandId() != null) {
+            Brand brand = brandRepository.findById(good.getBrandId()).get();
+            goodsDetailVo.setBrandName(brand.getName());
+        }
         //适用范围
-        ScopeApplication application = scopeApplicationRepository.findById(good.getScopeId()).get();
-        goodsDetailVo.setScopeName(application.getName());
+        if (good.getScopeId() != null) {
+            ScopeApplication application = scopeApplicationRepository.findById(good.getScopeId()).get();
+            goodsDetailVo.setScopeName(application.getName());
+        }
         //categoryId:2 即洗澡类 才会有服务内容
         if (good.getCategoryId() == 2) {
             goodsDetailVo.setServiceContent(bathingServiceRepository.findAll());
