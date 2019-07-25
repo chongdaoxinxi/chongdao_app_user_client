@@ -87,6 +87,23 @@ public class AdminPcController {
         }
     }
 
+    /**
+     * 获取订单评论
+     * @param token
+     * @param orderId
+     * @return
+     */
+    @GetMapping("getEvalData")
+    public ResultResponse getEvalData(String token, Integer orderId) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        String role = tokenVo.getRole();
+        if (role != null) {
+            return orderService.getRefundData(orderId);
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        }
+    }
+
     @GetMapping("getShopWithdrawalList")
     public ResultResponse getShopWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
