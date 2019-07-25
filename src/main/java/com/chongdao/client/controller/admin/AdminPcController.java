@@ -98,7 +98,7 @@ public class AdminPcController {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if (role != null) {
-            return orderService.getRefundData(orderId);
+            return orderService.getOrderEvalData(orderId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }

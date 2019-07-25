@@ -116,6 +116,11 @@ public interface OrderService {
 
     ResultResponse getConcessionalOrderList(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
-
+    /**
+     * 获取订单评论
+     * @param orderId
+     * @return
+     */
+    ResultResponse getOrderEvalData(Integer orderId);
 
 }

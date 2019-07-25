@@ -15,6 +15,15 @@
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
     </resultMap>
+    <resultMap id="SimpleOrderEvalResultMap" type="com.chongdao.client.vo.SimpleOrderEvalVO">
+        <constructor>
+            <arg column="order_id" jdbcType="INTEGER" javaType="java.lang.String"/>
+            <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        </constructor>
+    </resultMap>
     <sql id="Base_Column_List">
         id, user_id, shop_id, order_no, content, grade, status, img, create_time, update_time
     </sql>
@@ -159,5 +168,13 @@
         from order_eval
         where shop_id = #{shopId} and status = 1
         order by create_time desc
+    </select>
+    <select id="getOrderEvalData" resultMap="SimpleOrderEvalResultMap" parameterType="java.lang.Integer">
+        select oe.order_no, oe.user_id, u.name, oe.content, oe.create_time
+        from order_eval oe
+        left join order_info odi on oe.order_no = odi.order_no
+        left join user u on oe.user_id = u.id
+        where odi.id = #{orderId} and status = 1
+        order by oe.create_time desc
     </select>
 </mapper>
