@@ -71,6 +71,8 @@ public class GoodsListVO {
 
     private String petCategoryName;
 
+    private String bathingServiceId;
+
     //洗澡服务内容id （多选）
 
     List<BathingService> bathingServiceList;

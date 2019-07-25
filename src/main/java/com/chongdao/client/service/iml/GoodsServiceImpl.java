@@ -127,7 +127,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * @param goodList
      * @return
      */
-    private List<GoodsListVO> goodsListVOList(List<Good> goodList){
+        private List<GoodsListVO> goodsListVOList(List<Good> goodList){
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         goodList.forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();

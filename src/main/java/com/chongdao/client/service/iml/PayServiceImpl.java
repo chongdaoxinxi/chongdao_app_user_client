@@ -25,6 +25,7 @@ import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
+import com.chongdao.client.utils.wxpay.HttpUtil;
 import com.chongdao.client.utils.wxpay.PayUtil;
 import com.chongdao.client.utils.wxpay.SignUtil;
 import com.thoughtworks.xstream.XStream;
@@ -33,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.simpleframework.xml.Serializer;
@@ -183,14 +185,18 @@ public class PayServiceImpl implements PayService {
     public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr) {
         WxUnifiedorderModelDTO model = new WxUnifiedorderModelDTO();
         //app应用appId
-        model.setAppid(BasicInfo.APP_AppID);
+        model.setAppid(StringUtils.trim(BasicInfo.APP_AppID));
         //商户号
-        model.setMch_id(BasicInfo.APP_MchId);
+        model.setMch_id(StringUtils.trim(BasicInfo.APP_MchId));
         //随机字符串
         String noncestr = PayUtil.getRandomStr();
         model.setNonce_str(noncestr);
         //签名
-        model.setSign(SignUtil.sign(SignUtil.createUnifiedSign(model), BasicInfo.APP_MchKey));
+//        model.setSign(SignUtil.sign(SignUtil.createUnifiedSign(model), BasicInfo.APP_MchKey));
+        //沙箱key测试
+        model.setSign(getWxSanboxKey());
+
+
         //加密方式
         model.setSign_type("MD5");
         //商品描述 body
@@ -213,6 +219,7 @@ public class PayServiceImpl implements PayService {
             XStream s = new XStream(new DomDriver());
             s.alias("xml", model.getClass());
             String xml = s.toXML(model);
+            xml = xml.replace("__", "_");
             String response = PayUtil.ssl(BasicInfo.unifiedordersurl, xml, req, BasicInfo.APP_MchId);
             WxUnifiedorderResponseDTO ret = (WxUnifiedorderResponseDTO) fromXML(response, WxUnifiedorderResponseDTO.class);
 
@@ -328,5 +335,36 @@ public class PayServiceImpl implements PayService {
 
         // 返回成功信息给前台
         return ResultResponse.createBySuccessMessage("支付成功!");
+    }
+
+    private String getWxSanboxKey() {
+        String nonce_str = PayUtil.getRandomStr();//生成随机字符
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("mch_id", BasicInfo.MchId);//需要真实商户号
+        param.put("nonce_str", nonce_str);//随机字符
+        String sign = SignUtil.sign(param, BasicInfo.APP_MchKey);
+
+        WxUnifiedorderModelDTO model = new WxUnifiedorderModelDTO();
+        model.setMch_id(BasicInfo.MchId);
+        model.setNonce_str(nonce_str);
+        model.setSign(sign);
+        XStream s = new XStream(new DomDriver());
+        s.alias("xml", model.getClass());
+        String xml = s.toXML(model);
+        xml = xml.replace("__", "_");
+        String s1 = HttpUtil.sendPost("https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey", xml);
+        Map<String,String> map = new HashMap<>();
+        Document doc = null;
+        try{
+            doc = DocumentHelper.parseText(s1);
+            Element rootElt = doc.getRootElement();
+            List<Element> list =rootElt.elements();
+            for(Element element : list) {
+                map.put(element.getName(), element.getText());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map.get("sandbox_signkey");
     }
 }
