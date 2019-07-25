@@ -54,7 +54,7 @@ public class OrderController {
 
     /**
      * 根据type获取相应的订单
-     * @param type 1:已支付未接单,2:已接单,3:服务中,4.已完成
+     * @param type 1:已支付未接单,2:服务中,3.已完成
      * @return
      */
     @GetMapping("orderTypeList")
