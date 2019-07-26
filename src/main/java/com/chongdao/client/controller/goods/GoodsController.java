@@ -7,8 +7,10 @@ import com.chongdao.client.repository.BrandRepository;
 import com.chongdao.client.repository.CategoryRepository;
 import com.chongdao.client.repository.GoodsTypeRepository;
 import com.chongdao.client.service.GoodsService;
+import com.chongdao.client.vo.BrandGoodsTypeVO;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,13 +73,24 @@ public class GoodsController {
 
 
     /**
-     * 商品分类
+     * 商品分类和品牌
      * @return
      */
     @GetMapping("getCategory")
     public ResultResponse getBrand(){
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
-        return ResultResponse.createBySuccess(goodsTypeList);
+        List<BrandGoodsTypeVO> brandGoodsTypeVOList = Lists.newArrayList();
+        goodsTypeList.stream().forEach(goodsType -> {
+            List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(null);
+            BrandGoodsTypeVO  brandGoodsTypeVO = new BrandGoodsTypeVO();
+            brandGoodsTypeVO.setGoodsTypeId(goodsType.getId());
+            brandGoodsTypeVO.setGoodsTypeName(goodsType.getName());
+            brandGoodsTypeVO.setBrandList(brandList);
+            brandGoodsTypeVO.setCategoryId(goodsType.getCategoryId());
+
+            brandGoodsTypeVOList.add(brandGoodsTypeVO);
+        });
+        return ResultResponse.createBySuccess(brandGoodsTypeVOList);
     }
 
     /**
