@@ -138,6 +138,9 @@ public class CommonRepository {
     @Autowired
     protected UnitRepository unitRepository;
 
+    @Autowired
+    protected FavouriteShopRepository favouriteShopRepository;
+
 
 
 

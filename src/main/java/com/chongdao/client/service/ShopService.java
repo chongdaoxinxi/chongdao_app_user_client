@@ -69,4 +69,19 @@ public interface ShopService{
      * @return
      */
     Page<Shop> pageQuery(String keyword, int pageNum, int pageSize);
+
+    /**
+     * 关注店铺
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    ResultResponse concernShop(Integer userId, Integer shopId,Integer status);
+
+    /**
+     * 查看关注店铺列表
+     * @param userId
+     * @return
+     */
+    ResultResponse queryConcernShopList(Integer userId);
 }

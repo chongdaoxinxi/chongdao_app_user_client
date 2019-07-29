@@ -79,4 +79,27 @@ public class ShopController {
         return shopService.getShopEvalAll(shopId);
     }
 
+
+    /**
+     * 关注店铺/取消关注
+     * @param shopId
+     * @return
+     */
+    @PostMapping
+    public ResultResponse concernShop(@RequestParam Integer shopId,@RequestParam Integer status,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopService.concernShop(tokenVo.getUserId(),shopId,status);
+    }
+
+    /**
+     * 查看关注店铺列表
+     * @param token
+     * @return
+     */
+    @GetMapping
+    public ResultResponse queryConcernShopList(String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopService.queryConcernShopList(tokenVo.getUserId());
+    }
+
 }

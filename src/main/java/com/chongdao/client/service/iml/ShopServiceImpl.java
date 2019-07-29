@@ -343,6 +343,48 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
     }
 
+    /**
+     * 关注店铺/取消关注 1/0
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse concernShop(Integer userId, Integer shopId,Integer status) {
+        if (shopId == null){
+            return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
+        }
+
+        if (status == 1){
+            //关注店铺
+            FavouriteShop favouriteShop = new FavouriteShop();
+            favouriteShop.setStatus(status);
+            favouriteShop.setShopId(shopId);
+            favouriteShop.setUserId(userId);
+            favouriteShop.setUpdateTime(new Date());
+            favouriteShop.setCreateTime(new Date());
+            favouriteShopRepository.save(favouriteShop);
+        }else{
+            //取消关注
+            FavouriteShop shop = favouriteShopRepository.findByUserIdAndStatusAndShopId(userId, status, shopId);
+            shop.setStatus(status);
+            shop.setUpdateTime(new Date());
+            favouriteShopRepository.save(shop);
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 查看关注店铺列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultResponse queryConcernShopList(Integer userId) {
+        List<FavouriteShop> favouriteShopList = favouriteShopRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
+        return ResultResponse.createBySuccess(favouriteShopList);
+    }
+
 
     private List<Shop> shopList(Page<Shop> shopPage){
         return shopPage.getContent();
