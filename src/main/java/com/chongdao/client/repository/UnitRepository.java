@@ -18,4 +18,10 @@ public interface UnitRepository extends JpaRepository<Unit, Integer> {
      */
     @Query(value="select unit.* from unit where find_in_set(?1, unit.category_id_list)", nativeQuery = true)
     List<Unit> getUnitFindInSetCategoryIdList(Integer categoryId);
+
+
+
+
+
+
 }

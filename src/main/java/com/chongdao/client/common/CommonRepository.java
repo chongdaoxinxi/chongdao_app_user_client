@@ -3,10 +3,7 @@ package com.chongdao.client.common;
 import com.chongdao.client.mapper.*;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.repository.coupon.*;
-import com.chongdao.client.service.OrderRefundService;
-import com.chongdao.client.service.ShopBillService;
-import com.chongdao.client.service.ShopService;
-import com.chongdao.client.service.SmsService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.sms.SMSUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -135,6 +132,11 @@ public class CommonRepository {
     @Autowired
     protected ScopeApplicationRepository scopeApplicationRepository;
 
+    @Autowired
+    protected PetCardRepository petCardRepository;
+
+    @Autowired
+    protected UnitRepository unitRepository;
 
 
 

@@ -2,6 +2,8 @@ package com.chongdao.client.controller.shop;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.ShopService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -61,8 +63,9 @@ public class ShopController {
      */
     @GetMapping("{shopId}/{categoryId}")
     public ResultResponse getShopService(@PathVariable Integer shopId,
-                                         @PathVariable Integer categoryId){
-        return shopService.getShopService(shopId,categoryId);
+                                         @PathVariable Integer categoryId,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopService.getShopService(shopId,categoryId,tokenVo.getUserId());
     }
 
 

@@ -4,7 +4,6 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.repository.BrandRepository;
-import com.chongdao.client.repository.CategoryRepository;
 import com.chongdao.client.repository.GoodsTypeRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.BrandGoodsTypeVO;
@@ -24,9 +23,6 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     @Autowired
     private BrandRepository brandRepository;
@@ -78,16 +74,18 @@ public class GoodsController {
      */
     @GetMapping("getCategory")
     public ResultResponse getBrand(){
+        //获取所有类别
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
         List<BrandGoodsTypeVO> brandGoodsTypeVOList = Lists.newArrayList();
         goodsTypeList.stream().forEach(goodsType -> {
+            //根据类别获取所属品牌
             List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(null);
             BrandGoodsTypeVO  brandGoodsTypeVO = new BrandGoodsTypeVO();
+            //填充信息
             brandGoodsTypeVO.setGoodsTypeId(goodsType.getId());
             brandGoodsTypeVO.setGoodsTypeName(goodsType.getName());
             brandGoodsTypeVO.setBrandList(brandList);
             brandGoodsTypeVO.setCategoryId(goodsType.getCategoryId());
-
             brandGoodsTypeVOList.add(brandGoodsTypeVO);
         });
         return ResultResponse.createBySuccess(brandGoodsTypeVOList);
@@ -113,15 +111,5 @@ public class GoodsController {
     public ResultResponse getScopeType(@PathVariable Integer goodsTypeId, @PathVariable Integer brandId){
         return goodsService.getScopeType(goodsTypeId, brandId);
     }
-
-
-
-
-
-
-
-
-
-
 
 }
