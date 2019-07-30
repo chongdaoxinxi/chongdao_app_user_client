@@ -1,5 +1,6 @@
 package com.chongdao.client.vo;
 
+import com.chongdao.client.entitys.PetCard;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +27,6 @@ public class GoodsTypeVO {
     private Integer moduleId;
 
     private List<GoodsListVO> goodsListVOList;
+
+    private List<PetCard> petCardList;
 }

@@ -36,6 +36,7 @@ import static com.chongdao.client.common.Const.OrderBy.*;
 import static com.chongdao.client.common.Const.goodsListProActivities.DISCOUNT;
 
 @Service
+@SuppressWarnings("all")
 public class ShopServiceImpl extends CommonRepository implements ShopService {
     @Autowired
     private ShopRepository shopRepository;
@@ -159,7 +160,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse<List<GoodsTypeVO>> getShopService(Integer shopId, Integer categoryId) {
+    public ResultResponse<List<GoodsTypeVO>> getShopService(Integer shopId, Integer categoryId,Integer userId) {
         if (shopId == null || categoryId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
@@ -195,9 +196,14 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                     goodsTypeVO.setGoodsTypeId(e.getId());
                     goodsTypeVO.setCategoryId(e.getCategoryId());
                     goodsTypeVO.setGoodsTypeName(e.getName());
+
                     BeanUtils.copyProperties(good,goodsListVO);
+                    //宠物卡片
+                    this.assembelGoodsTypeVO(good,goodsTypeVO,userId);
                     goodsListVOList.add(goodsListVO);
                     goodsTypeVO.setGoodsListVOList(goodsListVOList);
+
+
                 }
             }
             if (goodsTypeVO.getCategoryId() != null) {
@@ -206,6 +212,63 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         }
         return ResultResponse.createBySuccess(goodsTypeVOList);
     }
+
+    /**
+     * 封装宠物卡片信息
+     * @param good
+     * @param goodsTypeVO
+     * @param userId
+     * @return
+     */
+    private GoodsTypeVO assembelGoodsTypeVO(Good good,GoodsTypeVO goodsTypeVO,Integer userId){
+        List<PetCard> petCardList = Lists.newArrayList();
+        if (good.getCategoryId() != 3) {
+            if ((good.getName().contains("狗") || good.getName().contains("犬"))) {
+                //获取宠物卡片(狗)
+                List<PetCard> petCards = petCardRepository.findByUserIdAndStatusAndTypeId(userId, 1, 1);
+                petCards.stream().forEach(petCard -> {
+                    //重量
+                    BigDecimal weight = petCard.getWeight();
+                    List<Unit> unitList = unitRepository.findAll();
+                    for (Unit unit : unitList) {
+                        BigDecimal min = unit.getMin();
+                        BigDecimal max = unit.getMax();
+                        if (weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                            if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+                                petCardList.add(petCard);
+                                goodsTypeVO.setPetCardList(petCardList);
+                            }
+                        }
+                    }
+
+                });
+            } else if (good.getName().contains("猫")) {
+                //获取宠物卡片(猫)
+                List<PetCard> petCards = petCardRepository.findByUserIdAndStatusAndTypeId(userId, 1, 2);
+                petCards.stream().forEach(petCard -> {
+                    //重量
+                    BigDecimal weight = petCard.getWeight();
+                    List<Unit> unitList = unitRepository.findAll();
+                    for (Unit unit : unitList) {
+                        BigDecimal min = unit.getMin();
+                        BigDecimal max = unit.getMax();
+                        if (weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                            if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+                                petCardList.add(petCard);
+                                goodsTypeVO.setPetCardList(petCardList);
+                            }
+                        }
+                    }
+
+                });
+            }else{
+                List<PetCard> petCards = petCardRepository.findByUserIdAndStatus(userId, 1).orElse(null);
+                goodsTypeVO.setPetCardList(petCardList);
+            }
+        }
+        return goodsTypeVO;
+    }
+
 
     /**
      * 获取店铺所有订单评价以及店铺总评价
@@ -278,6 +341,53 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         }
         Page<Shop> shopPage = shopRepository.findByShopNameLikeAndStatusNot("%" + keyword + "%", -1, pageable);
         return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
+    }
+
+    /**
+     * 关注店铺/取消关注 1/0
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse concernShop(Integer userId, Integer shopId,Integer status) {
+        if (shopId == null){
+            return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
+        }
+
+        if (status == 1){
+            //关注店铺
+            FavouriteShop favouriteShop = new FavouriteShop();
+            favouriteShop.setStatus(status);
+            favouriteShop.setShopId(shopId);
+            favouriteShop.setUserId(userId);
+            favouriteShop.setUpdateTime(new Date());
+            favouriteShop.setCreateTime(new Date());
+            favouriteShopRepository.save(favouriteShop);
+        }else{
+            //取消关注
+            FavouriteShop shop = favouriteShopRepository.findByUserIdAndStatusAndShopId(userId, status, shopId);
+            shop.setStatus(status);
+            shop.setUpdateTime(new Date());
+            favouriteShopRepository.save(shop);
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 查看关注店铺列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultResponse queryConcernShopList(Integer userId) {
+        List<FavouriteShop> favouriteShopList = favouriteShopRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
+        List<Integer> shopIds = Lists.newArrayList();
+        favouriteShopList.stream().forEach(favouriteShop -> {
+            shopIds.add(favouriteShop.getShopId());
+        });
+        List<Shop> shopList = shopRepository.findAllById(shopIds).orElse(null);
+        return ResultResponse.createBySuccess(shopList);
     }
 
 

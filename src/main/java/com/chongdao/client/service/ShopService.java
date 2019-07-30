@@ -44,7 +44,7 @@ public interface ShopService{
      * @param type 0 商品 1 服务
      * @return
      */
-    ResultResponse getShopService(Integer shopId, Integer type);
+    ResultResponse getShopService(Integer shopId, Integer type,Integer userId);
 
     /**
      * 获取店铺所有订单评价以及店铺总评价
@@ -69,4 +69,19 @@ public interface ShopService{
      * @return
      */
     Page<Shop> pageQuery(String keyword, int pageNum, int pageSize);
+
+    /**
+     * 关注店铺
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    ResultResponse concernShop(Integer userId, Integer shopId,Integer status);
+
+    /**
+     * 查看关注店铺列表
+     * @param userId
+     * @return
+     */
+    ResultResponse queryConcernShopList(Integer userId);
 }

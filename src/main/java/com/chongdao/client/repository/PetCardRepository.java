@@ -2,10 +2,9 @@ package com.chongdao.client.repository;
 
 import com.chongdao.client.entitys.PetCard;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Description 宠物资料卡片JPA
@@ -27,4 +26,6 @@ public interface PetCardRepository extends JpaRepository<PetCard, Integer> {
      * @return
      */
     Optional<List<PetCard>> findByUserIdAndStatus(Integer userId, Integer status);
+
+    List<PetCard> findByUserIdAndStatusAndTypeId(Integer userId, Integer status, Integer typeId);
 }

@@ -4,11 +4,14 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.repository.BrandRepository;
-import com.chongdao.client.repository.CategoryRepository;
 import com.chongdao.client.repository.GoodsTypeRepository;
 import com.chongdao.client.service.GoodsService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.BrandGoodsTypeVO;
 import com.chongdao.client.vo.GoodsDetailVo;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +25,6 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     @Autowired
     private BrandRepository brandRepository;
@@ -71,13 +71,26 @@ public class GoodsController {
 
 
     /**
-     * 商品分类
+     * 商品分类和品牌
      * @return
      */
     @GetMapping("getCategory")
     public ResultResponse getBrand(){
+        //获取所有类别
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
-        return ResultResponse.createBySuccess(goodsTypeList);
+        List<BrandGoodsTypeVO> brandGoodsTypeVOList = Lists.newArrayList();
+        goodsTypeList.stream().forEach(goodsType -> {
+            //根据类别获取所属品牌
+            List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(null);
+            BrandGoodsTypeVO  brandGoodsTypeVO = new BrandGoodsTypeVO();
+            //填充信息
+            brandGoodsTypeVO.setGoodsTypeId(goodsType.getId());
+            brandGoodsTypeVO.setGoodsTypeName(goodsType.getName());
+            brandGoodsTypeVO.setBrandList(brandList);
+            brandGoodsTypeVO.setCategoryId(goodsType.getCategoryId());
+            brandGoodsTypeVOList.add(brandGoodsTypeVO);
+        });
+        return ResultResponse.createBySuccess(brandGoodsTypeVOList);
     }
 
     /**
@@ -101,14 +114,28 @@ public class GoodsController {
         return goodsService.getScopeType(goodsTypeId, brandId);
     }
 
+    /**
+     * 商品收藏/取消
+     * @param goodsId
+     * @param status
+     * @param token
+     * @return
+     */
+    @PostMapping
+    public ResultResponse concernGoods(@RequestParam Integer goodsId,@RequestParam Integer status,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return goodsService.concernGoods(tokenVo.getUserId(), goodsId,status);
+    }
 
-
-
-
-
-
-
-
-
+    /**
+     * 查看收藏商品列表
+     * @param token
+     * @return
+     */
+    @GetMapping
+    public ResultResponse queryConcernShopList(String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return goodsService.queryConcernGoodsList(tokenVo.getUserId());
+    }
 
 }

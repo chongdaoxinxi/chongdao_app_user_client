@@ -137,4 +137,20 @@ public interface GoodsService {
      * @return
      */
     ResultResponse getScopeType(Integer goodsTypeId, Integer brandId);
+
+    /**
+     * 商品收藏/取消
+     * @param userId
+     * @param goodsId
+     * @param status
+     * @return
+     */
+    ResultResponse concernGoods(Integer userId, Integer goodsId, Integer status);
+
+    /**
+     * 查看收藏商品列表
+     * @param userId
+     * @return
+     */
+    ResultResponse queryConcernGoodsList(Integer userId);
 }

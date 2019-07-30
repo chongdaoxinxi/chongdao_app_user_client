@@ -169,9 +169,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
         PageHelper.startPage(pageNum, pageSize);
-        //全部
+        //全部 （状态含义 参考OrderStatusEnum.class）
         if ("all".contains(type)) {
-            type = "1,2,3,4,5,6,7,8,9";
+            type = "1,2,3,4,5,6,7,8,9,10,11,12,13";
+        }else if (type.equals("2")){//服务中
+            type = "7,10,11,12";
+        }else{//已完成
+            type = "0,3,4,5,6,9,13";
+
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
         List<OrderVo> orderVoList = this.assembleOrderVoList(orderInfoList, userId);
