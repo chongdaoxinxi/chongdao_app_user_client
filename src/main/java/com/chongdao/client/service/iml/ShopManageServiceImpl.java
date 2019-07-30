@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ManageStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopManageService;
 import com.chongdao.client.utils.TokenUtil;
@@ -64,7 +65,7 @@ public class ShopManageServiceImpl implements ShopManageService {
         s.setLastLoginTime(current);
         shopRepository.saveAndFlush(s);
         //生成token
-        sVo.setToken(TokenUtil.generateToken(shopId, accountName, current, "SHOP_APP"));
+        sVo.setToken(TokenUtil.generateToken(shopId, accountName, current, RoleEnum.SHOP_APP.getCode()));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), sVo);
     }
 

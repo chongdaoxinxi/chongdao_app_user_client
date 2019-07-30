@@ -53,5 +53,8 @@ public class User {
     /** 最后一次登录时间（token鉴别有效期使用） */
     private Date lastLoginTime;
 
-
+    /** 推荐人ID */
+    private Integer recommendId;//用户推荐人ID
+    private Integer recommendType;//推荐来源:1:用户,2:配送员,3:商家
+    private Integer isLoginApp;//是否已经登录过app
 }
