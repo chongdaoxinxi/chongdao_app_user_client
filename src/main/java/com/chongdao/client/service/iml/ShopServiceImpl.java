@@ -382,7 +382,12 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
     @Override
     public ResultResponse queryConcernShopList(Integer userId) {
         List<FavouriteShop> favouriteShopList = favouriteShopRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
-        return ResultResponse.createBySuccess(favouriteShopList);
+        List<Integer> shopIds = Lists.newArrayList();
+        favouriteShopList.stream().forEach(favouriteShop -> {
+            shopIds.add(favouriteShop.getShopId());
+        });
+        List<Shop> shopList = shopRepository.findAllById(shopIds).orElse(null);
+        return ResultResponse.createBySuccess(shopList);
     }
 
 
