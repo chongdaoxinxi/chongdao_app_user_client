@@ -20,4 +20,6 @@ public interface UserService {
     ResultResponse getFavouriteShopList(Integer userId);
 
     ResultResponse getFavouriteGoodList(Integer userId);
+
+    ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId);
 }
