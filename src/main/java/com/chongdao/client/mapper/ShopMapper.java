@@ -23,6 +23,7 @@ public interface ShopMapper {
     List<Shop> getMyFavouriteShopList(Integer userId);
 
     List<Shop> selectByName(@Param("orderBy") String orderBy,
+                            @Param("lng") Double lng,@Param("lat")Double lat,
                             @Param("categoryId") String categoryId,
                             @Param("discount") Integer discount,@Param("proActivities") String proActivities);
 
