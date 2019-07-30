@@ -66,4 +66,6 @@ public class ShopVO {
     private Integer checkedCount;
 
     private Integer userId;
+
+    private String distance;
 }

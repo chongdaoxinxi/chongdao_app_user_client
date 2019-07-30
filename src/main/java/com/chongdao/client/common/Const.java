@@ -55,8 +55,7 @@ public class Const {
     public interface  goodsListProActivities{
         //优惠活动
         //满减、店铺打折、店铺红包
-        Set<String> PROACTIVITIES = Sets.newHashSet("0","2");
-        String DISCOUNT = "1";
+        String DISCOUNT = "0";
     }
 
     /**

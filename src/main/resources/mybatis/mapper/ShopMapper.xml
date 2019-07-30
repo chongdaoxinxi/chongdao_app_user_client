@@ -48,6 +48,7 @@
     s.money, s.type, s.grade, s.wx_no, s.zfb_no, s.bank_no, s.qr_code_url, s.des, s.show_img, s.status, s.service_price_ratio,
     s.stop_note, s.is_hot, s.is_auto_accept, s.is_join_common_weal, s.start_business_hours, s.end_business_hours,
     s.create_time, s.update_time, s.last_login_time, s.address, s.is_stop
+
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -440,21 +441,23 @@
     <select id="selectByName" parameterType="String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_Lists" />,
-        p.id coupon_id,p.coupon_name,p.type,
-        (select discount from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
+        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
+        (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
-        from  shop s left join coupon p on s.id = p.shop_id
+        from  shop s
         where s.status in (0,1)
-        <if test="categoryId != null">
-            or (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+        <if test="categoryId != null and proActivities == null and discount == 0">
+            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
-        <if test="discount &gt;0">
-            or  (select discount from good g where g.shop_id=s.id and discount &gt; 0 limit 0,1)  &gt; 0
+        <if test="discount &gt;0 and categoryId == null and proActivities == null ">
+            and  (select discount from good g where g.shop_id=s.id and discount &gt; 0 limit 0,1)  &gt; 0
         </if>
-        <if test="proActivities != null">
-            or  p.type  in (${proActivities})
+        <if test="proActivities != null and categoryId == null and discount == 0">
+            and (select cpn_type from cpn_info c where c.shop_id=s.id and c.cpn_state=1 limit 0,1) in (#{proActivities})
         </if>
-        order by ${orderBy}
+        order by dis, ${orderBy}
     </select>
 
     <select id="selectByAreaCodeAndShopName" parameterType="String" resultMap="BaseResultMap">

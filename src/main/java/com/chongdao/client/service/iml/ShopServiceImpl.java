@@ -49,7 +49,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> list(Integer userId,String categoryId, String  proActivities, String orderBy ,int pageNum, int pageSize) {
+    public ResultResponse<PageInfo> list(Integer userId,String categoryId, String  proActivities, String orderBy ,Double lng,Double lat,int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         //排序规则
         if (StringUtils.isNotBlank(orderBy)){
@@ -80,7 +80,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         }
         //查询所有上架店铺(综合排序)
         List<Shop> shopList = shopMapper.selectByName(
-                orderBy,StringUtils.isBlank(categoryId) ? null : categoryId,
+                orderBy,lng,lat,StringUtils.isBlank(categoryId) ? null : categoryId,
                 discount,StringUtils.isBlank(proActivities) ? null: proActivities);
         PageInfo pageInfo = new PageInfo(shopList);
         pageInfo.setList(shopListVOList(shopList,userId));

@@ -29,10 +29,11 @@ public class ShopController {
                                          @RequestParam(value = "userId",required = false) Integer userId,
                                           @RequestParam(value = "proActivities",required = false) String  proActivities,
                                           @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy,
+                                          @RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat,
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
 
-        return shopService.list(userId,categoryId,proActivities,orderBy,pageNum,pageSize);
+        return shopService.list(userId,categoryId,proActivities,orderBy,lng,lat,pageNum,pageSize);
 
     }
 
