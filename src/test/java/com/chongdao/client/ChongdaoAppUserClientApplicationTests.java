@@ -70,6 +70,12 @@ public class ChongdaoAppUserClientApplicationTests {
         System.out.println("图片信息如下：\n" + fileInfo.getCrc32() + "\n" + new Date(fileInfo.getCreateTime()) + "\n" + fileInfo.getFileSize() + "\n" + fileInfo.getSourceIpAddr());
     }
 
+    @Test
+    public void testContains(){
+        String str = "25-30kg";
+        System.out.println(str.contains("25kg"));
+    }
+
 
 
 }
