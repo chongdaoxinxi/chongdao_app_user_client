@@ -34,4 +34,5 @@ public class MedicalInsuranceOrder implements Serializable {
     private Date applyDate;//保险订单下单时间
     private Date auditDate;//审核完成时间
     private Date createDate;//数据创建时间
+    private String recommendCode;//推广码
 }

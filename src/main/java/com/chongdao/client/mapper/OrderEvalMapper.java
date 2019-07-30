@@ -1,6 +1,7 @@
 package com.chongdao.client.mapper;
 
 import com.chongdao.client.entitys.OrderEval;
+import com.chongdao.client.vo.SimpleOrderEvalVO;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface OrderEvalMapper {
     int updateByPrimaryKey(OrderEval record);
 
     List<OrderEval> getShopEvalAll(Integer shopId);
+
+    List<SimpleOrderEvalVO> getOrderEvalData(Integer orderId);
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/")
 @CrossOrigin
 public class UserController {
 
@@ -32,9 +32,18 @@ public class UserController {
      * 用户登录接口
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping("login")
     public ResultResponse<UserLoginVO> login(@RequestParam("phone") String phone,@RequestParam("code") String code){
         return userService.login(phone, code);
+    }
+
+    /**
+     * 用户通过推广链接完成注册
+     * @return
+     */
+    @PostMapping("recommendSign")
+    public ResultResponse recommendSign(String phone, Integer type, Integer recommendId) {
+        return userService.saveUserRecommendData(phone, type, recommendId);
     }
 
     /**
@@ -43,7 +52,7 @@ public class UserController {
      * @param type 1:优惠券;2:配送券
      * @return
      */
-    @GetMapping("/getUserCard")
+    @GetMapping("getUserCard")
     public ResultResponse<PageInfo<CardUserVo>> getUserCard(String token, Integer type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userCardService.getUserCard(tokenVo.getUserId(), type, pageNum, pageSize);
@@ -53,7 +62,7 @@ public class UserController {
      * 获取礼包列表
      * @return
      */
-    @GetMapping("/getPackage")
+    @GetMapping("getPackage")
     public ResultResponse<List<Package>> getPackage() {
         return packageService.getPackageList();
     }

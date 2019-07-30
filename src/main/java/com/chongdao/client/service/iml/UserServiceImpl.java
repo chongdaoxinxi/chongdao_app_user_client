@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -171,5 +172,31 @@ public class UserServiceImpl implements UserService {
 //                })
 //                .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
         return null;
+    }
+
+    /**
+     * 通过推广链接进行注册
+     * @param phone
+     * @param type
+     * @param recommendId
+     * @return
+     */
+    @Override
+    public ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId) {
+        User u = new User();
+        initNewUserCommonFileds(u);
+        u.setPhone(phone);
+        u.setName(phone);//默认名称为手机号码
+        u.setRecommendId(recommendId);
+        u.setRecommendType(type);
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
+    }
+
+    private void initNewUserCommonFileds(User u) {
+        u.setCreateTime(new Date());
+        u.setMoney(new BigDecimal(0));
+        u.setPoints(0);
+        u.setType(1);
+        u.setStatus(1);
     }
 }

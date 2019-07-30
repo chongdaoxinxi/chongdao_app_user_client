@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Express;
 import com.chongdao.client.enums.ManageStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.ExpressRepository;
 import com.chongdao.client.service.ExpressManageService;
 import com.chongdao.client.utils.TokenUtil;
@@ -58,7 +59,7 @@ public class ExpressManageServiceImpl implements ExpressManageService {
             eVo.setPassword(password);
             Date date = new Date();
             eVo.setLastLoginTime(date);
-            eVo.setToken(TokenUtil.generateToken(id, username, date, "EXPRESS"));
+            eVo.setToken(TokenUtil.generateToken(id, username, date, RoleEnum.EXPRESS.getCode()));
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), eVo);
         } else {
             return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ACCOUNT_INFO_ERROR.getStatus(), ManageStatusEnum.ACCOUNT_INFO_ERROR.getMessage());

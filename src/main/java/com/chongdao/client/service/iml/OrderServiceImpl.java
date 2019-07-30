@@ -950,6 +950,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
     }
 
+    @Override
+    public ResultResponse getOrderEvalData(Integer orderId) {
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderEvalMapper.getOrderEvalData(orderId));
+    }
+
     /**
      * 获取使用过优惠券的订单(管理员)
      * @param areaCode
