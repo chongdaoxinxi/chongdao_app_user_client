@@ -141,6 +141,9 @@ public class CommonRepository {
     @Autowired
     protected FavouriteShopRepository favouriteShopRepository;
 
+    @Autowired
+    protected FavouriteGoodsRepository favouriteGoodsRepository;
+
 
 
 

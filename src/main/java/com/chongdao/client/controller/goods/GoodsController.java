@@ -6,8 +6,10 @@ import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.repository.BrandRepository;
 import com.chongdao.client.repository.GoodsTypeRepository;
 import com.chongdao.client.service.GoodsService;
+import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.BrandGoodsTypeVO;
 import com.chongdao.client.vo.GoodsDetailVo;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +112,30 @@ public class GoodsController {
     @GetMapping("getScopeType/{goodsTypeId}/{brandId}")
     public ResultResponse getScopeType(@PathVariable Integer goodsTypeId, @PathVariable Integer brandId){
         return goodsService.getScopeType(goodsTypeId, brandId);
+    }
+
+    /**
+     * 商品收藏/取消
+     * @param goodsId
+     * @param status
+     * @param token
+     * @return
+     */
+    @PostMapping
+    public ResultResponse concernGoods(@RequestParam Integer goodsId,@RequestParam Integer status,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return goodsService.concernGoods(tokenVo.getUserId(), goodsId,status);
+    }
+
+    /**
+     * 查看收藏商品列表
+     * @param token
+     * @return
+     */
+    @GetMapping
+    public ResultResponse queryConcernShopList(String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return goodsService.queryConcernGoodsList(tokenVo.getUserId());
     }
 
 }

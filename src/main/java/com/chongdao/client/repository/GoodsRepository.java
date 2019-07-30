@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GoodsRepository extends JpaRepository<Good, Integer> {
 
@@ -59,4 +60,6 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
 
 
     List<Good> findByShopIdAndCategoryIdInAndStatus(Integer shopId, List<Integer> categoryIds,Byte status);
+
+    Optional<List<Good>> findAllById(List<Integer> goodsId);
 }

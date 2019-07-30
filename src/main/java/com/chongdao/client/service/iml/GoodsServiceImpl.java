@@ -505,4 +505,52 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         scopeVO.setScopeApplicationList(scopeApplicationList);
         return ResultResponse.createBySuccess(scopeVO);
     }
+
+    /**
+     * 商品收藏/取消
+     * @param userId
+     * @param goodsId
+     * @param status
+     * @return
+     */
+    @Override
+    public ResultResponse concernGoods(Integer userId, Integer goodsId, Integer status) {
+        if (goodsId == null){
+            return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
+        }
+
+        if (status == 1){
+            //收藏商品
+            FavouriteGood favouriteShop = new FavouriteGood();
+            favouriteShop.setStatus(status);
+            favouriteShop.setGoodsId(goodsId);
+            favouriteShop.setUserId(userId);
+            favouriteShop.setUpdateTime(new Date());
+            favouriteShop.setCreateTime(new Date());
+            favouriteGoodsRepository.save(favouriteShop);
+        }else{
+            //取消关注
+            FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodsId(userId, status, goodsId);
+            good.setStatus(status);
+            good.setUpdateTime(new Date());
+            favouriteGoodsRepository.save(good);
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 查看收藏商品列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultResponse queryConcernGoodsList(Integer userId) {
+        List<FavouriteGood> favouriteGoodList = favouriteGoodsRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
+        List<Integer> goodsIds = Lists.newArrayList();
+        favouriteGoodList.stream().forEach(favouriteGood -> {
+            goodsIds.add(favouriteGood.getGoodsId());
+        });
+        List<Good> goodList = goodsRepository.findAllById(goodsIds).orElse(null);
+        return ResultResponse.createBySuccess(goodList);
+    }
 }
