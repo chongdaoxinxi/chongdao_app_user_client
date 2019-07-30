@@ -473,6 +473,12 @@
         </if>
         order by s.create_time asc
     </select>
-
-
+    <select id="listGeo" parameterType="double" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>,
+        round(getDistance(lat,lng,#{lat},#{lng})) dis,
+        if(round(getDistance(lat,lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(lat,lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(lat,lng,#{lat},#{lng}))*0.001,1),'km')) distance
+        from shop where round(getDistance(lat,lng,#{lat},#{lng})) &lt;= 3000
+        order by dis
+    </select>
 </mapper>

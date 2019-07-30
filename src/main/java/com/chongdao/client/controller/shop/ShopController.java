@@ -37,6 +37,18 @@ public class ShopController {
 
     }
 
+    /**
+     * 地图商家数据
+     * @param lng
+     * @param lat
+     * @return
+     */
+    @GetMapping("list/geo")
+    public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat){
+        return shopService.listGeo(lng,lat);
+
+    }
+
     @GetMapping("search")
     public ResultResponse pageQuery(String keyword,
                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,

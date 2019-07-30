@@ -390,6 +390,21 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         return ResultResponse.createBySuccess(shopList);
     }
 
+    /**
+     * 地图商家数据
+     * @param lng
+     * @param lat
+     * @return
+     */
+    @Override
+    public ResultResponse listGeo(Double lng, Double lat) {
+        if (lng == null || lat == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"经纬度不能为空");
+        }
+        List<Shop> shopList = shopMapper.listGeo(lng,lat);
+        return ResultResponse.createBySuccess(shopList);
+    }
+
 
     private List<Shop> shopList(Page<Shop> shopPage){
         return shopPage.getContent();

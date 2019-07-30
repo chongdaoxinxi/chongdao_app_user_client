@@ -84,4 +84,12 @@ public interface ShopService{
      * @return
      */
     ResultResponse queryConcernShopList(Integer userId);
+
+    /**
+     * 地图商家数据
+     * @param lng
+     * @param lat
+     * @return
+     */
+    ResultResponse listGeo(Double lng, Double lat);
 }
