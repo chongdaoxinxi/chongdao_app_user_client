@@ -34,7 +34,7 @@ public class MedicalInsuranceClaims implements Serializable {
     private String payCredentials;//支付凭证
     private String otherMaterials;//其他材料
     private Integer auditStatus;//审核状态; -1: 拒绝;0:待审核;1;平台审核通过;2:保险公司审核通过;3:理赔完成;
-    private Date createDate;
-    private Date updateDate;
+    private Date createTime;
+    private Date updateTime;
 
 }

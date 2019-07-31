@@ -12,4 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/insurance_external/")
 public class InsuranceExternalController {
+    //医疗险发送数据给保险公司生成保单
+
+    //接受保险公司返回的保单数据
+
+    //运输险发送数据给保险公司生成保单
+
+    //接受保险公司返回的运输险保单数据
+
+    //医疗险理赔-传输数据给保险公司
 }

@@ -29,7 +29,7 @@ public class MedicalInsuranceReimbursement implements Serializable {
     private Integer id;
     private Integer medicalInsuranceOrderId;//医疗保险订单id
     private Integer status;//报销流程状态
-    private Date applyDate;//报销申请时间
-    private Date auditDate;//审核完成时间
-    private Date createDate;//创建时间
+    private Date applyTime;//报销申请时间
+    private Date auditTime;//审核完成时间
+    private Date createTime;//创建时间
 }
