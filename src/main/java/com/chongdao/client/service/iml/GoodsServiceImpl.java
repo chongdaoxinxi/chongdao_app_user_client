@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -116,6 +117,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsDetailVo.setShopName(shop.getShopName());
         goodsDetailVo.setStartBusinessHours(shop.getStartBusinessHours());
         goodsDetailVo.setEndBusinessHours(shop.getEndBusinessHours());
+        //查询该商品是否被当前用户收藏
+        int count = favouriteGoodsRepository.countByUserIdAndGoodIdAndStatus(userId, goodsId, 1);
+        goodsDetailVo.setConcernStatus(count);
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),goodsDetailVo);
     }
 
@@ -510,30 +514,30 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * 商品收藏/取消
      * @param userId
      * @param goodsId
-     * @param status
      * @return
      */
     @Override
-    public ResultResponse concernGoods(Integer userId, Integer goodsId, Integer status) {
+    public ResultResponse concernGoods(Integer userId, Integer goodsId) {
         if (goodsId == null){
             return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
         }
-
-        if (status == 1){
+        //查询商品是否收藏
+        FavouriteGood good = favouriteGoodsRepository.findByUserIdAndGoodId(userId,  goodsId);
+        //取消收藏
+        if (good != null){
+            //取消关注
+            good.setStatus(0);
+            good.setUpdateTime(new Date());
+            favouriteGoodsRepository.save(good);
+        }else {
             //收藏商品
             FavouriteGood favouriteShop = new FavouriteGood();
-            favouriteShop.setStatus(status);
-            favouriteShop.setGoodsId(goodsId);
+            favouriteShop.setStatus(1);
+            favouriteShop.setGoodId(goodsId);
             favouriteShop.setUserId(userId);
             favouriteShop.setUpdateTime(new Date());
             favouriteShop.setCreateTime(new Date());
             favouriteGoodsRepository.save(favouriteShop);
-        }else{
-            //取消关注
-            FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodsId(userId, status, goodsId);
-            good.setStatus(status);
-            good.setUpdateTime(new Date());
-            favouriteGoodsRepository.save(good);
         }
         return ResultResponse.createBySuccess();
     }
@@ -547,10 +551,12 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     public ResultResponse queryConcernGoodsList(Integer userId) {
         List<FavouriteGood> favouriteGoodList = favouriteGoodsRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
         List<Integer> goodsIds = Lists.newArrayList();
-        favouriteGoodList.stream().forEach(favouriteGood -> {
-            goodsIds.add(favouriteGood.getGoodsId());
-        });
-        List<Good> goodList = goodsRepository.findAllById(goodsIds).orElse(null);
-        return ResultResponse.createBySuccess(goodList);
+        if (!CollectionUtils.isEmpty(favouriteGoodList)) {
+            favouriteGoodList.stream().forEach(favouriteGood -> {
+                goodsIds.add(favouriteGood.getGoodId());
+            });
+        }
+        List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
+        return ResultResponse.createBySuccess(this.goodsListVOList(goodList));
     }
 }

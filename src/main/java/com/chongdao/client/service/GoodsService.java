@@ -142,10 +142,9 @@ public interface GoodsService {
      * 商品收藏/取消
      * @param userId
      * @param goodsId
-     * @param status
      * @return
      */
-    ResultResponse concernGoods(Integer userId, Integer goodsId, Integer status);
+    ResultResponse concernGoods(Integer userId, Integer goodsId);
 
     /**
      * 查看收藏商品列表

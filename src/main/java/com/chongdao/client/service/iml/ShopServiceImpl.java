@@ -121,7 +121,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse getShopById(Integer shopId) {
+    public ResultResponse getShopById(Integer shopId,Integer userId) {
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
@@ -145,9 +145,15 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 couponInfoList.add(e);
             }
         });
+        //查询该店铺是否已收藏
+        int count = favouriteShopRepository.countByUserIdAndShopIdAndStatus(userId, shopId, 1);
+        shopVO.setConcernStatus(count);
         shopVO.setCouponInfoList(couponInfoList);
         return ResultResponse.createBySuccess(shopVO);
     }
+
+
+
 
     public ResultResponse addShop(Shop shop) {
         Shop s = new Shop();
@@ -362,26 +368,25 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse concernShop(Integer userId, Integer shopId,Integer status) {
+    public ResultResponse concernShop(Integer userId, Integer shopId) {
         if (shopId == null){
             return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
         }
-
-        if (status == 1){
+        FavouriteShop shop = favouriteShopRepository.findByUserIdAndAndShopId(userId,  shopId);
+        if (shop != null){
+            //取消关注
+            shop.setStatus(0);
+            shop.setUpdateTime(new Date());
+            favouriteShopRepository.save(shop);
+        }else {
             //关注店铺
             FavouriteShop favouriteShop = new FavouriteShop();
-            favouriteShop.setStatus(status);
+            favouriteShop.setStatus(1);
             favouriteShop.setShopId(shopId);
             favouriteShop.setUserId(userId);
             favouriteShop.setUpdateTime(new Date());
             favouriteShop.setCreateTime(new Date());
             favouriteShopRepository.save(favouriteShop);
-        }else{
-            //取消关注
-            FavouriteShop shop = favouriteShopRepository.findByUserIdAndStatusAndShopId(userId, status, shopId);
-            shop.setStatus(status);
-            shop.setUpdateTime(new Date());
-            favouriteShopRepository.save(shop);
         }
         return ResultResponse.createBySuccess();
     }
@@ -392,14 +397,17 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse queryConcernShopList(Integer userId) {
+    public ResultResponse queryConcernShopList(Integer userId,Double lng,Double lat) {
         List<FavouriteShop> favouriteShopList = favouriteShopRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
         List<Integer> shopIds = Lists.newArrayList();
-        favouriteShopList.stream().forEach(favouriteShop -> {
-            shopIds.add(favouriteShop.getShopId());
-        });
-        List<Shop> shopList = shopRepository.findAllById(shopIds).orElse(null);
-        return ResultResponse.createBySuccess(shopList);
+        if (!CollectionUtils.isEmpty(favouriteShopList)) {
+            favouriteShopList.stream().forEach(favouriteShop -> {
+                shopIds.add(favouriteShop.getShopId());
+            });
+        }
+        List<Shop> shopList = shopMapper.selectConcernShop(shopIds,lng,lat);
+        List<ShopVO> shopVOList = this.shopListVOList(shopList,userId);
+        return ResultResponse.createBySuccess(shopVOList);
     }
 
     /**

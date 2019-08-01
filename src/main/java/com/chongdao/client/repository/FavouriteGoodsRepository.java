@@ -8,8 +8,10 @@ import java.util.Optional;
 
 public interface FavouriteGoodsRepository extends JpaRepository<FavouriteGood,Integer> {
 
-    FavouriteGood findByUserIdAndStatusAndGoodsId(Integer userId, Integer status, Integer goodsId);
+    FavouriteGood findByUserIdAndGoodId(Integer userId,  Integer goodsId);
 
     Optional<List<FavouriteGood>> findAllByUserIdAndStatus(Integer userId, Integer status);
+
+    int countByUserIdAndGoodIdAndStatus(Integer userId,Integer goodId,Integer status);
 
 }

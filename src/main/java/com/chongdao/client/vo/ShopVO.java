@@ -68,4 +68,7 @@ public class ShopVO {
     private Integer userId;
 
     private String distance;
+
+    //收藏状态  1 收藏 0取消收藏
+    private Integer concernStatus;
 }

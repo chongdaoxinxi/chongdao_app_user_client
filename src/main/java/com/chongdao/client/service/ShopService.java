@@ -34,7 +34,7 @@ public interface ShopService{
      * @param shopId
      * @return
      */
-    ResultResponse getShopById(Integer shopId);
+    ResultResponse getShopById(Integer shopId,Integer userId);
 
     ResultResponse addShop(Shop shop);
 
@@ -76,14 +76,14 @@ public interface ShopService{
      * @param shopId
      * @return
      */
-    ResultResponse concernShop(Integer userId, Integer shopId,Integer status);
+    ResultResponse concernShop(Integer userId, Integer shopId);
 
     /**
      * 查看关注店铺列表
      * @param userId
      * @return
      */
-    ResultResponse queryConcernShopList(Integer userId);
+    ResultResponse queryConcernShopList(Integer userId,Double lng,Double lat);
 
     /**
      * 地图商家数据

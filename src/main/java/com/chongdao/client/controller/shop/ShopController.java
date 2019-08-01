@@ -64,8 +64,9 @@ public class ShopController {
      * @return
      */
     @GetMapping("{shopId}")
-    public ResultResponse getShopById(@PathVariable Integer shopId){
-        return shopService.getShopById(shopId);
+    public ResultResponse getShopById(@PathVariable Integer shopId, String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopService.getShopById(shopId,tokenVo.getUserId());
     }
 
     /**
@@ -99,9 +100,9 @@ public class ShopController {
      * @return
      */
     @PostMapping
-    public ResultResponse concernShop(@RequestParam Integer shopId,@RequestParam Integer status,String token){
+    public ResultResponse concernShop(@RequestParam Integer shopId,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopService.concernShop(tokenVo.getUserId(),shopId,status);
+        return shopService.concernShop(tokenVo.getUserId(),shopId);
     }
 
     /**
@@ -110,9 +111,9 @@ public class ShopController {
      * @return
      */
     @GetMapping
-    public ResultResponse queryConcernShopList(String token){
+    public ResultResponse queryConcernShopList(String token,Double lng,Double lat){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopService.queryConcernShopList(tokenVo.getUserId());
+        return shopService.queryConcernShopList(tokenVo.getUserId(),lng,lat);
     }
 
 }

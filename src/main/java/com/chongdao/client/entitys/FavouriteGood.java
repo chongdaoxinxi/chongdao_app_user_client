@@ -25,7 +25,7 @@ public class FavouriteGood implements Serializable {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	private Integer goodsId;//商品id
+	private Integer goodId;//商品id
 	private Integer userId;//用户id
 	private Integer status;//-1:取消收藏, 1:收藏
 	private Date createTime;
@@ -35,7 +35,7 @@ public class FavouriteGood implements Serializable {
 	public String toString() {
 		return "FavouriteGood{" +
 				"id=" + id +
-				", goodsId=" + goodsId +
+				", goodsId=" + goodId +
 				", userId=" + userId +
 				", status=" + status +
 				", createTime=" + createTime +

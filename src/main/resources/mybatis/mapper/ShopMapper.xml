@@ -527,4 +527,20 @@
         from shop where round(getDistance(lat,lng,#{lat},#{lng})) &lt;= 3000
         order by dis
     </select>
+
+    <!-- 查询收藏店铺-->
+    <select id="selectConcernShop"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Lists" />,
+        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
+        (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
+        from  shop s
+        where s.status in (0,1) and s.id in <foreach collection="shopIds" index="index" item="id" open="(" separator="," close=")">
+        #{id}
+       </foreach>
+        order by dis
+    </select>
 </mapper>

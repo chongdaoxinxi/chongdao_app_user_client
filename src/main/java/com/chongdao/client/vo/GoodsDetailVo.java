@@ -58,4 +58,9 @@ public class GoodsDetailVo {
     private String scopeName; //适用阶段
     private List<BathingService> serviceContent;   //洗澡服务内容
 
+
+
+    //收藏状态  1 收藏 0取消收藏
+    private Integer concernStatus;
+
 }
