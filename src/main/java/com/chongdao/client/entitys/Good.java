@@ -81,6 +81,8 @@ public class Good {
 	//洗澡服务内容id （多选）
 	private String bathingServiceId;
 
+	private Integer sort;
+
 
 
 	@Transient
@@ -95,7 +97,7 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
-	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String unitName, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId) {
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String unitName, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId,Integer sort) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
@@ -120,5 +122,6 @@ public class Good {
 		this.scopeId = scopeId;
 		this.petCategoryId = petCategoryId;
 		this.bathingServiceId = bathingServiceId;
+		this.sort = sort;
 	}
 }

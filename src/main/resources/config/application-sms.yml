@@ -25,6 +25,7 @@ sms:
 ## 配送员接单
   OrderAssignedExpress: 【养宠有道】您已拿到新的订单, 订单号：{$var}
   OrderAssignedUser: 【养宠有道】您的订单：{$var}配送员已经出发，请耐心等待
+  ExpressNewOrder: 【养宠有道】有新订单了，请接单,店铺名：{$var}，订单号：{$var}
 
   ## 配送员到店
   ## 单程(订单完成)

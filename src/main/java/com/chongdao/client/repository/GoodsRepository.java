@@ -63,4 +63,10 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
 
 
     Optional<List<Good>> findAllByIdIn(List<Integer> goodsId);
+
+
+    @Transactional
+    @Query(value = "update good set sales = sales + ?1 where id = ?2",nativeQuery = true)
+    @Modifying
+    int updateGoodIdIn(Integer count,Integer goodsId);
 }

@@ -79,6 +79,8 @@ public class GoodsListVO {
 
     private List<CouponInfo> couponInfoList;
 
+    private Integer sort;
+
 
 
 

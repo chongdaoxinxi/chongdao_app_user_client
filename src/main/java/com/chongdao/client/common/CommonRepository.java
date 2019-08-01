@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @date 2019-06-19 13:34
  */
 public class CommonRepository {
+
+    @Autowired
+    protected OrderLogRepository logRepository;
     @Autowired
     protected GoodMapper goodMapper;
 

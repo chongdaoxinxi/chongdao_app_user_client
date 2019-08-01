@@ -27,17 +27,18 @@
             <arg column="scope_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="pet_category_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="bathing_service_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="sort" javaType="java.lang.Integer" jdbcType="INTEGER" />
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
         id, name, icon, price, discount, unit, unit_name, des, goods_type_id, shop_id, ratio, ratio_price,
     stock, create_time, update_time, status, module_id, category_id, sales, type_name,
-    brand_id, scope_id, pet_category_id, bathing_service_id
+    brand_id, scope_id, pet_category_id, bathing_service_id,sort
     </sql>
     <sql id="Base_Column_Lists">
         g.id, g.name, g.icon, g.price, g.discount, g.unit, g.unit_name, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
     g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id, g.sales, g.type_name,
-    g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id
+    g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id,sort
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -58,7 +59,7 @@
                           create_time, update_time, status,
                           module_id, category_id, sales,
                           type_name, brand_id, scope_id,
-                          pet_category_id, bathing_service_id)
+                          pet_category_id, bathing_service_id,sort)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
                 #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
                 #{unit,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
@@ -66,7 +67,7 @@
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
                 #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER},
                 #{typeName,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, #{scopeId,jdbcType=INTEGER},
-                #{petCategoryId,jdbcType=INTEGER}, #{bathingServiceId,jdbcType=VARCHAR})
+                #{petCategoryId,jdbcType=INTEGER}, #{bathingServiceId,jdbcType=VARCHAR},#{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Good">
         insert into good
@@ -143,6 +144,9 @@
             <if test="bathingServiceId != null">
                 bathing_service_id,
             </if>
+            <if test="sort != null">
+                sort
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -216,6 +220,9 @@
             </if>
             <if test="bathingServiceId != null">
                 #{bathingServiceId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -291,6 +298,9 @@
             <if test="bathingServiceId != null">
                 bathing_service_id = #{bathingServiceId,jdbcType=VARCHAR},
             </if>
+            <if test="sort != null">
+               sort = #{sort,jdbcType=INTEGER},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -318,7 +328,8 @@
             brand_id = #{brandId,jdbcType=INTEGER},
             scope_id = #{scopeId,jdbcType=INTEGER},
             pet_category_id = #{petCategoryId,jdbcType=INTEGER},
-            bathing_service_id = #{bathingServiceId,jdbcType=VARCHAR}
+            bathing_service_id = #{bathingServiceId,jdbcType=VARCHAR},
+            sort = #{sort,jdbcType=INTEGER}
         where id = #{id,jdbcType=INTEGER}
     </update>
 
