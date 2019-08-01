@@ -65,8 +65,9 @@ public class GoodsController {
      * @return
      */
     @GetMapping("getGoodsDetail/{goodsId}")
-    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId,@RequestParam(required = false) Integer userId){
-        return goodsService.getGoodsDetail(goodsId,userId);
+    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return goodsService.getGoodsDetail(goodsId,tokenVo.getUserId());
     }
 
 
