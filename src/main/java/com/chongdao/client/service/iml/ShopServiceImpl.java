@@ -147,9 +147,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         });
         //查询该店铺是否已收藏
         int count = favouriteShopRepository.countByUserIdAndShopIdAndStatus(userId, shopId, 1);
-        if (count > 0){
-            shopVO.setConcernStatus(1);
-        }
+        shopVO.setConcernStatus(count);
         shopVO.setCouponInfoList(couponInfoList);
         return ResultResponse.createBySuccess(shopVO);
     }

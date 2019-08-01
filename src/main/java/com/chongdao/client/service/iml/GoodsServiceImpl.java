@@ -118,9 +118,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsDetailVo.setEndBusinessHours(shop.getEndBusinessHours());
         //查询该商品是否被当前用户收藏
         int count = favouriteGoodsRepository.countByUserIdAndGoodIdAndStatus(userId, goodsId, 1);
-        if (count > 0){
-            goodsDetailVo.setConcernStatus(1);
-        }
+        goodsDetailVo.setConcernStatus(count);
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),goodsDetailVo);
     }
 
