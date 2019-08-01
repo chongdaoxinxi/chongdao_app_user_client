@@ -52,9 +52,10 @@ public class ShopController {
 
     @GetMapping("search")
     public ResultResponse pageQuery(String keyword,
+                                    String areaCode,
                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-        return ResultResponse.createBySuccess(shopService.pageQuery(keyword,pageNum,pageSize));
+        return ResultResponse.createBySuccess(shopService.pageQuery(keyword,areaCode,pageNum,pageSize));
 
     }
 

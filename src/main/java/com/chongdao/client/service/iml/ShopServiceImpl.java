@@ -350,14 +350,14 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public Page<Shop> pageQuery(String keyword, int pageNum, int pageSize) {
+    public Page<Shop> pageQuery(String keyword, String areaCode,int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum-1,pageSize);
         //keyword为空查询所有店铺
         if (StringUtils.isBlank(keyword)){
-            Page<Shop> shopPage = shopRepository.findAllByStatusNot(-1,pageable);
+            Page<Shop> shopPage = shopRepository.findAllByStatusNotAndAreaCode(-1,areaCode,pageable);
             return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
         }
-        Page<Shop> shopPage = shopRepository.findByShopNameLikeAndStatusNot("%" + keyword + "%", -1, pageable);
+        Page<Shop> shopPage = shopRepository.findByShopNameLikeAndStatusNotAndAreaCode("%" + keyword + "%", -1, areaCode,pageable);
         return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
     }
 

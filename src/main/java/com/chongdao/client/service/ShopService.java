@@ -68,7 +68,7 @@ public interface ShopService{
      * @param pageSize
      * @return
      */
-    Page<Shop> pageQuery(String keyword, int pageNum, int pageSize);
+    Page<Shop> pageQuery(String keyword, String areaCode,int pageNum, int pageSize);
 
     /**
      * 关注店铺

@@ -19,9 +19,9 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     Optional<List<Shop>> findByAccountNameAndPassword(String accountName, String password);
 
-    Page<Shop> findAllByStatusNot(Integer status,Pageable pageable);
+    Page<Shop> findAllByStatusNotAndAreaCode(Integer status,String areaCode,Pageable pageable);
 
-    Page<Shop> findByShopNameLikeAndStatusNot(String shopName,Integer status,Pageable pageable);
+    Page<Shop> findByShopNameLikeAndStatusNotAndAreaCode(String shopName,Integer status,String areaCode,Pageable pageable);
 
     Optional<List<Shop>> findAllByIdIn(List<Integer> shopIds);
 
