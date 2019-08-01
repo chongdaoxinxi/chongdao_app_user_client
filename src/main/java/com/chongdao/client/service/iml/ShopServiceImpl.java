@@ -372,7 +372,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         if (shopId == null){
             return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
         }
-        FavouriteShop shop = favouriteShopRepository.findByUserIdAndStatusAndShopId(userId, 1, shopId);
+        FavouriteShop shop = favouriteShopRepository.findByUserIdAndAndShopId(userId,  shopId);
         if (shop != null){
             //取消关注
             shop.setStatus(0);
@@ -405,7 +405,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 shopIds.add(favouriteShop.getShopId());
             });
         }
-        List<Shop> shopList = shopRepository.findAllById(shopIds).orElse(null);
+        List<Shop> shopList = shopRepository.findAllByIdIn(shopIds).orElse(null);
         return ResultResponse.createBySuccess(shopList);
     }
 

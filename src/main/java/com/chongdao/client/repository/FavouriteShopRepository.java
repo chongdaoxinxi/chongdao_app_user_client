@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface FavouriteShopRepository extends JpaRepository<FavouriteShop,Integer> {
     Optional<List<FavouriteShop>> findAllByUserIdAndStatus(Integer userId, Integer status);
 
-    FavouriteShop findByUserIdAndStatusAndShopId(Integer userId, Integer status,Integer shopId);
+    FavouriteShop findByUserIdAndAndShopId(Integer userId,Integer shopId);
 
     int countByUserIdAndShopIdAndStatus(Integer userId, Integer shopId, Integer status);
 

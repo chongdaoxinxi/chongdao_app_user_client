@@ -522,7 +522,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
         }
         //查询商品是否收藏
-        FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodId(userId, 1, goodsId);
+        FavouriteGood good = favouriteGoodsRepository.findByUserIdAndGoodId(userId,  goodsId);
         //取消收藏
         if (good != null){
             //取消关注
@@ -556,7 +556,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 goodsIds.add(favouriteGood.getGoodId());
             });
         }
-        List<Good> goodList = goodsRepository.findAllById(goodsIds).orElse(null);
+        List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
         return ResultResponse.createBySuccess(goodList);
     }
 }

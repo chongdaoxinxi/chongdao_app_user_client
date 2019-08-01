@@ -23,6 +23,6 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     Page<Shop> findByShopNameLikeAndStatusNot(String shopName,Integer status,Pageable pageable);
 
-    Optional<List<Shop>> findAllById(List<Integer> shopIds);
+    Optional<List<Shop>> findAllByIdIn(List<Integer> shopIds);
 
 }
