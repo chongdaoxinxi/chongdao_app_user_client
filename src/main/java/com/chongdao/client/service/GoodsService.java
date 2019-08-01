@@ -39,7 +39,7 @@ public interface GoodsService {
      * 获取商品类别
      * @return
      */
-    ResultResponse getGoodCategoryList(Integer shopId);
+    ResultResponse getGoodCategoryList();
 
     /**
      * 获取商品列表

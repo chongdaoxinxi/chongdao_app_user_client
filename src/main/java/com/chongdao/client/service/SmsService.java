@@ -119,4 +119,27 @@ public interface SmsService {
      * @return
      */
     List<String> getUserPhoneListByOrderId(Integer orderId);
+
+    /**
+     * 自动接单 推送短信到商家
+     * @param orderNo
+     * @param phone
+     */
+    void sendOrderAutoAcceptShop(String orderNo,String phone);
+
+
+    /**
+     * 下单成功 推送短信到用户
+     * @param orderNo
+     * @param phone
+     */
+    void sendNewOrderUser(String orderNo,String phone);
+
+    /**
+     * 配送员接单
+     * @param orderNo
+     * @param phone
+     */
+    void sendExpressNewOrder(String orderNo,String phone);
+
 }

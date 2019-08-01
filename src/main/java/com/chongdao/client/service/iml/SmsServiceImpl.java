@@ -345,4 +345,59 @@ public class SmsServiceImpl implements SmsService {
                     return resp;
                 }).orElse(resp);
     }
+
+    /**
+     * 自动接单 推送短信到商家
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendOrderAutoAcceptShop(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getOrderAutoAcceptShop(), params);
+
+        String requestJson = gson.toJson(smsVariableRequest);
+
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
+
+    /**
+     * 下单成功 推送短信给用户
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendNewOrderUser(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getNewOrderUser(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
+
+    /**配送员接单
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendExpressNewOrder(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getNewOrderExpress(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
 }

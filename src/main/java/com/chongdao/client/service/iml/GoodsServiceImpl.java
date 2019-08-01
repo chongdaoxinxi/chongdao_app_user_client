@@ -138,7 +138,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             BeanUtils.copyProperties(good,goodsListVO);
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
-                goodsListVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+                goodsListVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount()/10)));
             }
             //封装优惠券
             //根据店铺查询在架状态的优惠券
@@ -214,20 +214,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse getGoodCategoryList(Integer shopId) {
-        List<GoodsType> goodCategoryList = goodsTypeMapper.getGoodCategoryList(shopId);
-        List<GoodsTypeVO> goodsTypeVOList = Lists.newArrayList();
-        goodCategoryList.stream().forEach(goodsType -> {
-            GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
-            goodsTypeVO.setGoodsTypeName(goodsType.getName());
-            goodsTypeVO.setGoodsTypeId(goodsType.getId());
-            goodsTypeVO.setCategoryId(goodsType.getCategoryId());
-            goodsTypeVO.setSort(goodsType.getSort());
-            goodsTypeVO.setStatus(goodsType.getStatus());
-            goodsTypeVO.setModuleId(goodsType.getModuleId());
-            goodsTypeVOList.add(goodsTypeVO);
-        });
-        return ResultResponse.createBySuccess(goodsTypeVOList);
+    public ResultResponse getGoodCategoryList() {
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
+        return ResultResponse.createBySuccess(goodsTypeList);
     }
 
 

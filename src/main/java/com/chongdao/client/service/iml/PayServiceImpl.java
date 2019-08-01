@@ -5,22 +5,17 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.config.AliPayConfig;
 import com.chongdao.client.dto.OrderLogDTO;
 import com.chongdao.client.dto.WxUnifiedorderModelDTO;
 import com.chongdao.client.dto.WxUnifiedorderResponseDTO;
-import com.chongdao.client.entitys.OrderDetail;
-import com.chongdao.client.entitys.OrderInfo;
-import com.chongdao.client.entitys.OrderLog;
-import com.chongdao.client.entitys.PayInfo;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
-import com.chongdao.client.mapper.OrderDetailMapper;
-import com.chongdao.client.mapper.OrderInfoMapper;
-import com.chongdao.client.repository.OrderLogRepository;
 import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -54,19 +49,13 @@ import java.util.TreeMap;
 
 @Service
 @Slf4j
-public class PayServiceImpl implements PayService {
+public class PayServiceImpl extends CommonRepository implements PayService {
 
-    @Autowired
-    private OrderInfoMapper orderInfoMapper;
-
-    @Autowired
-    private OrderDetailMapper orderDetailMapper;
 
     @Autowired
     private PayInfoRepository payInfoRepository;
 
-    @Autowired
-    private OrderLogRepository logRepository;
+
 
 
     /**
@@ -156,9 +145,30 @@ public class PayServiceImpl implements PayService {
             order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
             order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
             order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
+            //销量更新
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+            orderDetailList.stream().forEach(orderDetail -> {
+                goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+            });
             orderInfoMapper.updateByPrimaryKeySelective(order);
+            //todo 短信推送
+            //判断是否自动接单
+            Shop shop = shopRepository.findById(order.getShopId()).get();
+            if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
+                //推送短信到商家
+                smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
+                //推送短信到用户
+                if (order.getReceiveAddressId() != null) {
+                    UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
+                    smsService.sendNewOrderUser(orderNo,address.getPhone());
+                }
+                //推送短信到配送员
+                List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+                expressList.stream().forEach(express -> {
+                    smsService.sendExpressNewOrder(orderNo,express.getPhone());
+                });
 
-            //短信推送
+            }
 
         }
 
