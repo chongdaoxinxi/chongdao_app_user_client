@@ -438,7 +438,7 @@
         order by fs.create_time desc
     </select>
 
-    <select id="selectByName" parameterType="String" resultMap="BaseResultMap">
+    <select id="selectByName"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_Lists" />,
         round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
@@ -461,7 +461,7 @@
     </select>
 
 
-    <select id="selectByArrangementLimit3KM" parameterType="String" resultMap="BaseResultMap">
+    <select id="selectByArrangementLimit3KM"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_Lists" />,
         round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
@@ -470,7 +470,7 @@
         (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
         from  shop s
-        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000 s.area_code = #{areaCode}
+        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000 and s.area_code = #{areaCode}
         <if test="categoryId != null">
             and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
@@ -483,7 +483,7 @@
         order by is_join_common_weal desc,sales desc,${orderBy},dis
     </select>
 
-    <select id="selectByArrangement3KMOut" parameterType="String" resultMap="BaseResultMap">
+    <select id="selectByArrangement3KMOut"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_Lists" />,
         round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
