@@ -557,6 +557,6 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             });
         }
         List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
-        return ResultResponse.createBySuccess(goodList);
+        return ResultResponse.createBySuccess(this.goodsListVOList(goodList));
     }
 }

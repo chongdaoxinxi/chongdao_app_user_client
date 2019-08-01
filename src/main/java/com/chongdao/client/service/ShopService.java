@@ -83,7 +83,7 @@ public interface ShopService{
      * @param userId
      * @return
      */
-    ResultResponse queryConcernShopList(Integer userId);
+    ResultResponse queryConcernShopList(Integer userId,Double lng,Double lat);
 
     /**
      * 地图商家数据

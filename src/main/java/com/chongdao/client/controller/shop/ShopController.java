@@ -111,9 +111,9 @@ public class ShopController {
      * @return
      */
     @GetMapping
-    public ResultResponse queryConcernShopList(String token){
+    public ResultResponse queryConcernShopList(String token,Double lng,Double lat){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopService.queryConcernShopList(tokenVo.getUserId());
+        return shopService.queryConcernShopList(tokenVo.getUserId(),lng,lat);
     }
 
 }

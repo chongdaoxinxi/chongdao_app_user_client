@@ -397,7 +397,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse queryConcernShopList(Integer userId) {
+    public ResultResponse queryConcernShopList(Integer userId,Double lng,Double lat) {
         List<FavouriteShop> favouriteShopList = favouriteShopRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
         List<Integer> shopIds = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(favouriteShopList)) {
@@ -405,8 +405,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 shopIds.add(favouriteShop.getShopId());
             });
         }
-        List<Shop> shopList = shopRepository.findAllByIdIn(shopIds).orElse(null);
-        return ResultResponse.createBySuccess(shopList);
+        List<Shop> shopList = shopMapper.selectConcernShop(shopIds,lng,lat);
+        List<ShopVO> shopVOList = this.shopListVOList(shopList,userId);
+        return ResultResponse.createBySuccess(shopVOList);
     }
 
     /**
