@@ -26,4 +26,8 @@ public class PetBreed implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
+
+    private String code;
+    private String name;
+    private Integer type;//1:狗;2:猫;
 }
