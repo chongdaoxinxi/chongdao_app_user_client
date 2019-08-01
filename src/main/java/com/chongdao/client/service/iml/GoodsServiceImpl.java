@@ -523,7 +523,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             //收藏商品
             FavouriteGood favouriteShop = new FavouriteGood();
             favouriteShop.setStatus(status);
-            favouriteShop.setGoodsId(goodsId);
+            favouriteShop.setGoodId(goodsId);
             favouriteShop.setUserId(userId);
             favouriteShop.setUpdateTime(new Date());
             favouriteShop.setCreateTime(new Date());
@@ -548,7 +548,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<FavouriteGood> favouriteGoodList = favouriteGoodsRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
         List<Integer> goodsIds = Lists.newArrayList();
         favouriteGoodList.stream().forEach(favouriteGood -> {
-            goodsIds.add(favouriteGood.getGoodsId());
+            goodsIds.add(favouriteGood.getGoodId());
         });
         List<Good> goodList = goodsRepository.findAllById(goodsIds).orElse(null);
         return ResultResponse.createBySuccess(goodList);
