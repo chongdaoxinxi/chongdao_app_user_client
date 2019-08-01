@@ -99,9 +99,9 @@ public class ShopController {
      * @return
      */
     @PostMapping
-    public ResultResponse concernShop(@RequestParam Integer shopId,@RequestParam Integer status,String token){
+    public ResultResponse concernShop(@RequestParam Integer shopId,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopService.concernShop(tokenVo.getUserId(),shopId,status);
+        return shopService.concernShop(tokenVo.getUserId(),shopId);
     }
 
     /**

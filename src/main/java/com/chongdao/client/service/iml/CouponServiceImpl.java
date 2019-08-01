@@ -9,13 +9,9 @@ import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.repository.CardRepository;
-import com.chongdao.client.repository.CardUserRepository;
-import com.chongdao.client.repository.CouponUserRepository;
 import com.chongdao.client.service.CouponService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,21 +24,6 @@ import static com.chongdao.client.common.CouponConst.*;
 
 @Service
 public class CouponServiceImpl extends CommonRepository implements CouponService {
-
-
-
-    @Autowired
-    private CardUserRepository cardUserRepository;
-
-    @Autowired
-    private CouponUserRepository couponUserRepository;
-
-    @Autowired
-    private CardRepository cardRepository;
-
-
-
-
 
     /**
      * 订单优惠券列表

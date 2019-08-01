@@ -510,30 +510,30 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * 商品收藏/取消
      * @param userId
      * @param goodsId
-     * @param status
      * @return
      */
     @Override
-    public ResultResponse concernGoods(Integer userId, Integer goodsId, Integer status) {
+    public ResultResponse concernGoods(Integer userId, Integer goodsId) {
         if (goodsId == null){
             return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
         }
-
-        if (status == 1){
+        //查询商品是否收藏
+        FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodId(userId, 1, goodsId);
+        //取消收藏
+        if (good != null){
+            //取消关注
+            good.setStatus(0);
+            good.setUpdateTime(new Date());
+            favouriteGoodsRepository.save(good);
+        }else {
             //收藏商品
             FavouriteGood favouriteShop = new FavouriteGood();
-            favouriteShop.setStatus(status);
+            favouriteShop.setStatus(1);
             favouriteShop.setGoodId(goodsId);
             favouriteShop.setUserId(userId);
             favouriteShop.setUpdateTime(new Date());
             favouriteShop.setCreateTime(new Date());
             favouriteGoodsRepository.save(favouriteShop);
-        }else{
-            //取消关注
-            FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodId(userId, status, goodsId);
-            good.setStatus(status);
-            good.setUpdateTime(new Date());
-            favouriteGoodsRepository.save(good);
         }
         return ResultResponse.createBySuccess();
     }

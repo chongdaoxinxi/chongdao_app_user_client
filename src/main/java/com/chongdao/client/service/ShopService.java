@@ -76,7 +76,7 @@ public interface ShopService{
      * @param shopId
      * @return
      */
-    ResultResponse concernShop(Integer userId, Integer shopId,Integer status);
+    ResultResponse concernShop(Integer userId, Integer shopId);
 
     /**
      * 查看关注店铺列表

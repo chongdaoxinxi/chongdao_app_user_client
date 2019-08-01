@@ -362,26 +362,25 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse concernShop(Integer userId, Integer shopId,Integer status) {
+    public ResultResponse concernShop(Integer userId, Integer shopId) {
         if (shopId == null){
             return  ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"shopId不能为空!");
         }
-
-        if (status == 1){
+        FavouriteShop shop = favouriteShopRepository.findByUserIdAndStatusAndShopId(userId, 1, shopId);
+        if (shop != null){
+            //取消关注
+            shop.setStatus(0);
+            shop.setUpdateTime(new Date());
+            favouriteShopRepository.save(shop);
+        }else {
             //关注店铺
             FavouriteShop favouriteShop = new FavouriteShop();
-            favouriteShop.setStatus(status);
+            favouriteShop.setStatus(1);
             favouriteShop.setShopId(shopId);
             favouriteShop.setUserId(userId);
             favouriteShop.setUpdateTime(new Date());
             favouriteShop.setCreateTime(new Date());
             favouriteShopRepository.save(favouriteShop);
-        }else{
-            //取消关注
-            FavouriteShop shop = favouriteShopRepository.findByUserIdAndStatusAndShopId(userId, status, shopId);
-            shop.setStatus(status);
-            shop.setUpdateTime(new Date());
-            favouriteShopRepository.save(shop);
         }
         return ResultResponse.createBySuccess();
     }

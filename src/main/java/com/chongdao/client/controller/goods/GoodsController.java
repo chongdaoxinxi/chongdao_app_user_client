@@ -117,14 +117,13 @@ public class GoodsController {
     /**
      * 商品收藏/取消
      * @param goodsId
-     * @param status
      * @param token
      * @return
      */
     @PostMapping
-    public ResultResponse concernGoods(@RequestParam Integer goodsId,@RequestParam Integer status,String token){
+    public ResultResponse concernGoods(@RequestParam Integer goodsId,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return goodsService.concernGoods(tokenVo.getUserId(), goodsId,status);
+        return goodsService.concernGoods(tokenVo.getUserId(), goodsId);
     }
 
     /**
