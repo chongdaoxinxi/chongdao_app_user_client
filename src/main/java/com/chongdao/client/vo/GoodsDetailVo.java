@@ -62,7 +62,6 @@ public class GoodsDetailVo {
 
 
     //收藏状态  1 收藏 0取消收藏
-    @JsonProperty("status")
     private Integer concernStatus;
 
 }
