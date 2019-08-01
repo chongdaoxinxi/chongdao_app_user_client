@@ -3,7 +3,6 @@ package com.chongdao.client.vo;
 
 import com.chongdao.client.entitys.BathingService;
 import com.chongdao.client.entitys.coupon.CouponInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
