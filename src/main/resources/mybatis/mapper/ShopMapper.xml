@@ -518,7 +518,7 @@
         </if>
         order by s.create_time asc
     </select>
-    <select id="listGeo" parameterType="double" resultMap="BaseResultMap">
+    <select id="listGeo"  resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/>,
         (select ifnull(sum(sales),0) from good where shop_id=shop.id) sales,
         round(getDistance(lat,lng,#{lat},#{lng})) dis,
