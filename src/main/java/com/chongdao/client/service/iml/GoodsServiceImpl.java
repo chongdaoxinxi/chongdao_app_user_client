@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -550,9 +551,11 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     public ResultResponse queryConcernGoodsList(Integer userId) {
         List<FavouriteGood> favouriteGoodList = favouriteGoodsRepository.findAllByUserIdAndStatus(userId, 1).orElse(null);
         List<Integer> goodsIds = Lists.newArrayList();
-        favouriteGoodList.stream().forEach(favouriteGood -> {
-            goodsIds.add(favouriteGood.getGoodId());
-        });
+        if (!CollectionUtils.isEmpty(favouriteGoodList)) {
+            favouriteGoodList.stream().forEach(favouriteGood -> {
+                goodsIds.add(favouriteGood.getGoodId());
+            });
+        }
         List<Good> goodList = goodsRepository.findAllById(goodsIds).orElse(null);
         return ResultResponse.createBySuccess(goodList);
     }
