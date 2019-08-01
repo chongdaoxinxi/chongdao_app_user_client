@@ -2,6 +2,7 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.PetCard;
+import com.chongdao.client.service.PetBreedService;
 import com.chongdao.client.service.PetCardService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -23,6 +24,17 @@ import java.util.List;
 public class UserPetCardController {
     @Autowired
     private PetCardService petCardService;
+    @Autowired
+    private PetBreedService petBreedService;
+
+    /**
+     * 获取宠物品种
+     * @param type
+     * @return
+     */
+    public ResultResponse getPetBreed(Integer type) {
+        return petBreedService.getPetBreedByType(type);
+    }
 
     /**
      *  获取用户的宠物卡片列表
