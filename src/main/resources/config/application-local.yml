@@ -42,3 +42,9 @@ logging:
       console: "%d - %msg%n"
 #  path: /var/log/
 #  file: /var/log/tomcat/app_client.log
+
+#cxf
+cxf:
+   jaxrs:
+      component-scan: true
+      classes-scan-packages: org.apache.cxf.jaxrs.swagger

@@ -37,5 +37,5 @@ public class MedicalInsurancePolicyHolder implements Serializable {
     private String bankUsername;//银行卡户名
     private String bankName;//银行名称
     private String bankNo;//银行卡账号
-    private Date createDate;
+    private Date createTime;
 }

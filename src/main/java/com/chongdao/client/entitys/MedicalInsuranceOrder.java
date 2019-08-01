@@ -28,11 +28,18 @@ public class MedicalInsuranceOrder implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer userId;//用户id
+    private String name;
+    private String cardType;
+    private String cardNo;
+    private String phone;
+
     private Integer medicalInsurancePolicyHolderId;//投保人id
     private Integer petCardId;//宠物卡片id
+    private String petPhoto;//宠物图片->用于审核
+    private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
     private Integer status;//订单状态
-    private Date applyDate;//保险订单下单时间
-    private Date auditDate;//审核完成时间
+    private Date applyTime;//保险订单下单时间
+    private Date auditTime;//审核完成时间
     private Date createDate;//数据创建时间
     private String recommendCode;//推广码
 }
