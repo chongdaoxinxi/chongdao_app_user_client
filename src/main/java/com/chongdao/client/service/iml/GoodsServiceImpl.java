@@ -303,6 +303,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         //如果goodsId为null代表增加，否则为编辑
         Good good = new Good();
         BeanUtils.copyProperties(goodsListVO,good);
+        Shop shop = shopRepository.findById(shopId).get();
+        good.setAreaCode(shop.getAreaCode());
         if (goodsListVO.getId() == null){
             int result = goodMapper.insert(good);
             if (result == 0){
