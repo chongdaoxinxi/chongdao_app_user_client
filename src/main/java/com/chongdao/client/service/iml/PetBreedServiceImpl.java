@@ -19,7 +19,7 @@ public class PetBreedServiceImpl implements PetBreedService {
     private PetBreedRepository petBreedRepository;
 
     @Override
-    public ResultResponse getPetBreedByType(Integer type) {
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petBreedRepository.findByType(type));
+    public ResultResponse getPetBreedByType(Integer type, String name) {
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petBreedRepository.selectByTypeAndName(type, name));
     }
 }

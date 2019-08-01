@@ -33,8 +33,8 @@ public class UserPetCardController {
      * @return
      */
     @GetMapping("getPetBreed")
-    public ResultResponse getPetBreed(Integer type) {
-        return petBreedService.getPetBreedByType(type);
+    public ResultResponse getPetBreed(Integer type, String name) {
+        return petBreedService.getPetBreedByType(type, name);
     }
 
     /**
