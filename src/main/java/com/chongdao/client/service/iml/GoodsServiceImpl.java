@@ -37,7 +37,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,Integer brandId,Integer goodsTypeId,Integer scopeId,Integer petCategoryId,String orderBy) {
+    public ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,Integer brandId,Integer goodsTypeId,Integer scopeId,Integer petCategoryId, String areaCode, String orderBy) {
         //搜索关键词不为空
         if (StringUtils.isNotBlank(keyword)){
             keyword =new StringBuilder().append("%").append(keyword).append("%").toString();
@@ -56,7 +56,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         }
         //查询所有上架商品(综合排序)
         List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
-                brandId,goodsTypeId,scopeId,petCategoryId,
+                brandId,goodsTypeId,scopeId,petCategoryId,areaCode,
                 orderBy);
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setList(this.goodsListVOList(goodList));

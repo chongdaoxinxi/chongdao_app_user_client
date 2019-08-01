@@ -17,7 +17,7 @@ public interface ShopService{
      * @param pageSize
      * @return
      */
-    ResultResponse<PageInfo> list( Integer userId,String categoryId, String  proActivities, String orderBy, Double lng,Double lat,int pageNum, int pageSize);
+    ResultResponse<PageInfo> list( Integer userId,String categoryId, String  proActivities, String orderBy, Double lng,Double lat,String areaCode,int pageNum, int pageSize);
 
     /**
      * 获取商店列表(管理员)
@@ -91,5 +91,5 @@ public interface ShopService{
      * @param lat
      * @return
      */
-    ResultResponse listGeo(Double lng, Double lat);
+    ResultResponse listGeo(Double lng, Double lat, String areaCode);
 }

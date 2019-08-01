@@ -25,21 +25,21 @@ public interface ShopMapper {
     List<Shop> selectByName(@Param("orderBy") String orderBy,
                             @Param("lng") Double lng,@Param("lat")Double lat,
                             @Param("categoryId") String categoryId,
-                            @Param("discount") Integer discount,@Param("proActivities") String proActivities);
+                            @Param("discount") Integer discount,@Param("proActivities") String proActivities,@Param("areaCode") String areaCode);
 
     List<Shop> selectByArrangementLimit3KM(@Param("orderBy") String orderBy,
                             @Param("lng") Double lng,@Param("lat")Double lat,
                             @Param("categoryId") String categoryId,
-                            @Param("discount") Integer discount,@Param("proActivities") String proActivities);
+                            @Param("discount") Integer discount,@Param("proActivities") String proActivities,@Param("areaCode") String areaCode);
 
     List<Shop> selectByArrangement3KMOut(@Param("orderBy") String orderBy,
                                            @Param("lng") Double lng,@Param("lat")Double lat,
                                            @Param("categoryId") String categoryId,
-                                           @Param("discount") Integer discount,@Param("proActivities") String proActivities);
+                                           @Param("discount") Integer discount,@Param("proActivities") String proActivities,@Param("areaCode") String areaCode);
 
     List<Shop> selectByAreaCodeAndShopName(@Param("areaCode") String areaCode, @Param("shopName") String shopName);
 
-    List<Shop> listGeo(@Param("lng") Double lng,@Param("lat")Double lat);
+    List<Shop> listGeo(@Param("lng") Double lng,@Param("lat")Double lat,@Param("areaCode") String areaCode);
 
     List<Shop> selectConcernShop(@Param("shopIds") List<Integer> shopIds,@Param("lng") Double lng,@Param("lat")Double lat);
 }

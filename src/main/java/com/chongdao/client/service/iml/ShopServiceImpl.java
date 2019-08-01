@@ -49,7 +49,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> list(Integer userId,String categoryId, String  proActivities, String orderBy ,Double lng,Double lat,int pageNum, int pageSize) {
+    public ResultResponse<PageInfo> list(Integer userId,String categoryId, String  proActivities, String orderBy ,Double lng,Double lat,String areaCode,int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         //排序规则
         if (StringUtils.isNotBlank(orderBy)){
@@ -84,15 +84,15 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             List<Shop> shops = Lists.newArrayList();
             //三公里内 公益排第一
             shopList = shopMapper.selectByArrangementLimit3KM(orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
-                    discount, StringUtils.isBlank(proActivities) ? null : proActivities);
+                    discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
             //3公里外
             shops = shopMapper.selectByArrangement3KMOut(orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
-                    discount, StringUtils.isBlank(proActivities) ? null : proActivities);
+                    discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
             shopList.addAll(shops);
         }else {
             shopList = shopMapper.selectByName(
                     orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
-                    discount, StringUtils.isBlank(proActivities) ? null : proActivities);
+                    discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
         }
         PageInfo pageInfo = new PageInfo(shopList);
         pageInfo.setList(shopListVOList(shopList,userId));
@@ -417,11 +417,11 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse listGeo(Double lng, Double lat) {
+    public ResultResponse listGeo(Double lng, Double lat,String areaCode) {
         if (lng == null || lat == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"经纬度不能为空");
         }
-        List<Shop> shopList = shopMapper.listGeo(lng,lat);
+        List<Shop> shopList = shopMapper.listGeo(lng,lat,areaCode);
         return ResultResponse.createBySuccess(shopList);
     }
 

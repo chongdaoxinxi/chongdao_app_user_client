@@ -30,10 +30,11 @@ public class ShopController {
                                           @RequestParam(value = "proActivities",required = false) String  proActivities,
                                           @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy,
                                           @RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat,
+                                          @RequestParam(value = "areaCode") String areaCode,
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
 
-        return shopService.list(userId,categoryId,proActivities,orderBy,lng,lat,pageNum,pageSize);
+        return shopService.list(userId,categoryId,proActivities,orderBy,lng,lat,areaCode,pageNum,pageSize);
 
     }
 
@@ -44,8 +45,8 @@ public class ShopController {
      * @return
      */
     @GetMapping("list/geo")
-    public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat){
-        return shopService.listGeo(lng,lat);
+    public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat, String areaCode){
+        return shopService.listGeo(lng,lat,areaCode);
 
     }
 

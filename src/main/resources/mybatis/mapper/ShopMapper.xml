@@ -447,7 +447,7 @@
         (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
         from  shop s
-        where s.status in (0,1)
+        where s.status in (0,1) and s.area_code = #{areaCode}
         <if test="categoryId != null">
             and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
@@ -470,7 +470,7 @@
         (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
         from  shop s
-        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000
+        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000 s.area_code = #{areaCode}
         <if test="categoryId != null">
             and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
@@ -492,7 +492,7 @@
         (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
         from  shop s
-        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &gt;3000
+        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &gt;3000 and s.area_code = #{areaCode}
         <if test="categoryId != null">
             and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
@@ -524,7 +524,7 @@
         round(getDistance(lat,lng,#{lat},#{lng})) dis,
         if(round(getDistance(lat,lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(lat,lng,#{lat},#{lng})),'m'),
         CONCAT(format(round(getDistance(lat,lng,#{lat},#{lng}))*0.001,1),'km')) distance
-        from shop where round(getDistance(lat,lng,#{lat},#{lng})) &lt;= 3000
+        from shop where round(getDistance(lat,lng,#{lat},#{lng})) &lt;= 3000 and area_code = #{areaCode}
         order by dis
     </select>
 

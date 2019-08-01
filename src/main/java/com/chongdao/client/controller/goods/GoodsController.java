@@ -53,9 +53,10 @@ public class GoodsController {
                                          @RequestParam(value = "goodsTypeId", required = false) Integer goodsTypeId,
                                          @RequestParam(value = "scopeId", required = false) Integer scopeId,
                                          @RequestParam(value = "petCategoryId", required = false) Integer petCategoryId,
+                                         @RequestParam(value = "areaCode") String areaCode,
                                          @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy){
 
-        return goodsService.getGoodsByKeyword(keyword,pageNum,pageSize,brandId,goodsTypeId,scopeId,petCategoryId,orderBy);
+        return goodsService.getGoodsByKeyword(keyword,pageNum,pageSize,brandId,goodsTypeId,scopeId,petCategoryId,areaCode,orderBy);
     }
 
 

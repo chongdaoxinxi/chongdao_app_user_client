@@ -21,7 +21,7 @@ public interface GoodsService {
      * @param orderBy 排序方式(价格、销量、好评等)
      * @return
      */
-    ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,Integer brandId,Integer goodsTypeId,Integer scopeId,Integer petCategoryId, String orderBy);
+    ResultResponse<PageInfo> getGoodsByKeyword(String keyword, int pageNum, int pageSize,Integer brandId,Integer goodsTypeId,Integer scopeId,Integer petCategoryId,  String areaCode, String orderBy);
 
     /**
      * 商品详情
