@@ -77,5 +77,24 @@ public class ChongdaoAppUserClientApplicationTests {
     }
 
 
+    @Test
+    public  void test() {
+        String str="abcdabcdabcdabcd";
+        int count=0;
+//找出所有"abcd"的位置，并且打印出现次数，（循环+指定起始位置）
+        int t=0;
+        for(int i=0;i<str.length();i++){
+            t=str.indexOf("abcd",i);
+            if(t!=-1){
+                System.out.println("出现的索引为："+t);//打印出出现得索引
+// System.out.println(str.substring(t,t+"abcd".length()));//此句话是验证是否匹配的，它的结果是"abcd"
+                count++;//次数增加
+                i=t;//指定起始位置
+            }
+        }
+        System.out.println("出现的次数为："+count);
+    }
+
+
 
 }

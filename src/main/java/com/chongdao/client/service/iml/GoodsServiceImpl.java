@@ -530,7 +530,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             favouriteGoodsRepository.save(favouriteShop);
         }else{
             //取消关注
-            FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodsId(userId, status, goodsId);
+            FavouriteGood good = favouriteGoodsRepository.findByUserIdAndStatusAndGoodId(userId, status, goodsId);
             good.setStatus(status);
             good.setUpdateTime(new Date());
             favouriteGoodsRepository.save(good);
