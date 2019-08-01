@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface PetBreedRepository extends JpaRepository<PetBreed, Integer> {
 
-    @Query(value = "select * from pet_breed pb where pb.type = ?1 and (pb.name like %?2% or ?2 is null or ?2 = '') limit 0, 10", nativeQuery = true)
+    @Query(value = "select * from pet_breed pb where pb.type = ?1 and (pb.name like %?2%) limit 0, 10", nativeQuery = true)
     List<PetBreed> getDataByTypeAndName(Integer type, String name);
 }

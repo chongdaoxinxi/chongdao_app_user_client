@@ -15,7 +15,11 @@
     <select id="getDataByTypeAndName" resultMap="BaseResultMap" parameterType="map">
         select
         <include refid="Base_Column_List"/>
-        from area_bill ab
-        where ab.area_code = #{areaCode} and ab.create_time &gt; #{createDate} and ab.create_time &lt; #{endDate}
+        from pet_breed pb
+        where pb.type = #{type}
+         <if test="name != null and name != ''">
+            and pb.name like concat('%', #{name}, '%')
+         </if>
+        limit 0, 10
     </select>
 </mapper>
