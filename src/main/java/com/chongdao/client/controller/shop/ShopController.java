@@ -64,8 +64,9 @@ public class ShopController {
      * @return
      */
     @GetMapping("{shopId}")
-    public ResultResponse getShopById(@PathVariable Integer shopId){
-        return shopService.getShopById(shopId);
+    public ResultResponse getShopById(@PathVariable Integer shopId, String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopService.getShopById(shopId,tokenVo.getUserId());
     }
 
     /**

@@ -121,7 +121,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse getShopById(Integer shopId) {
+    public ResultResponse getShopById(Integer shopId,Integer userId) {
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
@@ -145,9 +145,17 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 couponInfoList.add(e);
             }
         });
+        //查询该店铺是否已收藏
+        int count = favouriteShopRepository.countByUserIdAndShopIdAndStatus(userId, shopId, 1);
+        if (count > 0){
+            shopVO.setConcernStatus(1);
+        }
         shopVO.setCouponInfoList(couponInfoList);
         return ResultResponse.createBySuccess(shopVO);
     }
+
+
+
 
     public ResultResponse addShop(Shop shop) {
         Shop s = new Shop();

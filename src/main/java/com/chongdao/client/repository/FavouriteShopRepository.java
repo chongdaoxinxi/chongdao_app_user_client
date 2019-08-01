@@ -16,4 +16,6 @@ public interface FavouriteShopRepository extends JpaRepository<FavouriteShop,Int
 
     FavouriteShop findByUserIdAndStatusAndShopId(Integer userId, Integer status,Integer shopId);
 
+    int countByUserIdAndShopIdAndStatus(Integer userId, Integer shopId, Integer status);
+
 }

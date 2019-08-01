@@ -34,7 +34,7 @@ public interface ShopService{
      * @param shopId
      * @return
      */
-    ResultResponse getShopById(Integer shopId);
+    ResultResponse getShopById(Integer shopId,Integer userId);
 
     ResultResponse addShop(Shop shop);
 

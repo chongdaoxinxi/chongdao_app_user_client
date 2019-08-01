@@ -3,6 +3,7 @@ package com.chongdao.client.vo;
 
 import com.chongdao.client.entitys.BathingService;
 import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,5 +58,11 @@ public class GoodsDetailVo {
     private String unitName;   //重量显示
     private String scopeName; //适用阶段
     private List<BathingService> serviceContent;   //洗澡服务内容
+
+
+
+    //收藏状态  1 收藏 0取消收藏
+    @JsonProperty("status")
+    private Integer concernStatus;
 
 }

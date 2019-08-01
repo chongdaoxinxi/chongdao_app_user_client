@@ -12,4 +12,6 @@ public interface FavouriteGoodsRepository extends JpaRepository<FavouriteGood,In
 
     Optional<List<FavouriteGood>> findAllByUserIdAndStatus(Integer userId, Integer status);
 
+    int countByUserIdAndGoodIdAndStatus(Integer userId,Integer goodId,Integer status);
+
 }
