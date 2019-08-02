@@ -10,6 +10,7 @@ import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
+import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.service.CartsService;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
@@ -44,6 +45,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Autowired
     private CartsService cartsService;
 
+    @Autowired
+    private FreightComputer freightComputer;
+
     /**
      * 预下单
      *
@@ -54,9 +58,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
     @Override
     public ResultResponse preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO) {
-//        if (orderCommonVO.getDeliverAddressId() == null) {
-//            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
-//        }
+        if (orderCommonVO.getReceiveAddressId() == null){
+            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
+        }
         if (userId == null) {
             log.error("【预下单】参数不正确, orderCommonVO={} ",orderCommonVO);
             throw new PetException(ResultEnum.PARAM_ERROR);
@@ -98,6 +102,22 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                     orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }
             }
+            //查询店铺
+            Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
+            if (shop != null) {
+                orderVo.setShopName(shop.getShopName());
+                orderVo.setOrderGoodsVoList(orderGoodsVoList);
+                orderVo.setUserId(userId);
+                orderVo.setAreaCode(shop.getAreaCode());
+                orderVo.setFollow(orderCommonVO.getFollow());
+                orderVo.setShopId(shop.getId());
+            }
+            //配送费
+            orderVo.setServicePrice(freightComputer.computerFee(
+                    orderCommonVO.getServiceType(),orderCommonVO.getIsService(),
+                    orderCommonVO.getReceiveAddressId(),orderCommonVO.getDeliverAddressId(),
+                    shop.getId(),userId
+                    ));
             //总价
             cartTotalPrice = BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cart.getQuantity()).add(cartTotalPrice);
             if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
@@ -116,16 +136,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             }
             orderGoodsVoList.add(orderGoodsVo);
         }
-        //查询店铺
-        Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
-        if (shop != null) {
-            orderVo.setShopName(shop.getShopName());
-            orderVo.setOrderGoodsVoList(orderGoodsVoList);
-            orderVo.setUserId(userId);
-            orderVo.setAreaCode(shop.getAreaCode());
-            orderVo.setFollow(orderCommonVO.getFollow());
-            orderVo.setShopId(shop.getId());
-        }
+
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量

@@ -8,4 +8,7 @@ import java.util.Optional;
 
 public interface DicInfoRepository extends JpaRepository<DicInfo, Integer> {
     Optional<List<DicInfo>> findByCodeAndAreaCodeAndStatus(String code, String areaCode, Integer status);
+
+
+    DicInfo findByAreaCodeAndCodeAndStatus(String areaCode, String code, Integer status);
 }
