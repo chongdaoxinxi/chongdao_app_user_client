@@ -31,6 +31,7 @@ public class PetCard implements Serializable {
     private String icon;//宠物头像
     private Integer sex;//宠物性别, 1:男, 2:绝育男, 3:女, 4:绝育女
     private int typeId;//宠物种类id
+    private Integer breedId;//宠物品种ID
     private String breed;//宠物品种
     private BigDecimal weight;//宠物体重
     private Date birthDate;//宠物出生日期
