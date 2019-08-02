@@ -2,7 +2,15 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
+import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
+import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
+import org.beetl.core.Configuration;
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
+import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 /**
  * @Description TODO
@@ -63,23 +71,56 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     @Override
     public ResultResponse generateInsure() {
-        System.out.println("报文数据:" + ZFOForm);
-//        // 创建动态客户端
-//        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-//        Client client = dcf.createClient(INSURANCE_URL);
-//        // 需要密码的情况需要加上用户名和密码
-//        // client.getOutInterceptors().add(new ClientLoginInterceptor(USER_NAME,
-//        // PASS_WORD));
-//        Object[] objects = new Object[0];
-//        // 加入重发机制, 如果没有信息返回进行请求重发
-//        try {
-//            // invoke("方法名",参数1,参数2,参数3....);
-//            objects = client.invoke(INSURANCE_SERVICE_NO, ZFOForm);
-//            // 根据返回的数据, 保存相关保单数据, 推送短信通知
-//            System.out.println("返回数据:" + objects[0]);
-//        } catch (java.lang.Exception e) {
-//            e.printStackTrace();
-//        }
+        String datas = getRenderZFOFrom();
+        System.out.println("报文数据:" + datas);
+        EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
+        EcooperationWebService service = serviceService.getEcooperationWebServicePort();
+        String s = service.insureService(INSURANCE_SERVICE_NO, datas);
+        System.out.println("返回数据:" + s);
+        return null;
+    }
+
+    private String getRenderZFOFrom() {
+        //new一个模板资源加载器
+        StringTemplateResourceLoader resourceLoader = new StringTemplateResourceLoader();
+        /* 使用Beetl默认的配置。
+         * Beetl可以使用配置文件的方式去配置，但由于此处是直接上手的例子，
+         * 我们不去管配置的问题，只需要基本的默认配置就可以了。
+         */
+        Configuration config = null;
+        try {
+            config = Configuration.defaultConfiguration();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Beetl的核心GroupTemplate
+        GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, config);
+        //我们自定义的模板，其中${title}就Beetl默认的占位符
+        Template template = groupTemplate.getTemplate(ZFOForm);
+        template.binding("UUID","qQpufatesQt00122");
+        template.binding("SerialNo", "1");
+        template.binding("OperateTimes", "2019-08-02 14:41:40");
+        template.binding("StartDate", "2019-08-02");
+        template.binding("EndDate", "2020-08-02");
+        template.binding("SumAmount", "500000.00");
+        template.binding("SumPremium", "270.00");
+        template.binding("RationType", "ZFO310000a");
+        template.binding("AppliName", "testxxx");
+        template.binding("AppliIdType", "01");
+        template.binding("AppliIdNo", "430381198707230426");
+        template.binding("AppliIdMobile", "17631088624");
+        template.binding("InsuredSeqNo", "1");
+        template.binding("InsuredName", "testxxx");
+        template.binding("InsuredIdType", "02");
+        template.binding("InsuredIdNo", "110101198001030Q");
+        template.binding("InsuredEmail", "zhangxiaozhao@sinosoft.com.cn");
+        //渲染字符串
+        String str = template.render();
+        System.out.println(str);
+        return str;
+    }
+
+    private String getZCGForm() {
         return null;
     }
 }
