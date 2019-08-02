@@ -291,6 +291,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //更新店铺评分
         Shop shop = shopRepository.findById(orderEval.getShopId()).get();
         shop.setGrade((orderEval.getGrade() + Double.valueOf(shop.getGrade()) / 2));
+        shopRepository.save(shop);
 
         //配送员评价
         orderExpressEval.setCreateTime(new Date());
