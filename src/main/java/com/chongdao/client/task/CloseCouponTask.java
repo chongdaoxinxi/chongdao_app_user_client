@@ -1,6 +1,9 @@
 package com.chongdao.client.task;
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.entitys.OrderEval;
+import com.chongdao.client.entitys.OrderInfo;
+import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -10,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author fenglong
@@ -68,5 +72,39 @@ public class CloseCouponTask extends CommonRepository {
         log.info("【优惠券CpnUser】定时任务结束...");
     }
 
+    @Async
+    @Scheduled(cron="0 0 11 * * ?")
+    public void genarateOrderEval() {
+        List<OrderEval> list = orderEvalRepository.findAll();
+        int i = 0;
+        for(OrderEval e : list) {
+            OrderEval oe = new OrderEval();
+            oe.setOrderNo(e.getOrderNo());
+            oe.setUserId(e.getUserId());
+            oe.setShopId(e.getShopId());
+            oe.setStatus(1);
+            oe.setContent("该用户默认好评");
+            oe.setGrade(5);
+            oe.setCreateTime(new Date());
+            oe.setUpdateTime(new Date());
+            orderEvalRepository.save(oe);
+
+            //更新订单状态为6
+            OrderInfo orderInfo = orderInfoRepository.findByOrderNo(oe.getOrderNo());
+            orderInfo.setOrderStatus(6);
+            orderInfoRepository.save(orderInfo);
+
+            //保存之后, 更新对应商店评分
+            Shop shop = shopRepository.findById(e.getShopId()).get();
+            Double grade = shop.getGrade();
+            if(grade != null) {
+                shop.setGrade((grade + Double.valueOf((double) oe.getGrade()))/2.0D);
+            } else {
+                shop.setGrade(oe.getGrade()*1.0D);
+            }
+            shopRepository.save(shop);
+
+        }
+    }
 
 }

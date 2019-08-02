@@ -288,6 +288,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderEval.setCreateTime(new Date());
         orderEval.setUpdateTime(new Date());
         orderEvalRepository.save(orderEval);
+        //更新店铺评分
+        Shop shop = shopRepository.findById(orderEval.getShopId()).get();
+        shop.setGrade((orderEval.getGrade() + Double.valueOf(shop.getGrade()) / 2));
+
         //配送员评价
         orderExpressEval.setCreateTime(new Date());
         orderExpressEval.setUpdateTime(new Date());
