@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description TODO
+ * @Description 医疗保险店铺宠物芯片
  * @Author onlineS
  * @Date 2019/7/30
  * @Version 1.0
