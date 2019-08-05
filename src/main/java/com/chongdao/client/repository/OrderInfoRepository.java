@@ -10,4 +10,6 @@ public interface OrderInfoRepository extends JpaRepository<OrderInfo, Integer> {
     Optional<List<OrderInfo>> findByUserIdAndShopId(Integer userId, Integer shopId);
 
     OrderInfo findByOrderNo(String orderNo);
+
+    Iterable<OrderInfo> findAllByOrderStatus(Integer orderStatus);
 }

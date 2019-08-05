@@ -1,13 +1,12 @@
 package com.chongdao.client.task;
 
 import com.chongdao.client.common.CommonRepository;
-import com.chongdao.client.entitys.OrderEval;
-import com.chongdao.client.entitys.OrderInfo;
-import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.utils.DateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,6 +22,8 @@ import java.util.List;
 @Component
 @Slf4j
 public class CloseCouponTask extends CommonRepository {
+    @Value("${sms.phone}")
+    private String phone;
 
     @Async
     @Scheduled(cron="0 0 23 * * ?")
@@ -70,6 +71,42 @@ public class CloseCouponTask extends CommonRepository {
         });
         cpnUserRepository.saveAll(cpnUserList);
         log.info("【优惠券CpnUser】定时任务结束...");
+    }
+
+    /**
+     * 15分钟未接单退款
+     */
+    @Async
+    @Scheduled(cron="0 0/15 * * * ? ")
+    public void closeOrderTask(){
+        log.info("【关闭订单】定时任务开始...");
+        //查询订单状态为1的订单进行关闭
+        Iterable<OrderInfo> orderInfoIterator = orderInfoRepository.findAllByOrderStatus(1);
+        orderInfoIterator.forEach(e -> {
+            e.setOrderStatus(-1);
+            Shop shop = shopRepository.findById(e.getShopId()).get();
+            UserAddress userAddress = userAddressRepository.findByIdAndUserId(e.getReceiveAddressId(), e.getUserId());
+            //推送用户
+            smsService.sendOrderTimeOutNotAcceptUser(e.getOrderNo(),shop.getShopName(), userAddress.getPhone());
+            //推送商家
+            smsService.sendOrderTimeoutNotAcceptShop(e.getOrderNo(),shop.getPhone());
+            //推送管理员
+            smsService.sendOrderUserRefundUser(e.getOrderNo(),shop.getShopName(),phone);
+            //推送配送员
+            if (e.getExpressId() == null){
+                List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+                expressList.stream().forEach(express -> {
+                    smsService.sendOrderUserRefundExpress(e.getOrderNo(),express.getPhone());
+                });
+            }else{
+                Express express = expressRepository.findById(e.getExpressId()).get();
+                smsService.sendOrderUserRefundExpress(e.getOrderNo(),express.getPhone());
+            }
+
+        });
+        orderInfoRepository.saveAll(orderInfoIterator);
+
+        log.info("【关闭订单】定时任务结束...");
     }
 
     @Async

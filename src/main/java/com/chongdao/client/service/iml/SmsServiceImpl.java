@@ -436,4 +436,58 @@ public class SmsServiceImpl implements SmsService {
             return;
         }
     }
+
+    /**
+     * 客户退款 推送到客户（商家超时未接）
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendOrderTimeOutNotAcceptUser(String orderNo, String shopName, String phone) {
+        String params = phone+","+orderNo + "," + shopName;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getOrderTimeOutNotAcceptUser(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
+
+    /**
+     * 客户退款 推送到商家（商家超时未接）
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendOrderTimeoutNotAcceptShop(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getOrderTimeoutNotAcceptShop(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
+
+    /**
+     * 客户退款 推送到管理员
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendOrderUserRefundUser(String orderNo, String shopName, String phone) {
+        String params = phone+","+orderNo + "," + shopName;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getOrderUserRefundUser(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
 }

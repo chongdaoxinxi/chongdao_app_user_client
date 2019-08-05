@@ -81,10 +81,8 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         //查询所有上架店铺(默认综合排序)
         List<Shop> shopList = Lists.newArrayList();
         if (orderBy.equals(ARRANGEMENT_VALUE_SHOP)){
-            List<Shop> shops = Lists.newArrayList();
             shopList = shopMapper.selectByArrangementLimit3KM(null, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
                     discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
-            shopList.addAll(shops);
         }else {
             shopList = shopMapper.selectByName(
                     orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
