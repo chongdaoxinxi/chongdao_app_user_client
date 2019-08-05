@@ -37,6 +37,8 @@ public class MedicalInsuranceOrder implements Serializable {
     //被保人信息
     private Integer MedicalInsuranceRecognizeeId;//被保人id->指向被保人表
 
+    private String rationType;//方案代码-用户所选保险及方案
+
     //宠物属性
     private Integer petCardId;//宠物卡片id
     private String petPhoto;//宠物图片->用于审核

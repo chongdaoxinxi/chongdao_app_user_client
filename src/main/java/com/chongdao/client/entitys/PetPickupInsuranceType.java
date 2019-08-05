@@ -28,6 +28,7 @@ public class PetPickupInsuranceType implements Serializable {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    private String rationType;//方案代码
     private String plan;//方案
     private BigDecimal deathOrMaimCompensation;//死亡/伤残赔偿
     private BigDecimal lostCompensation;//走失赔偿
