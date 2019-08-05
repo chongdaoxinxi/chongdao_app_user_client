@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -49,6 +50,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     @Autowired
     private FreightComputer freightComputer;
+
+    @Value("${sms.phone}")
+    private String phone;
 
     /**
      * 预下单
@@ -992,8 +996,18 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //短信推送
         Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
         smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
-        Express express = expressRepository.findById(orderInfo.getExpressId()).get();
-        smsService.sendOrderUserRefundExpress(orderNo,express.getPhone());
+        //推送管理员
+        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(),shop.getShopName(),phone);
+        //推送配送员
+        if (orderInfo.getExpressId() == null){
+            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+            expressList.stream().forEach(express -> {
+                smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
+            });
+        }else{
+            Express express = expressRepository.findById(orderInfo.getExpressId()).get();
+            smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
+        }
         return ResultResponse.createBySuccess();
     }
 

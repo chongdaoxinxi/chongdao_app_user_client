@@ -154,4 +154,25 @@ public interface SmsService {
      * @param phone
      */
     void sendOrderUserRefundExpress(String orderNo,String phone);
+
+    /**
+     * 客户退款 推送到客户（商家超时未接）
+     * @param orderNo
+     * @param phone
+     */
+    void sendOrderTimeOutNotAcceptUser(String orderNo,String shopName,String phone);
+    /**
+     * 客户退款 推送到商家（商家超时未接）
+     * @param orderNo
+     * @param phone
+     */
+    void sendOrderTimeoutNotAcceptShop(String orderNo,String phone);
+
+    /**
+     * 客户退款 推送到管理员
+     * @param orderNo
+     * @param phone
+     */
+    void sendOrderUserRefundUser(String orderNo,String shopName,String phone);
+
 }
