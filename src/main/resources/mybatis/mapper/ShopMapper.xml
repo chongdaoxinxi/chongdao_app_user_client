@@ -468,9 +468,9 @@
         if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
         CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
         (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
-        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
+        (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000) sales
         from  shop s
-        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000 and s.area_code = #{areaCode}
+        where s.status in (0,1) and  s.area_code = #{areaCode}
         <if test="categoryId != null">
             and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
@@ -480,30 +480,10 @@
         <if test="proActivities != null">
             and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp where cp.shop_id=s.id) in (#{proActivities})
         </if>
-        order by is_join_common_weal desc,sales desc,${orderBy},dis
+        order by sales desc,s.grade,dis
     </select>
 
-    <select id="selectByArrangement3KMOut"  resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_Lists" />,
-        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
-        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
-        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
-        (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
-        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
-        from  shop s
-        where s.status in (0,1) and  round(getDistance(s.lat,s.lng,#{lat},#{lng})) &gt;3000 and s.area_code = #{areaCode}
-        <if test="categoryId != null">
-            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
-        </if>
-        <if test="discount &gt;0 ">
-            and  (select discount from good g where g.shop_id=s.id and discount &gt; 0 limit 0,1)  &gt; 0
-        </if>
-        <if test="proActivities != null">
-            and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp where cp.shop_id=s.id) in (#{proActivities})
-        </if>
-        order by dis
-    </select>
+
 
     <select id="selectByAreaCodeAndShopName" parameterType="String" resultMap="BaseResultMap">
         select

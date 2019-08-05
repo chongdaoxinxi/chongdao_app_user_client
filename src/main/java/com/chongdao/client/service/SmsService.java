@@ -142,4 +142,16 @@ public interface SmsService {
      */
     void sendExpressNewOrder(String orderNo,String phone);
 
+    /**
+     * 客户退款 推送到商家
+     * @param orderNo
+     * @param phone
+     */
+    void sendOrderUserRefundShop(String orderNo,String phone);
+    /**
+     * 客户退款 推送到配送员
+     * @param orderNo
+     * @param phone
+     */
+    void sendOrderUserRefundExpress(String orderNo,String phone);
 }

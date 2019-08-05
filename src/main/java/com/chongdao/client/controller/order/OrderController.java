@@ -107,7 +107,19 @@ public class OrderController {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),bindingResult.getFieldError().getDefaultMessage());
         }
         return orderService.orderEval(orderEval,orderExpressEval);
+    }
 
+
+    /**
+     * 用户申请退款
+     * @param orderNo
+     * @param token
+     * @return
+     */
+    @PostMapping("refund")
+    public ResultResponse refund(String orderNo,String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.refund(tokenVo.getUserId(), orderNo);
     }
 
 

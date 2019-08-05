@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.chongdao.client.enums.OrderStatusEnum.USER_APPLY_REFUND;
+
 @Slf4j
 @Service
 public class OrderServiceImpl extends CommonRepository implements OrderService{
@@ -969,6 +971,30 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Override
     public ResultResponse getOrderEvalData(Integer orderId) {
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), orderEvalMapper.getOrderEvalData(orderId));
+    }
+
+    /**
+     * 退款
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ResultResponse refund(Integer userId, String orderNo) {
+        if (orderNo == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "订单号为空");
+        }
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        orderInfo.setOrderStatus(USER_APPLY_REFUND.getStatus());
+        orderInfo.setUpdateTime(new Date());
+        orderInfoRepository.save(orderInfo);
+        //UserAddress user = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), userId);
+        //短信推送
+        Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+        smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
+        Express express = expressRepository.findById(orderInfo.getExpressId()).get();
+        smsService.sendOrderUserRefundExpress(orderNo,express.getPhone());
+        return ResultResponse.createBySuccess();
     }
 
     /**

@@ -35,7 +35,7 @@ public class Const {
      */
     public interface OrderBy{
         //销量排行（首页）
-        String SALES_ORDER_BY = "(select count(1) from good g where g.shop_id=s.id)";
+        String SALES_ORDER_BY = "(select sum(sales) from good g where g.shop_id=s.id)";
         //好评率
         Set<String> FAVORABLE = Sets.newHashSet("grade_desc","grade_asc");
         String FAVORABLE_DESC = "grade";

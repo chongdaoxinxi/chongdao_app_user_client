@@ -123,4 +123,11 @@ public interface OrderService {
      */
     ResultResponse getOrderEvalData(Integer orderId);
 
+    /**
+     * 退款
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ResultResponse refund(Integer userId, String orderNo);
 }

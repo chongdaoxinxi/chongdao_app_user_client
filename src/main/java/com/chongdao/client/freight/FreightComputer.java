@@ -11,7 +11,6 @@ import com.chongdao.client.repository.UserAddressRepository;
 import com.chongdao.client.utils.DistanceUtil;
 import com.google.common.base.Splitter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -59,7 +58,6 @@ public class FreightComputer {
      * @param shopId  商店id
      * @return
      */
-    @Bean
     public BigDecimal computerFee(Integer serviceType,Integer isService, Integer receiveAddressId, Integer deliverAddressId,
                                   Integer shopId,Integer userId){
         //查询用户接地址
