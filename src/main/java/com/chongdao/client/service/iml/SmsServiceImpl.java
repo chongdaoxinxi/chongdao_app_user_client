@@ -400,4 +400,40 @@ public class SmsServiceImpl implements SmsService {
             return;
         }
     }
+
+    /**
+     * 客户退款推送到商家
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendOrderUserRefundShop(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getOrderUserRefundShop(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
+
+    /**
+     * 客户退款推送到配送员
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendOrderUserRefundExpress(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getOrderUserRefundExpress(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
 }
