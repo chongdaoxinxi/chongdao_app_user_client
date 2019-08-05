@@ -78,15 +78,11 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 }
             }
         }
-        //查询所有上架店铺(默认综合排序:公益最前，其次销量)
+        //查询所有上架店铺(默认综合排序)
         List<Shop> shopList = Lists.newArrayList();
         if (orderBy.equals(ARRANGEMENT_VALUE_SHOP)){
             List<Shop> shops = Lists.newArrayList();
-            //三公里内 公益排第一
-            shopList = shopMapper.selectByArrangementLimit3KM(orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
-                    discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
-            //3公里外
-            shops = shopMapper.selectByArrangement3KMOut(orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
+            shopList = shopMapper.selectByArrangementLimit3KM(null, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
                     discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
             shopList.addAll(shops);
         }else {
@@ -95,7 +91,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                     discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
         }
         PageInfo pageInfo = new PageInfo(shopList);
-        pageInfo.setList(shopListVOList(shopList,userId));
+        pageInfo.setList(this.shopListVOList(shopList,userId));
         return ResultResponse.createBySuccess(pageInfo);
     }
 

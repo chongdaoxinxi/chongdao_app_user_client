@@ -111,7 +111,7 @@ public class OrderController {
 
 
     /**
-     * 退款
+     * 用户申请退款
      * @param orderNo
      * @param token
      * @return
