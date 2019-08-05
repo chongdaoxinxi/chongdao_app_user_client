@@ -27,7 +27,7 @@ public class MedicalInsuranceType implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private Integer category;//1:医疗;2:家庭责任;3:运输险;
+    private String rationType;//方案代码
     private String plan;//方案
     private BigDecimal sumAmount;//保险总保金额
     private String responsibility;//保险责任
