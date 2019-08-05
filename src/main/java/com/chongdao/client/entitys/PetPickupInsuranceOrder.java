@@ -27,5 +27,5 @@ public class PetPickupInsuranceOrder implements Serializable {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer orderId;//接送险订单id
+    private Integer orderId;//平台订单id
 }

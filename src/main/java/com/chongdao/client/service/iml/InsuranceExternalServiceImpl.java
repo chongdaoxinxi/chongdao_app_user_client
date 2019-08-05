@@ -22,6 +22,10 @@ import java.io.IOException;
 public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
     private static final String INSURANCE_SERVICE_NO = "001001";
+    private static final String ZFO_RISK_CODE = "ZFO";
+    private static final String ZFO_RATION_TYPE = "ZFO310000a";
+    private static final String ZCG_RISK_CODE = "ZCG";
+    private static final String ZCG_RATION_TYPE = "ZCG3199001";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
@@ -71,7 +75,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     @Override
     public ResultResponse generateInsure() {
-        String datas = getRenderZFOFrom();
+//        String datas = getRenderZFOFrom();
+        String datas = getRenderZCGForm();
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
@@ -80,7 +85,23 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         return null;
     }
 
+    /**
+     * 获取家庭险投保报文数据
+     * @return
+     */
     private String getRenderZFOFrom() {
+       return initFormStr(ZFO_RISK_CODE, ZFO_RATION_TYPE);
+    }
+
+    /**
+     * 获取运输险投保报文数据
+     * @return
+     */
+    private String getRenderZCGForm() {
+        return initFormStr(ZCG_RISK_CODE, ZCG_RATION_TYPE);
+    }
+
+    private String initFormStr(String riskCode, String rationType) {
         //new一个模板资源加载器
         StringTemplateResourceLoader resourceLoader = new StringTemplateResourceLoader();
         /* 使用Beetl默认的配置。
@@ -99,12 +120,13 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Template template = groupTemplate.getTemplate(ZFOForm);
         template.binding("UUID","qQpufatesQt00122");
         template.binding("SerialNo", "1");
+        template.binding("RiskCode", riskCode);
         template.binding("OperateTimes", "2019-08-02 14:41:40");
         template.binding("StartDate", "2019-08-02");
         template.binding("EndDate", "2020-08-02");
         template.binding("SumAmount", "500000.00");
         template.binding("SumPremium", "270.00");
-        template.binding("RationType", "ZFO310000a");
+        template.binding("RationType", rationType);
         template.binding("AppliName", "testxxx");
         template.binding("AppliIdType", "01");
         template.binding("AppliIdNo", "430381198707230426");
@@ -118,9 +140,5 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         String str = template.render();
         System.out.println(str);
         return str;
-    }
-
-    private String getZCGForm() {
-        return null;
     }
 }
