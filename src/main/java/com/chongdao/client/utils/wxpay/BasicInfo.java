@@ -27,9 +27,9 @@ public class BasicInfo {
     public static final String MchKey = "95bc30c8e25484485b53b998bace1d1c";
 
     /***app应用appId***/
-    public static final String APP_AppID = "wxd69bd4ce033aca70";
+    public static final String APP_AppID = "wxa194b8978445c264";
     /***app应用appSecret***/
-    public static final String APP_AppSecret = "437dd549567811195afa051d3f49327a";
+    public static final String APP_AppSecret = "dc5c74d83f7baea40142877629fd1624";
     /***app应用商户号***/
     public static final String APP_MchId = "1513194061";
     /***app应用商户密钥***/
@@ -51,5 +51,5 @@ public class BasicInfo {
     public static final String NotifyUrl = "http://39.108.83.186/api/callBackController/wx_pay_callback";
 
     //微信统一下单接口
-    public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/sandboxnew/pay/unifiedorder";
+    public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 }

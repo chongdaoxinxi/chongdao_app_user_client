@@ -51,6 +51,14 @@ public class WxUnifiedorderResponseDTO {
      **/
     private String return_msg;
     /**
+     *错误码返回
+     */
+    private String err_code;
+    /**
+     * 错误描述
+     */
+    private String err_code_des;
+    /**
      * 时间戳
      **/
     private String timestamp;
