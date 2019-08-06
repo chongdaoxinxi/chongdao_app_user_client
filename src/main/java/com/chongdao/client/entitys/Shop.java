@@ -100,6 +100,9 @@ public class Shop extends PageParams implements Serializable {
 	private Double discount;
 
 	@Transient
+	private Double reDiscount;
+
+	@Transient
 	private String distance;
 
 	public Shop(Integer id, String shopName, String phone, String accountName, String password, Integer areaId, String areaCode, Double lat, Double lng, String logo, BigDecimal money, Integer type, Double grade, String wxNo, String zfbNo, String bankNo, String qrCodeUrl, String des, String showImg, Integer status, Integer servicePriceRatio, String stopNote, Byte isHot, Byte isAutoAccept, Byte isJoinCommonWeal, String startBusinessHours, String endBusinessHours, Date createTime, Date updateTime, Date lastLoginTime, String address, Byte isStop) {

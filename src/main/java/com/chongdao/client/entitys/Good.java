@@ -35,6 +35,9 @@ public class Good {
 
 	private Double discount = 0.0D;
 
+	//第二件折扣
+	private Double reDiscount = 0.0D;
+
 	private String unit;
 
 	private String unitName;
@@ -98,12 +101,17 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
-	public Good(Integer id, String name, String icon, BigDecimal price, Double discount, String unit, String unitName, String des, Integer goodsTypeId, Integer shopId, Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime, Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId, Integer scopeId, Integer petCategoryId, String bathingServiceId,Integer sort,String areaCode) {
+	public Good(Integer id, String name, String icon, BigDecimal price, Double discount,Double reDiscount,
+				String unit, String unitName, String des, Integer goodsTypeId, Integer shopId,
+				Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime,
+				Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId,
+				Integer scopeId, Integer petCategoryId, String bathingServiceId,Integer sort,String areaCode) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.price = price;
 		this.discount = discount;
+		this.reDiscount = reDiscount;
 		this.unit = unit;
 		this.unitName = unitName;
 		this.des = des;

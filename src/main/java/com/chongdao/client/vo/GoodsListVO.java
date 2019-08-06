@@ -35,6 +35,11 @@ public class GoodsListVO {
     /** 折扣 */
     private Double discount;
 
+    //第二件折扣
+    private Double reDiscount;
+
+    private String reDiscountDesc; //第二件描述
+
     private BigDecimal price;
 
     /** 折扣价 */

@@ -47,5 +47,5 @@ public interface GoodMapper {
 
     void updateGoodsStatus(@Param("goodId") Integer goodId, @Param("status") Integer status);
 
-    void goodsDiscount(@Param("shopId")Integer shopId, @Param("goodsTypeId")Integer goodsTypeId, @Param("discount")Double discount);
+    void goodsDiscount(@Param("shopId")Integer shopId, @Param("goodsTypeId")Integer goodsTypeId, @Param("discount")Double discount,@Param("reDiscount") Double reDiscount);
 }

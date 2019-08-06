@@ -57,6 +57,8 @@ public class ShopVO {
 
     private Double discount;
 
+    private Double reDiscount;
+
     private BigDecimal discountPrice;
 
     private Integer sales;
