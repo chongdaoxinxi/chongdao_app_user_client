@@ -63,4 +63,6 @@ public class GoodsDetailVo {
     //收藏状态  1 收藏 0取消收藏
     private Integer concernStatus;
 
+    private Integer valid;
+
 }
