@@ -201,11 +201,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         //随机字符串
         String noncestr = PayUtil.getRandomStr();
         model.setNonce_str(noncestr);
-        //签名
-//        model.setSign(SignUtil.sign(SignUtil.createUnifiedSign(model), BasicInfo.APP_MchKey));
-        //沙箱key测试
-        model.setSign(getWxSanboxKey());
-
+//        //沙箱key测试
+//        model.setSign(getWxSanboxKey());
 
         //加密方式
         model.setSign_type("MD5");
@@ -224,6 +221,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         model.setNotify_url(BasicInfo.NotifyUrl);
         //交易类型/请求方式
         model.setTrade_type("APP");
+        //签名
+        model.setSign(SignUtil.sign(SignUtil.createUnifiedSign(model), BasicInfo.APP_MchKey));
 
         try {
             XStream s = new XStream(new DomDriver());
@@ -258,8 +257,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 //将预支付信息返回前端, 由前端调起微信支付
                 return ResultResponse.createBySuccess(ret);
             } else {
-                log.error("微信下单失败》》" + "错误码:" + ret.getReturn_code() + "  ;" + "描述:" + ret.getReturn_msg());
-                return ResultResponse.createBySuccess("微信下单失败》》" + "错误码:" + ret.getReturn_code() + "  ;" + "描述:" + ret.getReturn_msg());
+//                log.error("微信下单失败》》" + "错误码:" + ret.getReturn_code() + "  ;" + "描述:" + ret.getReturn_msg());
+//                return ResultResponse.createBySuccess("微信下单失败》》" + "错误码:" + ret.getReturn_code() + "  ;" + "描述:" + ret.getReturn_msg());
+                log.error("微信下单失败》》" + "返回错误码:" + ret.getErr_code() + "  ;" + "描述:" + ret.getErr_code_des());
+                return ResultResponse.createBySuccess("微信下单失败》》" + "返回错误码:" + ret.getErr_code() + "  ;" + "描述:" + ret.getErr_code_des());
             }
         } catch (Exception e) {
             log.error("微信下单异常》》" + e);
