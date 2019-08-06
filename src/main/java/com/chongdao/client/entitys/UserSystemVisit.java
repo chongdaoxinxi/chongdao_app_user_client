@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description TODO
+ * @Description 用户访问系统统计
  * @Author onlineS
  * @Date 2019/7/9
  * @Version 1.0

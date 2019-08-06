@@ -52,7 +52,7 @@ public class CartsController {
      * @param goodsIds
      * @return
      */
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     public ResultResponse<CartVo> deleteGoods(String token, String goodsIds,Integer shopId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds,shopId);

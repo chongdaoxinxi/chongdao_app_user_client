@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 
 /**
- * @Description TODO
+ * @Description 规格单位
  * @Author onlineS
  * @Date 2019/6/17
  * @Version 1.0
