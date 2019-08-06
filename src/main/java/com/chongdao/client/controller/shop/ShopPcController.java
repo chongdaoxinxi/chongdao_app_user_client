@@ -34,6 +34,13 @@ public class ShopPcController {
     private ShopApplyService shopApplyService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ShopService shopService;
+
+    @GetMapping("getMyDetailInfo")
+    public ResultResponse getMyDetailInfo(String token) {
+        return shopService.getShopInfo(token);
+    }
 
     @GetMapping("getModuleData")
     public ResultResponse getModuleData(String token){

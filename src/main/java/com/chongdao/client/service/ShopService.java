@@ -92,4 +92,11 @@ public interface ShopService{
      * @return
      */
     ResultResponse listGeo(Double lng, Double lat, String areaCode);
+
+    /**
+     * 获取店铺信息(PC端)
+     * @param token
+     * @return
+     */
+    ResultResponse getShopInfo(String token);
 }

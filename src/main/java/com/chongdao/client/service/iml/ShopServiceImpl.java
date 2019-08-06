@@ -10,10 +10,8 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.DateTimeUtil;
-import com.chongdao.client.vo.GoodsListVO;
-import com.chongdao.client.vo.GoodsTypeVO;
-import com.chongdao.client.vo.OrderEvalVO;
-import com.chongdao.client.vo.ShopVO;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -417,6 +415,16 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         }
         List<Shop> shopList = shopMapper.listGeo(lng,lat,areaCode);
         return ResultResponse.createBySuccess(shopList);
+    }
+
+    @Override
+    public ResultResponse getShopInfo(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        if(tokenVo != null && tokenVo.getUserId() != null) {
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.findById(tokenVo.getUserId()));
+        } else {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
     }
 
 
