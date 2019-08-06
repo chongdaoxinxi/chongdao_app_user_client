@@ -24,6 +24,11 @@ public class GoodsDetailVo {
     /** 折扣价*/
     private BigDecimal discountPrice;
 
+    //第二件折扣
+    private Double reDiscount;
+
+    private String reDiscountDesc; //第二件描述
+
     /** 销量*/
     private Integer sales;
 

@@ -8,6 +8,7 @@
             <arg column="icon" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
             <arg column="discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
+            <arg column="re_discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
             <arg column="unit" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="unit_name" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -32,12 +33,12 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, name, icon, price, discount, unit, unit_name, des, goods_type_id, shop_id, ratio, ratio_price,
+        id, name, icon, price, discount,re_discount, unit, unit_name, des, goods_type_id, shop_id, ratio, ratio_price,
     stock, create_time, update_time, status, module_id, category_id, sales, type_name,
     brand_id, scope_id, pet_category_id, bathing_service_id,sort,area_code
     </sql>
     <sql id="Base_Column_Lists">
-        g.id, g.name, g.icon, g.price, g.discount, g.unit, g.unit_name, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
+        g.id, g.name, g.icon, g.price, g.discount, g.re_discount, g.unit, g.unit_name, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
     g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id, g.sales, g.type_name,
     g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id,sort,area_code
     </sql>
@@ -53,7 +54,7 @@
     </delete>
     <insert id="insert" parameterType="com.chongdao.client.entitys.Good">
         insert into good (id, name, icon,
-                          price, discount, unit,
+                          price, discount, re_discount, unit,
                           unit_name,
                           des, goods_type_id, shop_id,
                           ratio, ratio_price, stock,
@@ -62,7 +63,7 @@
                           type_name, brand_id, scope_id,
                           pet_category_id, bathing_service_id,sort,area_code)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
-                #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
+                #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{reDiscount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
                 #{unit,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
                 #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
@@ -87,6 +88,9 @@
             </if>
             <if test="discount != null">
                 discount,
+            </if>
+            <if test="reDiscount != null">
+                re_discount,
             </if>
             <if test="unit != null">
                 unit,
@@ -168,6 +172,9 @@
             <if test="discount != null">
                 #{discount,jdbcType=DOUBLE},
             </if>
+            <if test="reDiscount != null">
+                #{re_discount,jdbcType=DOUBLE},
+            </if>
             <if test="unit != null">
                 #{unit,jdbcType=VARCHAR},
             </if>
@@ -248,11 +255,14 @@
             <if test="discount != null">
                 discount = #{discount,jdbcType=DOUBLE},
             </if>
+            <if test="reDiscount != null">
+                re_discount = #{reDiscount,jdbcType=DOUBLE},
+            </if>
             <if test="unit != null">
                 unit = #{unit,jdbcType=VARCHAR},
             </if>
             <if test="unitName != null">
-                unit = #{unit_name,jdbcType=VARCHAR},
+                unit_name = #{unitName,jdbcType=VARCHAR},
             </if>
             <if test="des != null">
                 des = #{des,jdbcType=VARCHAR},
@@ -320,6 +330,7 @@
             icon = #{icon,jdbcType=VARCHAR},
             price = #{price,jdbcType=DECIMAL},
             discount = #{discount,jdbcType=DOUBLE},
+            re_discount = #{reDiscount,jdbcType=DOUBLE},
             unit = #{unit,jdbcType=VARCHAR},
             unit_name = #{unitName,jdbcType=VARCHAR},
             des = #{des,jdbcType=VARCHAR},
@@ -376,7 +387,15 @@
     </update>
 
     <update id="goodsDiscount" parameterType="map">
-        update good set discount=#{discount}
+        update good
+        <set>
+            <if test="discount != null">
+                discount=#{discount},
+            </if>
+            <if test="reDiscount != null">
+                re_discount=#{reDiscount},
+            </if>
+        </set>
         where goods_type_id = #{goodsTypeId} and shop_id = #{shopId}
     </update>
 

@@ -63,11 +63,12 @@ public interface GoodsService {
 
     /**
      * 商品打折
+     * @param reDiscount 第二件折扣
      * @param goodsTypeId
      * @param discount
      * @return
      */
-    ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount);
+    ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount, Double reDiscount);
 
     /**
      * 获取商品分类

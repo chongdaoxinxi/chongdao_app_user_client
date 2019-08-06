@@ -106,6 +106,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (good.getDiscount() > 0 && good.getDiscount() !=null){
             goodsDetailVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
         }
+        //商家设置第二件折扣
+        if (good.getReDiscount() > 0.0D && good.getReDiscount() != null){
+            goodsDetailVo.setReDiscountDesc("第2件" + good.getReDiscount() + "折");
+        }
         //查询优惠券（属于该商品可以使用或者领取的）
         List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnState(good.getShopId(), 1);
         goodsDetailVo.setCouponInfoList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
@@ -140,6 +144,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount()/10)));
+            }
+            //商家设置第二件折扣
+            if (good.getReDiscount() > 0.0D && good.getReDiscount() != null){
+                goodsListVO.setReDiscountDesc("第2件" + good.getReDiscount() + "折");
             }
             //封装优惠券
             //根据店铺查询在架状态的优惠券
@@ -262,16 +270,17 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     /**
      * 商品打折
+     * @param reDiscount 第二件折扣
      * @param goodsTypeId
      * @param discount
      * @return
      */
     @Override
-    public ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount) {
-        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null){
+    public ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount, Double reDiscount) {
+        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null || reDiscount <= 0 || reDiscount > 9){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
-        goodMapper.goodsDiscount(shopId,goodsTypeId,discount);
+        goodMapper.goodsDiscount(shopId,goodsTypeId,discount,reDiscount);
         return ResultResponse.createBySuccess();
     }
 

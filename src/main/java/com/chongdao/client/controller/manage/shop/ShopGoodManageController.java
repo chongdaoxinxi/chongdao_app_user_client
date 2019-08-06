@@ -77,15 +77,15 @@ public class ShopGoodManageController {
 
     /**
      * 打折商品
-     *
+     * @param reDiscount 第二件折扣
      * @param token
      * @param goodsTypeId
      * @return
      */
     @GetMapping("goodsDiscount")
-    public ResultResponse discountGood(@PathVariable Integer shopId, @PathVariable Integer goodsTypeId, String token, Double discount) {
+    public ResultResponse discountGood(@PathVariable Integer shopId, @PathVariable Integer goodsTypeId, String token, Double discount, Double reDiscount) {
         LoginUserUtil.resultTokenVo(token);
-        return goodsService.discountGood(shopId, goodsTypeId, discount);
+        return goodsService.discountGood(shopId, goodsTypeId, discount, reDiscount);
     }
 
 
@@ -112,7 +112,7 @@ public class ShopGoodManageController {
      * @return
      */
     @PostMapping("addGoods/{shopId}")
-    public ResultResponse addOrEditGoods(@PathVariable Integer shopId, String token, GoodsListVO goodsListVO) {
+    public ResultResponse addOrEditGoods(@PathVariable Integer shopId, String token, @RequestBody GoodsListVO goodsListVO) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.saveOrEditGoods(shopId, goodsListVO);
     }

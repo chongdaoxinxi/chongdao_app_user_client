@@ -32,9 +32,13 @@ public class OrderGoodsVo {
 
     private BigDecimal discountPrice;
 
+    private BigDecimal reDiscountPrice;
+
     private BigDecimal goodsTotalPrice;
 
     private String areaCode;
 
     private Integer shopId;
+
+    private BigDecimal totalDiscount = BigDecimal.ZERO;
 }
