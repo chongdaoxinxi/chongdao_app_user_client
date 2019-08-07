@@ -30,8 +30,8 @@ public class FreightComputer {
     private static final String GY_TWICE_3KM_FEE  = "twicerate_5201";
 
     //上海区域 3公里以内单程配送费15元,超过3公里后每公里加4.5元 大于10公里后每公里以6元计算
-              //3公里以内双程配送费30元,同上
-              //3公里以内单程配送费10元,超过3公里后每公里加4.5元
+    //3公里以内双程配送费30元,同上
+    //3公里以内单程配送费10元,超过3公里后每公里加4.5元
     private static final String SH_SINGLE_3KM_FEE  = "singlerate";
     private static final String SH_TWICE_3KM_FEE  = "twicerate";
     private static final String GOODS_FEE = "goodslerate";
@@ -129,12 +129,16 @@ public class FreightComputer {
             //超出三公里 小于10公里
             if ((receiveDistance > RANGE_3_KM && receiveDistance <= RANGE_10_KM) && (deliverDistance > RANGE_3_KM && deliverDistance <= RANGE_10_KM)){
                 overMoneyBase = Double.valueOf(firstServiceMoneys.get(2));
-            }else {
+            }else if (receiveDistance <= RANGE_3_KM || deliverDistance <= RANGE_3_KM ){
+                overMoneyBase = 0.0d;
+            }else{
                 overMoneyBase = OVERSTEP_10KM_PRICE;
             }
         }else if (2 == serviceType){
             if (receiveDistance > RANGE_3_KM && receiveDistance <= RANGE_10_KM){
                 overMoneyBase = Double.valueOf(firstServiceMoneys.get(2));
+            }else if (receiveDistance <= RANGE_3_KM){
+                overMoneyBase = 0.0d;
             }else{
                 overMoneyBase = OVERSTEP_10KM_PRICE;
             }
@@ -155,7 +159,7 @@ public class FreightComputer {
      * @return
      */
     private Double computerFinalFee(Integer serviceType, Double receiveDistance,Double deliverDistance,
-                                        List<String> firstServiceMoneys,Double overMoneyBase,Double baseDistance,String areaCode) {
+                                    List<String> firstServiceMoneys,Double overMoneyBase,Double baseDistance,String areaCode) {
         Double overMoney = 0.0D;
         //超出基础距离三公里
         double overBaseDistance = Math.ceil((receiveDistance - baseDistance) / 1000.0D) * overMoneyBase;
@@ -174,7 +178,7 @@ public class FreightComputer {
             //小于三公里的费用
             overMoney = Double.valueOf(firstServiceMoneys.get(0));
         }
-        if (areaCode.equals("3101")) {
+        if (areaCode.equals("3101") && serviceType != 2) {
             overMoney = overMoney * 1.5;
         }
         return overMoney;

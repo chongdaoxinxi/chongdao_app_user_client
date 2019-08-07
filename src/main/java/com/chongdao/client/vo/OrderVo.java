@@ -1,6 +1,7 @@
 package com.chongdao.client.vo;
 
 import com.chongdao.client.entitys.UserAddress;
+import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -83,7 +84,7 @@ public class OrderVo {
 
     private Integer quantity;
 
-    private List<CouponVO> couponList;
+    //private List<CouponVO> couponList;
 
     private Integer couponId;
 
@@ -113,10 +114,16 @@ public class OrderVo {
     private List<OrderDetailVO> orderDetailVOList;
 
     private Double discount;
+
+    private Double reDiscount;
+
+    private List<CpnThresholdRule> couponInfoList;
+
     //优惠价（满减）
     private BigDecimal couponPrice;
     //满减名称
     private String couponName;
-
+    private BigDecimal serviceCouponPrice = BigDecimal.ZERO;
+    private BigDecimal goodsCouponPrice = BigDecimal.ZERO;
 
 }
