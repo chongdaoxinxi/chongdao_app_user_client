@@ -123,6 +123,7 @@ public class OrderVo {
     private BigDecimal couponPrice;
     //满减名称
     private String couponName;
-
+    private BigDecimal serviceCouponPrice = BigDecimal.ZERO;
+    private BigDecimal goodsCouponPrice = BigDecimal.ZERO;
 
 }

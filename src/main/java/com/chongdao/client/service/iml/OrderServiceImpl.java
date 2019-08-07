@@ -119,20 +119,22 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
             //计算使用商品优惠券后的价格
-            CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).get();
-            if (couponInfo != null){
+            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCouponId()).get();
+            if (cpnThresholdRule != null){
                 //优惠总计
-                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
-                cartTotalPrice.subtract(couponInfo.getCpnValue());
+                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(cpnThresholdRule.getMinPrice()));
+                orderVo.setGoodsCouponPrice(cpnThresholdRule.getMinPrice());
+                cartTotalPrice.subtract(cpnThresholdRule.getMinPrice());
             }
         }
         if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0){
             //计算使用配送优惠券后的价格
-            CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).get();
-            if (couponInfo != null){
+            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCouponId()).get();
+            if (cpnThresholdRule != null){
+                orderVo.setServiceCouponPrice(cpnThresholdRule.getMinPrice());
                 //优惠总计
-                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
-                cartTotalPrice.subtract(couponInfo.getCpnValue());
+                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(cpnThresholdRule.getMinPrice()));
+                cartTotalPrice.subtract(cpnThresholdRule.getMinPrice());
             }
         }
         //配送费
