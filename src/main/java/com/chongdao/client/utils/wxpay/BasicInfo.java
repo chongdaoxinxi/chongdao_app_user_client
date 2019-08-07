@@ -9,6 +9,8 @@ package com.chongdao.client.utils.wxpay;
 public class BasicInfo {
     /**微信账号信息配置**/
 
+    public static final String xcxID = "wx601e284d89b5ad6b";
+
     /**
      * 公众号appId
      **/
