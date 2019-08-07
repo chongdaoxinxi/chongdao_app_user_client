@@ -29,7 +29,7 @@ public class DistanceUtil {
 		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1)
 				* Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
 		s = s * EARTH_RADIUS;
-		return s * 1000;
+		return s * 100;
 	}
 //	public static void main(String ar[]) {
 //		System.out.println(getDistance(31.86, 117.27, 30.26, 120.19));
