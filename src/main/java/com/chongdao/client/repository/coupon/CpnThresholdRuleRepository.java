@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface CpnThresholdRuleRepository extends JpaRepository<CpnThresholdRule,Integer> {
     @Transactional
     @Modifying
@@ -13,4 +15,8 @@ public interface CpnThresholdRuleRepository extends JpaRepository<CpnThresholdRu
     void updateState(Integer cpnId);
 
     CpnThresholdRule findByCpnId(Integer cpnId);
+
+    List<CpnThresholdRule> findAllByIdIn(List<Integer> cpnIds);
+
+
 }

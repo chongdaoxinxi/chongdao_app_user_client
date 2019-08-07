@@ -5,6 +5,7 @@ import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
@@ -97,6 +98,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderGoodsVo.setQuantity(cart.getQuantity());
                 //折扣计算包含二次打折
                 orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(good,orderGoodsVo,cart).getGoodsTotalPrice());
+                orderVo.setDiscount(good.getDiscount());
+                orderVo.setReDiscount(good.getReDiscount());
+                //小记
+                orderVo.setTotalDiscount(this.orderDiscountAndFee(good,orderGoodsVo,cart).getTotalDiscount());
             }
             //查询店铺
             Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
@@ -136,6 +141,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderCommonVO.getReceiveAddressId(),orderCommonVO.getDeliverAddressId(),
                 orderVo.getShopId(),userId
         ));
+        //店铺满减
+        orderVo.setCouponInfoList(this.getCouponInfoList(orderVo.getShopId()));
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量
@@ -145,7 +152,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
         //实际付款（包含配送费）
-        orderVo.setPayment(cartTotalPrice);
+        orderVo.setPayment(cartTotalPrice.add(orderVo.getServicePrice()));
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //创建订单
@@ -1060,23 +1067,21 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     private OrderGoodsVo orderDiscountAndFee(Good good,OrderGoodsVo orderGoodsVo,Carts cart){
         //折扣价
         if (good.getDiscount() > 0) {
-            orderGoodsVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+            orderGoodsVo.setDiscountPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getDiscount()/10));
             //计算总价(商品存在打折)
-            orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(good.getDiscount())).doubleValue(),
-                    cart.getQuantity().doubleValue()));
+            orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getDiscount()/10).multiply(new BigDecimal(cart.getQuantity())));
             //优惠总计
             orderGoodsVo.setTotalDiscount(good.getPrice().multiply(new BigDecimal(cart.getQuantity())).subtract(orderGoodsVo.getGoodsTotalPrice()));
         } else {
             //计算总价（无打折）
-            orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
+            orderGoodsVo.setGoodsTotalPrice(good.getPrice().multiply(new BigDecimal(cart.getQuantity())));
         }
         //第二件打折
         if (good.getReDiscount() > 0 && cart.getQuantity() > 1){
             //商品已打折需要计算在内（然后进行二次打折）
             //第二件打折后的 折扣价格（仅包含第一件 + 第二件 如：第一件价格为：100 第二件价格则为：50 那么reDiscountPrice为：150）
-            orderGoodsVo.setReDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount()))
-                    .add(good.getPrice().multiply(new BigDecimal(good.getDiscount()))
-                            .multiply(new BigDecimal(good.getReDiscount()))));
+            BigDecimal price= BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getReDiscount()/10).add(good.getPrice());
+            orderGoodsVo.setReDiscountPrice(price);
             //商品总价：orderGoodsVo.getReDiscountPrice + 数量 * 原价（此时该商品数量 > 2）
             //记录商品数量
             int quantity = cart.getQuantity() - 2;
@@ -1087,9 +1092,25 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderGoodsVo.setGoodsTotalPrice(orderGoodsVo.getReDiscountPrice());
             }
             //优惠总计
-            orderGoodsVo.setTotalDiscount(orderGoodsVo.getTotalDiscount().add(good.getPrice().multiply(new BigDecimal(cart.getQuantity())).subtract(orderGoodsVo.getGoodsTotalPrice())));
+            orderGoodsVo.setTotalDiscount((good.getPrice().multiply(new BigDecimal(cart.getQuantity())).subtract(orderGoodsVo.getGoodsTotalPrice())));
         }
         return orderGoodsVo;
 
     }
+
+    /**
+     * 获取状态为4的店铺满减
+     * @param shopId
+     * @return
+     */
+    private List<CpnThresholdRule> getCouponInfoList(Integer shopId){
+        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnState(shopId, 1);
+        List<Integer> cpnIds = Lists.newArrayList();
+        couponInfoList.stream().forEach(couponInfo -> {
+            cpnIds.add(couponInfo.getId());
+        });
+        List<CpnThresholdRule> cpnThresholdRuleList = thresholdRuleRepository.findAllByIdIn(cpnIds);
+        return cpnThresholdRuleList;
+    }
 }
+
