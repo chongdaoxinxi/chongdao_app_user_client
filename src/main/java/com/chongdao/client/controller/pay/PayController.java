@@ -100,8 +100,8 @@ public class PayController {
      * @return
      */
     @GetMapping("/wxPay")
-    public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr) {
-        return payService.wxPay(req, orderNo, totalFee, goodStr);
+    public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr, String openId, Integer payType) {
+        return payService.wxPay(req, orderNo, totalFee, goodStr, payType);
     }
 
     /**

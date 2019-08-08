@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum PaymentTypeEnum {
     ALI_PAY(1,"支付宝支付"),
-    WX_PAY(2,"微信支付")
+    WX_APP_PAY(2,"微信APP支付"),
+    WX_XCX_PAY(2,"微信小程序支付")
     ;
 
     private int status ;

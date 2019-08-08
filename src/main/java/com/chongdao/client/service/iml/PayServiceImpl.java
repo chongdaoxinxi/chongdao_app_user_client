@@ -20,7 +20,6 @@ import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
-import com.chongdao.client.utils.wxpay.HttpUtil;
 import com.chongdao.client.utils.wxpay.PayUtil;
 import com.chongdao.client.utils.wxpay.SignUtil;
 import com.thoughtworks.xstream.XStream;
@@ -29,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.simpleframework.xml.Serializer;
@@ -192,18 +190,23 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     }
 
     @Override
-    public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr) {
+    public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr, Integer payType) {
         WxUnifiedorderModelDTO model = new WxUnifiedorderModelDTO();
-        //app应用appId
-        model.setAppid(StringUtils.trim(BasicInfo.APP_AppID));
+        if(payType == 1) {
+            //app应用appId
+            model.setAppid(StringUtils.trim(BasicInfo.APP_AppID));
+            //交易类型/请求方式
+            model.setTrade_type("APP");
+        } else if(payType == 2){
+            model.setAppid(StringUtils.trim(BasicInfo.xcxID));
+            //交易类型/请求方式
+            model.setTrade_type("JSAPI");
+        }
         //商户号
         model.setMch_id(StringUtils.trim(BasicInfo.APP_MchId));
         //随机字符串
         String noncestr = PayUtil.getRandomStr();
         model.setNonce_str(noncestr);
-//        //沙箱key测试
-//        model.setSign(getWxSanboxKey());
-
         //加密方式
         model.setSign_type("MD5");
         //商品描述 body
@@ -219,8 +222,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         model.setSpbill_create_ip(BasicInfo.SERVER_IP);
         //异步通知地址
         model.setNotify_url(BasicInfo.NotifyUrl);
-        //交易类型/请求方式
-        model.setTrade_type("APP");
         //签名
         model.setSign(SignUtil.sign(SignUtil.createUnifiedSign(model), BasicInfo.APP_MchKey));
 
@@ -241,7 +242,13 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 //再次签名
                 Map<String, String> finalpackage = new TreeMap<>();
                 String timestamp = (System.currentTimeMillis() / 1000) + "";
-                finalpackage.put("appid", BasicInfo.APP_AppID);
+                if(payType == 1) {
+                    //app支付
+                    finalpackage.put("appid", BasicInfo.APP_AppID);
+                } else if(payType == 2) {
+                    //xcx支付
+                    finalpackage.put("appid", BasicInfo.xcxID);
+                }
                 finalpackage.put("timestamp", timestamp);
                 finalpackage.put("noncestr", noncestr);
                 finalpackage.put("prepayid", ret.getPrepay_id());
@@ -253,6 +260,9 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 ret.setSign(sign);
                 ret.setNonce_str(noncestr);
                 ret.setTimestamp(timestamp);
+
+                //生成orderLog记录
+                unifiedOrderCallback(orderNo);
 
                 //将预支付信息返回前端, 由前端调起微信支付
                 return ResultResponse.createBySuccess(ret);
@@ -333,7 +343,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         }
 
         //这里是验证返回值没问题了，可以写具体的支付成功的逻辑
-
+        payCallBackGenerateOrder(list);
 
         // 返回信息，防止微信重复发送报文
         String result = "<xml>"
@@ -348,34 +358,73 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         return ResultResponse.createBySuccessMessage("支付成功!");
     }
 
-    private String getWxSanboxKey() {
-        String nonce_str = PayUtil.getRandomStr();//生成随机字符
-        Map<String, String> param = new HashMap<String, String>();
-        param.put("mch_id", BasicInfo.MchId);//需要真实商户号
-        param.put("nonce_str", nonce_str);//随机字符
-        String sign = SignUtil.sign(param, BasicInfo.APP_MchKey);
+    /**
+     * 统一下单成功后处理逻辑
+     */
+    private void unifiedOrderCallback(String orderNo) {
+        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+        OrderLog orderLog = OrderLogDTO.addOrderLog(order);
+        orderLog.setNote("微信预下单成功");
+        orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+        logRepository.save(orderLog);
+    }
 
-        WxUnifiedorderModelDTO model = new WxUnifiedorderModelDTO();
-        model.setMch_id(BasicInfo.MchId);
-        model.setNonce_str(nonce_str);
-        model.setSign(sign);
-        XStream s = new XStream(new DomDriver());
-        s.alias("xml", model.getClass());
-        String xml = s.toXML(model);
-        xml = xml.replace("__", "_");
-        String s1 = HttpUtil.sendPost("https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey", xml);
-        Map<String,String> map = new HashMap<>();
-        Document doc = null;
-        try{
-            doc = DocumentHelper.parseText(s1);
-            Element rootElt = doc.getRootElement();
-            List<Element> list =rootElt.elements();
-            for(Element element : list) {
-                map.put(element.getName(), element.getText());
+    /**
+     * 支付成功后处理逻辑
+     */
+    private void payCallBackGenerateOrder(List<Element> list) {
+        String orderNo = getCallbackInfoByName(list, "out_trade_no");
+        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+        order.setPaymentTime(DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end")));
+        order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+        order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
+        //销量更新
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+        orderDetailList.stream().forEach(orderDetail -> {
+            goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+        });
+        orderInfoMapper.updateByPrimaryKeySelective(order);
+        //todo 短信推送
+        //判断是否自动接单
+        Shop shop = shopRepository.findById(order.getShopId()).get();
+        if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
+            //推送短信到商家
+            smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
+            //推送短信到用户
+            if (order.getReceiveAddressId() != null) {
+                UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
+                smsService.sendNewOrderUser(orderNo,address.getPhone());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            //推送短信到配送员
+            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+            expressList.stream().forEach(express -> {
+                smsService.sendExpressNewOrder(orderNo,express.getPhone());
+            });
         }
-        return map.get("sandbox_signkey");
+
+        //生成支付信息
+        try {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(order.getUserId());
+            payInfo.setOrderNo(order.getOrderNo());
+            payInfo.setPayPlatform(PayPlatformEnum.WX_APP_PAY.getCode());
+            payInfo.setPlatformNumber(getCallbackInfoByName(list, "transaction_id"));
+            payInfo.setPlatformStatus(getCallbackInfoByName(list, "result_code"));
+
+            payInfoRepository.save(payInfo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}",orderNo);
+        }
+    }
+
+    private String getCallbackInfoByName(List<Element> list, String name) {
+        String r = "";
+        for(Element e : list) {
+            if (e.getName().trim().equals(name)) {
+                r = e.getText().trim();
+            }
+        }
+        return r;
     }
 }

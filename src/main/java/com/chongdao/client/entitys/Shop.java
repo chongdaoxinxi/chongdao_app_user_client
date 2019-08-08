@@ -3,6 +3,7 @@ package com.chongdao.client.entitys;
 import com.chongdao.client.common.PageParams;
 import com.chongdao.client.utils.Date2LongSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Shop extends PageParams implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -47,6 +49,10 @@ public class Shop extends PageParams implements Serializable {
 	private String logo;
 
 	private BigDecimal money;
+
+	private BigDecimal insuranceMoney;//医疗保险余额
+
+	private BigDecimal recommendMoney;//推广奖金
 
 	private Integer type;
 

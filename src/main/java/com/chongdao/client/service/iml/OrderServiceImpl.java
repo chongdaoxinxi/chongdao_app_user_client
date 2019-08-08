@@ -523,8 +523,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         if (orderCommonVO.getPayType() == PaymentTypeEnum.ALI_PAY.getStatus()) {
             order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
-        } else {
-            order.setPaymentType(PaymentTypeEnum.WX_PAY.getStatus());
+        } else if(orderCommonVO.getPayType() == PaymentTypeEnum.WX_APP_PAY.getStatus()) {
+            order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
+        } else if(orderCommonVO.getPayType() == PaymentTypeEnum.WX_XCX_PAY.getStatus()) {
+            order.setPaymentType(PaymentTypeEnum.WX_XCX_PAY.getStatus());
         }
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         order.setCouponId(orderCommonVO.getCouponId());

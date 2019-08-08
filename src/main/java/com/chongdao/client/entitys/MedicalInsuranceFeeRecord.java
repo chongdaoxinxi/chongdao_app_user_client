@@ -9,26 +9,30 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @Description 推广码信息
+ * @Description 医疗保险医疗就诊记录
  * @Author onlineS
- * @Date 2019/7/30
+ * @Date 2019/8/7
  * @Version 1.0
  **/
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @Entity
-public class RecommendInfo implements Serializable {
+public class MedicalInsuranceFeeRecord implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String recommendCode;//推广码
-    private Integer recommenderId;//用户/配送员/商家id
-    private Integer type;//1:用户推广;2:配送员推广;3:商家推广;
+    private Integer user_id;//用户id
+    private Integer shop_id;//商店id
+    private Integer insurance_id;//医疗保险订单id
+    private BigDecimal money;//医疗费用
+    private String photo;//照片
     private Date createTime;
 }
