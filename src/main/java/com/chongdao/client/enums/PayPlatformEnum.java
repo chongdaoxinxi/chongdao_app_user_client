@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum PayPlatformEnum {
 
     ALI_PAY(1,"支付宝"),
-    WX_PAY(2,"微信")
+    WX_APP_PAY(2,"微信APP"),
+    WX_XCX_PAY(3, "微信小程序")
     ;
 
     private int code ;

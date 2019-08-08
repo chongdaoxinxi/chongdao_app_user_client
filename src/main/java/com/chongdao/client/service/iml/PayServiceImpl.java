@@ -261,6 +261,9 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 ret.setNonce_str(noncestr);
                 ret.setTimestamp(timestamp);
 
+                //生成orderLog记录
+                unifiedOrderCallback(orderNo);
+
                 //将预支付信息返回前端, 由前端调起微信支付
                 return ResultResponse.createBySuccess(ret);
             } else {
@@ -340,7 +343,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         }
 
         //这里是验证返回值没问题了，可以写具体的支付成功的逻辑
-
+        payCallBackGenerateOrder(list);
 
         // 返回信息，防止微信重复发送报文
         String result = "<xml>"
@@ -358,14 +361,70 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     /**
      * 统一下单成功后处理逻辑
      */
-    private void unifiedOrder() {
-
+    private void unifiedOrderCallback(String orderNo) {
+        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+        OrderLog orderLog = OrderLogDTO.addOrderLog(order);
+        orderLog.setNote("微信预下单成功");
+        orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+        logRepository.save(orderLog);
     }
 
     /**
      * 支付成功后处理逻辑
      */
-    private void payCallBackGenerateOrder() {
+    private void payCallBackGenerateOrder(List<Element> list) {
+        String orderNo = getCallbackInfoByName(list, "out_trade_no");
+        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+        order.setPaymentTime(DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end")));
+        order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+        order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
+        //销量更新
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+        orderDetailList.stream().forEach(orderDetail -> {
+            goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+        });
+        orderInfoMapper.updateByPrimaryKeySelective(order);
+        //todo 短信推送
+        //判断是否自动接单
+        Shop shop = shopRepository.findById(order.getShopId()).get();
+        if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
+            //推送短信到商家
+            smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
+            //推送短信到用户
+            if (order.getReceiveAddressId() != null) {
+                UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
+                smsService.sendNewOrderUser(orderNo,address.getPhone());
+            }
+            //推送短信到配送员
+            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+            expressList.stream().forEach(express -> {
+                smsService.sendExpressNewOrder(orderNo,express.getPhone());
+            });
+        }
 
+        //生成支付信息
+        try {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(order.getUserId());
+            payInfo.setOrderNo(order.getOrderNo());
+            payInfo.setPayPlatform(PayPlatformEnum.WX_APP_PAY.getCode());
+            payInfo.setPlatformNumber(getCallbackInfoByName(list, "transaction_id"));
+            payInfo.setPlatformStatus(getCallbackInfoByName(list, "result_code"));
+
+            payInfoRepository.save(payInfo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}",orderNo);
+        }
+    }
+
+    private String getCallbackInfoByName(List<Element> list, String name) {
+        String r = "";
+        for(Element e : list) {
+            if (e.getName().trim().equals(name)) {
+                r = e.getText().trim();
+            }
+        }
+        return r;
     }
 }
