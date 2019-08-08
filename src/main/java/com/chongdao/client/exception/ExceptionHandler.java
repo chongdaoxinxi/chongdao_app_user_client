@@ -17,6 +17,7 @@ public class ExceptionHandler{
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
     public ResultResponse exceptionHandler(Exception e){
         log.error(e.getMessage(), Method.class);
+        e.printStackTrace();
         return ResultResponse.createByErrorCodeMessage(HttpStatus.BAD_REQUEST.value(),e.getMessage());
     }
 
