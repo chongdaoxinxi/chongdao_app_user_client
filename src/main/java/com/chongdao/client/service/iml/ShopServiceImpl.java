@@ -243,7 +243,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                     for (Unit unit : unitList) {
                         BigDecimal min = unit.getMin();
                         BigDecimal max = unit.getMax();
-                        if (weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                        if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCardList.add(petCard);
                                 goodsTypeVO.setPetCardList(petCardList);
@@ -262,7 +262,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                     for (Unit unit : unitList) {
                         BigDecimal min = unit.getMin();
                         BigDecimal max = unit.getMax();
-                        if (weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                        if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCardList.add(petCard);
                                 goodsTypeVO.setPetCardList(petCardList);
@@ -273,7 +273,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 });
             }else{
                 List<PetCard> petCards = petCardRepository.findByUserIdAndStatus(userId, 1).orElse(null);
-                goodsTypeVO.setPetCardList(petCardList);
+                goodsTypeVO.setPetCardList(petCards);
             }
         }
         return goodsTypeVO;
