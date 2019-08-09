@@ -182,17 +182,29 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId) {
+    public ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId, String code) {
+        //校验验证码是否正确
+        ResultResponse<UserLoginVO> response = checkCodeValid(phone, code);
+        if (!response.isSuccess()){
+            return response;
+        }
+        //校验手机是否已经存在
+        List<User> userList = userRepository.findByPhone(phone);
+        if(userList.size() > 0) {
+            return ResultResponse.createByErrorMessage("该手机号已经注册过!");
+        }
+
         User u = new User();
-        initNewUserCommonFileds(u);
+        initNewUserCommonFields(u);
         u.setPhone(phone);
         u.setName(phone);//默认名称为手机号码
         u.setRecommendId(recommendId);
         u.setRecommendType(type);
+        u.setIsLoginApp(-1);
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
     }
 
-    private void initNewUserCommonFileds(User u) {
+    private void initNewUserCommonFields(User u) {
         u.setCreateTime(new Date());
         u.setMoney(new BigDecimal(0));
         u.setPoints(0);

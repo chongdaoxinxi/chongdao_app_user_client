@@ -15,5 +15,4 @@ public class GenerateOrderNo {
 
         return System.currentTimeMillis() + String.valueOf(number);
     }
-
 }

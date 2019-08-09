@@ -21,5 +21,5 @@ public interface UserService {
 
     ResultResponse getFavouriteGoodList(Integer userId);
 
-    ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId);
+    ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId, String code);
 }

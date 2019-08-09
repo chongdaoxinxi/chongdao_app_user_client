@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -39,6 +40,7 @@ public class Express extends PageParams implements Serializable {
 	private Double lastLng;
 	private Double lastLat;
 	private Date createTime;
+	private BigDecimal money;
 //
 //	//暂时废弃
 //	private String headImg;

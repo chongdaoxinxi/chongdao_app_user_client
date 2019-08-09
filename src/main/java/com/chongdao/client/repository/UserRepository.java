@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
     User findByName(String name);
@@ -25,4 +25,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     @Query(value = "select count(1) from user where name= ?1",nativeQuery = true)
     int checkUserName(String str);
+
+    List<User> findByPhone(String phone);
+
+    List<User> findByRecommendIdAnAndRecommendType(Integer recommendId, Integer recommendType);
 }

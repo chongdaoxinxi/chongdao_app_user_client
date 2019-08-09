@@ -30,13 +30,13 @@ public class RecommendRecord implements Serializable {
 
     private Integer userId;//消费人id
     private Integer recommenderId;//推荐人id(用户/配送员/商家)
-    private Integer type;//推荐人类型(用户/配送员/商家)
-    private Integer recommendType;//1:新用户推广;2:医疗险;3:家责险;
+    private Integer recommendType;//推荐人类型(用户/配送员/商家)
+    private Integer consumeType;//1:新用户推广;2:医疗险;3:家责险;
     private Integer consumeId;//用户消费id(订单/医疗险/家责险)
     private BigDecimal consumeMoney;//消费金额
-    private BigDecimal rewardMoney;//奖励金额
     private Integer rewardPercent;//奖励比例
-    private Integer isRefund;//是否发生过退款
+    private BigDecimal rewardMoney;//奖励金额
+    private Integer isRefund;//是否发生过退款, 1:是, -1:否
     private Date createTime;
     private Date updateTime;
 }

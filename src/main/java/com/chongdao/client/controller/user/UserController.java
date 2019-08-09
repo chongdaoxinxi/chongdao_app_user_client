@@ -42,8 +42,8 @@ public class UserController {
      * @return
      */
     @PostMapping("recommendSign")
-    public ResultResponse recommendSign(String phone, Integer type, Integer recommendId) {
-        return userService.saveUserRecommendData(phone, type, recommendId);
+    public ResultResponse recommendSign(String phone, Integer type, Integer recommendId, String code) {
+        return userService.saveUserRecommendData(phone, type, recommendId, code);
     }
 
     /**
