@@ -115,8 +115,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
             orderGoodsVoList.add(orderGoodsVo);
         }
-
-
         //已优惠价格
         totalDiscount = orderVo.getTotalDiscount().add(totalDiscount);
         //查询店铺
@@ -390,9 +388,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         //mybatis 批量插入
         orderDetailMapper.batchInsert(orderItemList);
-
-        //清空一下购物车
-        this.cleanCart(cartList);
         return ResultResponse.createBySuccess(order);
     }
 
@@ -570,16 +565,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         return order;
     }
 
-    /**
-     * 清空购物车
-     *
-     * @param cartList
-     */
-    private void cleanCart(List<Carts> cartList) {
-        for (Carts cart : cartList) {
-            cartsMapper.deleteByPrimaryKey(cart.getId());
-        }
-    }
+
 
 
 
