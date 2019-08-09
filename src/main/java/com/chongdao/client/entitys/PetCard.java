@@ -44,6 +44,8 @@ public class PetCard implements Serializable {
     //冗余字段
     private String typeName;//宠物种类名称
     private String typeIcon;//宠物种类标志
+    @Transient
+    private Integer goodsId;
 
     @Override
     public String toString() {

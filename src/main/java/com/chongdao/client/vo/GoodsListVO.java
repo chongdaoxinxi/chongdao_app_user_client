@@ -1,6 +1,7 @@
 package com.chongdao.client.vo;
 
 import com.chongdao.client.entitys.BathingService;
+import com.chongdao.client.entitys.PetCard;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,6 +86,8 @@ public class GoodsListVO {
     private List<CouponInfo> couponInfoList;
 
     private Integer sort;
+
+    private List<PetCard> petCardList;
 
 
 

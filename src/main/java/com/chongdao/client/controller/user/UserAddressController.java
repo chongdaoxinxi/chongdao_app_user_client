@@ -2,12 +2,14 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAddress;
+import com.chongdao.client.repository.UserAddressRepository;
 import com.chongdao.client.service.UserAddressService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserAddressController {
     @Autowired
     private UserAddressService userAddressService;
+    @Autowired
+    private UserAddressRepository userAddressRepository;
 
     /**
      * 保存收货地址
@@ -52,5 +56,14 @@ public class UserAddressController {
     public ResultResponse<Page<UserAddress>> getUserAddressList(String token, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userAddressService.getUserAddressList(tokenVo.getUserId(), pageNum, pageSize);
+    }
+
+
+    @GetMapping("{id}")
+    public ResultResponse getUserAddressById(@PathVariable Integer id, String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(id, tokenVo.getUserId());
+        return ResultResponse.createBySuccess(userAddress);
+
     }
 }

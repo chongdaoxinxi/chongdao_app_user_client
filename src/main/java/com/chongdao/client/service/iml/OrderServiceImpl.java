@@ -65,15 +65,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
     @Override
     public ResultResponse preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO) {
-        if (orderCommonVO.getReceiveAddressId() == null){
-            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
-        }
+//        if (orderCommonVO.getReceiveAddressId() == null){
+//            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
+//        }
         if (userId == null) {
             log.error("【预下单】参数不正确, orderCommonVO={} ",orderCommonVO);
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
         //订单总价
         BigDecimal cartTotalPrice = new BigDecimal(BigInteger.ZERO);
+        BigDecimal totalDiscount = new BigDecimal(BigInteger.ZERO);
         OrderVo orderVo = new OrderVo();
         //默认地址
         UserAddress address = userAddressRepository.findByUserIdAndIsDefaultAddress(userId, 1);
@@ -81,42 +82,56 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderVo.setUserAddress(address);
         }
         List<Integer> categoryIds = Lists.newArrayList();
+        List<Integer> goodsIds = Lists.newArrayList();
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
         for (Carts cart : cartList) {
+            goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
             //查询商品
             Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
-
             if (good != null) {
                 categoryIds.add(good.getCategoryId());
                 orderGoodsVo.setGoodsName(good.getName());
                 orderGoodsVo.setGoodsPrice(good.getPrice());
-                orderGoodsVo.setGoodsId(good.getId());
+
                 //用户购买的商品数量
                 orderGoodsVo.setQuantity(cart.getQuantity());
                 //折扣计算包含二次打折
                 orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(good,orderGoodsVo,cart).getGoodsTotalPrice());
-                orderVo.setDiscount(good.getDiscount());
-                orderVo.setReDiscount(good.getReDiscount());
+                if (good.getDiscount() > 0){
+                    orderVo.setDiscount(good.getDiscount());
+                }
+                if (good.getReDiscount() > 0){
+                    orderVo.setReDiscount(good.getReDiscount());
+                }
+                orderGoodsVo.setDiscount(good.getDiscount());
+                orderGoodsVo.setReDiscount(good.getReDiscount());
                 //小记
                 orderVo.setTotalDiscount(this.orderDiscountAndFee(good,orderGoodsVo,cart).getTotalDiscount());
             }
-            //查询店铺
-            Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
-            if (shop != null) {
-                orderVo.setShopName(shop.getShopName());
-                orderVo.setOrderGoodsVoList(orderGoodsVoList);
-                orderVo.setUserId(userId);
-                orderVo.setAreaCode(shop.getAreaCode());
-                orderVo.setFollow(orderCommonVO.getFollow());
-                orderVo.setShopId(shop.getId());
-            }
             //商品总价（不包含配送费以及优惠券）
-            cartTotalPrice = orderVo.getGoodsTotalPrice();
+            cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
             orderGoodsVoList.add(orderGoodsVo);
         }
+
+
+        //已优惠价格
+        totalDiscount = orderVo.getTotalDiscount().add(totalDiscount);
+        //查询店铺
+        Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
+        if (shop != null) {
+            orderVo.setShopName(shop.getShopName());
+            orderVo.setOrderGoodsVoList(orderGoodsVoList);
+            orderVo.setUserId(userId);
+            orderVo.setAreaCode(shop.getAreaCode());
+            orderVo.setFollow(orderCommonVO.getFollow());
+            orderVo.setShopId(shop.getId());
+        }
+        //已优惠价格
+        orderVo.setTotalDiscount(totalDiscount);
+        orderVo.setDiscountPrice(totalDiscount);
         if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
             //计算使用商品优惠券后的价格
             CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCouponId()).get();
@@ -137,7 +152,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 cartTotalPrice.subtract(cpnThresholdRule.getMinPrice());
             }
         }
-        //配送费（到店自取无配送费）
+        //配送费(到店自取无配送费)
         if (orderCommonVO.getServiceType() != 3) {
             orderVo.setServicePrice(freightComputer.computerFee(
                     orderCommonVO.getServiceType(), orderCommonVO.getIsService(),
@@ -345,11 +360,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Transactional
     public ResultResponse createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
 
-        //下单类型为服务类型订单时，需判断地址
-        if (orderCommonVO.getIsService().equals(GoodsStatusEnum.SERVICE.getStatus())) {
-            if (orderCommonVO.getReceiveAddressId() == null) {
-                return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.ADDRESS_NOT_EMPTY.getStatus(), OrderStatusEnum.ADDRESS_NOT_EMPTY.getMessage());
+        //地址判断
+        if (orderCommonVO.getServiceType() !=3 && (orderCommonVO.getReceiveAddressId() == null)){
+            if (orderCommonVO.getServiceType() == 1){ //双程
+                return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
             }
+            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
         }
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId(),orderCommonVO.getShopId());
@@ -1101,7 +1117,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setTotalDiscount((good.getPrice().multiply(new BigDecimal(cart.getQuantity())).subtract(orderGoodsVo.getGoodsTotalPrice())));
         }
         return orderGoodsVo;
-
     }
 
     /**

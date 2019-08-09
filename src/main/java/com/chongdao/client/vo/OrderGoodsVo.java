@@ -22,6 +22,13 @@ public class OrderGoodsVo {
 
     private Integer quantity;
 
+    private Double discount = 0.0d;
+
+    //第二件折扣
+    private Double reDiscount = 0.0d;
+
+    private String reDiscountDesc; //第二件描述
+
     private BigDecimal totalPrice;
 
     private String createTime;

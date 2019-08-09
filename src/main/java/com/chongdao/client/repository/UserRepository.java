@@ -28,5 +28,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     List<User> findByPhone(String phone);
 
-    List<User> findByRecommendIdAnAndRecommendType(Integer recommendId, Integer recommendType);
+    List<User> findByRecommendIdAndRecommendType(Integer recommendId, Integer recommendType);
 }
