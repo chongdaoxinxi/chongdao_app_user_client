@@ -1,9 +1,13 @@
 package com.chongdao.client.exception;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.enums.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.lang.reflect.Method;
 
@@ -18,7 +22,18 @@ public class ExceptionHandler{
     public ResultResponse exceptionHandler(Exception e){
         log.error(e.getMessage(), Method.class);
         e.printStackTrace();
-        return ResultResponse.createByErrorCodeMessage(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+        if (e instanceof ServletRequestBindingException){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.UNKNOWN_ERROR.getStatus(),ResultEnum.UNKNOWN_ERROR.getMessage());
+        }else if (e instanceof NoHandlerFoundException){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.NOT_FOUND.getStatus(),ResultEnum.NOT_FOUND.getMessage());
+        }else if (e instanceof TypeMismatchException){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
+                    "参数类型不匹配,参数" + ((TypeMismatchException) e).getPropertyName()+ "类型应该为" + ((TypeMismatchException) e).getRequiredType());
+        }else if (e instanceof MissingServletRequestParameterException){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
+                    "缺少必要参数,参数名称为" + ((TypeMismatchException) e).getPropertyName());
+        }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(),ResultEnum.ERROR.getMessage());
     }
 
 }
