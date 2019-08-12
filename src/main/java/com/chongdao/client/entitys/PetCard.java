@@ -56,9 +56,6 @@ public class PetCard implements Serializable {
     private Integer paymentNumber;
     @Transient
     private BigDecimal goodsPrice;
-    //服务范围美容、洗澡、SPA
-    @Transient
-    private Integer goodsTypeId;
 
     @Override
     public String toString() {
