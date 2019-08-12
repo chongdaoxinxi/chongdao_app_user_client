@@ -19,6 +19,13 @@ public interface RecommendService {
     ResultResponse getMyShareInfo(String token);
 
     /**
+     * 校验订单是否满足返现要求
+     * @param orderId
+     * @return
+     */
+    boolean isSatisfyOrderRewardQualification(Integer orderId);
+
+    /**
      * 推广新用户首单完成时返现(首单完成时调用)
      * @param orderId
      * @return

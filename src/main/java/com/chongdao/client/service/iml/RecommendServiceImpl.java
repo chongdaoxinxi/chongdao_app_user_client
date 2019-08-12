@@ -98,6 +98,41 @@ public class RecommendServiceImpl implements RecommendService {
         return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
     }
 
+    @Override
+    public boolean isSatisfyOrderRewardQualification(Integer orderId) {
+        OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
+        if (orderInfo == null) {
+            return false;
+        }
+        Integer userId = orderInfo.getUserId();
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return false;
+        }
+        Integer recommendType = user.getRecommendType();
+        List<RecommendRecord> list = recommendRecordRepository.findByUserIdAndRecommenderIdAndRecommendType(user.getId(), user.getRecommendId(), user.getRecommendType());
+        if(recommendType.equals(RecommendTypeEnum.USER_ROLE.getCode()) || recommendType.equals(RecommendTypeEnum.EXPRESS_ROLE.getCode())) {
+            if(list.size() > 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } else if(recommendType.equals(RecommendTypeEnum.SHOP_ROLE.getCode())) {
+            Integer recommendId = user.getRecommendId();//是商店推人时, 这个ID就是shopId
+            if(recommendId == orderInfo.getShopId()) {
+                //只有非推荐人商铺下的单才计算在返利中
+                return false;
+            }
+
+            if(list.size() > 4) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 被推广用户首单返利逻辑
      * @param orderId
@@ -116,10 +151,10 @@ public class RecommendServiceImpl implements RecommendService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
 
-        if(user.getIsLoginApp() == -1) {
-            return ResultResponse.createByErrorMessage("该用户还未登录过APP, 无法进行返利!");
-            //TODO 将这种用户保存在一个表里, 每天晚上进行定时任务查询, 只要用户后面登录了APP就再将返利给他
-        }
+//        if(user.getIsLoginApp() == -1) {
+//            return ResultResponse.createByErrorMessage("该用户还未登录过APP, 无法进行返利!");
+//            //TODO 将这种用户保存在一个表里, 每天晚上进行定时任务查询, 只要用户后面登录了APP就再将返利给他
+//        }
 
         RecommendRecord rr = new RecommendRecord();
         rr.setUserId(orderInfo.getUserId());
