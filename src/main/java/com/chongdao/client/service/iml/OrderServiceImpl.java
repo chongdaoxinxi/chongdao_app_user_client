@@ -89,31 +89,40 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
-            //查询商品
-            Good good = goodMapper.selectByPrimaryKey(cart.getGoodsId());
-            if (good != null) {
-                categoryIds.add(good.getCategoryId());
-                orderGoodsVo.setGoodsName(good.getName());
-                orderGoodsVo.setGoodsPrice(good.getPrice());
-
-                //用户购买的商品数量
-                orderGoodsVo.setQuantity(cart.getQuantity());
-                //折扣计算包含二次打折
-                orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(good,orderGoodsVo,cart).getGoodsTotalPrice());
-                if (good.getDiscount() > 0){
-                    orderVo.setDiscount(good.getDiscount());
-                }
-                if (good.getReDiscount() > 0){
-                    orderVo.setReDiscount(good.getReDiscount());
-                }
-                orderGoodsVo.setDiscount(good.getDiscount());
-                orderGoodsVo.setReDiscount(good.getReDiscount());
-                //小记
-                orderVo.setTotalDiscount(this.orderDiscountAndFee(good,orderGoodsVo,cart).getTotalDiscount());
-            }
-            //商品总价（不包含配送费以及优惠券）
-            cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
+            //用户购买的商品数量
+            orderGoodsVo.setShopId(cart.getShopId());
+            orderGoodsVo.setGoodsId(cart.getGoodsId());
+            orderGoodsVo.setQuantity(cart.getQuantity());
             orderGoodsVoList.add(orderGoodsVo);
+        }
+        //查询商品
+        List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
+        List<OrderGoodsVo> orderGoodsVos = Lists.newArrayList();
+        for (Good good : goodList) {
+            categoryIds.add(good.getCategoryId());
+            if (!CollectionUtils.isEmpty(orderGoodsVoList)) {
+                for (OrderGoodsVo orderGoodsVo : orderGoodsVoList) {
+                    if (good.getId().equals(orderGoodsVo.getGoodsId()) && good.getShopId().equals(orderGoodsVo.getShopId())) {
+                        orderGoodsVo.setGoodsName(good.getName());
+                        orderGoodsVo.setGoodsPrice(good.getPrice());
+                        //折扣计算包含二次打折
+                        orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(good, orderGoodsVo, orderGoodsVo.getQuantity()).getGoodsTotalPrice());
+                        if (good.getDiscount() > 0) {
+                            orderVo.setDiscount(good.getDiscount());
+                        }
+                        if (good.getReDiscount() > 0) {
+                            orderVo.setReDiscount(good.getReDiscount());
+                        }
+                        orderGoodsVo.setDiscount(good.getDiscount());
+                        orderGoodsVo.setReDiscount(good.getReDiscount());
+                        //小记
+                        orderVo.setTotalDiscount(this.orderDiscountAndFee(good, orderGoodsVo, orderGoodsVo.getQuantity()).getTotalDiscount());
+                    }
+                    //商品总价（不包含配送费以及优惠券）
+                    cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
+                    orderGoodsVos.add(orderGoodsVo);
+                }
+            }
         }
         //已优惠价格
         totalDiscount = orderVo.getTotalDiscount().add(totalDiscount);
@@ -1068,30 +1077,30 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * 订单折扣计算方式
      * @param good
      * @param orderGoodsVo
-     * @param cart
+     * @param goodsQuantity
      * @return
      */
-    private OrderGoodsVo orderDiscountAndFee(Good good,OrderGoodsVo orderGoodsVo,Carts cart){
+    private OrderGoodsVo orderDiscountAndFee(Good good,OrderGoodsVo orderGoodsVo,Integer goodsQuantity){
         //折扣价
         if (good.getDiscount() > 0) {
             orderGoodsVo.setDiscountPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getDiscount()/10));
             //计算总价(商品存在打折)
-            orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getDiscount()/10).multiply(new BigDecimal(cart.getQuantity())));
+            orderGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getDiscount()/10).multiply(new BigDecimal(goodsQuantity)));
             //优惠总计
-            orderGoodsVo.setTotalDiscount(good.getPrice().multiply(new BigDecimal(cart.getQuantity())).subtract(orderGoodsVo.getGoodsTotalPrice()));
+            orderGoodsVo.setTotalDiscount(good.getPrice().multiply(new BigDecimal(goodsQuantity)).subtract(orderGoodsVo.getGoodsTotalPrice()));
         } else {
             //计算总价（无打折）
-            orderGoodsVo.setGoodsTotalPrice(good.getPrice().multiply(new BigDecimal(cart.getQuantity())));
+            orderGoodsVo.setGoodsTotalPrice(good.getPrice().multiply(new BigDecimal(goodsQuantity)));
         }
         //第二件打折
-        if (good.getReDiscount() > 0 && cart.getQuantity() > 1){
+        if (good.getReDiscount() > 0 && goodsQuantity > 1){
             //商品已打折需要计算在内（然后进行二次打折）
             //第二件打折后的 折扣价格（仅包含第一件 + 第二件 如：第一件价格为：100 第二件价格则为：50 那么reDiscountPrice为：150）
             BigDecimal price= BigDecimalUtil.mul(good.getPrice().doubleValue(),good.getReDiscount()/10).add(good.getPrice());
             orderGoodsVo.setReDiscountPrice(price);
             //商品总价：orderGoodsVo.getReDiscountPrice + 数量 * 原价（此时该商品数量 > 2）
             //记录商品数量
-            int quantity = cart.getQuantity() - 2;
+            int quantity = goodsQuantity - 2;
             if (quantity > 0){
                 //购买超过两个
                 orderGoodsVo.setGoodsTotalPrice(orderGoodsVo.getReDiscountPrice().add(good.getPrice().multiply(new BigDecimal(quantity))));
@@ -1099,7 +1108,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderGoodsVo.setGoodsTotalPrice(orderGoodsVo.getReDiscountPrice());
             }
             //优惠总计
-            orderGoodsVo.setTotalDiscount((good.getPrice().multiply(new BigDecimal(cart.getQuantity())).subtract(orderGoodsVo.getGoodsTotalPrice())));
+            orderGoodsVo.setTotalDiscount((good.getPrice().multiply(new BigDecimal(goodsQuantity)).subtract(orderGoodsVo.getGoodsTotalPrice())));
         }
         return orderGoodsVo;
     }

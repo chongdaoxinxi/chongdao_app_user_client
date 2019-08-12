@@ -2,11 +2,15 @@ server:
    port: 8086
    servlet:
       context-path: /app_client
+   tomcat:
+      accept-count: 1000
+      max-threads: 800
+      min-spare-threads: 100
 #数据库链接
 spring:
    datasource:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull&;useSSL=false
       username: pet
       password: ABcd12#$
       #hikari数据源连接池配置
