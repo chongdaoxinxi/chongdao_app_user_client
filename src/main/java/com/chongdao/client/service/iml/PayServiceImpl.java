@@ -17,6 +17,7 @@ import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.repository.PayInfoRepository;
+import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
@@ -52,6 +53,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     @Autowired
     private PayInfoRepository payInfoRepository;
+    @Autowired
+    private OrderService orderService;
 
 
 
@@ -116,8 +119,13 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             resultMap.put("message", "支付宝预下单失败!!!");
             log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
+        //从购物车中获取数据
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId());
+        this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }
+
+
 
     /**
      * 支付宝异步回调
@@ -426,5 +434,16 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             }
         }
         return r;
+    }
+
+    /**
+     * 清空购物车
+     *
+     * @param cartList
+     */
+    private void cleanCart(List<Carts> cartList) {
+        for (Carts cart : cartList) {
+            cartsMapper.deleteByPrimaryKey(cart.getId());
+        }
     }
 }

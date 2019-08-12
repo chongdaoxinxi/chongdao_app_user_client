@@ -3,8 +3,6 @@ package com.chongdao.client.freight;
 import com.chongdao.client.entitys.DicInfo;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.UserAddress;
-import com.chongdao.client.enums.ResultEnum;
-import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.DicInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.UserAddressRepository;
@@ -65,7 +63,7 @@ public class FreightComputer {
         //查询商铺信息
         Shop shop = shopRepository.findById(shopId).get();
         if (receiveUserAddress == null || shop == null){
-            throw new PetException(ResultEnum.PARAM_ERROR.getStatus(),"地址或店铺为空");
+            return BigDecimal.ZERO;
         }
         //根据code码以及区域码区分地区配送费计算方式
         String areaCode = shop.getAreaCode();
@@ -176,7 +174,7 @@ public class FreightComputer {
             overMoney = overBaseDistance;
         } else {
             //小于三公里的费用
-            overMoney = Double.valueOf(firstServiceMoneys.get(0));
+            overMoney = Double.valueOf(firstServiceMoneys.get(2));
         }
         if (areaCode.equals("3101") && serviceType != 2) {
             overMoney = overMoney * 1.5;

@@ -10,6 +10,8 @@ public enum ResultEnum {
 
     ERROR(500,"操作失败"),
     PARAM_ERROR(501, "参数不正确"),
+    UNKNOWN_ERROR(502,"url绑定路由问题"),
+    NOT_FOUND(503,"没有找到对应的访问路径"),
 
     USER_TYPE_APP(1,"app用户"),
     USER_TYPE_WX(1,"微信用户"),

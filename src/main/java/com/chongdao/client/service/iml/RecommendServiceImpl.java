@@ -345,7 +345,7 @@ public class RecommendServiceImpl implements RecommendService {
     public ResultResponse getMyRecommendUserData(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         Integer recommendType = getRecommendType(tokenVo.getRole());
-        List<User> list = userRepository.findByRecommendIdAnAndRecommendType(tokenVo.getUserId(), recommendType);
+        List<User> list = userRepository.findByRecommendIdAndRecommendType(tokenVo.getUserId(), recommendType);
         List<UserRecommendVO> resp = new ArrayList<>();
         for (User user : list) {
             UserRecommendVO urv = new UserRecommendVO();

@@ -113,9 +113,9 @@ public class OrderVo {
 
     private List<OrderDetailVO> orderDetailVOList;
 
-    private Double discount;
+    private Double discount = 0.0d;
 
-    private Double reDiscount;
+    private Double reDiscount = 0.0d;
 
     private List<CpnThresholdRule> couponInfoList;
 
