@@ -215,7 +215,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
 
                     BeanUtils.copyProperties(good,goodsListVO);
                     //宠物卡片
-                    this.assembelGoodsListVO(good, goodsListVO, unitList, petCardDogs, petCardCats,userId);
+                    this.assembelGoodsTypeVO(good, goodsTypeVO, unitList, petCardDogs, petCardCats,userId);
                     goodsListVOList.add(goodsListVO);
                     goodsTypeVO.setGoodsListVOList(goodsListVOList);
 
@@ -232,14 +232,14 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
     /**
      * 宠物卡片匹配服务类
      * @param good
-     * @param goodsListVO
+     * @param goodsTypeVO
      * @param unitList
      * @param petCardDogs
      * @param petCardCats
      * @param userId
      * @return
      */
-    private GoodsListVO assembelGoodsListVO(Good good,GoodsListVO goodsListVO,List<Unit> unitList,List<PetCard> petCardDogs,List<PetCard> petCardCats,Integer userId){
+    private GoodsTypeVO assembelGoodsTypeVO(Good good,GoodsTypeVO goodsTypeVO,List<Unit> unitList,List<PetCard> petCardDogs,List<PetCard> petCardCats,Integer userId){
         List<PetCard> petCardList = Lists.newArrayList();
         if (good.getCategoryId() != 3) {
             if ((good.getName().contains("狗") || good.getName().contains("犬"))) {
@@ -254,7 +254,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCard.setGoodsId(good.getId());
                                 petCardList.add(petCard);
-                                goodsListVO.setPetCardList(petCardList);
+                                goodsTypeVO.setPetCardList(petCardList);
                             }
                         }
                     }
@@ -273,7 +273,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCard.setGoodsId(good.getId());
                                 petCardList.add(petCard);
-                                goodsListVO.setPetCardList(petCardList);
+                                goodsTypeVO.setPetCardList(petCardList);
                             }
                         }
                     }
@@ -281,10 +281,10 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 });
             }else{
                 List<PetCard> petCards = petCardRepository.findByUserIdAndStatus(userId, 1).orElse(null);
-                goodsListVO.setPetCardList(petCards);
+                goodsTypeVO.setPetCardList(petCards);
             }
         }
-        return goodsListVO;
+        return goodsTypeVO;
     }
 
 
