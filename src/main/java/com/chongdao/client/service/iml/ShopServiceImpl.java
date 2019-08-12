@@ -253,6 +253,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                         if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCard.setGoodsId(good.getId());
+                                petCard.setGoodsName(good.getName());
+                                petCard.setGoodsPrice(good.getPrice());
+                                petCard.setGoodsTypeId(good.getGoodsTypeId());
                                 petCardList.add(petCard);
                                 goodsTypeVO.setPetCardList(petCardList);
                             }
@@ -262,7 +265,6 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 });
             } else if (good.getName().contains("猫")) {
                 //获取宠物卡片(猫)
-
                 petCardCats.stream().forEach(petCard -> {
                     //重量
                     BigDecimal weight = petCard.getWeight();
@@ -272,6 +274,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                         if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCard.setGoodsId(good.getId());
+                                petCard.setGoodsName(good.getName());
+                                petCard.setGoodsPrice(good.getPrice());
+                                petCard.setGoodsTypeId(good.getGoodsTypeId());
                                 petCardList.add(petCard);
                                 goodsTypeVO.setPetCardList(petCardList);
                             }
@@ -279,9 +284,6 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                     }
 
                 });
-            }else{
-                List<PetCard> petCards = petCardRepository.findByUserIdAndStatus(userId, 1).orElse(null);
-                goodsTypeVO.setPetCardList(petCards);
             }
         }
         return goodsTypeVO;

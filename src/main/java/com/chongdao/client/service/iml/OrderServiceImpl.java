@@ -3,6 +3,7 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.dto.OrderGoodsDTO;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnThresholdRule;
@@ -96,41 +97,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVoList.add(orderGoodsVo);
         }
         //查询商品
-        List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
-        List<OrderGoodsVo> orderGoodsVos = Lists.newArrayList();
-        for (Good good : goodList) {
-            categoryIds.add(good.getCategoryId());
-            if (!CollectionUtils.isEmpty(orderGoodsVoList)) {
-                for (OrderGoodsVo orderGoodsVo : orderGoodsVoList) {
-                    if (good.getId().equals(orderGoodsVo.getGoodsId()) && good.getShopId().equals(orderGoodsVo.getShopId())) {
-                        orderGoodsVo.setGoodsName(good.getName());
-                        orderGoodsVo.setGoodsPrice(good.getPrice());
-                        //折扣计算包含二次打折
-                        orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(good, orderGoodsVo, orderGoodsVo.getQuantity()).getGoodsTotalPrice());
-                        if (good.getDiscount() > 0) {
-                            orderVo.setDiscount(good.getDiscount());
-                        }
-                        if (good.getReDiscount() > 0) {
-                            orderVo.setReDiscount(good.getReDiscount());
-                        }
-                        orderGoodsVo.setDiscount(good.getDiscount());
-                        orderGoodsVo.setReDiscount(good.getReDiscount());
-                        //小记
-                        orderVo.setTotalDiscount(this.orderDiscountAndFee(good, orderGoodsVo, orderGoodsVo.getQuantity()).getTotalDiscount());
-                    }
-                    //商品总价（不包含配送费以及优惠券）
-                    cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
-                    orderGoodsVos.add(orderGoodsVo);
-                }
-            }
-        }
+        OrderGoodsDTO orderGoodsDTO = this.orderGoodsDTO(goodsIds, categoryIds, orderGoodsVoList, orderVo, cartTotalPrice);
+        //购物车总价
+        cartTotalPrice = orderGoodsDTO.getCartTotalPrice();
         //已优惠价格
         totalDiscount = orderVo.getTotalDiscount().add(totalDiscount);
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
         if (shop != null) {
             orderVo.setShopName(shop.getShopName());
-            orderVo.setOrderGoodsVoList(orderGoodsVoList);
+            orderVo.setOrderGoodsVoList(orderGoodsDTO.getOrderGoodsVoList());
             orderVo.setUserId(userId);
             orderVo.setAreaCode(shop.getAreaCode());
             orderVo.setFollow(orderCommonVO.getFollow());
@@ -1126,6 +1102,54 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         });
         List<CpnThresholdRule> cpnThresholdRuleList = thresholdRuleRepository.findAllByIdIn(cpnIds);
         return cpnThresholdRuleList;
+    }
+
+    /**
+     * 商品（服务）封装
+     * @param goodsIds
+     * @param categoryIds
+     * @param orderGoodsVoList
+     * @param orderVo
+     * @param cartTotalPrice
+     * @return
+     */
+    public OrderGoodsDTO orderGoodsDTO(List<Integer> goodsIds, List<Integer> categoryIds,
+                                       List<OrderGoodsVo> orderGoodsVoList, OrderVo orderVo,
+                                       BigDecimal cartTotalPrice){
+        OrderGoodsDTO  orderGoodsDTO = new OrderGoodsDTO();
+        List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
+        List<OrderGoodsVo> orderGoodsVos = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(goodList)) {
+            for (Good good : goodList) {
+                categoryIds.add(good.getCategoryId());
+                if (!CollectionUtils.isEmpty(orderGoodsVoList)) {
+                    for (OrderGoodsVo orderGoodsVo : orderGoodsVoList) {
+                        if (good.getId().equals(orderGoodsVo.getGoodsId()) && good.getShopId().equals(orderGoodsVo.getShopId())) {
+                            orderGoodsVo.setGoodsName(good.getName());
+                            orderGoodsVo.setGoodsPrice(good.getPrice());
+                            //折扣计算包含二次打折
+                            orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(good, orderGoodsVo, orderGoodsVo.getQuantity()).getGoodsTotalPrice());
+                            if (good.getDiscount() > 0) {
+                                orderVo.setDiscount(good.getDiscount());
+                            }
+                            if (good.getReDiscount() > 0) {
+                                orderVo.setReDiscount(good.getReDiscount());
+                            }
+                            orderGoodsVo.setDiscount(good.getDiscount());
+                            orderGoodsVo.setReDiscount(good.getReDiscount());
+                            //小记
+                            orderVo.setTotalDiscount(this.orderDiscountAndFee(good, orderGoodsVo, orderGoodsVo.getQuantity()).getTotalDiscount());
+                        }
+                        //商品总价（不包含配送费以及优惠券）
+                        cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
+                        orderGoodsVos.add(orderGoodsVo);
+                    }
+                }
+            }
+            orderGoodsDTO.setCartTotalPrice(cartTotalPrice);
+            orderGoodsDTO.setOrderGoodsVoList(orderGoodsVos);
+        }
+        return orderGoodsDTO;
     }
 }
 
