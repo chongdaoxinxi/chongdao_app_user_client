@@ -214,6 +214,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                     goodsTypeVO.setGoodsTypeName(e.getName());
 
                     BeanUtils.copyProperties(good,goodsListVO);
+                    if (good.getUnitName() != null){
+                        goodsListVO.setName(good.getName() + good.getUnitName());
+                    }
                     //宠物卡片
                     this.assembelGoodsTypeVO(good, goodsTypeVO, unitList, petCardDogs, petCardCats,userId);
                     goodsListVOList.add(goodsListVO);
@@ -253,9 +256,8 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                         if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCard.setGoodsId(good.getId());
-                                petCard.setGoodsName(good.getName());
+                                petCard.setGoodsName(good.getName() + unit.getLabel());
                                 petCard.setGoodsPrice(good.getPrice());
-                                petCard.setUnitName(unit.getLabel());
                                 //查询实际购买该服务的人数
                                 int paymentNumber = goodMapper.paymentNumber(good.getId());
                                 petCard.setPaymentNumber(paymentNumber);
@@ -277,9 +279,8 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                         if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
                                 petCard.setGoodsId(good.getId());
-                                petCard.setGoodsName(good.getName());
+                                petCard.setGoodsName(good.getName() + unit.getLabel());
                                 petCard.setGoodsPrice(good.getPrice());
-                                petCard.setUnitName(unit.getLabel());
                                 //查询实际购买该服务的人数
                                 int paymentNumber = goodMapper.paymentNumber(good.getId());
                                 petCard.setPaymentNumber(paymentNumber);
