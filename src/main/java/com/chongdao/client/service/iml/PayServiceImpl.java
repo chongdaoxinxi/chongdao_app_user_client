@@ -123,7 +123,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId());
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
         this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }

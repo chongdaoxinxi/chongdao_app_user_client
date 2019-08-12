@@ -33,5 +33,5 @@ public interface CartsMapper {
      */
     void deleteByUserIdAndProductIds(Integer userId, List<String> goodsList);
 
-    List<Carts> selectCheckedCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId);
+    List<Carts> selectCheckedCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId, @Param("goodsId") Integer goodsId);
 }

@@ -85,7 +85,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         List<Integer> categoryIds = Lists.newArrayList();
         List<Integer> goodsIds = Lists.newArrayList();
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId());
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId(),null);
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
@@ -350,7 +350,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Transactional
     public ResultResponse createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId(),orderCommonVO.getShopId());
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId(),orderCommonVO.getShopId(),null);
 
         //计算这个订单的总价
         ResultResponse serverResponse = this.getCartOrderItem(orderVo.getUserId(), cartList);

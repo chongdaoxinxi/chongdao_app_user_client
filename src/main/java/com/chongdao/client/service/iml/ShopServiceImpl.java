@@ -258,6 +258,11 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                                 petCard.setGoodsId(good.getId());
                                 petCard.setGoodsName(good.getName() + unit.getLabel());
                                 petCard.setGoodsPrice(good.getPrice());
+                                //查询购物车匹配宠物卡片选中
+                                List<Carts> cartsList = cartsMapper.selectCheckedCartByUserId(userId,good.getShopId(),good.getId());
+                                cartsList.stream().forEach(carts -> {
+                                    petCard.setChecked(Integer.valueOf(carts.getChecked()));
+                                });
                                 //查询实际购买该服务的人数
                                 int paymentNumber = goodMapper.paymentNumber(good.getId());
                                 petCard.setPaymentNumber(paymentNumber);
@@ -281,6 +286,11 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                                 petCard.setGoodsId(good.getId());
                                 petCard.setGoodsName(good.getName() + unit.getLabel());
                                 petCard.setGoodsPrice(good.getPrice());
+                                //查询购物车匹配宠物卡片选中
+                                List<Carts> cartsList = cartsMapper.selectCheckedCartByUserId(userId,good.getShopId(),good.getId());
+                                cartsList.stream().forEach(carts -> {
+                                    petCard.setChecked(Integer.valueOf(carts.getChecked()));
+                                });
                                 //查询实际购买该服务的人数
                                 int paymentNumber = goodMapper.paymentNumber(good.getId());
                                 petCard.setPaymentNumber(paymentNumber);
