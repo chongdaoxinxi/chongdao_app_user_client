@@ -6,6 +6,7 @@
             <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="order_no" jdbcType="INTEGER" javaType="java.lang.String"/>
             <arg column="count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="good_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="order_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
@@ -18,7 +19,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, order_no, count , order_id,name, price, icon, current_price, create_time, update_time,
+        id, order_no, count, good_id, order_id,name, price, icon, current_price, create_time, update_time,
     user_id, total_price
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -34,11 +35,11 @@
     </delete>
     <insert id="insert" parameterType="com.chongdao.client.entitys.OrderDetail">
         insert into order_detail (id, order_no, count,
-                                  order_id, name, price,
+                                  good_id, order_id, name, price,
                                   icon, current_price, create_time,
                                   update_time, user_id, total_price)
         values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER},
-                #{orderId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+                #{goodId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
                 #{icon,jdbcType=VARCHAR}, #{currentPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
                 #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL})
     </insert>
@@ -53,6 +54,9 @@
             </if>
             <if test="count != null">
                 count,
+            </if>
+            <if test="goodId != null">
+                good_id,
             </if>
             <if test="orderId != null">
                 order_id,
@@ -92,6 +96,9 @@
             <if test="count != null">
                 #{count,jdbcType=INTEGER},
             </if>
+            <if test="goodId != null">
+                #{goodId,jdbcType=INTEGER},
+            </if>
             <if test="orderId != null">
                 #{orderId,jdbcType=INTEGER},
             </if>
@@ -130,6 +137,9 @@
             <if test="count != null">
                 count = #{count,jdbcType=INTEGER},
             </if>
+            <if test="goodId != null">
+                good_id = #{goodId,jdbcType=INTEGER},
+            </if>
             <if test="orderId != null">
                 order_id = #{orderId,jdbcType=INTEGER},
             </if>
@@ -164,6 +174,7 @@
         update order_detail
         set order_no      = #{orderNo,jdbcType=VARCHAR},
             count         = #{count,jdbcType=INTEGER},
+            good_id       = #{goodId,jdbcType=INTEGER},
             order_id      = #{orderId,jdbcType=INTEGER},
             name          = #{name,jdbcType=VARCHAR},
             price         = #{price,jdbcType=DECIMAL},
@@ -178,14 +189,14 @@
 
     <insert id="batchInsert" parameterType="list">
         insert into order_detail (id, user_id, order_no,
-        name, icon,
+        good_id, name, icon,
         current_price, count, price,total_price,
         create_time, update_time)
         values
         <foreach collection="orderItemList" item="item" index="index" separator=",">
             (
             #{item.id}, #{item.userId}, #{item.orderNo},
-            #{item.name}, #{item.icon},
+            #{item.goodId}, #{item.name}, #{item.icon},
             #{item.currentPrice}, #{item.count}, #{item.price},#{item.totalPrice},
             now(), now()
             )

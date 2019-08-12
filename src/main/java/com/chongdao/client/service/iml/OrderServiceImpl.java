@@ -498,6 +498,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             if (good.getDiscount() > 0) {
                 count = good.getDiscount();
             }
+            if (good.getReDiscount() > 0) {
+                count = good.getReDiscount();
+            }
             orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count));
             orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cartItem.getQuantity()));
             orderItemList.add(orderDetail);

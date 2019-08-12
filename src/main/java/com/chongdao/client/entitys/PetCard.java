@@ -56,6 +56,9 @@ public class PetCard implements Serializable {
     private Integer paymentNumber;
     @Transient
     private BigDecimal goodsPrice;
+    @Transient
+    private String unitName;
+
 
     @Override
     public String toString() {

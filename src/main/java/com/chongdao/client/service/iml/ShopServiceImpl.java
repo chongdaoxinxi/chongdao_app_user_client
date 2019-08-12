@@ -255,6 +255,10 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                                 petCard.setGoodsId(good.getId());
                                 petCard.setGoodsName(good.getName());
                                 petCard.setGoodsPrice(good.getPrice());
+                                petCard.setUnitName(unit.getLabel());
+                                //查询实际购买该服务的人数
+                                int paymentNumber = goodMapper.paymentNumber(good.getId());
+                                petCard.setPaymentNumber(paymentNumber);
                                 petCardList.add(petCard);
                                 goodsTypeVO.setPetCardList(petCardList);
                             }
@@ -275,6 +279,10 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                                 petCard.setGoodsId(good.getId());
                                 petCard.setGoodsName(good.getName());
                                 petCard.setGoodsPrice(good.getPrice());
+                                petCard.setUnitName(unit.getLabel());
+                                //查询实际购买该服务的人数
+                                int paymentNumber = goodMapper.paymentNumber(good.getId());
+                                petCard.setPaymentNumber(paymentNumber);
                                 petCardList.add(petCard);
                                 goodsTypeVO.setPetCardList(petCardList);
                             }

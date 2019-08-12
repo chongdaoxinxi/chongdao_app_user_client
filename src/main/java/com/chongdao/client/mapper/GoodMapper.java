@@ -49,6 +49,6 @@ public interface GoodMapper {
 
     void goodsDiscount(@Param("shopId")Integer shopId, @Param("goodsTypeId")Integer goodsTypeId, @Param("discount")Double discount,@Param("reDiscount") Double reDiscount);
 
-    //int paymentNumber(@Param("shopId")Integer shopId, @Param("goodId") Integer goodId);
+    int paymentNumber(@Param("goodId") Integer goodId);
 
 }

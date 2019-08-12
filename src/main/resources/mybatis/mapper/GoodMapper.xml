@@ -448,4 +448,9 @@
         from good where status = 1 and shop_id=#{shopId} and category_id=#{categoryId}
         order by id asc
     </select>
+
+    <select id="paymentNumber" resultType="int" parameterType="int">
+        select count(1) from order_detail od inner JOIN good g on g.id=od.good_id INNER JOIN order_info o ON od.order_no=o.order_no
+        where od.good_id=#{goodId} and o.order_status > 1
+    </select>
 </mapper>

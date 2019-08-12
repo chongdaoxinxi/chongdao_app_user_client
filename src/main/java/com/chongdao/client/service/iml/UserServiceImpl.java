@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse<UserLoginVO> login(String phone, String code) {
         if (StringUtils.isBlank(phone)){
             return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USERNAME_OR_CODE_EMPTY.getStatus(), UserStatusEnum.USERNAME_OR_CODE_EMPTY.getMessage());
@@ -79,7 +81,7 @@ public class UserServiceImpl implements UserService {
             userLoginVO.setUserId(user.getId());
         }
         //更新用户登录时间
-        userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getName());
+        userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getPhone());
         userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),user.getName(),userLoginVO.getLastLoginTime(), "USER"));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userLoginVO);
     }
