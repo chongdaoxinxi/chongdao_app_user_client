@@ -1,54 +1,54 @@
 server:
-   port: 8086
-   servlet:
-      context-path: /app_client
-   tomcat:
-      accept-count: 1000
-      max-threads: 800
-      min-spare-threads: 100
+  port: 8086
+  servlet:
+    context-path: /app_client
+  tomcat:
+    accept-count: 1000
+    max-threads: 800
+    min-spare-threads: 100
 #数据库链接
 spring:
-   datasource:
-      driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull&;useSSL=false
-      username: pet
-      password: ABcd12#$
-      #hikari数据源连接池配置
-      hikari:
-         connection-test-query: SELECT 1
-         connection-timeout: 30000
-         maximum-pool-size: 30
-         max-lifetime: 700000
-         minimum-idle: 5
-   jpa:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull&;useSSL=false
+    username: pet
+    password: ABcd12#$
+    #hikari数据源连接池配置
+    hikari:
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      maximum-pool-size: 30
+      max-lifetime: 700000
+      minimum-idle: 5
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true   #是否输出sql
+    properties:
       hibernate:
-         ddl-auto: none
-      show-sql: true   #是否输出sql
-      properties:
-         hibernate:
-            format_sql: true
-   #为null的字段不需要传给前端
-   jackson:
-      default-property-inclusion: non_null
-      date-format: yyyy-MM-dd HH:mm:ss
-      time-zone: GMT+8
+        format_sql: true
+  #为null的字段不需要传给前端
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 #mybatis
 mybatis:
-   mapper-locations: classpath*:mybatis/mapper/*.xml
-   type-aliases-package: com.chongdao.client.entitys
-   configuration:
-      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  type-aliases-package: com.chongdao.client.entitys
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #日志
 logging:
-   pattern:
-      console: "%d - %msg%n"
+  pattern:
+    console: "%d - %msg%n"
 #  path: /var/log/
 #  file: /var/log/tomcat/app_client.log
 
 #cxf
 cxf:
-   jaxrs:
-      component-scan: true
-      classes-scan-packages: org.apache.cxf.jaxrs.swagger
+  jaxrs:
+    component-scan: true
+    classes-scan-packages: org.apache.cxf.jaxrs.swagger

@@ -7,6 +7,7 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.ShopManageVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 @RequestMapping("/api/shop_manage/")
+@CrossOrigin
 public class ShopManageController {
     @Autowired
     private ShopManageService shopManageService;
