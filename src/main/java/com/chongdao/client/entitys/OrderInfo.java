@@ -37,7 +37,7 @@ public class OrderInfo {
 
     private Integer follow;
 
-    private Integer serviceType;
+    private Integer serviceType;//1:单程;2:双程;3:到店;
 
     private Integer cardId;
 
