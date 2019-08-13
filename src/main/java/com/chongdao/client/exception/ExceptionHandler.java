@@ -7,6 +7,7 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.lang.reflect.Method;
@@ -26,9 +27,9 @@ public class ExceptionHandler{
             return ResultResponse.createByErrorCodeMessage(ResultEnum.UNKNOWN_ERROR.getStatus(),ResultEnum.UNKNOWN_ERROR.getMessage());
         }else if (e instanceof NoHandlerFoundException){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.NOT_FOUND.getStatus(),ResultEnum.NOT_FOUND.getMessage());
-        }else if (e instanceof TypeMismatchException){
+        }else if (e instanceof MethodArgumentTypeMismatchException){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
-                    "参数类型不匹配,参数" + ((TypeMismatchException) e).getPropertyName()+ "类型应该为" + ((TypeMismatchException) e).getRequiredType());
+                    "参数类型不匹配,参数" + ((MethodArgumentTypeMismatchException) e).getName()+ "类型应该为" + ((MethodArgumentTypeMismatchException) e).getRequiredType());
         }else if (e instanceof MissingServletRequestParameterException){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
                     "缺少必要参数,参数名称为" + ((TypeMismatchException) e).getPropertyName());

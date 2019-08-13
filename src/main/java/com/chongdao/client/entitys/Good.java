@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 
 /** 
@@ -133,5 +134,49 @@ public class Good {
 		this.bathingServiceId = bathingServiceId;
 		this.sort = sort;
 		this.areaCode = areaCode;
+	}
+
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Good good = (Good) o;
+		return id.equals(good.id) &&
+				Objects.equals(name, good.name) &&
+				Objects.equals(icon, good.icon) &&
+				Objects.equals(price, good.price) &&
+				Objects.equals(discount, good.discount) &&
+				Objects.equals(reDiscount, good.reDiscount) &&
+				Objects.equals(unit, good.unit) &&
+				Objects.equals(unitName, good.unitName) &&
+				Objects.equals(des, good.des) &&
+				Objects.equals(goodsTypeId, good.goodsTypeId) &&
+				shopId.equals(good.shopId) &&
+				Objects.equals(ratio, good.ratio) &&
+				Objects.equals(ratioPrice, good.ratioPrice) &&
+				Objects.equals(stock, good.stock) &&
+				Objects.equals(createTime, good.createTime) &&
+				Objects.equals(updateTime, good.updateTime) &&
+				Objects.equals(status, good.status) &&
+				Objects.equals(moduleId, good.moduleId) &&
+				Objects.equals(categoryId, good.categoryId) &&
+				Objects.equals(sales, good.sales) &&
+				Objects.equals(typeName, good.typeName) &&
+				Objects.equals(brandId, good.brandId) &&
+				Objects.equals(scopeId, good.scopeId) &&
+				Objects.equals(petCategoryId, good.petCategoryId) &&
+				Objects.equals(bathingServiceId, good.bathingServiceId) &&
+				Objects.equals(sort, good.sort) &&
+				Objects.equals(areaCode, good.areaCode) &&
+				Objects.equals(categoryName, good.categoryName) &&
+				Objects.equals(type, good.type) &&
+				Objects.equals(couponName, good.couponName) &&
+				Objects.equals(couponId, good.couponId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, icon, price, discount, reDiscount, unit, unitName, des, goodsTypeId, shopId, ratio, ratioPrice, stock, createTime, updateTime, status, moduleId, categoryId, sales, typeName, brandId, scopeId, petCategoryId, bathingServiceId, sort, areaCode, categoryName, type, couponName, couponId);
 	}
 }

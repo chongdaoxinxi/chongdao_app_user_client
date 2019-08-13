@@ -41,7 +41,7 @@ public interface ShopService{
     /**
      * 获取店铺商品
      * @param shopId
-     * @param type 0 商品 1 服务
+     * @param type 0 商品 1
      * @return
      */
     ResultResponse getShopService(Integer shopId, Integer type,Integer userId);

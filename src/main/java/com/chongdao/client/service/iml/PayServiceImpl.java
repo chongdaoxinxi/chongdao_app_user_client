@@ -72,6 +72,9 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         if (order == null) {
             return ResultResponse.createByErrorMessage("用户没有该订单");
         }
+        if (order.getOrderStatus() > -1){
+            return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
+        }
         String orderStr = "";
         Map<String, String> resultMap = new HashMap<String, String>();
         try {
@@ -120,7 +123,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId());
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
         this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }

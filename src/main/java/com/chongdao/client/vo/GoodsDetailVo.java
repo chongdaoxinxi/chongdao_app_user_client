@@ -64,6 +64,7 @@ public class GoodsDetailVo {
     private List<BathingService> serviceContent;   //洗澡服务内容
 
 
+    private Integer orderId;
 
     //收藏状态  1 收藏 0取消收藏
     private Integer concernStatus;

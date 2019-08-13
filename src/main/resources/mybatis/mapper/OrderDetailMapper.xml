@@ -7,6 +7,7 @@
             <arg column="order_no" jdbcType="INTEGER" javaType="java.lang.String"/>
             <arg column="count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="good_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="order_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="icon" jdbcType="VARCHAR" javaType="java.lang.String"/>
@@ -18,7 +19,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, order_no, count, good_id, name, price, icon, current_price, create_time, update_time,
+        id, order_no, count, good_id, order_id,name, price, icon, current_price, create_time, update_time,
     user_id, total_price
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -34,11 +35,11 @@
     </delete>
     <insert id="insert" parameterType="com.chongdao.client.entitys.OrderDetail">
         insert into order_detail (id, order_no, count,
-                                  good_id, name, price,
+                                  good_id, order_id, name, price,
                                   icon, current_price, create_time,
                                   update_time, user_id, total_price)
         values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER},
-                #{goodId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+                #{goodId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
                 #{icon,jdbcType=VARCHAR}, #{currentPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
                 #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL})
     </insert>
@@ -56,6 +57,9 @@
             </if>
             <if test="goodId != null">
                 good_id,
+            </if>
+            <if test="orderId != null">
+                order_id,
             </if>
             <if test="name != null">
                 name,
@@ -95,6 +99,9 @@
             <if test="goodId != null">
                 #{goodId,jdbcType=INTEGER},
             </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=INTEGER},
+            </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
             </if>
@@ -133,6 +140,9 @@
             <if test="goodId != null">
                 good_id = #{goodId,jdbcType=INTEGER},
             </if>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=INTEGER},
+            </if>
             <if test="name != null">
                 name = #{name,jdbcType=VARCHAR},
             </if>
@@ -165,6 +175,7 @@
         set order_no      = #{orderNo,jdbcType=VARCHAR},
             count         = #{count,jdbcType=INTEGER},
             good_id       = #{goodId,jdbcType=INTEGER},
+            order_id      = #{orderId,jdbcType=INTEGER},
             name          = #{name,jdbcType=VARCHAR},
             price         = #{price,jdbcType=DECIMAL},
             icon          = #{icon,jdbcType=VARCHAR},

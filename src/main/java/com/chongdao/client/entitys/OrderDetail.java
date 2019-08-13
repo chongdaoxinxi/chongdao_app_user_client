@@ -26,6 +26,8 @@ public class OrderDetail {
 
     private Integer goodId;
 
+    private Integer orderId;
+
     private String name;
 
     private BigDecimal price;
@@ -42,11 +44,12 @@ public class OrderDetail {
 
     private BigDecimal totalPrice;
 
-    public OrderDetail(Integer id, String orderNo, Integer count, Integer goodId, String name, BigDecimal price, String icon, BigDecimal currentPrice, Date createTime, Date updateTime, Integer userId, BigDecimal totalPrice) {
+    public OrderDetail(Integer id, String orderNo, Integer count, Integer goodId, Integer orderId, String name, BigDecimal price, String icon, BigDecimal currentPrice, Date createTime, Date updateTime, Integer userId, BigDecimal totalPrice) {
         this.id = id;
         this.orderNo = orderNo;
         this.count = count;
         this.goodId = goodId;
+        this.orderId = orderId;
         this.name = name;
         this.price = price;
         this.icon = icon;
