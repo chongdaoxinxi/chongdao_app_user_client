@@ -7,6 +7,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopManageService;
+import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.ShopLoginVO;
 import com.chongdao.client.vo.ShopManageVO;
@@ -40,7 +41,8 @@ public class ShopManageServiceImpl implements ShopManageService {
         if(shop.isPresent()){
             Shop s = shop.get();
             String pwd = s.getPassword();
-            if(StringUtils.isNoneBlank(pwd) && pwd.equals(password)) {
+            String md5Pwd = MD5Util.MD5(password);
+            if(StringUtils.isNoneBlank(password) && pwd.equals(md5Pwd)) {
                 //密码正确 进入下一步
                 return assembleShopLogin(s);
             } else {
