@@ -10,7 +10,7 @@ server:
 spring:
    datasource:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://47.101.160.88:3306/chongdao_app_beta?zeroDateTimeBehavior=convertToNull&;useSSL=false
+      url: jdbc:mysql://47.100.63.167:3306/chongdao_app?zeroDateTimeBehavior=convertToNull&;useSSL=false
       username: pet
       password: ABcd12#$
       #hikari数据源连接池配置
