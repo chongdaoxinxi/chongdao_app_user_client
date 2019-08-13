@@ -127,6 +127,9 @@ public class RecommendServiceImpl implements RecommendService {
             if(list.size() > 4) {
                 return false;
             } else {
+                //再判定订单中是否含有商品, 不含商品的订单, 当推广人是商家时 也无法进行返利
+                //TODO
+
                 return true;
             }
         }
@@ -282,7 +285,6 @@ public class RecommendServiceImpl implements RecommendService {
                 shop.setInsuranceMoney(money.add(reward));
                 shopRepository.saveAndFlush(shop);
             }
-
         }
     }
 

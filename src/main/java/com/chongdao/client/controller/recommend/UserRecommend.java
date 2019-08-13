@@ -54,7 +54,7 @@ public class UserRecommend {
     }
 
     /**
-     * 获取我的推广消费记录
+     * 获取我的推广人的消费记录
      * @param token
      * @param consumeType
      * @return
@@ -65,7 +65,7 @@ public class UserRecommend {
     }
 
     /**
-     * 获取我的推广新用户记录
+     * 获取我推广的新用户数据
      * @param token
      * @return
      */
