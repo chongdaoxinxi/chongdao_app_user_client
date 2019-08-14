@@ -20,7 +20,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -36,7 +35,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-      <dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
@@ -72,7 +71,6 @@
             <version>1.3.1</version>
         </dependency>
 
-
         <!-- 分页插件 -->
         <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
         <dependency>
@@ -92,8 +90,6 @@
             <artifactId>jsqlparser</artifactId>
             <version>0.9.4</version>
         </dependency>
-
-
 
         <!-- jwt依赖 -->
         <dependency>

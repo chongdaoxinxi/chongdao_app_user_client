@@ -50,11 +50,17 @@ public class Shop extends PageParams implements Serializable {
 
 	private BigDecimal money;
 
+	private BigDecimal customGoodOrderMoney;//正常商品订单金额
+
+	private BigDecimal customServiceOrderMoney;//正常服务订单金额
+
+	private BigDecimal arriveShopOrderMoney;//到店订单金额
+
 	private BigDecimal insuranceMoney;//医疗保险余额
 
 	private BigDecimal recommendMoney;//推广奖金
 
-	private Integer type;
+	private Integer type;//0:正常店铺;3:官方店铺;2:医院类店铺;
 
 	private Double grade;
 
