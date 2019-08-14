@@ -135,13 +135,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 cartTotalPrice.subtract(cpnThresholdRule.getMinPrice());
             }
         }
-        //配送费(到店自取无配送费)
+        //配送费(到店自取无配送费) 有优惠需减去优惠
         if (orderCommonVO.getServiceType() != 3) {
             orderVo.setServicePrice(freightComputer.computerFee(
                     orderCommonVO.getServiceType(), orderCommonVO.getIsService(),
                     orderCommonVO.getReceiveAddressId(), orderCommonVO.getDeliverAddressId(),
                     orderVo.getShopId(), userId
-            ));
+            ).subtract(orderVo.getServiceCouponPrice()));
         }
         //店铺满减
         orderVo.setCouponInfoList(this.getCouponInfoList(orderVo.getShopId()));
