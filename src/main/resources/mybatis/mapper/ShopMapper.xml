@@ -453,12 +453,12 @@
             and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
         </if>
         <if test="discount &gt;0 ">
-            and  (select discount from good g where g.shop_id=s.id and discount &gt; 0 limit 0,1)  &gt; 0
+            and  (select min(discount) from good g where g.shop_id=s.id and discount &gt; 0)  &gt; 0
         </if>
         <if test="proActivities != null">
             and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp where cp.shop_id=s.id) in (#{proActivities})
         </if>
-        order by dis, ${orderBy}
+        order by ${orderBy}
     </select>
 
 

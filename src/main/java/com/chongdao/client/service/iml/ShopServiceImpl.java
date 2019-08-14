@@ -61,7 +61,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             }else if (ARRANGEMENT_KEY.contains(orderBy)){
                 //综合排序
                 orderBy =  ARRANGEMENT_VALUE_SHOP;
-            }else{
+            }else if (DISTANCE.contains(orderBy)){
+                orderBy = DISTANCE;
+            } else {
                 return null;
             }
         }
@@ -79,7 +81,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         //查询所有上架店铺(默认综合排序)
         List<Shop> shopList = Lists.newArrayList();
         if (orderBy.equals(ARRANGEMENT_VALUE_SHOP)){
-            shopList = shopMapper.selectByArrangementLimit3KM(null, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
+            shopList = shopMapper.selectByArrangementLimit3KM(ARRANGEMENT_VALUE_SHOP, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
                     discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
         }else {
             shopList = shopMapper.selectByName(

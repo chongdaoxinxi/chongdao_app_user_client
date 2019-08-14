@@ -35,14 +35,15 @@ public class Const {
      */
     public interface OrderBy{
         //销量排行（首页）
-        String SALES_ORDER_BY = "(select sum(sales) from good g where g.shop_id=s.id)";
+        String SALES_ORDER_BY = "sales desc";
         //好评率
-        Set<String> FAVORABLE = Sets.newHashSet("grade_desc","grade_asc");
+        Set<String> FAVORABLE = Sets.newHashSet("grade_desc");
+        String DISTANCE = "dis";
         String FAVORABLE_DESC = "grade";
         //综合排序
         String ARRANGEMENT_KEY = "arrangement";
         String ARRANGEMENT_VALUE_GOODS = "sales desc" + "," +"price asc";
-        String ARRANGEMENT_VALUE_SHOP = SALES_ORDER_BY + " desc" + "," + FAVORABLE_DESC + " desc" ;
+        String ARRANGEMENT_VALUE_SHOP = SALES_ORDER_BY + "," + FAVORABLE_DESC + " desc" + DISTANCE ;
 
         //价格排序
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");

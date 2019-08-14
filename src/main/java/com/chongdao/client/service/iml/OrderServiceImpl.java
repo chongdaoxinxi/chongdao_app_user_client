@@ -66,9 +66,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
     @Override
     public ResultResponse preOrCreateOrder(Integer userId, OrderCommonVO orderCommonVO) {
-//        if (orderCommonVO.getReceiveAddressId() == null){
-//            return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
-//        }
         if (userId == null) {
             log.error("【预下单】参数不正确, orderCommonVO={} ",orderCommonVO);
             throw new PetException(ResultEnum.PARAM_ERROR);
