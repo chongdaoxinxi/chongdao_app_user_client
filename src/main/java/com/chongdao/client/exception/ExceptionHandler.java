@@ -3,7 +3,9 @@ package com.chongdao.client.exception;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,8 +35,12 @@ public class ExceptionHandler{
         }else if (e instanceof MissingServletRequestParameterException){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),
                     "缺少必要参数,参数名称为" + ((TypeMismatchException) e).getPropertyName());
+        }else if (e instanceof HttpRequestMethodNotSupportedException) {
+            return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_METHOD_NOT_ALLOWED,
+                    "不支持" + ((HttpRequestMethodNotSupportedException) e).getMethod() + "方法");
+        }else{
+            return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_METHOD_NOT_ALLOWED, ResultEnum.ERROR.getMessage() );
         }
-        return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(),ResultEnum.ERROR.getMessage());
     }
 
 }
