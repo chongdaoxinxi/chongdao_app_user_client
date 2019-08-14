@@ -27,18 +27,28 @@ public class MedicalInsuranceOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     //投保人信息
     private Integer userId;//用户id
     private String name;
     private String cardType;//01:身份证;02:户口本;03:护照;04:军人证件;05:驾驶执照;06:返乡证;07:港澳身份证;08:工号;09:赴台通行证;10:港澳通行证;15:士兵证;16:外国人永久通行证;25:港澳居民来往内地通行证;26:台湾居民来往内地通行证;31:组织机构代码;37:统一社会信用代码;99:其他;
     private String cardNo;
     private String phone;
+    private Integer isSendMsg;//是否发送短信给投保人, 默认为1
 
     private String idCardFrontPhoto;//投保人身份证正面照片
     private String idCardReversePhoto;//投保人身份证反面照片
     private String bankCardPhoto;//银行卡照片
 
-    //被保人
+    //被保人信息
+    private Integer acceptSeqNo;//默认为1
+    private String acceptName;
+    private String acceptCardType;//01:身份证;02:户口本;03:护照;04:军人证件;05:驾驶执照;06:返乡证;07:港澳身份证;08:工号;09:赴台通行证;10:港澳通行证;15:士兵证;16:外国人永久通行证;25:港澳居民来往内地通行证;26:台湾居民来往内地通行证;31:组织机构代码;37:统一社会信用代码;99:其他;
+    private String acceptCardNo;
+    private String acceptPhone;
+    private String acceptMail;
+
+    //受益人
     private Integer beneficiary;//默认为1; 即投保人自己
 
     private String rationType;//方案代码-用户所选保险及方案
@@ -55,7 +65,7 @@ public class MedicalInsuranceOrder implements Serializable {
     private Date auditTime;//审核完成时间(平台投保审核完成日期)
     private Date signBillTime;//签单日期(即与保险公司交互后生成保险单号的时间)
 
-    private Date insuranceEffectTime;//保单起保日期(生效日期)(默认为投保后的第二天零点, 用户可自主选择)
+    private Date insuranceEffectTime;//保单起保日期(生效日期)(默认为当前时间往后推24小时的第一个零点, 用户可自主选择30天内的任何一个零点)
 
     //分销
     private String recommendCode;//推广码

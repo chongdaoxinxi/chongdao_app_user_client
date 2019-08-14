@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Description 家庭责任险理赔
@@ -26,4 +27,10 @@ public class FamilyInsuranceClaims implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private Integer familyInsuranceOrderId;//医疗险订单ID
+    private String otherMaterials;//其他材料
+    private Integer auditStatus;//审核状态; -1: 拒绝;0:待审核;1;平台审核通过;2:保险公司审核通过;3:理赔完成;
+    private Date createTime;
+    private Date updateTime;
 }
