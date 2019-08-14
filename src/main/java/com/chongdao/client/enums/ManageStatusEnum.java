@@ -19,7 +19,7 @@ public enum ManageStatusEnum {
     SHOP_LOGIN_ALREADY(416,"已在别处登录"),
     SHOP_NAME_OR_PASSWORD_EMPTY(417,"用户名或密码不能为空"),
     SHOP_NOT_LOGIN_OR_TOKEN_EXPIRED(418,"用户未登录或token已过期"),
-    SHOP_NOT_EXIST_ERROR(419,"用户已存在"),
+    SHOP_NOT_EXIST_ERROR(419,"用户不存在"),
     SHOP_ERROR_PASSWORD(420,"用户名或密码不正确"),
     ACCOUNT_FREEZE(421,"帐号已被冻结"),
     ACCOUNT_INFO_ERROR(422, "帐号信息错误"),
