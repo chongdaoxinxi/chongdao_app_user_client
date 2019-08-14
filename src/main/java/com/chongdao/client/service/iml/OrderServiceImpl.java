@@ -459,6 +459,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if(user != null) {
             orderVo.setUsername(user.getName());
         }
+        //商品数目
+        orderVo.setGoodsCount(orderGoodsVoList.size());
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
         return orderVo;
     }

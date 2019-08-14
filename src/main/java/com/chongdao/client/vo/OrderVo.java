@@ -126,4 +126,7 @@ public class OrderVo {
     private BigDecimal serviceCouponPrice = BigDecimal.ZERO;
     private BigDecimal goodsCouponPrice = BigDecimal.ZERO;
 
+    //商家管理（商品数目）
+    private Integer goodsCount = 0;
+
 }
