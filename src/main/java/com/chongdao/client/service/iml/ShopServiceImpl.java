@@ -50,18 +50,24 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
     public ResultResponse<PageInfo> list(Integer userId,String categoryId, String  proActivities, String orderBy ,Double lng,Double lat,String areaCode,int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         //排序规则
+        //排序规则
         if (StringUtils.isNotBlank(orderBy)){
             String[] orderByArray = orderBy.split("_");
             if (SALES_ASC_DESC.contains(orderBy)){
                 //销量排序
-                orderBy = SALES_ORDER_BY+ " " + orderByArray[1];
+                if (orderByArray[1].equals(ASC)){
+                    orderBy = SALES_ORDER_BY_ASC_AND_DISTANCE_3KM;
+                }else {
+                    orderBy = SALES_ORDER_BY_DESC_AND_DISTANCE_3KM;
+                }
+
             }else if (FAVORABLE.contains(orderBy)){
                 //好评率排序
-                orderBy = orderByArray[0] + " " + orderByArray[1];
+                orderBy =  FAVORABLE_DESC;
             }else if (ARRANGEMENT_KEY.contains(orderBy)){
                 //综合排序
                 orderBy =  ARRANGEMENT_VALUE_SHOP;
-            }else if (DISTANCE.contains(orderBy)){
+            }else if (DISTANCE.equals(orderBy)){
                 orderBy = DISTANCE;
             } else {
                 return null;
