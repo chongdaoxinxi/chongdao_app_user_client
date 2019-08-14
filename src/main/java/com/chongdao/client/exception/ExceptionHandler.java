@@ -37,8 +37,8 @@ public class ExceptionHandler{
                     "不支持" + ((HttpRequestMethodNotSupportedException) e).getMethod() + "方法");
         }else    if (e instanceof ServletRequestBindingException){
            return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_NOT_FOUND,ResultEnum.UNKNOWN_ERROR.getMessage());
-        }else{
-            return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_METHOD_NOT_ALLOWED, ResultEnum.ERROR.getMessage() );
+        }else {
+            return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_INTERNAL_SERVER_ERROR, ResultEnum.ERROR.getMessage() );
         }
     }
 
