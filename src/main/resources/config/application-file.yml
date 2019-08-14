@@ -6,6 +6,6 @@ fdfs:
       width: 150
       height: 150
    tracker-list:            #TrackerList参数,支持多个
-      - 118.25.190.86:22122
+      - 47.100.63.167:22122
    host: 118.25.190.86
 

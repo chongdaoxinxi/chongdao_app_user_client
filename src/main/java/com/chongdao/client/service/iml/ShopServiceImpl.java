@@ -467,9 +467,10 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         shopList.forEach(shop -> {
             ShopVO shopVO = new ShopVO();
             BeanUtils.copyProperties(shop,shopVO);
+            int count = 0;
             //查询用户购物车数目
             if (userId != null){
-                int count = cartRepository.countByUserIdAndShopIdAndChecked(userId, shop.getId(), Const.Cart.CHECKED);
+                count = cartRepository.countByUserIdAndShopIdAndChecked(userId, shop.getId(), Const.Cart.CHECKED);
                 shopVO.setCheckedCount(count);
             }
             //封装优惠券
