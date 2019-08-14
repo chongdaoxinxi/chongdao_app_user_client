@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum RoleEnum {
     SUPER_ADMIN_PC("SUPER_ADMIN_PC", "超级管理员"),
     ADMIN_PC("ADMIN_PC", "地区管理员"),
+    INSURANCE_PC("INSURANCE_PC", "保险公司管理员"),
     SHOP_PC("SHOP_PC", "商家"),
     SHOP_APP("SHOP_APP", "商家"),
     EXPRESS("EXPRESS", "配送员"),

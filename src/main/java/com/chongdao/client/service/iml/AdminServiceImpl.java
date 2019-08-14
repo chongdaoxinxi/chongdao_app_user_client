@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.Management;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.AdminStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.ManagementRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.AdminService;
@@ -68,7 +69,13 @@ public class AdminServiceImpl implements AdminService {
             adminLoginVO.setPassword(password);
             Date date = new Date();
             adminLoginVO.setLastLoginTime(date);
-            adminLoginVO.setToken(TokenUtil.generateToken(id, username, date, "ADMIN_PC"));
+            String role = RoleEnum.ADMIN_PC.getCode();
+            if(management.getType() == 1) {
+                role = RoleEnum.SUPER_ADMIN_PC.getCode();
+            } else if(management.getType() == 3) {
+                role = RoleEnum.INSURANCE_PC.getCode();
+            }
+            adminLoginVO.setToken(TokenUtil.generateToken(id, username, date, role));
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), adminLoginVO);
         } else {
             return ResultResponse.createByErrorCodeMessage(AdminStatusEnum.ADMIN_DATA_ERROR.getStatus(), AdminStatusEnum.ADMIN_DATA_ERROR.getMessage());
@@ -86,7 +93,7 @@ public class AdminServiceImpl implements AdminService {
             adminLoginVO.setPassword(password);
             Date date = new Date();
             adminLoginVO.setLastLoginTime(date);
-            adminLoginVO.setToken(TokenUtil.generateToken(id, username, date, "SHOP_PC"));
+            adminLoginVO.setToken(TokenUtil.generateToken(id, username, date, RoleEnum.SHOP_PC.getCode()));
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), adminLoginVO);
         } else {
             return ResultResponse.createByErrorCodeMessage(AdminStatusEnum.ADMIN_DATA_ERROR.getStatus(), AdminStatusEnum.ADMIN_DATA_ERROR.getMessage());
@@ -96,7 +103,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResultResponse getAdminInfo(Integer managementId, String role) {
         if(role != null ) {
-            if (role.equals("ADMIN_PC")) {
+            if (role.equals(RoleEnum.ADMIN_PC.getCode()) || role.equals(RoleEnum.SUPER_ADMIN_PC.getCode()) || role.equals(RoleEnum.INSURANCE_PC.getCode())) {
                 Management management = managementRepository.findById(managementId).orElse(null);
                 if (management != null) {
                     AdminInfoVO vo = new AdminInfoVO();
@@ -105,12 +112,14 @@ public class AdminServiceImpl implements AdminService {
                     if (!StringUtils.isBlank(management.getIcon())) {
                         vo.setAvatar(management.getIcon());
                     }
-                    Integer level = management.getLevel();
-                    if (level == 1) {
+                    if (role.equals(RoleEnum.ADMIN_PC.getCode())) {
                         String[] arr = {"admin"};
                         vo.setAccess(arr);
-                    } else if (level == 99) {
+                    } else if (role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
                         String[] arr = {"superadmin"};
+                        vo.setAccess(arr);
+                    } else if(role.equals(RoleEnum.INSURANCE_PC.getCode())) {
+                        String[] arr = {"insuranceadmin"};
                         vo.setAccess(arr);
                     }
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), vo);
@@ -122,7 +131,12 @@ public class AdminServiceImpl implements AdminService {
                     vo.setName(shop.getShopName());
                     vo.setAvatar(shop.getLogo());
                     vo.setUserId(shop.getId());
-                    String[] arr = {"shop"};
+                    String[] arr = new String[5];
+                    arr[0] = "shop";
+                    if(shop.getType() == 2) {
+                        //医院类店铺
+                        arr[1] = "medical";
+                    }
                     vo.setAccess(arr);
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), vo);
                 }
