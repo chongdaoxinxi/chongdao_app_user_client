@@ -34,15 +34,21 @@ public class Const {
      * 排序
      */
     public interface OrderBy{
+        String ASC = "asc";
+        String DESC = "desc";
+        String LIMIT_3KM_SALES = "(select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) <= 3000)";
         //销量排行（首页）
-        String SALES_ORDER_BY = "(select sum(sales) from good g where g.shop_id=s.id)";
+        String SALES_ORDER_BY_DESC = "sales desc";
         //好评率
-        Set<String> FAVORABLE = Sets.newHashSet("grade_desc","grade_asc");
-        String FAVORABLE_DESC = "grade";
+        Set<String> FAVORABLE = Sets.newHashSet("grade_desc");
+        String DISTANCE = "dis";
+        String FAVORABLE_DESC = "grade desc" + "," + DISTANCE;
         //综合排序
         String ARRANGEMENT_KEY = "arrangement";
         String ARRANGEMENT_VALUE_GOODS = "sales desc" + "," +"price asc";
-        String ARRANGEMENT_VALUE_SHOP = SALES_ORDER_BY + " desc" + "," + FAVORABLE_DESC + " desc" ;
+        String ARRANGEMENT_VALUE_SHOP = SALES_ORDER_BY_DESC + "," + FAVORABLE_DESC + " desc" + "," + DISTANCE ;
+        String SALES_ORDER_BY_DESC_AND_DISTANCE_3KM= LIMIT_3KM_SALES + DESC + "," + DISTANCE;
+        String SALES_ORDER_BY_ASC_AND_DISTANCE_3KM=  LIMIT_3KM_SALES+ ASC + "," + DISTANCE;
 
         //价格排序
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
