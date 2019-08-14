@@ -34,21 +34,28 @@ public class MedicalInsuranceOrder implements Serializable {
     private String cardNo;
     private String phone;
 
-    //被保人信息
-    private Integer MedicalInsuranceRecognizeeId;//被保人id->指向被保人表
+    private String idCardFrontPhoto;//投保人身份证正面照片
+    private String idCardReversePhoto;//投保人身份证反面照片
+    private String bankCardPhoto;//银行卡照片
+
+    //被保人
+    private Integer beneficiary;//默认为1; 即投保人自己
 
     private String rationType;//方案代码-用户所选保险及方案
 
-    //宠物属性
+    //宠物属性(宠物即被保人)
     private Integer petCardId;//宠物卡片id
     private String petPhoto;//宠物图片->用于审核
     private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
 
     //订单相关属性
-    private Integer status;//订单状态
-    private Date applyTime;//保险订单下单时间
-    private Date auditTime;//审核完成时间
+    private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;4:保单生成;)
     private Date createTime;//数据创建时间
+    private Date applyTime;//保险订单下单时间(付款时间/投保日期)
+    private Date auditTime;//审核完成时间(平台投保审核完成日期)
+    private Date signBillTime;//签单日期(即与保险公司交互后生成保险单号的时间)
+
+    private Date insuranceEffectTime;//保单起保日期(生效日期)(默认为投保后的第二天零点, 用户可自主选择)
 
     //分销
     private String recommendCode;//推广码
