@@ -12,16 +12,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description 医疗险
+ * @Description 家庭责任险投保
  * @Author onlineS
- * @Date 2019/5/28
+ * @Date 2019/8/14
  * @Version 1.0
  **/
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class MedicalInsuranceOrder implements Serializable {
+public class FamilyInsuranceOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
