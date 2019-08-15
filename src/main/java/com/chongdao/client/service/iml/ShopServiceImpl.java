@@ -1,7 +1,6 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
-import com.chongdao.client.common.Const;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
@@ -470,7 +469,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             int count = 0;
             //查询用户购物车数目
             if (userId != null){
-                count = cartRepository.countByUserIdAndShopIdAndChecked(userId, shop.getId(), Const.Cart.CHECKED);
+                count = cartRepository.countByUserIdAndShopId(userId, shop.getId());
                 shopVO.setCheckedCount(count);
             }
             //封装优惠券

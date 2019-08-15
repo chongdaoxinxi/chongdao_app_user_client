@@ -430,7 +430,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         //订单明细
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
-        orderItemList.forEach(orderDetail -> {
+        //购买商品数目
+        Integer goodsCount = 0;
+        for (OrderDetail orderDetail : orderItemList) {
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
             orderGoodsVo.setGoodsId(orderDetail.getId());
             orderGoodsVo.setCreateTime(DateTimeUtil.dateToStr(orderDetail.getCreateTime()));
@@ -440,8 +442,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setGoodsPrice(orderDetail.getPrice());
             orderGoodsVo.setQuantity(orderDetail.getCount());
             orderGoodsVo.setTotalPrice(orderDetail.getTotalPrice());
+            goodsCount = goodsCount + orderDetail.getCount();
             orderGoodsVoList.add(orderGoodsVo);
-        });
+        }
         //设置订单总价
         BigDecimal goodsPrice = order.getGoodsPrice();
         BigDecimal servicePrice = order.getServicePrice();
@@ -459,8 +462,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if(user != null) {
             orderVo.setUsername(user.getName());
         }
-        //商品数目
-        orderVo.setGoodsCount(orderGoodsVoList.size());
+
+        orderVo.setGoodsCount(goodsCount);
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
         return orderVo;
     }

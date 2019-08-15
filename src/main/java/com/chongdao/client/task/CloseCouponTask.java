@@ -76,8 +76,8 @@ public class CloseCouponTask extends CommonRepository {
     /**
      * 15分钟未接单退款
      */
-    @Async
-    @Scheduled(cron="0 0/15 * * * ? ")
+    //@Async
+    //@Scheduled(cron="0 0/15 * * * ? ")
     //@Scheduled(cron="0/1 * * * * ?")
     public void closeOrderTask(){
         log.info("【关闭订单】定时任务开始...");
@@ -87,22 +87,26 @@ public class CloseCouponTask extends CommonRepository {
             e.setOrderStatus(-1);
             Shop shop = shopRepository.findById(e.getShopId()).orElse(null);
             if (shop != null) {
-                UserAddress userAddress = userAddressRepository.findByIdAndUserId(e.getReceiveAddressId(), e.getUserId());
-                //推送用户
-                smsService.sendOrderTimeOutNotAcceptUser(e.getOrderNo(), shop.getShopName(), userAddress.getPhone());
-                //推送商家
-                smsService.sendOrderTimeoutNotAcceptShop(e.getOrderNo(), shop.getPhone());
-                //推送管理员
-                smsService.sendOrderUserRefundUser(e.getOrderNo(), shop.getShopName(), phone);
-                //推送配送员
-                if (e.getExpressId() == null) {
-                    List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
-                    expressList.stream().forEach(express -> {
+                try {
+                    UserAddress userAddress = userAddressRepository.findByIdAndUserId(e.getReceiveAddressId(), e.getUserId());
+                    //推送用户
+                    smsService.sendOrderTimeOutNotAcceptUser(e.getOrderNo(), shop.getShopName(), userAddress.getPhone());
+                    //推送商家
+                    smsService.sendOrderTimeoutNotAcceptShop(e.getOrderNo(), shop.getPhone());
+                    //推送管理员
+                    smsService.sendOrderUserRefundUser(e.getOrderNo(), shop.getShopName(), phone);
+                    //推送配送员
+                    if (e.getExpressId() == null) {
+                        List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+                        expressList.stream().forEach(express -> {
+                            smsService.sendOrderUserRefundExpress(e.getOrderNo(), express.getPhone());
+                        });
+                    } else {
+                        Express express = expressRepository.findById(e.getExpressId()).get();
                         smsService.sendOrderUserRefundExpress(e.getOrderNo(), express.getPhone());
-                    });
-                } else {
-                    Express express = expressRepository.findById(e.getExpressId()).get();
-                    smsService.sendOrderUserRefundExpress(e.getOrderNo(), express.getPhone());
+                    }
+                } catch (Exception ex) {
+                    return;
                 }
             }
         });
