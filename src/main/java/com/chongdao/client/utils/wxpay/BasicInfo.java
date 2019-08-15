@@ -39,7 +39,7 @@ public class BasicInfo {
     /**
      * 应用服务器IP
      */
-    public static final String SERVER_IP = "47.101.160.88";
+    public static final String SERVER_IP = "47.100.63.167";
     /**
      * 应用名称(应用市场中的名称)
      */
@@ -50,7 +50,7 @@ public class BasicInfo {
     public static final String KeyPath = "/apiclient_cert.p12";
 
     //微信回调URL
-    public static final String NotifyUrl = "http://39.108.83.186/api/callBackController/wx_pay_callback";
+    public static final String NotifyUrl = "http://47.100.63.167/app_client/api/callBackController/wx_pay_callback";
 
     //微信统一下单接口
     public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";

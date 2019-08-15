@@ -145,4 +145,52 @@ public class ShopPcController {
     public ResultResponse getConcessionalOrderListShop(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return orderService.getConcessionalOrderList(token, null, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
     }
+
+    /**
+     * 获取店铺各类型订单消费明细
+     * @param token
+     * @param type(1:配送商品订单,2:配送服务订单,3:到店订单)
+     * @param userName
+     * @param orderNo
+     * @param phone
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getMoneyOrderList")
+    public ResultResponse getMoneyOrderList(String token, Integer type, String userName, String orderNo, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return null;
+    }
+
+    /**
+     * 获取店铺医疗费用消费明细
+     * @param token
+     * @param userName
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getMoneyInsuranceList")
+    public ResultResponse getMoneyInsuranceList(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return null;
+    }
+
+    /**
+     * 获取店铺推广奖励明细
+     * @param token
+     * @param userName
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getMoneyRecommendList")
+    public ResultResponse getMoneyRecommendList(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return null;
+    }
 }

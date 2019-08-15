@@ -29,9 +29,9 @@ public class MedicalInsuranceFeeRecord implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer user_id;//用户id
-    private Integer shop_id;//商店id
-    private Integer insurance_id;//医疗保险订单id
+    private Integer userId;//用户id
+    private Integer shopId;//商店id
+    private Integer insuranceId;//医疗保险订单id
     private BigDecimal money;//医疗费用
     private String photo;//照片
     private Date createTime;
