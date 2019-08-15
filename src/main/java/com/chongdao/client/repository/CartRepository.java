@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 
 public interface CartRepository extends JpaRepository<Carts,Integer> {
-    @Query(value = "select ifnull(sum(quantity),0) from carts where user_id = ?1 and shop_id = ?2 and checked=1",nativeQuery = true)
+    @Query(value = "select ifnull(sum(quantity),0) from cart where user_id = ?1 and shop_id = ?2 and checked=1",nativeQuery = true)
     int countByUserIdAndShopId(@Param("userId") Integer userId, @Param("shopId")  Integer shopId);
 
     @Transactional
