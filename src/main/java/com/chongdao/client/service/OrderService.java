@@ -130,4 +130,12 @@ public interface OrderService {
      * @return
      */
     ResultResponse refund(Integer userId, String orderNo);
+
+    /**
+     * 订单详情(商家)
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ResultResponse getShopOrderDetail(Integer userId, String orderNo);
 }

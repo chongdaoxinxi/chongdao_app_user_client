@@ -384,8 +384,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      */
     private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList, Integer userId) {
         List<OrderVo> orderVoList = Lists.newArrayList();
+        List<OrderDetail> orderItemList = Lists.newArrayList();
         for (OrderInfo order : orderList) {
-            List<OrderDetail> orderItemList = Lists.newArrayList();
             if (userId == null) {
                 //todo 管理员查询的时候 不需要传userId
                 orderItemList = orderDetailMapper.getByOrderNo(order.getOrderNo());
@@ -410,26 +410,26 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderVo orderVo = new OrderVo();
         BeanUtils.copyProperties(order, orderVo);
         //查询店铺
-        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-        if(shop != null) {
-            orderVo.setShopName(shop.getShopName());
-            orderVo.setShopLogo(shop.getLogo());
-            orderVo.setShopPhone(shop.getPhone());
-        }
-        //接宠地址
-        UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
-        //送宠地址
-        UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
-        if (receiveAddress != null) {
-            orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
-            orderVo.setPhone(receiveAddress.getPhone());
-        }
-        if (deliverAddress != null) {
-            orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
-            if(receiveAddress == null) {
-                orderVo.setPhone(deliverAddress.getPhone());
-            }
-        }
+//        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
+//        if(shop != null) {
+//            orderVo.setShopName(shop.getShopName());
+//            orderVo.setShopLogo(shop.getLogo());
+//            orderVo.setShopPhone(shop.getPhone());
+//        }
+//        //接宠地址
+//        UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
+//        //送宠地址
+//        UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
+//        if (receiveAddress != null) {
+//            orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+//            orderVo.setPhone(receiveAddress.getPhone());
+//        }
+//        if (deliverAddress != null) {
+//            orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+//            if(receiveAddress == null) {
+//                orderVo.setPhone(deliverAddress.getPhone());
+//            }
+//        }
         //订单明细
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
         //购买商品数目
@@ -459,11 +459,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderVo.setTotalPrice(servicePrice);
             }
         }
-        //设置用户人姓名
-        User user = userRepository.findById(order.getUserId()).orElse(null);
-        if(user != null) {
-            orderVo.setUsername(user.getName());
-        }
+//        //设置用户人姓名
+//        User user = userRepository.findById(order.getUserId()).orElse(null);
+//        if(user != null) {
+//            orderVo.setUsername(user.getName());
+//        }
 
         orderVo.setGoodsCount(goodsCount);
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
@@ -1012,6 +1012,17 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
         }
         return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 订单详情(商家)
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ResultResponse getShopOrderDetail(Integer userId, String orderNo) {
+        return this.orderDetail(userId,orderNo);
     }
 
     /**
