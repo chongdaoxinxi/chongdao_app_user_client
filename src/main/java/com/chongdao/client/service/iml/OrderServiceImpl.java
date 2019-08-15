@@ -523,6 +523,22 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         String orderNo = GenerateOrderNo.genUniqueKey();
         order.setOrderNo(orderNo);
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
+        BeanUtils.copyProperties(orderVo, order);
+        order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
+        order.setCouponId(orderCommonVO.getCouponId());
+        order.setCardId(orderCommonVO.getCardId());
+        order.setFollow(Integer.valueOf(orderVo.getFollow()));
+        order.setShopId(orderCommonVO.getShopId());
+        order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
+        order.setSingleServiceType(orderCommonVO.getSingleServiceType());
+        order.setOrderNo(orderNo);
+        order.setDeliverAddressId(orderCommonVO.getDeliverAddressId());
+        order.setReceiveAddressId(orderCommonVO.getReceiveAddressId());
+        order.setReceiveTime(orderVo.getReceiveTime());
+        order.setDeliverTime(orderVo.getDeliverTime());
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
+        order.setPaymentTime(new Date());
         if (orderCommonVO.getPayType() == PaymentTypeEnum.ALI_PAY.getStatus()) {
             order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
         } else if(orderCommonVO.getPayType() == PaymentTypeEnum.WX_APP_PAY.getStatus()) {
@@ -530,21 +546,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         } else if(orderCommonVO.getPayType() == PaymentTypeEnum.WX_XCX_PAY.getStatus()) {
             order.setPaymentType(PaymentTypeEnum.WX_XCX_PAY.getStatus());
         }
-        order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
-        order.setCouponId(orderCommonVO.getCouponId());
-        order.setCardId(orderCommonVO.getCardId());
-        order.setPayment(orderVo.getPayment());
-        order.setFollow(Integer.valueOf(orderVo.getFollow()));
-        order.setShopId(orderCommonVO.getShopId());
-        order.setUserId(orderVo.getUserId());
-        order.setAreaCode(orderVo.getAreaCode());
-        order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
-        order.setRemark(orderVo.getRemark());
-        order.setServicePrice(orderVo.getServicePrice());
-        order.setSingleServiceType(orderCommonVO.getSingleServiceType());
-        order.setIsService(orderCommonVO.getIsService());
-        order.setCreateTime(new Date());
-        order.setUpdateTime(new Date());
         if(orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()){
             //拼单
             order.setEnabledSpell(0);
