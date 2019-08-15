@@ -359,10 +359,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //生成订单
         OrderInfo order = this.assembleOrder(orderVo, orderCommonVO);
         if (order == null) {
-            return ResultResponse.createByErrorMessage("生成订单错误");
+            return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.ORDER_CREATE_ERROR.getStatus(),
+                    OrderStatusEnum.ORDER_CREATE_ERROR.getMessage());
         }
         if (CollectionUtils.isEmpty(orderItemList)) {
-            return ResultResponse.createByErrorMessage("购物车为空");
+            return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.CART_EMPTY.getStatus(),
+                    OrderStatusEnum.CART_EMPTY.getMessage());
         }
         for (OrderDetail orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());

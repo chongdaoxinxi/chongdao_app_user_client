@@ -38,6 +38,9 @@ public enum OrderStatusEnum {
     REFUND_PROCESS_REFUSE(103, "商家拒单"),
     REFUND_PROCESS_SUCCESS(104, "退款成功"),
 
+    ORDER_CREATE_ERROR(105, "订单生成失败"),
+    CART_EMPTY(106, "购物车为空"),
+
     ;
 
     private int status;
