@@ -366,7 +366,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         out.close();
 
         // 返回成功信息给前台
-        return ResultResponse.createBySuccessMessage("支付成功!");
+        return ResultResponse.createBySuccessMessage("微信支付成功!");
     }
 
     /**
@@ -425,7 +425,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             payInfoRepository.save(payInfo);
         } catch (Exception e) {
             log.error(e.getMessage());
-            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}",orderNo);
+            log.error("【微信异步回调】微信支付信息生成失败: orderNo:{}",orderNo);
         }
     }
 
