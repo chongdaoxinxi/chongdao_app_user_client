@@ -793,7 +793,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         orderRefundService.addOrderRefundRecord(o, type, refundNote);
         //发送短信
-        refundOrderSmsSender(o, isRefuseOrder);
+        //refundOrderSmsSender(o, isRefuseOrder);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
     }
 
