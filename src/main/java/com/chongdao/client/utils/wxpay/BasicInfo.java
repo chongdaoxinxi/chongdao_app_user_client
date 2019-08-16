@@ -47,7 +47,7 @@ public class BasicInfo {
     /**
      * 商户证书路径
      **/
-    public static final String KeyPath = "/apiclient_cert.p12";
+    public static final String KeyPath = "apiclient_cert.p12";
 
     //微信回调URL
     public static final String NotifyUrl = "http://47.100.63.167/app_client/api/callBackController/wx_pay_callback";
