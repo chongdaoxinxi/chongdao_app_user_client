@@ -155,8 +155,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //地址判断
-            if (orderCommonVO.getServiceType() !=3 && (orderCommonVO.getReceiveAddressId() == null)){
-                if (orderCommonVO.getServiceType() == 1){ //双程
+            if (orderCommonVO.getServiceType() !=3 && (orderCommonVO.getReceiveAddressId() == null) && orderVo.getReceiveTime() == null){
+                if (orderCommonVO.getServiceType() == 1 && orderVo.getDeliverTime() == null){ //双程
                     return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
                 }
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
