@@ -51,4 +51,5 @@ public interface GoodMapper {
 
     int paymentNumber(@Param("goodId") Integer goodId);
 
+    List<Good> findByShopIdAndGoodsTypeId(@Param("shopId") Integer shopId, @Param("id") Integer id);
 }

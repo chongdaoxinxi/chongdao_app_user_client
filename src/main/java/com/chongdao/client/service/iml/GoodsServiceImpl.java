@@ -576,7 +576,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (shopId == null || id == null ) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "id或者shopId不能为空");
         }
-        List<Good> goodList = goodsRepository.findByShopIdAndGoodsTypeId(shopId, id);
+        List<Good> goodList = goodMapper.findByShopIdAndGoodsTypeId(shopId, id);
         return ResultResponse.createBySuccess(goodList);
     }
 
