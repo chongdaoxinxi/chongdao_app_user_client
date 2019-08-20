@@ -159,14 +159,13 @@
   </select>
 
 
+  <delete id="clearCart" parameterType="map">
+    delete from cart where user_id = #{userId} and shop_id = #{shopId}
+  </delete>
+
   <delete id="deleteByUserIdAndProductIds" parameterType="map">
     delete from cart where user_id = #{userId} and shop_id = #{shopId}
-    <if test="goodsList != null">
-      and goods_id in
-      <foreach collection="goodsList" index="index" open="(" separator="," close=")" item="item">
-        #{item}
-      </foreach>
-    </if>
+      and goods_id = #{goodsId}
   </delete>
 
   <select id="selectCheckedCartByUserId" resultMap="BaseResultMap" parameterType="int">

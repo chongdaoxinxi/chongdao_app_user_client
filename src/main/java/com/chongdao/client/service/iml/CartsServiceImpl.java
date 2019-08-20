@@ -16,7 +16,6 @@ import com.chongdao.client.service.CartsService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.CartGoodsVo;
 import com.chongdao.client.vo.CartVo;
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,19 +139,33 @@ public class CartsServiceImpl implements CartsService {
      */
     @Transactional
     @Override
-    public ResultResponse<CartVo> deleteGoods(Integer userId, String goodsIds,Integer shopId) {
-        List<String> goodsList = Splitter.on(",").splitToList(goodsIds);
-        if (CollectionUtils.isEmpty(goodsList)){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+    public ResultResponse<CartVo> deleteGoods(Integer userId, Integer goodsIds,Integer shopId) {
+        if (userId == null || goodsIds == null || shopId == null) {
+            return ResultResponse.createByErrorCodeMessage(400, "goodsIds或shopId不能为空");
         }
         Carts carts = cartsMapper.selectCartByUserIdAndGoodsId(userId, Integer.valueOf(goodsIds), shopId);
         if (carts.getQuantity() > 1) {
             //更新数量
-            cartsMapper.updateCartByUserIdAndGoodsId(userId,Integer.valueOf(goodsIds),shopId);
+            cartsMapper.updateCartByUserIdAndGoodsId(userId,goodsIds,shopId);
         }else {
             //删除
-            cartsMapper.deleteByUserIdAndProductIds(userId, shopId, goodsList);
+            cartsMapper.deleteByUserIdAndProductIds(userId, shopId, goodsIds);
         }
+        return this.list(userId,shopId);
+    }
+
+    /**
+     * 清空购物车
+     * @param userId
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse<CartVo> clear(Integer userId, Integer shopId) {
+        if (userId == null || shopId == null) {
+            return ResultResponse.createByErrorCodeMessage(400, "shopId不能为空");
+        }
+        cartsMapper.clearCart(userId,shopId);
         return this.list(userId,shopId);
     }
 

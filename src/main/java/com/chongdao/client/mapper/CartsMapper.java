@@ -30,11 +30,11 @@ public interface CartsMapper {
     /**
      * 删除购物车的商品
      * @param userId
-     * @param goodsList
+     * @param goodsId
      */
-    void deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("shopId") Integer shopId,@Param("goodsList") List<String> goodsList);
+    void deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("shopId") Integer shopId,@Param("goodsId") Integer goodsId);
 
-   // List<Carts> selectCheckedCartByUserIdAndId(@Param("userId") Integer userId,@Param("shopId") Integer shopId, @Param("goodsList") List<String> goodsList);
+    void clearCart(@Param("userId") Integer userId, @Param("shopId") Integer shopId);
 
     List<Carts> selectCheckedCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId, @Param("goodsId") Integer goodsId);
 }
