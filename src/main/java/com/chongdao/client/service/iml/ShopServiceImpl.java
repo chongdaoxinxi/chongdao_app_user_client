@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -173,68 +172,42 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
     /**
      * 获取店铺商品
      * @param shopId
-     * @param categoryId 0 商品 1 服务
+     * @param goodsTypeId
      * @return
      */
     @Override
-    public ResultResponse<List<GoodsTypeVO>> getShopService(Integer shopId, Integer categoryId,Integer userId) {
-        if (shopId == null || categoryId == null){
+    public ResultResponse<List<GoodsTypeVO>> getShopService(Integer shopId, Integer goodsTypeId,Integer userId) {
+        if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
 
         List<GoodsTypeVO> goodsTypeVOList = Lists.newArrayList();
-        List<Integer> categoryIds = Lists.newArrayList();
-        //获取当前店铺的类别如:服务类:洗澡，美容等
-        if (categoryId == 0){
-            //商品
-            categoryIds = Arrays.asList(3,15);
-        }else if (categoryId == 1){
-            //服务
-            List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdNotInAndStatus(Arrays.asList(3,15), 1);
-            List<Integer> ids = Lists.newArrayList();
-            goodsTypeList.stream().forEach(goodsType -> {
-                ids.add(goodsType.getCategoryId());
-            });
-            categoryIds = ids;
-        }else{
-            //筛选条件
-            categoryIds = Arrays.asList(categoryId);
-        }
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdInAndStatus(categoryIds,1);
         //狗宠物卡片
         List<PetCard> petCardDogs = petCardRepository.findByUserIdAndStatusAndTypeId(userId, 1, 1);
         //猫宠物卡片
         List<PetCard> petCardCats = petCardRepository.findByUserIdAndStatusAndTypeId(userId, 1, 2);
         //获取重量参数
         List<Unit> unitList = unitRepository.findAll();
-        for (GoodsType e : goodsTypeList) {
-            GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
-            //获取当前类别的商品
-            List<GoodsListVO> goodsListVOList = Lists.newArrayList();
-            //查询上架商品
-            List<Good> goodList = goodsRepository.findByShopIdAndCategoryIdInAndStatus(shopId, categoryIds, (byte) 1);
-            for (Good good : goodList) {
-                if (e.getId() == good.getGoodsTypeId()){
-                    GoodsListVO goodsListVO = new GoodsListVO();
-                    goodsTypeVO.setGoodsTypeId(e.getId());
-                    goodsTypeVO.setCategoryId(e.getCategoryId());
-                    goodsTypeVO.setGoodsTypeName(e.getName());
-
-                    BeanUtils.copyProperties(good,goodsListVO);
-                    if (good.getUnitName() != null){
-                        goodsListVO.setName(good.getName() + good.getUnitName());
-                    }
-                    //宠物卡片
-                    this.assembelGoodsTypeVO(good, goodsTypeVO, unitList, petCardDogs, petCardCats,userId);
-                    goodsListVOList.add(goodsListVO);
-                    goodsTypeVO.setGoodsListVOList(goodsListVOList);
-
-
+        GoodsTypeVO goodsTypeVO = new GoodsTypeVO();
+        //获取当前类别的商品
+        List<GoodsListVO> goodsListVOList = Lists.newArrayList();
+        //查询上架商品
+        List<Good> goodList = goodsRepository.findByShopIdAndGoodsTypeIdInAndStatus(shopId, goodsTypeId, (byte) 1);
+        for (Good good : goodList) {
+                GoodsListVO goodsListVO = new GoodsListVO();
+                goodsTypeVO.setGoodsTypeId(good.getGoodsTypeId());
+                goodsTypeVO.setCategoryId(good.getCategoryId());
+                BeanUtils.copyProperties(good, goodsListVO);
+                if (good.getUnitName() != null) {
+                    goodsListVO.setName(good.getName() + good.getUnitName());
                 }
-            }
-            if (goodsTypeVO.getCategoryId() != null) {
-                goodsTypeVOList.add(goodsTypeVO);
-            }
+                //宠物卡片
+                this.assembelGoodsTypeVO(good, goodsTypeVO, unitList, petCardDogs, petCardCats, userId);
+                goodsListVOList.add(goodsListVO);
+                goodsTypeVO.setGoodsListVOList(goodsListVOList);
+        }
+        if (goodsTypeVO.getCategoryId() != null) {
+            goodsTypeVOList.add(goodsTypeVO);
         }
         return ResultResponse.createBySuccess(goodsTypeVOList);
     }

@@ -41,10 +41,10 @@ public interface ShopService{
     /**
      * 获取店铺商品
      * @param shopId
-     * @param type 0 商品 1
+     * @param goodsTypeId
      * @return
      */
-    ResultResponse getShopService(Integer shopId, Integer type,Integer userId);
+    ResultResponse getShopService(Integer shopId, Integer goodsTypeId,Integer userId);
 
     /**
      * 获取店铺所有订单评价以及店铺总评价

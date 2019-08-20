@@ -74,14 +74,14 @@ public class ShopController {
     /**
      * 获取该店铺的服务和商品
      * @param shopId
-     * @param categoryId 0 商品 1 服务
+     * @param goodsTypeId
      * @return
      */
-    @GetMapping("{shopId}/{categoryId}")
+    @GetMapping("{shopId}/{goodsTypeId}")
     public ResultResponse getShopService(@PathVariable Integer shopId,
-                                         @PathVariable Integer categoryId,String token){
+                                         @PathVariable Integer goodsTypeId,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopService.getShopService(shopId,categoryId,tokenVo.getUserId());
+        return shopService.getShopService(shopId,goodsTypeId,tokenVo.getUserId());
     }
 
 
