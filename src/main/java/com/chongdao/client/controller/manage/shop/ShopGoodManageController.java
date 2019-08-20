@@ -116,13 +116,12 @@ public class ShopGoodManageController {
     /**
      *  获取商品分类(包含服务类、商品类)
      * @param token
-     * @param shopId
      * @return
      */
-    @GetMapping("goodsTypeList/{shopId}")
-    public ResultResponse goodsTypeList(@PathVariable Integer shopId, String token) {
+    @GetMapping("goodsTypeList")
+    public ResultResponse goodsTypeList(String token) {
         LoginUserUtil.resultTokenVo(token);
-        return goodsService.goodsTypeList(shopId);
+        return goodsService.goodsTypeList();
     }
 
 

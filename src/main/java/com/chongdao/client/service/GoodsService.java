@@ -72,10 +72,9 @@ public interface GoodsService {
 
     /**
      * 获取商品分类
-     * @param shopId
      * @return
      */
-    ResultResponse goodsTypeList(Integer shopId);
+    ResultResponse goodsTypeList();
 
     /**
      * 增加或编辑商品

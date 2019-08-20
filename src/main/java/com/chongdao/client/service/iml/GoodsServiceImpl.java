@@ -295,14 +295,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     /**
      * 获取商品分类(包含服务类、商品类)
-     * @param shopId
      * @return
      */
     @Override
-    public ResultResponse goodsTypeList(Integer shopId) {
-        if (shopId == null){
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
-        }
+    public ResultResponse goodsTypeList() {
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
         return ResultResponse.createBySuccess(goodsTypeList);
     }
