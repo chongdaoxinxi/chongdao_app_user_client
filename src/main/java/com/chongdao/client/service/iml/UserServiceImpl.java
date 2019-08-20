@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         }
         //更新用户登录时间
         userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getPhone());
-        userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),u.getName(),userLoginVO.getLastLoginTime(), "USER"));
+        userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),userLoginVO.getName(),userLoginVO.getLastLoginTime(), "USER"));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userLoginVO);
     }
     /**

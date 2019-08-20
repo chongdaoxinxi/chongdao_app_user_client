@@ -25,13 +25,16 @@ public interface CartsMapper {
     List<Carts> selectCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId);
 
     int selectCartProductCheckedStatusByUserId(Integer userId);
+    void updateCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId,@Param("shopId")Integer shopId);
 
     /**
      * 删除购物车的商品
      * @param userId
      * @param goodsList
      */
-    void deleteByUserIdAndProductIds(Integer userId, List<String> goodsList);
+    void deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("shopId") Integer shopId,@Param("goodsList") List<String> goodsList);
+
+   // List<Carts> selectCheckedCartByUserIdAndId(@Param("userId") Integer userId,@Param("shopId") Integer shopId, @Param("goodsList") List<String> goodsList);
 
     List<Carts> selectCheckedCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId, @Param("goodsId") Integer goodsId);
 }

@@ -145,7 +145,14 @@ public class CartsServiceImpl implements CartsService {
         if (CollectionUtils.isEmpty(goodsList)){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
-        cartsMapper.deleteByUserIdAndProductIds(userId,goodsList);
+        Carts carts = cartsMapper.selectCartByUserIdAndGoodsId(userId, Integer.valueOf(goodsIds), shopId);
+        if (carts.getQuantity() > 1) {
+            //更新数量
+            cartsMapper.updateCartByUserIdAndGoodsId(userId,Integer.valueOf(goodsIds),shopId);
+        }else {
+            //删除
+            cartsMapper.deleteByUserIdAndProductIds(userId, shopId, goodsList);
+        }
         return this.list(userId,shopId);
     }
 
@@ -175,6 +182,7 @@ public class CartsServiceImpl implements CartsService {
                     cartGoodsVo.setGoodsStatus(Integer.valueOf(good.getStatus()));
                     //用户购买的商品数量
                     cartGoodsVo.setQuantity(cart.getQuantity());
+                    cartGoodsVo.setGoodsChecked(cart.getChecked());
                     //计算总价
                     cartGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
                 }

@@ -27,7 +27,7 @@ public class UploadServiceImpl implements UploadService {
 
 
     @Override
-    public ResultResponse<String> uploadFile(MultipartFile file) {
+    public synchronized ResultResponse<String> uploadFile(MultipartFile file) {
         if (file.isEmpty() || file == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
@@ -50,7 +50,7 @@ public class UploadServiceImpl implements UploadService {
      * @return
      */
     @Override
-    public ResultResponse deleteFile(String storagePath) {
+    public synchronized ResultResponse deleteFile(String storagePath) {
         if (StringUtils.isBlank(storagePath)){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }

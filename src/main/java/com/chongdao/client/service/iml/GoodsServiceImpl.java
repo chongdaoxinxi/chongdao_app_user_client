@@ -220,11 +220,16 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     /**
      * 获取商品类别
-     * @return
+     * @return  0 商品 1 服务
      */
     @Override
-    public ResultResponse getGoodCategoryList() {
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
+    public ResultResponse getGoodCategoryList(Integer param) {
+        List<GoodsType> goodsTypeList = Lists.newArrayList();
+        if (0 == param) {
+            goodsTypeList = goodsTypeRepository.findByStatusAndCategoryId(1, 3);
+        }else {
+            goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNot(1, 3);
+        }
         return ResultResponse.createBySuccess(goodsTypeList);
     }
 
@@ -562,5 +567,31 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         }
         List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
         return ResultResponse.createBySuccess(this.goodsListVOList(goodList));
+    }
+
+    /**
+     * 根据shopId和goodsTypeId获取商品或者服务
+     * @param shopId
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultResponse queryGoodsListByIdAndShopId(Integer shopId, Integer id) {
+        if (shopId == null || id == null ) {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "id或者shopId不能为空");
+        }
+        List<Good> goodList = goodsRepository.findByShopIdAndGoodsTypeId(shopId, id);
+        return ResultResponse.createBySuccess(goodList);
+    }
+
+    /**
+     * 下架商品列表
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse goodsDownList(Integer shopId) {
+        List<Good> goodList = goodsRepository.findByShopIdAndStatus(shopId, (byte) 0);
+        return ResultResponse.createBySuccess(goodList);
     }
 }
