@@ -1,8 +1,7 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.MedicalInsuranceOrder;
-import com.chongdao.client.entitys.PetPickupInsuranceOrder;
+import com.chongdao.client.entitys.InsuranceOrder;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +23,11 @@ public class InsuranceServiceImpl implements InsuranceService {
      * @return
      */
     @Override
-    public ResultResponse saveMedicalIusurance(MedicalInsuranceOrder medicalInsuranceOrder) {
+    public ResultResponse saveMedicalIusurance(InsuranceOrder insuranceOrder) {
         //先将数据保存在我们数据库
 
         //请求外部接口, 生成保单
-        insuranceExternalService.generateInsure();
-        return null;
-    }
-
-    @Override
-    public ResultResponse savePetPickupInsurance(PetPickupInsuranceOrder petPickupInsuranceOrder) {
-        //先将数据保存在我们数据库
-
-        //请求外部接口, 生成保单
-        insuranceExternalService.generateInsure();
+        insuranceExternalService.generateInsure(insuranceOrder);
         return null;
     }
 }

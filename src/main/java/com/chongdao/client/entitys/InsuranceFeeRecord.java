@@ -22,7 +22,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Entity
-public class MedicalInsuranceFeeRecord implements Serializable {
+public class InsuranceFeeRecord implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
