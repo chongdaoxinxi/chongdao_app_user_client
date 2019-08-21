@@ -19,7 +19,7 @@ public class CartGoodsVo {
     private Integer goodsStatus;
     private BigDecimal goodsTotalPrice;
     private Integer productChecked;
-    private Integer goodsChecked;
+    private Byte goodsChecked;
 
 
 

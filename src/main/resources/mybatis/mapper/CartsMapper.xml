@@ -147,20 +147,25 @@
   </select>
 
 
-
+  <update id="updateCartByUserIdAndGoodsId" parameterType="com.chongdao.client.entitys.Carts" >
+    update cart
+    set quantity = quantity-1
+    where user_id = #{userId},
+      goods_id = #{goodsId},
+      shop_id = #{shopId}
+  </update>
   <select id="selectCartProductCheckedStatusByUserId" parameterType="int" resultType="int">
     select count(1) from cart where checked = 0 and user_id = #{userId}
   </select>
 
 
+  <delete id="clearCart" parameterType="map">
+    delete from cart where user_id = #{userId} and shop_id = #{shopId}
+  </delete>
+
   <delete id="deleteByUserIdAndProductIds" parameterType="map">
-    delete from cart where user_id = #{userId}
-    <if test="goodsList != null">
-      and goods_id in
-      <foreach collection="goodsList" index="index" open="(" separator="," close=")" item="item">
-        #{item}
-      </foreach>
-    </if>
+    delete from cart where user_id = #{userId} and shop_id = #{shopId}
+      and goods_id = #{goodsId}
   </delete>
 
   <select id="selectCheckedCartByUserId" resultMap="BaseResultMap" parameterType="int">

@@ -53,9 +53,22 @@ public class CartsController {
      * @return
      */
     @PostMapping("delete")
-    public ResultResponse<CartVo> deleteGoods(String token, String goodsIds,Integer shopId){
+    public ResultResponse<CartVo> deleteGoods(String token,Integer goodsIds,Integer shopId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds,shopId);
+    }
+
+
+    /**
+     * 清空购物车
+     * @param token
+     * @param shopId
+     * @return
+     */
+    @PostMapping("clear")
+    public ResultResponse<CartVo> clear(String token,Integer shopId){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return cartsService.clear(tokenVo.getUserId(),shopId);
     }
 
 

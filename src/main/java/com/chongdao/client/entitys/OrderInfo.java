@@ -31,7 +31,7 @@ public class OrderInfo {
 
     private BigDecimal servicePrice;
 
-    private BigDecimal totalDiscount;
+    private BigDecimal totalDiscount  = BigDecimal.ZERO;
 
     private BigDecimal payment;
 

@@ -39,7 +39,7 @@ public interface GoodsService {
      * 获取商品类别
      * @return
      */
-    ResultResponse getGoodCategoryList();
+    ResultResponse getGoodCategoryList(Integer param);
 
     /**
      * 获取商品列表
@@ -72,10 +72,9 @@ public interface GoodsService {
 
     /**
      * 获取商品分类
-     * @param shopId
      * @return
      */
-    ResultResponse categoryList(Integer shopId);
+    ResultResponse goodsTypeList();
 
     /**
      * 增加或编辑商品
@@ -153,4 +152,19 @@ public interface GoodsService {
      * @return
      */
     ResultResponse queryConcernGoodsList(Integer userId);
+
+    /**
+     * 根据shopId和goodsTypeId获取商品或者服务
+     * @param shopId
+     * @param id
+     * @return
+     */
+    ResultResponse queryGoodsListByIdAndShopId(Integer shopId, Integer id);
+
+    /**
+     * 下架商品
+     * @param shopId
+     * @return
+     */
+    ResultResponse goodsDownList(Integer shopId);
 }

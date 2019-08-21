@@ -30,15 +30,29 @@ public class ShopGoodManageController {
 
     /**
      * 获取商品类别
-     *
      * @param token
      * @return
      */
-    @GetMapping("getGoodCategoryList")
-    public ResultResponse getGoodCategoryList( String token) {
+    @GetMapping("getGoodCategoryList/{param}")
+    public ResultResponse getGoodCategoryList(@PathVariable Integer param,String token) {
         LoginUserUtil.resultTokenVo(token);
-        return goodsService.getGoodCategoryList();
+        return goodsService.getGoodCategoryList(param);
     }
+
+
+    /**
+     * 根据shopId和goodsTypeId获取商品或者服务
+     * @param shopId
+     * @param id
+     * @return
+     */
+    @GetMapping("queryGoodsListByIdAndShopId/{shopId}/{id}")
+    public ResultResponse getGoodCategoryList(@PathVariable Integer shopId,@PathVariable Integer id,String token) {
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.queryGoodsListByIdAndShopId(shopId,id);
+    }
+
+
 
     /**
      * 获取商品列表
@@ -63,7 +77,6 @@ public class ShopGoodManageController {
 
     /**
      * 商品下架
-     *
      * @param goodId
      * @param status 1:上架,0下架，-1删除
      * @return
@@ -74,6 +87,17 @@ public class ShopGoodManageController {
         return goodsService.updateGoodsStatus(goodId, status);
     }
 
+    /**
+     * 获取下架商品列表
+     * @param shopId
+     * @param token
+     * @return
+     */
+    @GetMapping("goodsDownList/{shopId}")
+    public ResultResponse goodsDownList(@PathVariable Integer shopId, String token) {
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.goodsDownList(shopId);
+    }
 
     /**
      * 打折商品
@@ -90,16 +114,14 @@ public class ShopGoodManageController {
 
 
     /**
-     * 获取所有商品分类（官方定义）
-     *
+     *  获取商品分类(包含服务类、商品类)
      * @param token
-     * @param shopId
      * @return
      */
-    @GetMapping("categoryList/{shopId}")
-    public ResultResponse categoryList(@PathVariable Integer shopId, String token) {
+    @GetMapping("goodsTypeList")
+    public ResultResponse goodsTypeList(String token) {
         LoginUserUtil.resultTokenVo(token);
-        return goodsService.categoryList(shopId);
+        return goodsService.goodsTypeList();
     }
 
 

@@ -89,6 +89,8 @@ public class GoodsListVO {
 
     private List<PetCard> petCardList;
 
+    private Integer moduleId;
+
 
 
 
