@@ -9,24 +9,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @Description 家庭责任险投保
+ * @Description 医疗险
  * @Author onlineS
- * @Date 2019/8/14
+ * @Date 2019/5/28
  * @Version 1.0
  **/
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class FamilyInsuranceOrder implements Serializable {
+public class InsuranceOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String insuranceOrderNo;
 
     //投保人信息
     private Integer userId;//用户id
@@ -52,11 +55,14 @@ public class FamilyInsuranceOrder implements Serializable {
     private Integer beneficiary;//默认为1; 即投保人自己
 
     private String rationType;//方案代码-用户所选保险及方案
+    private Integer insuranceType;//保险类型, 1:宠物医疗, 2:家庭责任, 3:运输险
 
     //宠物属性(宠物即被保人)
     private Integer petCardId;//宠物卡片id
     private String petPhoto;//宠物图片->用于审核
     private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
+
+    private Integer orderNo;//运输险, 订单id
 
     //订单相关属性
     private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;4:保单生成;)
@@ -66,6 +72,10 @@ public class FamilyInsuranceOrder implements Serializable {
     private Date signBillTime;//签单日期(即与保险公司交互后生成保险单号的时间)
 
     private Date insuranceEffectTime;//保单起保日期(生效日期)(默认为当前时间往后推24小时的第一个零点, 用户可自主选择30天内的任何一个零点)
+
+    //保单相关属性
+    private BigDecimal sumAmount;//保额
+    private BigDecimal sumPremium;//保费
 
     //分销
     private String recommendCode;//推广码

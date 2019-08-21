@@ -21,7 +21,7 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-public class MedicalInsuranceClaims implements Serializable {
+public class InsuranceClaims implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
