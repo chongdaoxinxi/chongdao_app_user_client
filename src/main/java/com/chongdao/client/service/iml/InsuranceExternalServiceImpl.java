@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
+import com.chongdao.client.utils.Md5;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
@@ -32,7 +33,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t<GeneralInfo>\n" +
             "\t\t<UUID>${UUID}</UUID>\n" +
             "\t\t<PlateformCode>CPI000865</PlateformCode>\n" +
-            "\t\t<Md5Value>136a5b8615eba48842d8cc62bb134c56</Md5Value>\n" +
+            "\t\t<Md5Value>${Md5Value}</Md5Value>\n" +
             "\t</GeneralInfo>\n" +
             "\t<PolicyInfos>\n" +
             "\t\t<PolicyInfo>\n" +
@@ -75,8 +76,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     @Override
     public ResultResponse generateInsure() {
-//        String datas = getRenderZFOFrom();
-        String datas = getRenderZCGForm();
+        String datas = getRenderZFOFrom();
+    //        String datas = getRenderZCGForm();
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
@@ -118,27 +119,51 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, config);
         //我们自定义的模板，其中${title}就Beetl默认的占位符
         Template template = groupTemplate.getTemplate(ZFOForm);
-        template.binding("UUID","qQpufatesQt00122");
+        template.binding("UUID","iiiiiiiiqQpufatesQt00122");
         template.binding("SerialNo", "1");
         template.binding("RiskCode", riskCode);
-        template.binding("OperateTimes", "2019-08-02 14:41:40");
-        template.binding("StartDate", "2019-08-02");
-        template.binding("EndDate", "2020-08-02");
+        template.binding("OperateTimes", "2019-09-02 14:41:40");
+        template.binding("StartDate", "2019-09-02");
+        template.binding("EndDate", "2020-09-01");
         template.binding("SumAmount", "500000.00");
         template.binding("SumPremium", "270.00");
+
+        //测试key
+        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00122", "270.00", "Picc37mu63ht38mw"));
+//        template.binding("Md5Value", "136a5b8615eba48842d8cc62bb134c56");
+
         template.binding("RationType", rationType);
         template.binding("AppliName", "testxxx");
         template.binding("AppliIdType", "01");
         template.binding("AppliIdNo", "430381198707230426");
-        template.binding("AppliIdMobile", "17631088624");
+        template.binding("AppliIdMobile", "18715637638");
         template.binding("InsuredSeqNo", "1");
         template.binding("InsuredName", "testxxx");
         template.binding("InsuredIdType", "02");
-        template.binding("InsuredIdNo", "110101198001030Q");
-        template.binding("InsuredEmail", "zhangxiaozhao@sinosoft.com.cn");
+        template.binding("InsuredIdNo", "342501199109126037");
+        template.binding("InsuredEmail", "1092347670@qq.com");
         //渲染字符串
         String str = template.render();
         System.out.println(str);
         return str;
+    }
+
+    /**
+     * 生成MD5秘钥
+     * @param uuid
+     * @param SumPremium
+     * @param secretKey
+     * @return
+     */
+    private String generateMD5SecretKey(String uuid, String SumPremium, String secretKey) {
+        try {
+            return Md5.encodeByMd5(uuid + SumPremium + secretKey);
+//            return Md5.encodeByMd5(uuid + SumPremium + secretKey, "");
+//            return Md5.MD5_SHA("MD5", uuid + SumPremium + secretKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+//        return MD5Util.MD5(uuid + SumPremium + secretKey);
     }
 }
