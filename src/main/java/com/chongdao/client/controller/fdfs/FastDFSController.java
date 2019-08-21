@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/")
+@CrossOrigin
 public class FastDFSController {
 
     @Autowired

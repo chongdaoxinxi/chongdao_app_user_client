@@ -52,4 +52,10 @@ public interface GoodMapper {
     int paymentNumber(@Param("goodId") Integer goodId);
 
     List<Good> findByShopIdAndGoodsTypeId(@Param("shopId") Integer shopId, @Param("id") Integer id);
+
+    List<Good> findByShopIdAndStatus(Integer shopId);
+
+
+    void updateDiscount(@Param("shopId") Integer shopId,@Param("ids")  List<Integer> ids,
+                        @Param("discount") Double discount, @Param("reDiscount") Double reDiscount);
 }

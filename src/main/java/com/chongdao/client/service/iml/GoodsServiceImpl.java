@@ -9,7 +9,10 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.service.GoodsService;
-import com.chongdao.client.vo.*;
+import com.chongdao.client.vo.GoodsDetailVo;
+import com.chongdao.client.vo.GoodsListVO;
+import com.chongdao.client.vo.PetCategoryAndScopeVO;
+import com.chongdao.client.vo.ScopeVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -228,7 +231,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (0 == param) {
             goodsTypeList = goodsTypeRepository.findByStatusAndCategoryId(1, 3);
         }else {
-            goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNot(1, 3);
+            goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNotAndIdNot(1, 3,21);
         }
         return ResultResponse.createBySuccess(goodsTypeList);
     }
@@ -288,7 +291,18 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null || reDiscount <= 0 || reDiscount > 9){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
-        goodMapper.goodsDiscount(shopId,goodsTypeId,discount,reDiscount);
+        //宠物用品
+        if (21 == goodsTypeId) {
+            //先找到父id
+            List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentId(goodsTypeId);
+            List<Integer> ids = Lists.newArrayList();
+            goodsTypeList.stream().forEach(goodsType -> {
+                ids.add(goodsType.getId());
+            });
+            goodMapper.updateDiscount(shopId,ids,discount,reDiscount);
+        }else {
+            goodMapper.goodsDiscount(shopId, goodsTypeId, discount, reDiscount);
+        }
         return ResultResponse.createBySuccess();
     }
 
@@ -358,12 +372,18 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         Good good = goodMapper.selectByPrimaryKey(goodsId);
         GoodsListVO goodsListVO = new GoodsListVO();
         BeanUtils.copyProperties(good,goodsListVO);
-        PetCategory petCategory = petCategoryRepository.findById(good.getCategoryId()).get();
-        goodsListVO.setPetCategoryName(petCategory.getName());
-        ScopeApplication application = applicationRepository.findById(good.getScopeId()).get();
-        goodsListVO.setScopeName(application.getName());
-        Brand brand = brandRepository.findById(good.getBrandId()).get();
-        goodsListVO.setBrandName(brand.getName());
+        if (good.getCategoryId() != null) {
+            PetCategory petCategory  = petCategoryRepository.findById(good.getCategoryId()).get();
+            goodsListVO.setPetCategoryName(petCategory.getName());
+        }
+        if (good.getScopeId() != null) {
+            ScopeApplication application = applicationRepository.findById(good.getScopeId()).get();
+            goodsListVO.setScopeName(application.getName());
+        }
+        if (good.getBrandId() != null){
+            Brand brand = brandRepository.findById(good.getBrandId()).get();
+            goodsListVO.setBrandName(brand.getName());
+        }
         //如果无洗澡服务内容则展示所有
         if (StringUtils.isBlank(good.getBathingServiceId())){
             goodsListVO.setBathingServiceList(bathingServiceRepository.findAll());
@@ -587,7 +607,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      */
     @Override
     public ResultResponse goodsDownList(Integer shopId) {
-        List<Good> goodList = goodsRepository.findByShopIdAndStatus(shopId, (byte) 0);
+        List<Good> goodList = goodMapper.findByShopIdAndStatus(shopId);
         return ResultResponse.createBySuccess(goodList);
     }
 }

@@ -6,6 +6,7 @@
             <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="module_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="parent_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="sort" jdbcType="INTEGER" javaType="java.lang.Integer"/>
@@ -15,7 +16,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, name, module_id, category_id, shop_id, sort, status, create_time, update_time
+        id, name, module_id,parent_id, category_id, shop_id, sort, status, create_time, update_time
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -29,12 +30,12 @@
         where id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.chongdao.client.entitys.GoodsType">
-        insert into goods_type (id, name, module_id,
+        insert into goods_type (id, name, module_id,parent_id,
                                 category_id, shop_id, sort,
-                                status, create_time, update_time)
+                                status, create_time, update_time,img_url)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{moduleId,jdbcType=INTEGER},
                 #{categoryId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER},
-                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},#{imgUrl,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.GoodsType">
         insert into goods_type
@@ -47,6 +48,9 @@
             </if>
             <if test="moduleId != null">
                 module_id,
+            </if>
+            <if test="parentId != null">
+                parent_id,
             </if>
             <if test="categoryId != null">
                 category_id,
@@ -66,6 +70,9 @@
             <if test="updateTime != null">
                 update_time,
             </if>
+            <if test="imgUrl != null">
+                img_url,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -76,6 +83,9 @@
             </if>
             <if test="moduleId != null">
                 #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=INTEGER},
             </if>
             <if test="categoryId != null">
                 #{categoryId,jdbcType=INTEGER},
@@ -95,6 +105,9 @@
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="imgUrl != null">
+                #{imgUrl,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.chongdao.client.entitys.GoodsType">
@@ -105,6 +118,9 @@
             </if>
             <if test="moduleId != null">
                 module_id = #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId,jdbcType=INTEGER},
             </if>
             <if test="categoryId != null">
                 category_id = #{categoryId,jdbcType=INTEGER},
@@ -124,6 +140,9 @@
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="imgUrl != null">
+                img_url = #{imgUrl,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -131,12 +150,14 @@
         update goods_type
         set name        = #{name,jdbcType=VARCHAR},
             module_id   = #{moduleId,jdbcType=INTEGER},
+            parent_id = #{parentId,jdbcType=INTEGER},
             category_id = #{categoryId,jdbcType=INTEGER},
             shop_id     = #{shopId,jdbcType=INTEGER},
             sort        = #{sort,jdbcType=INTEGER},
             status      = #{status,jdbcType=TINYINT},
             create_time = #{createTime,jdbcType=TIMESTAMP},
-            update_time = #{updateTime,jdbcType=TIMESTAMP}
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            img_url        = #{imgUrl,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 

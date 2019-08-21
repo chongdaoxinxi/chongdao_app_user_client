@@ -30,6 +30,8 @@ public class GoodsType implements Serializable {
 
 	private Integer moduleId;
 
+	private Integer parentId;
+
 	private Integer categoryId;
 
 	private Integer shopId;
@@ -42,15 +44,19 @@ public class GoodsType implements Serializable {
 
 	private Date updateTime;
 
-	public GoodsType(Integer id, String name, Integer moduleId, Integer categoryId, Integer shopId, Integer sort, Integer status, Date createTime, Date updateTime) {
+	private String imgUrl;
+
+	public GoodsType(Integer id, String name, Integer moduleId, Integer parentId, Integer categoryId, Integer shopId, Integer sort, Integer status, Date createTime, Date updateTime,String imgUrl) {
 		this.id = id;
 		this.name = name;
 		this.moduleId = moduleId;
+		this.parentId = parentId;
 		this.categoryId = categoryId;
 		this.shopId = shopId;
 		this.sort = sort;
 		this.status = status;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
+		this.imgUrl = imgUrl;
 	}
 }

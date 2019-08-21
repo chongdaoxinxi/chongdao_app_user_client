@@ -200,7 +200,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             //筛选条件
             categoryIds = Arrays.asList(categoryId);
         }
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdInAndStatus(categoryIds,1);
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdInAndStatusAndIdNot(categoryIds,1,21);
         //狗宠物卡片
         List<PetCard> petCardDogs = petCardRepository.findByUserIdAndStatusAndTypeId(userId, 1, 1);
         //猫宠物卡片

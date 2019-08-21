@@ -40,6 +40,8 @@ public class ExceptionHandler{
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_NOT_FOUND,ResultEnum.NOT_FOUND.getMessage());
         }else if (e instanceof MultipartException) {
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_BAD_REQUEST, "需上传文件流" );
+        }else if (e instanceof IllegalArgumentException){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "参数"+((IllegalArgumentException) e).getMessage() + "错误" );
         }else {
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
