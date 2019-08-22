@@ -33,8 +33,7 @@ public class GuavaCache {
             }
             return value;
         }catch (Exception e){
-            log.error("localCache get error",e);
+            return null;
         }
-        return null;
     }
 }
