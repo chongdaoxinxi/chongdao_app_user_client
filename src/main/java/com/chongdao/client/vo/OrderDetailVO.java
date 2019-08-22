@@ -19,4 +19,6 @@ public class OrderDetailVO {
     //原价
     private BigDecimal originPrice;
 
+    private BigDecimal totalPrice;
+
 }

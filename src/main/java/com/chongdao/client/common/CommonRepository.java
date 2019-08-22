@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CommonRepository {
 
     @Autowired
+    protected GoodsService goodsService;
+
+    @Autowired
     protected OrderLogRepository logRepository;
     @Autowired
     protected GoodMapper goodMapper;
@@ -117,6 +120,7 @@ public class CommonRepository {
     @Autowired
     protected OrderExpressEvalRepository orderExpressEvalRepository;
 
+    @Autowired
     protected ExpressRepository expressRepository;
 
 

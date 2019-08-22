@@ -20,6 +20,7 @@ import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
+import com.chongdao.client.utils.SignUtils;
 import com.chongdao.client.utils.wxpay.BasicInfo;
 import com.chongdao.client.utils.wxpay.PayUtil;
 import com.chongdao.client.utils.wxpay.SignUtil;
@@ -86,6 +87,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
          * */
             AlipayClient client = new DefaultAlipayClient(AliPayConfig.GATEWAY, AliPayConfig.ALI_PAY_APPID, AliPayConfig.APP_PRIVATE_KEY, AliPayConfig.FORMAT,
                     AliPayConfig.CHARSET, AliPayConfig.ALI_PAY_PUBLIC_KEY, AliPayConfig.SIGN_TYPE);
+
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
             AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
             //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
@@ -109,7 +111,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 logRepository.save(orderLog);
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败!!!");
             }
-            resultMap.put("orderStr", orderStr);//就是orderString 可以直接给客户端请求，无需再做处理。
+            String sign = SignUtils.sign(orderStr, AliPayConfig.APP_PRIVATE_KEY);
+            String orderStrResult = orderStr + "&sign=" + sign;
+            System.out.println(orderStrResult);
+            resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");
             OrderLog orderLog = OrderLogDTO.addOrderLog(order);

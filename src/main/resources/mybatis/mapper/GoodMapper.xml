@@ -64,7 +64,7 @@
                           pet_category_id, bathing_service_id,sort,area_code)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
                 #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{reDiscount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
-                #{unit,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
+                #{unitName,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodsTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
                 #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
                 #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER},
@@ -101,7 +101,7 @@
             <if test="des != null">
                 des,
             </if>
-            <if test="goodTypeId != null">
+            <if test="goodsTypeId != null">
                 goods_type_id,
             </if>
             <if test="shopId != null">
@@ -173,19 +173,19 @@
                 #{discount,jdbcType=DOUBLE},
             </if>
             <if test="reDiscount != null">
-                #{re_discount,jdbcType=DOUBLE},
+                #{reDiscount,jdbcType=DOUBLE},
             </if>
             <if test="unit != null">
                 #{unit,jdbcType=VARCHAR},
             </if>
             <if test="unitName != null">
-                #{unit_name,jdbcType=VARCHAR},
+                #{unitName,jdbcType=VARCHAR},
             </if>
             <if test="des != null">
                 #{des,jdbcType=VARCHAR},
             </if>
-            <if test="goodTypeId != null">
-                #{goodTypeId,jdbcType=INTEGER},
+            <if test="goodsTypeId != null">
+                #{goodsTypeId,jdbcType=INTEGER},
             </if>
             <if test="shopId != null">
                 #{shopId,jdbcType=INTEGER},
@@ -267,8 +267,8 @@
             <if test="des != null">
                 des = #{des,jdbcType=VARCHAR},
             </if>
-            <if test="goodTypeId != null">
-                goods_type_id = #{goodTypeId,jdbcType=INTEGER},
+            <if test="goodsTypeId != null">
+                goods_type_id = #{goodsTypeId,jdbcType=INTEGER},
             </if>
             <if test="shopId != null">
                 shop_id = #{shopId,jdbcType=INTEGER},
@@ -334,7 +334,7 @@
             unit = #{unit,jdbcType=VARCHAR},
             unit_name = #{unitName,jdbcType=VARCHAR},
             des = #{des,jdbcType=VARCHAR},
-            goods_type_id = #{goodTypeId,jdbcType=INTEGER},
+            goods_type_id = #{goodsTypeId,jdbcType=INTEGER},
             shop_id = #{shopId,jdbcType=INTEGER},
             ratio = #{ratio,jdbcType=DOUBLE},
             ratio_price = #{ratioPrice,jdbcType=DECIMAL},

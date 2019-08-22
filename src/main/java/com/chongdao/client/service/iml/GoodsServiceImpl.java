@@ -17,6 +17,8 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -228,8 +230,22 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<GoodsType> goodsTypeList = Lists.newArrayList();
         if (0 == param) {
             goodsTypeList = goodsTypeRepository.findByStatusAndCategoryId(1, 3);
+            for (int i = 0; i< goodsTypeList.size(); i++) {
+                List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsTypeList.get(i).getId());
+                //需去除父分类
+                if (goodsTypes.size() > 0){
+                    goodsTypeList.remove(i);
+                }
+            }
         }else {
-            goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNotAndIdNot(1, 3,21);
+            goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNotAndIdNot(1, 3,0);
+            for (int i = 0; i< goodsTypeList.size(); i++) {
+                List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsTypeList.get(i).getId());
+                //需去除父分类
+                if (goodsTypes.size() > 0){
+                    goodsTypeList.remove(i);
+                }
+            }
         }
         return ResultResponse.createBySuccess(goodsTypeList);
     }
@@ -322,6 +338,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public ResultResponse saveOrEditGoods(Integer shopId, GoodsListVO goodsListVO) {
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
@@ -340,7 +357,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             return ResultResponse.createBySuccess();
         }
         //编辑
-        int result = goodMapper.insertSelective(good);
+        int result = goodMapper.updateByPrimaryKeySelective(good);
         if (result == 0){
             return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.SAVE_GOODS_ERROR.getStatus(),
                     GoodsStatusEnum.SAVE_GOODS_ERROR.getMessage());
@@ -386,7 +403,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         //如果存在已经选中的需要展示其他未选中的
         List<BathingService> bathingServiceList = bathingServiceRepository.findAll();
         if (StringUtils.isNotBlank(good.getBathingServiceId())){
-            List<String> splitToList = Splitter.on(",").splitToList(good.getBathingServiceId());
+            List<String> splitToList = Splitter.on(",").trimResults().omitEmptyStrings().splitToList(good.getBathingServiceId());
             bathingServiceList.stream().forEach(bathingService -> {
                 for (String s : splitToList) {
                     if (bathingService.getId().equals(Integer.valueOf(s))) {
@@ -627,5 +644,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(parentId, 1);
         return goodsTypeList;
     }
+
+
 
 }

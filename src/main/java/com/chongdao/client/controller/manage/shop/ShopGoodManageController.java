@@ -127,15 +127,13 @@ public class ShopGoodManageController {
 
     /**
      * 添加或编辑商品
-     *
-     * @param token
      * @param shopId
      * @param goodsListVO
      * @return
      */
     @PostMapping("addGoods/{shopId}")
-    public ResultResponse addOrEditGoods(@PathVariable Integer shopId, String token, @RequestBody GoodsListVO goodsListVO) {
-        LoginUserUtil.resultTokenVo(token);
+    public ResultResponse addOrEditGoods(@PathVariable Integer shopId, @RequestBody GoodsListVO goodsListVO) {
+        LoginUserUtil.resultTokenVo(goodsListVO.getToken());
         return goodsService.saveOrEditGoods(shopId, goodsListVO);
     }
 

@@ -54,7 +54,7 @@ public class GoodsListVO {
 
     /** 单位 */
     private Integer unit;
-    private Integer unitName;
+    private String unitName;
 
     /** 品牌id */
     private Integer brandId;
@@ -90,6 +90,8 @@ public class GoodsListVO {
     private List<PetCard> petCardList;
 
     private Integer moduleId;
+
+    private String token;
 
 
 

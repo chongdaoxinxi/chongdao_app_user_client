@@ -225,11 +225,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
         orderVo.setCreateTime(orderInfo.getCreateTime());
         orderVo.setOrderNo(orderNo);
-        Express express = expressRepository.findById(orderInfo.getExpressId()).get();
-        //填充配送员信息
-        orderVo.setExpressId(orderInfo.getExpressId());
-        orderVo.setExpressName(express.getName());
-        orderVo.setExpressPhone(express.getPhone());
+        if (orderInfo.getExpressId() != null){
+            Express express = expressRepository.findById(orderInfo.getExpressId()).orElse(null);
+            //填充配送员信息
+            if (express != null) {
+                orderVo.setExpressId(orderInfo.getExpressId());
+                orderVo.setExpressName(express.getName());
+                orderVo.setExpressPhone(express.getPhone());
+            }
+        }
+
         //配送费
         orderVo.setServicePrice(orderInfo.getServicePrice());
         //获取店铺名称以及填充订单详情
@@ -245,12 +250,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetailVO.setGoodsName(orderDetail.getName());
             orderDetailVO.setQuantity(orderDetail.getCount());
             orderDetailVO.setCurrentPrice(orderDetail.getCurrentPrice());
+            orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
             orderDetailVOS.add(orderDetailVO);
         });
         //优惠券
         if (orderInfo.getCouponId() != null && orderInfo.getCouponId() > 0){
-            CouponInfo couponInfo = couponInfoRepository.findById(orderInfo.getCouponId()).get();
-            orderVo.setCouponName(couponInfo.getCpnName());
+            CouponInfo couponInfo = couponInfoRepository.findById(orderInfo.getCouponId()).orElse(null);
+            if (couponInfo != null) {
+                orderVo.setCouponName(couponInfo.getCpnName());
+            }
         }
         orderVo.setOrderStatus(orderInfo.getOrderStatus());
         orderVo.setOrderDetailVOList(orderDetailVOS);
@@ -258,11 +266,25 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setExpressReceiveTime(orderInfo.getExpressReceiveTime());
         orderVo.setExpressFinishTime(orderInfo.getExpressFinishTime());
         //接宠地址
-        UserAddress receiveAddress = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), orderInfo.getUserId());
-        orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+        if (orderInfo.getReceiveAddressId() != null) {
+            UserAddress receiveAddress = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), orderInfo.getUserId());
+            if (receiveAddress != null) {
+                orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+            }
+        }
         //送宠地址
-        UserAddress deliverAddress = userAddressRepository.findByIdAndUserId(orderInfo.getDeliverAddressId(), orderInfo.getUserId());
-        orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+        if (orderInfo.getDeliverAddressId() != null ) {
+            UserAddress deliverAddress = userAddressRepository.findByIdAndUserId(orderInfo.getDeliverAddressId(), orderInfo.getUserId());
+            if (deliverAddress != null) {
+                orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+            }
+        }
+        if (userId != null) {
+            User user = userRepository.findById(orderInfo.getUserId()).orElse(null);
+            if (user != null) {
+                orderVo.setUsername(user.getName());
+            }
+        }
         orderVo.setRemark(orderInfo.getRemark());
         return ResultResponse.createBySuccess(orderVo);
     }

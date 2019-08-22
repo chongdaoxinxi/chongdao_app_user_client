@@ -62,7 +62,7 @@ public class Good {
 	@JsonSerialize(using = Date2LongSerializer.class)
 	private Date updateTime;
 
-	private Byte status;
+	private Byte status = 1;
 
 	private Integer moduleId;
 
