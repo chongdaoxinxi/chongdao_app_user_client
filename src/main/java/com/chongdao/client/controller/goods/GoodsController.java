@@ -58,7 +58,13 @@ public class GoodsController {
                                          @RequestParam(value = "areaCode") String areaCode,
                                          @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy){
 
-        return goodsService.getGoodsByKeyword(keyword,pageNum,pageSize,brandId,goodsTypeId,scopeId,petCategoryId,areaCode,orderBy);
+        ResultResponse<PageInfo> pageInfoResultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_goods_list");
+        if (pageInfoResultResponse != null){
+            return pageInfoResultResponse;
+        }
+        pageInfoResultResponse = goodsService.getGoodsByKeyword(keyword, pageNum, pageSize, brandId, goodsTypeId, scopeId, petCategoryId, areaCode, orderBy);
+        GuavaCache.setKey("home_goods_list",pageInfoResultResponse);
+        return pageInfoResultResponse;
     }
 
 
@@ -70,7 +76,13 @@ public class GoodsController {
     @GetMapping("getGoodsDetail/{goodsId}")
     public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return goodsService.getGoodsDetail(goodsId,tokenVo.getUserId());
+        ResultResponse<GoodsDetailVo> goodsServiceGoodsDetail = (ResultResponse<GoodsDetailVo>) GuavaCache.getKey("getGoodsDetail_" + goodsId);
+        if (goodsServiceGoodsDetail != null){
+            return goodsServiceGoodsDetail;
+        }
+        goodsServiceGoodsDetail = goodsService.getGoodsDetail(goodsId, tokenVo.getUserId());
+        GuavaCache.setKey("getGoodsDetail_" + goodsId ,goodsServiceGoodsDetail);
+        return goodsServiceGoodsDetail;
     }
 
 

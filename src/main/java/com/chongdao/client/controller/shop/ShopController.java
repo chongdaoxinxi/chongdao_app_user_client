@@ -1,5 +1,6 @@
 package com.chongdao.client.controller.shop;
 
+import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.LoginUserUtil;
@@ -34,7 +35,13 @@ public class ShopController {
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
 
-        return shopService.list(userId,categoryId,proActivities,orderBy,lng,lat,areaCode,pageNum,pageSize);
+        ResultResponse<PageInfo> pageInfoResultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_shop_list");
+        if (pageInfoResultResponse != null) {
+            return pageInfoResultResponse;
+        }
+        pageInfoResultResponse = shopService.list(userId, categoryId, proActivities, orderBy, lng, lat, areaCode, pageNum, pageSize);
+        GuavaCache.setKey("home_shop_list",pageInfoResultResponse);
+        return pageInfoResultResponse;
 
     }
 
@@ -46,7 +53,13 @@ public class ShopController {
      */
     @GetMapping("list/geo")
     public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat, String areaCode){
-        return shopService.listGeo(lng,lat,areaCode);
+        ResultResponse resultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_shop_list_geo");
+        if (resultResponse != null){
+            return resultResponse;
+        }
+        resultResponse = shopService.listGeo(lng, lat, areaCode);
+        GuavaCache.setKey("home_shop_list_geo", resultResponse );
+        return resultResponse;
 
     }
 
@@ -68,6 +81,12 @@ public class ShopController {
     @GetMapping("{shopId}")
     public ResultResponse getShopById(@PathVariable Integer shopId, String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        ResultResponse response = (ResultResponse) GuavaCache.getKey("getByShopId_" + shopId);;
+        if (response != null ){
+            return response;
+        }
+        response = shopService.getShopById(shopId, tokenVo.getUserId());
+        GuavaCache.setKey("getByShopId_" + shopId, response);
         return shopService.getShopById(shopId,tokenVo.getUserId());
     }
 
@@ -81,7 +100,13 @@ public class ShopController {
     public ResultResponse getShopService(@PathVariable Integer shopId,
                                          @PathVariable Integer categoryId,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopService.getShopService(shopId,categoryId,tokenVo.getUserId());
+        ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + categoryId);
+        if (resultResponse != null){
+            return resultResponse;
+        }
+        resultResponse = this.shopService.getShopService(shopId, categoryId, tokenVo.getUserId());
+        GuavaCache.setKey("getShopGoods_" + shopId + "_" + categoryId, resultResponse);
+        return this.shopService.getShopService(shopId,categoryId,tokenVo.getUserId());
     }
 
 
@@ -92,6 +117,12 @@ public class ShopController {
      */
     @GetMapping("getEvalAll/{shopId}")
     public ResultResponse getShopEvalAll(@PathVariable Integer shopId){
+        ResultResponse response = (ResultResponse) GuavaCache.getKey("getEvalAll" + shopId);
+        if (response != null){
+            return response;
+        }
+        response = shopService.getShopEvalAll(shopId);
+        GuavaCache.setKey("getEvalAll" + shopId, response);
         return shopService.getShopEvalAll(shopId);
     }
 
