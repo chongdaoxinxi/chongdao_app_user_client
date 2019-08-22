@@ -2,6 +2,8 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.repository.InsuranceShopChipRepository;
+import com.chongdao.client.repository.PetCardRepository;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
@@ -10,6 +12,7 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +25,11 @@ import java.io.IOException;
  **/
 @Service
 public class InsuranceExternalServiceImpl implements InsuranceExternalService {
+    @Autowired
+    private PetCardRepository petCardRepository;
+    @Autowired
+    private InsuranceShopChipRepository insuranceShopChipRepository;
+
     private static final String COMPANY_CODE = "CDXX";
     private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
     private static final String SECRET_KEY = "Picc37mu63ht38mw";
@@ -79,7 +87,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t</PolicyInfos>\n" +
             "</ApplyInfo>";
 
-    private String I9QForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
+    private String ZCGForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
             "\t\t<UUID>${UUID}</UUID>\n" +
@@ -118,28 +126,72 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
             "\t\t\t\t</Insured>\n" +
             "\t\t\t</Insureds>\n" +
+            "\t\t\t<Specials>\n" +
+            "\t\t\t\t<Special  key=\"businessDepartmentCode\">3101142701</Special>\n" +
+            "\t\t\t</Specials>\n" +
+            "\t\t</PolicyInfo>\n" +
+            "\t</PolicyInfos>\n" +
+            "</ApplyInfo>";
 
+    private String I9QForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
+            "<ApplyInfo>\n" +
+            "\t<GeneralInfo>\n" +
+            "\t\t<UUID>${UUID}</UUID>\n" +
+            "\t\t<PlateformCode>CPI000865</PlateformCode>\n" +
+            "\t\t<Md5Value>${Md5Value}</Md5Value>\n" +
+            "\t</GeneralInfo>\n" +
+            "\t<PolicyInfos>\n" +
+            "\t\t<PolicyInfo>\n" +
+            "\t\t\t<SerialNo>${SerialNo}</SerialNo>\n" +
+            "\t\t\t<RiskCode>I9Q</RiskCode>\n" +
+            "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
+            "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
+            "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
+            "\t\t\t<StartHour>0</StartHour>\n" +
+            "\t\t\t<EndHour>24</EndHour>\n" +
+            "\t\t\t<SumAmount>${SumAmount}</SumAmount>\n" +
+            "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
+            "\t\t\t<ArguSolution>1</ArguSolution>\n" +
+            "\t\t\t<Quantity>1</Quantity>\n" +
+            "\t\t\t<InsuredPlan>\n" +
+            "\t\t\t\t<RationType>${RationType}</RationType>\n" +
+            "\t\t\t</InsuredPlan>\n" +
+            "\t\t\t<Applicant>\n" +
+            "\t\t\t\t<AppliName>${AppliName}</AppliName>\n" +
+            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n"+
+            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n"+
+            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n"+
+            "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
+            "\t\t\t</Applicant>\n" +
+            "\t\t\t<Insureds>\n" +
+            "\t\t\t\t<Insured>\n" +
+            "\t\t\t\t\t<InsuredSeqNo>${InsuredSeqNo}</InsuredSeqNo>\n" +
+            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n"+
+            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n"+
+            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n"+
+            "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
+            "\t\t\t\t</Insured>\n" +
+            "\t\t\t</Insureds>\n" +
             //Agricultural节点
-            "\t\t\t<Agricultural>${Agricultural}</Agricultural>\n" +
-            "\t\t\t\t<ListType>${ListType}</ListType>\n" +
-            "\t\t\t\t<SumFamily>${SumFamily}</SumFamily>\n" +
-            "\t\t\t\t<gzqydm>${gzqydm}</gzqydm>\n" +
-            "\t\t\t\t<gzqymc>${gzqymc}</gzqymc>\n" +
-            "\t\t\t\t<MarketPrice>${MarketPrice}</MarketPrice>\n" +
-            "\t\t\t\t<UnitCost>${UnitCost}</UnitCost>\n" +
-            "\t\t\t\t<ItemColor>${ItemColor}</ItemColor>\n" +
-            "\t\t\t\t<Pregnancy>${Pregnancy}</Pregnancy>\n" +
-            "\t\t\t\t<Calving>${Calving}</Calving>\n" +
+            "\t\t\t<Agricultural>\n" +
+            "\t\t\t\t<ListType>07</ListType>\n" +
+            "\t\t\t\t<SumFamily>1</SumFamily>\n" +
+            "\t\t\t\t<gzqydm>上海</gzqydm>\n" +
+            "\t\t\t\t<gzqymc>上海</gzqymc>\n" +
+            "\t\t\t\t<MarketPrice>00</MarketPrice>\n" +
+            "\t\t\t\t<UnitCost>00</UnitCost>\n" +
+            "\t\t\t\t<ItemColor>00</ItemColor>\n" +
+            "\t\t\t\t<Pregnancy>00</Pregnancy>\n" +
+            "\t\t\t\t<Calving>00</Calving>\n" +
             "\t\t\t\t<ItemAge>${ItemAge}</ItemAge>\n" +
-            "\t\t\t\t<AgeUnit>${AgeUnit}</AgeUnit>\n" +
-            "\t\t\t\t<BirthRank>${BirthRank}</BirthRank>\n" +
+            "\t\t\t\t<AgeUnit>1</AgeUnit>\n" +
+            "\t\t\t\t<BirthRank>00</BirthRank>\n" +
             "\t\t\t\t<Variety>${Variety}</Variety>\n" +
-            "\t\t\t\t<FarmingMethod>${FarmingMethod}</FarmingMethod>\n" +
+            "\t\t\t\t<FarmingMethod>01</FarmingMethod>\n" +
             "\t\t\t\t<BatchNo>${BatchNo}</BatchNo>\n" +
-            "\t\t\t\t<Unit>${Unit}</Unit>\n" +
-            "\t\t\t\t<RaiseSite>${RaiseSite}</RaiseSite>\n" +
+            "\t\t\t\t<Unit>09</Unit>\n" +
+            "\t\t\t\t<RaiseSite>上海</RaiseSite>\n" +
             "\t\t\t</Agricultural>\n" +
-
             "\t\t\t<Specials>\n" +
             "\t\t\t\t<Special  key=\"businessDepartmentCode\">3101142701</Special>\n" +
             "\t\t\t</Specials>\n" +
@@ -161,7 +213,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 //            //运输险
 //            datas = getRenderZCGForm(insuranceOrder);
 //        }
-        datas = getRenderZFOFrom(insuranceOrder);
+        datas = getRenderI9QForm(insuranceOrder);
     //        String datas = getRenderZCGForm();
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
@@ -212,11 +264,11 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         //Beetl的核心GroupTemplate
         GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, config);
         //我们自定义的模板，其中${title}就Beetl默认的占位符
-        Template template = groupTemplate.getTemplate(ZFOForm);
+//        Template template = groupTemplate.getTemplate(ZFOForm);
+        Template template = groupTemplate.getTemplate(I9QForm);
 
         //保险信息
-        template.binding("UUID","iiiiiiiiqQpufatesQt00122");
-        String uuid = generateUUID(insuranceOrder.getInsuranceOrderNo());
+        template.binding("UUID","iiiiiiiiqQpufatesQt00133");
 
         ////////测试参数
         template.binding("SerialNo", "1");
@@ -224,10 +276,10 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("OperateTimes", "2019-09-02 14:41:40");//下单时间
         template.binding("StartDate", "2019-09-02");//起保时间
         template.binding("EndDate", "2020-09-01");//终保时间
-        template.binding("SumAmount", "500000.00");//保额
-        template.binding("SumPremium", "270.00");//保费
+        template.binding("SumAmount", "10000.00");//保额
+        template.binding("SumPremium", "498.00");//保费
         //测试key
-        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00122", "270.00", "Picc37mu63ht38mw"));
+        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00133", "498.00", "Picc37mu63ht38mw"));
         //投保人、被保人信息
         template.binding("RationType", rationType);
         template.binding("AppliName", "testxxx");//投保人姓名
@@ -236,11 +288,16 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("AppliIdMobile", "18715637638");
         template.binding("InsuredSeqNo", "1");
         template.binding("InsuredName", "testxxx");//被保人姓名
-        template.binding("InsuredIdType", "01");//被保人证件类型
+        template.binding("InsuredIdType", "02");//被保人证件类型
         template.binding("InsuredIdNo", "342501199109126037");
         template.binding("InsuredEmail", "1092347670@qq.com");
+//额外字段-医疗险字段
+        template.binding("ItemAge", "01");
+        template.binding("Variety", "边境牧羊犬");
+        template.binding("BatchNo", "0001");
 
         //生产环境参数
+//        String uuid = generateUUID(insuranceOrder.getInsuranceOrderNo());
 //        template.binding("UUID", uuid);
 //        template.binding("OperateTimes", insuranceOrder.getApplyTime().toString());//下单时间
 //        template.binding("StartDate", insuranceOrder.getInsuranceEffectTime().toString());//起保时间
@@ -259,6 +316,13 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 //        template.binding("InsuredIdNo", insuranceOrder.getAcceptCardNo());
 //        template.binding("InsuredEmail", insuranceOrder.getAcceptMail());
         //额外字段-医疗险字段
+//        Integer petCardId = insuranceOrder.getPetCardId();
+//        PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
+//        template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄
+//        template.binding("Variety", petCard.getBreed());//宠物品种
+//        Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();
+//        InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);
+//        template.binding("BatchNo", insuranceShopChip.getCore());//宠物芯片代码
 
         //渲染字符串
         String str = template.render();
@@ -284,12 +348,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private String generateMD5SecretKey(String uuid, String SumPremium, String secretKey) {
         try {
             return Md5.encodeByMd5(uuid + SumPremium + secretKey);
-//            return Md5.encodeByMd5(uuid + SumPremium + secretKey, "");
-//            return Md5.MD5_SHA("MD5", uuid + SumPremium + secretKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
-//        return MD5Util.MD5(uuid + SumPremium + secretKey);
     }
 }

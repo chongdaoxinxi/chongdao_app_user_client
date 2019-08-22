@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Description 保险业务对外接口
  * @Author onlineS
@@ -24,5 +27,10 @@ public class InsuranceExternalController {
     public ResultResponse generateInsure() {
         //生成接口所需要的数据
         return insuranceExternalService.generateInsure(null);
+    }
+
+    @PostMapping("payInsureCallBack")
+    public ResultResponse payInsureCallBack(HttpServletRequest request, HttpServletResponse response) {
+        return null;
     }
 }

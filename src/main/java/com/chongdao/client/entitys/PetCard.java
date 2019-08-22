@@ -35,6 +35,7 @@ public class PetCard implements Serializable {
     private String breed;//宠物品种
     private BigDecimal weight;//宠物体重
     private Date birthDate;//宠物出生日期
+    private Integer age;//年龄
     private Integer isHasDogCertificate;//是否有狗证 1:有, -1:没有
     private Integer isHasVaccineCertificate;//是否有疫苗证 1:有, -1:没有
     private Integer status;//-1:删除, 0:不激活状态, 1:激活状态;
