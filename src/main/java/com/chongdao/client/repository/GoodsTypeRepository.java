@@ -24,8 +24,9 @@ public interface GoodsTypeRepository extends JpaRepository<GoodsType,Integer> {
 
     List<GoodsType> findByStatusAndCategoryIdNotAndIdNot(Integer status,Integer categoryId,Integer goodsTypeId);
 
-    List<GoodsType> findByStatus(Integer status);
 
     List<GoodsType> findByParentIdAndStatus(Integer parentId, Integer status);
+
+    List<GoodsType> findByStatusAndParentIdNot(Integer status, Integer parentId);
 
 }

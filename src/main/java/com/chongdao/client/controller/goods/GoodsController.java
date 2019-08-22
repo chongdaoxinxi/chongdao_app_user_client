@@ -98,7 +98,7 @@ public class GoodsController {
         }
         brandGoodsTypeVOList = Lists.newArrayList();
         //获取所有类别
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(0,1);
         List<Integer> goodsTypeIdList = Lists.newArrayList();
         for (GoodsType goodsType : goodsTypeList) {
             goodsTypeIdList.add(goodsType.getId());

@@ -306,12 +306,12 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
 
     /**
-     * 获取商品分类(包含服务类、商品类)
+     * 获取商品分类(包含服务类、商品类)(不包含父分类)
      * @return
      */
     @Override
     public ResultResponse goodsTypeList() {
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatusAndParentIdNot(1,0);
         return ResultResponse.createBySuccess(goodsTypeList);
     }
 
