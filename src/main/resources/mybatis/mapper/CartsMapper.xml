@@ -150,8 +150,8 @@
   <update id="updateCartByUserIdAndGoodsId" parameterType="com.chongdao.client.entitys.Carts" >
     update cart
     set quantity = quantity-1
-    where user_id = #{userId},
-      goods_id = #{goodsId},
+    where user_id = #{userId} and
+      goods_id = #{goodsId} and
       shop_id = #{shopId}
   </update>
   <select id="selectCartProductCheckedStatusByUserId" parameterType="int" resultType="int">

@@ -1,6 +1,7 @@
 package com.chongdao.client.mapper;
 
 import com.chongdao.client.entitys.GoodsType;
+import com.chongdao.client.vo.BrandGoodsTypeVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,5 +30,6 @@ public interface GoodsTypeMapper {
     List<GoodsType> getGoodCategoryList(Integer shopId);
 
     void updateGoodTypeStatus(@Param("goodTypeId") Integer goodId, @Param("status") Integer status);
+
 
 }

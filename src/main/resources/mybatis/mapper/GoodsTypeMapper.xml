@@ -177,6 +177,7 @@
         order by sort asc
     </select>
 
+
     <update id="updateGoodTypeStatus" parameterType="map">
         update goods_type
         set status=#{status}

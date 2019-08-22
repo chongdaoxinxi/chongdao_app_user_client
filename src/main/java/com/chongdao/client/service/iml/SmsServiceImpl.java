@@ -93,7 +93,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public String getSmsCode(String telephone) {
-        return GuavaCache.getKey(SMS_CODE_CONTENT_PREFIX + telephone);
+        return (String) GuavaCache.getKey(SMS_CODE_CONTENT_PREFIX + telephone);
     }
 
     /**

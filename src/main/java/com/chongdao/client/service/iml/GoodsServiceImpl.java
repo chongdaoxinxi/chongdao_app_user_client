@@ -9,12 +9,10 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.service.GoodsService;
-import com.chongdao.client.vo.GoodsDetailVo;
-import com.chongdao.client.vo.GoodsListVO;
-import com.chongdao.client.vo.PetCategoryAndScopeVO;
-import com.chongdao.client.vo.ScopeVO;
+import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -385,11 +383,19 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             goodsListVO.setBrandName(brand.getName());
         }
         //如果无洗澡服务内容则展示所有
-        if (StringUtils.isBlank(good.getBathingServiceId())){
-            goodsListVO.setBathingServiceList(bathingServiceRepository.findAll());
-        }else{
-            goodsListVO.setBathingServiceList(bathingServiceRepository.findByIdIn(good.getBathingServiceId()));
+        //如果存在已经选中的需要展示其他未选中的
+        List<BathingService> bathingServiceList = bathingServiceRepository.findAll();
+        if (StringUtils.isNotBlank(good.getBathingServiceId())){
+            List<String> splitToList = Splitter.on(",").splitToList(good.getBathingServiceId());
+            bathingServiceList.stream().forEach(bathingService -> {
+                for (String s : splitToList) {
+                    if (bathingService.getId().equals(Integer.valueOf(s))) {
+                        bathingService.setChecked(true);
+                    }
+                }
+            });
         }
+        goodsListVO.setBathingServiceList(bathingServiceList);
         return ResultResponse.createBySuccess(goodsListVO);
     }
 
@@ -610,4 +616,16 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<Good> goodList = goodMapper.findByShopIdAndStatus(shopId);
         return ResultResponse.createBySuccess(goodList);
     }
+
+    /**
+     * 查询父分类
+     * @param parentId
+     * @return
+     */
+    @Override
+    public List<GoodsType> findByParentIdAndStatus(Integer parentId) {
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(parentId, 1);
+        return goodsTypeList;
+    }
+
 }

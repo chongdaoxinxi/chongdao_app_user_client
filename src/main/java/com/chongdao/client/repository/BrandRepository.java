@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface BrandRepository extends JpaRepository<Brand,Integer> {
     Optional<List<Brand>> findByGoodsTypeId(Integer goodsTypeId);
 
+
+    List<Brand> findByGoodsTypeIdIn(List<Integer> goodsTypeIdList);
+
 }

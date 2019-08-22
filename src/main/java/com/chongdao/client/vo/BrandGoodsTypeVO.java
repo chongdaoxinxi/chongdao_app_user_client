@@ -1,6 +1,7 @@
 package com.chongdao.client.vo;
 
 import com.chongdao.client.entitys.Brand;
+import com.chongdao.client.entitys.GoodsType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +18,9 @@ public class BrandGoodsTypeVO {
     private List<Brand> brandList;
     private Integer categoryId;
     private String goodsTypeName;
+    private Integer parentId;
+    private String imgUrl;
+    private Integer brandId;
+
+    private List<GoodsType> goodsTypeList;
 }

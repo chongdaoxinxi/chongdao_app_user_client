@@ -1,5 +1,6 @@
 package com.chongdao.client.controller.goods;
 
+import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.GoodsType;
@@ -15,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -78,20 +80,32 @@ public class GoodsController {
      */
     @GetMapping("getCategory")
     public ResultResponse getBrand(){
+        List<BrandGoodsTypeVO> brandGoodsTypeVOList= (List<BrandGoodsTypeVO>) GuavaCache.getKey("getCategory");
+        if (brandGoodsTypeVOList != null){
+            return ResultResponse.createBySuccess(brandGoodsTypeVOList);
+        }
+        brandGoodsTypeVOList = Lists.newArrayList();
         //获取所有类别
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatus(1);
-        List<BrandGoodsTypeVO> brandGoodsTypeVOList = Lists.newArrayList();
-        goodsTypeList.stream().forEach(goodsType -> {
-            //根据类别获取所属品牌
-            List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(null);
+        List<Integer> goodsTypeIdList = Lists.newArrayList();
+        for (GoodsType goodsType : goodsTypeList) {
+            goodsTypeIdList.add(goodsType.getId());
             BrandGoodsTypeVO  brandGoodsTypeVO = new BrandGoodsTypeVO();
+            //根据类别获取所属品牌
+            List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(new ArrayList<>());
             //填充信息
             brandGoodsTypeVO.setGoodsTypeId(goodsType.getId());
+            //父分类
+            List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsType.getId());
+            brandGoodsTypeVO.setGoodsTypeList(goodsTypes);
             brandGoodsTypeVO.setGoodsTypeName(goodsType.getName());
             brandGoodsTypeVO.setBrandList(brandList);
             brandGoodsTypeVO.setCategoryId(goodsType.getCategoryId());
+            brandGoodsTypeVO.setImgUrl(goodsType.getImgUrl());
+            brandGoodsTypeVO.setParentId(goodsType.getParentId());
             brandGoodsTypeVOList.add(brandGoodsTypeVO);
-        });
+        }
+        GuavaCache.setKey("getCategory", brandGoodsTypeVOList);
         return ResultResponse.createBySuccess(brandGoodsTypeVOList);
     }
 

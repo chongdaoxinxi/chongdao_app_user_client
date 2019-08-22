@@ -3,6 +3,7 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.Good;
+import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.PetCategoryAndScopeVO;
@@ -167,4 +168,12 @@ public interface GoodsService {
      * @return
      */
     ResultResponse goodsDownList(Integer shopId);
+
+    /**
+     * 查询父分类
+     * @param parentId
+     * @return
+     */
+    List<GoodsType> findByParentIdAndStatus(Integer parentId);
+
 }
