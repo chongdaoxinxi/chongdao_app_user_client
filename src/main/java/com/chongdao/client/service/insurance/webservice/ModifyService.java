@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>modifyService complex type的 Java 类。
+ * <p>modifyService complex type?? Java ??
  * 
- * <p>以下模式片段指定包含在此类中的预期内容。
+ * <p>????????????????????????????????
  * 
  * <pre>
  * &lt;complexType name="modifyService">
@@ -37,7 +37,7 @@ public class ModifyService {
     protected String datas;
 
     /**
-     * 获取interfaceNo属性的值。
+     * ???interfaceNo????????
      * 
      * @return
      *     possible object is
@@ -49,7 +49,7 @@ public class ModifyService {
     }
 
     /**
-     * 设置interfaceNo属性的值。
+     * ????interfaceNo????????
      * 
      * @param value
      *     allowed object is
@@ -61,7 +61,7 @@ public class ModifyService {
     }
 
     /**
-     * 获取datas属性的值。
+     * ???datas????????
      * 
      * @return
      *     possible object is
@@ -73,7 +73,7 @@ public class ModifyService {
     }
 
     /**
-     * 设置datas属性的值。
+     * ????datas????????
      * 
      * @param value
      *     allowed object is

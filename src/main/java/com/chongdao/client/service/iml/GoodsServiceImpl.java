@@ -223,29 +223,22 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     /**
      * 获取商品类别
-     * @return  0 商品 1 服务
+     * @return  0 商品 1 服务 2 全部 3全部（剔除父分类）
      */
     @Override
     public ResultResponse getGoodCategoryList(Integer param) {
         List<GoodsType> goodsTypeList = Lists.newArrayList();
         if (0 == param) {
             goodsTypeList = goodsTypeRepository.findByStatusAndCategoryId(1, 3);
-            for (int i = 0; i< goodsTypeList.size(); i++) {
-                List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsTypeList.get(i).getId());
-                //需去除父分类
-                if (goodsTypes.size() > 0){
-                    goodsTypeList.remove(i);
-                }
-            }
-        }else {
+            this.goodsTypeList(goodsTypeList);
+        }else if (param == 1){
             goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNotAndIdNot(1, 3,0);
-            for (int i = 0; i< goodsTypeList.size(); i++) {
-                List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsTypeList.get(i).getId());
-                //需去除父分类
-                if (goodsTypes.size() > 0){
-                    goodsTypeList.remove(i);
-                }
-            }
+            this.goodsTypeList(goodsTypeList);
+        }else if (param  == 2){
+            goodsTypeList = goodsTypeRepository.findAll();
+        }else {
+            goodsTypeList = goodsTypeRepository.findAll();
+            this.goodsTypeList(goodsTypeList);
         }
         return ResultResponse.createBySuccess(goodsTypeList);
     }
@@ -452,10 +445,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
-        Integer integer = goodsRepository.updateRatio(shopId);
-        if (integer == 0){
-            return ResultResponse.createByErrorMessage("一键恢复失败");
-        }
+        goodsRepository.updateRatio(shopId);
         return ResultResponse.createBySuccess();
     }
 
@@ -642,6 +632,22 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     @Override
     public List<GoodsType> findByParentIdAndStatus(Integer parentId) {
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(parentId, 1);
+        return goodsTypeList;
+    }
+
+    /**
+     * 去除父分类
+     * @param goodsTypeList
+     * @return
+     */
+    private List<GoodsType> goodsTypeList(List<GoodsType> goodsTypeList){
+        for (int i = 0; i< goodsTypeList.size(); i++) {
+            List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsTypeList.get(i).getId());
+            //需去除父分类
+            if (goodsTypes.size() > 0){
+                goodsTypeList.remove(i);
+            }
+        }
         return goodsTypeList;
     }
 

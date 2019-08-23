@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>modifyServiceResponse complex type的 Java 类。
+ * <p>modifyServiceResponse complex type?? Java ??
  * 
- * <p>以下模式片段指定包含在此类中的预期内容。
+ * <p>????????????????????????????????
  * 
  * <pre>
  * &lt;complexType name="modifyServiceResponse">
@@ -36,7 +36,7 @@ public class ModifyServiceResponse {
     protected String _return;
 
     /**
-     * 获取return属性的值。
+     * ???return????????
      * 
      * @return
      *     possible object is
@@ -48,7 +48,7 @@ public class ModifyServiceResponse {
     }
 
     /**
-     * 设置return属性的值。
+     * ????return????????
      * 
      * @param value
      *     allowed object is

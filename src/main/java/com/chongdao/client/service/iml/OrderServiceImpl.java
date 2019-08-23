@@ -84,6 +84,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,orderCommonVO.getShopId(),null);
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(cartList)) {
+            //订单失效或者已重复支付
+            return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.ORDER_VALID.getStatus(),OrderStatusEnum.ORDER_VALID.getMessage());
+        }
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -283,6 +287,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             User user = userRepository.findById(orderInfo.getUserId()).orElse(null);
             if (user != null) {
                 orderVo.setUsername(user.getName());
+                orderVo.setPhone(user.getPhone());
             }
         }
         orderVo.setRemark(orderInfo.getRemark());

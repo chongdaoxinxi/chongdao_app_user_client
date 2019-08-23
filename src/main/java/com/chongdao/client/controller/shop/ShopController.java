@@ -79,15 +79,15 @@ public class ShopController {
      * @return
      */
     @GetMapping("{shopId}")
-    public ResultResponse getShopById(@PathVariable Integer shopId, String token){
+    public ResultResponse getShopById(@PathVariable Integer shopId, Double lat, Double lng,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         ResultResponse response = (ResultResponse) GuavaCache.getKey("getByShopId_" + shopId);;
         if (response != null ){
             return response;
         }
-        response = shopService.getShopById(shopId, tokenVo.getUserId());
+        response = shopService.getShopById(shopId,lat,lng,tokenVo.getUserId());
         GuavaCache.setKey("getByShopId_" + shopId, response);
-        return shopService.getShopById(shopId,tokenVo.getUserId());
+        return shopService.getShopById(shopId,lat,lng,tokenVo.getUserId());
     }
 
     /**

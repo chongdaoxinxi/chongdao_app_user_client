@@ -20,7 +20,6 @@ import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
-import com.chongdao.client.utils.SignUtils;
 import com.chongdao.client.utils.wxpay.BasicInfo;
 import com.chongdao.client.utils.wxpay.PayUtil;
 import com.chongdao.client.utils.wxpay.SignUtil;
@@ -111,9 +110,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 logRepository.save(orderLog);
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败!!!");
             }
-            String sign = SignUtils.sign(orderStr, AliPayConfig.APP_PRIVATE_KEY);
-            String orderStrResult = orderStr + "&sign=" + sign;
-            System.out.println(orderStrResult);
+            String orderStrResult = orderStr;
             resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");

@@ -9,6 +9,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.DateTimeUtil;
+import com.chongdao.client.utils.DistanceUtil;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
@@ -120,7 +121,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public ResultResponse getShopById(Integer shopId,Integer userId) {
+    public ResultResponse getShopById(Integer shopId,Double lat, Double lng,Integer userId) {
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
@@ -148,6 +149,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         int count = favouriteShopRepository.countByUserIdAndShopIdAndStatus(userId, shopId, 1);
         shopVO.setConcernStatus(count);
         shopVO.setCouponInfoList(couponInfoList);
+        //查询用户到店铺的距离
+        double distance = DistanceUtil.getDistance(lat, lng, shop.getLat(), shop.getLng());
+        shopVO.setDistance(distance + "km");
         return ResultResponse.createBySuccess(shopVO);
     }
 

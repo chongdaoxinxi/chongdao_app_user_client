@@ -41,6 +41,8 @@ public enum OrderStatusEnum {
     ORDER_CREATE_ERROR(105, "订单生成失败"),
     CART_EMPTY(106, "购物车为空"),
 
+    ORDER_VALID(107, "请重新添加商品"),
+
     ;
 
     private int status;
