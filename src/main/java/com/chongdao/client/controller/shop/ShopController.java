@@ -35,13 +35,7 @@ public class ShopController {
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
 
-        ResultResponse<PageInfo> pageInfoResultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_shop_list");
-        if (pageInfoResultResponse != null) {
-            return pageInfoResultResponse;
-        }
-        pageInfoResultResponse = shopService.list(userId, categoryId, proActivities, orderBy, lng, lat, areaCode, pageNum, pageSize);
-        GuavaCache.setKey("home_shop_list",pageInfoResultResponse);
-        return pageInfoResultResponse;
+        return shopService.list(userId, categoryId, proActivities, orderBy, lng, lat, areaCode, pageNum, pageSize);
 
     }
 
@@ -55,10 +49,17 @@ public class ShopController {
     public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat, String areaCode){
         ResultResponse resultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_shop_list_geo");
         if (resultResponse != null){
+            Double cacheLat = (Double) GuavaCache.getKey("home_shop_list_geo_lat");
+            Double cacheLng = (Double) GuavaCache.getKey("home_shop_list_geo_lng");
+            if (cacheLat != lat || cacheLng != lng) {
+                return shopService.listGeo(lng, lat, areaCode);
+            }
             return resultResponse;
         }
         resultResponse = shopService.listGeo(lng, lat, areaCode);
         GuavaCache.setKey("home_shop_list_geo", resultResponse );
+        GuavaCache.setKey("home_shop_list_geo_lat", lat);
+        GuavaCache.setKey("home_shop_list_geo_lng", lng);
         return resultResponse;
 
     }

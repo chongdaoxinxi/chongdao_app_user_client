@@ -57,14 +57,7 @@ public class GoodsController {
                                          @RequestParam(value = "petCategoryId", required = false) Integer petCategoryId,
                                          @RequestParam(value = "areaCode") String areaCode,
                                          @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy){
-
-        ResultResponse<PageInfo> pageInfoResultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_goods_list");
-        if (pageInfoResultResponse != null){
-            return pageInfoResultResponse;
-        }
-        pageInfoResultResponse = goodsService.getGoodsByKeyword(keyword, pageNum, pageSize, brandId, goodsTypeId, scopeId, petCategoryId, areaCode, orderBy);
-        GuavaCache.setKey("home_goods_list",pageInfoResultResponse);
-        return pageInfoResultResponse;
+        return goodsService.getGoodsByKeyword(keyword, pageNum, pageSize, brandId, goodsTypeId, scopeId, petCategoryId, areaCode, orderBy);
     }
 
 
