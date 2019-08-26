@@ -2,6 +2,7 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.repository.InsuranceOrderRepository;
 import com.chongdao.client.repository.InsuranceShopChipRepository;
 import com.chongdao.client.repository.PetCardRepository;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @Description TODO
@@ -29,6 +31,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private PetCardRepository petCardRepository;
     @Autowired
     private InsuranceShopChipRepository insuranceShopChipRepository;
+    @Autowired
+    private InsuranceOrderRepository insuranceOrderRepository;
 
     private static final String COMPANY_CODE = "CDXX";
     private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
@@ -61,6 +65,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
             "\t\t\t<Quantity>1</Quantity>\n" +
+            "\t\t\t<PayWay>Y</PayWay>\n" +
             "\t\t\t<InsuredPlan>\n" +
             "\t\t\t\t<RationType>${RationType}</RationType>\n" +
             "\t\t\t</InsuredPlan>\n" +
@@ -97,7 +102,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t<PolicyInfos>\n" +
             "\t\t<PolicyInfo>\n" +
             "\t\t\t<SerialNo>${SerialNo}</SerialNo>\n" +
-            "\t\t\t<RiskCode>ZFO</RiskCode>\n" +
+            "\t\t\t<RiskCode>ZCG</RiskCode>\n" +
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
@@ -153,6 +158,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
             "\t\t\t<Quantity>1</Quantity>\n" +
+            "\t\t\t<PayWay>Y</PayWay>\n" +
             "\t\t\t<InsuredPlan>\n" +
             "\t\t\t\t<RationType>${RationType}</RationType>\n" +
             "\t\t\t</InsuredPlan>\n" +
@@ -219,8 +225,15 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
         String s = service.insureService(INSURANCE_SERVICE_NO, datas);
+
         System.out.println("返回数据:" + s);
-        return null;
+        return ResultResponse.createBySuccessMessage("投保成功!");
+    }
+
+    private void successCallBack(InsuranceOrder insuranceOrder) {
+        insuranceOrder.setApplyTime(new Date());
+        insuranceOrder.setStatus(2);//已支付待一级审核
+        insuranceOrderRepository.save(insuranceOrder);
     }
 
     /**
@@ -268,7 +281,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Template template = groupTemplate.getTemplate(I9QForm);
 
         //保险信息
-        template.binding("UUID","iiiiiiiiqQpufatesQt00133");
+        template.binding("UUID","iiiiiiiiqQpufatesQt00134");
 
         ////////测试参数
         template.binding("SerialNo", "1");
@@ -279,7 +292,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("SumAmount", "10000.00");//保额
         template.binding("SumPremium", "498.00");//保费
         //测试key
-        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00133", "498.00", "Picc37mu63ht38mw"));
+        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00134", "498.00", "Picc37mu63ht38mw"));
         //投保人、被保人信息
         template.binding("RationType", rationType);
         template.binding("AppliName", "testxxx");//投保人姓名
@@ -289,7 +302,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("InsuredSeqNo", "1");
         template.binding("InsuredName", "testxxx");//被保人姓名
         template.binding("InsuredIdType", "02");//被保人证件类型
-        template.binding("InsuredIdNo", "342501199109126037");
+        template.binding("InsuredIdNo", "342501199109126039");
         template.binding("InsuredEmail", "1092347670@qq.com");
 //额外字段-医疗险字段
         template.binding("ItemAge", "01");

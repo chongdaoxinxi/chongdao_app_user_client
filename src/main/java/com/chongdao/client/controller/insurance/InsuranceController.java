@@ -1,6 +1,9 @@
 package com.chongdao.client.controller.insurance;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.service.insurance.InsuranceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,28 +17,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/insurance/")
 public class InsuranceController {
+    @Autowired
+    private InsuranceService insuranceService;
+
     /////////////////////app端下单///////////////////////////////
     //下单 保存保单
     @PostMapping("addInsurance")
-    public ResultResponse addInsurance() {
-        return null;
+    public ResultResponse addInsurance(InsuranceOrder insuranceOrder) {
+        return insuranceService.saveInsurance(insuranceOrder);
     }
 
     //获取我的保单数据
     @PostMapping("getMyInsuranceData")
-    public ResultResponse getMyInsuranceData() {
-        return null;
+    public ResultResponse getMyInsuranceData(String token) {
+        return insuranceService.getMyInsuranceData(token);
+    }
+
+    //获取保单明细信息
+    @PostMapping("getInsuranceDetail")
+    public ResultResponse getInsuranceDetail(Integer insuranceId) {
+        return insuranceService.getInsuranceDetail(insuranceId);
     }
 
     //下载电子保单
     @PostMapping("downloadElectronicInsurancePolicy")
     public ResultResponse downloadElectronicInsurancePolicy() {
-        return null;
-    }
-
-    //获取保单明细信息
-    @PostMapping("getInsuranceDetail")
-    public ResultResponse getInsuranceDetail() {
         return null;
     }
 

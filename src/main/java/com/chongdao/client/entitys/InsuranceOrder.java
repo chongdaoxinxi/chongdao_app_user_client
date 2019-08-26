@@ -44,7 +44,7 @@ public class InsuranceOrder implements Serializable {
     private String bankCardPhoto;//银行卡照片
 
     //被保人信息
-    private Integer acceptSeqNo;//默认为1
+    private Integer acceptSeqNo;//被保人序列号, 默认为1
     private String acceptName;
     private String acceptCardType;//01:身份证;02:户口本;03:护照;04:军人证件;05:驾驶执照;06:返乡证;07:港澳身份证;08:工号;09:赴台通行证;10:港澳通行证;15:士兵证;16:外国人永久通行证;25:港澳居民来往内地通行证;26:台湾居民来往内地通行证;31:组织机构代码;37:统一社会信用代码;99:其他;
     private String acceptCardNo;
@@ -72,6 +72,7 @@ public class InsuranceOrder implements Serializable {
     private Date signBillTime;//签单日期(即与保险公司交互后生成保险单号的时间)
 
     private Date insuranceEffectTime;//保单起保日期(生效日期)(默认为当前时间往后推24小时的第一个零点, 用户可自主选择30天内的任何一个零点)
+    private Date insuranceFailureTime;//保单终保日期(失效截止日期)
 
     //保单相关属性
     private BigDecimal sumAmount;//保额

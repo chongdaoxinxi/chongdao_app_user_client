@@ -3,6 +3,7 @@ package com.chongdao.client.controller.insurance;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ public class InsuranceExternalController {
     private InsuranceExternalService insuranceExternalService;
 
     //保险发送数据给保险公司生成保单
-    @PostMapping("generateInsure")
+    @GetMapping("generateInsure")
     public ResultResponse generateInsure() {
         //生成接口所需要的数据
         return insuranceExternalService.generateInsure(null);
@@ -31,6 +32,7 @@ public class InsuranceExternalController {
 
     @PostMapping("payInsureCallBack")
     public ResultResponse payInsureCallBack(HttpServletRequest request, HttpServletResponse response) {
-        return null;
+        //TODO
+        return ResultResponse.createBySuccessMessage("回调成功!");
     }
 }
