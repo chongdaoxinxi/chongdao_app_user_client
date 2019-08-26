@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -37,7 +38,7 @@ public class InsuranceServiceImpl implements InsuranceService {
      */
     @Override
     @Transactional
-    public ResultResponse saveInsurance(InsuranceOrder insuranceOrder) {
+    public ResultResponse saveInsurance(InsuranceOrder insuranceOrder) throws IOException {
         //先将数据保存在我们数据库
         InsuranceOrder order = new InsuranceOrder();
         BeanUtils.copyProperties(insuranceOrder, order);
@@ -64,6 +65,11 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse getInsuranceDetail(Integer insuranceId) {
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), insuranceOrderRepository.findById(insuranceId));
+    }
+
+    @Override
+    public ResultResponse downloadElectronicInsurancePolicy(Integer insuranceId) {
+        return null;
     }
 
     @Override

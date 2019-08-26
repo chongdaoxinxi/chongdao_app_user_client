@@ -18,10 +18,14 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -50,6 +54,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String ZCG_RATION_TYPE = "ZCG3199001";
     private static final String I9Q_RISK_CODE = "I9Q";
     private static final String I9Q_RATION_TYPE = "I9Q310000a";
+    private static final String POLICY_FOLDER_PREFIX = "../policy/";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
@@ -213,7 +218,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     @Override
     @Transactional
-    public ResultResponse generateInsure(InsuranceOrder insuranceOrder) {
+    public ResultResponse generateInsure(InsuranceOrder insuranceOrder) throws IOException {
         String datas = "";
 //        Integer insuranceType = insuranceOrder.getInsuranceType();
 //        if(insuranceType == 1) {
@@ -234,6 +239,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         String resp = service.insureService(INSURANCE_SERVICE_NO, datas);
         System.out.println("返回数据:" + resp);
         String errorCode = "";
+        String downloadUrl = "";
         try {
             Document document = DocumentHelper.parseText(resp);
             Element root = document.getRootElement();
@@ -249,6 +255,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 for (Iterator j = next.elementIterator("PolicyInfoReturn"); j
                         .hasNext();) {
                     Element e = (Element) j.next();
+                    downloadUrl = next.elementText("DownloadUrl");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -261,6 +268,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         //回调函数
         if(errorCode.equals("00")) {
             //投保成功
+            savePolicy(insuranceOrder, downloadUrl);
             successCallBack(insuranceOrder);
             return ResultResponse.createBySuccessMessage("投保成功!");
         } else {
@@ -268,6 +276,29 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             System.out.println("ErrorCode:" + errorCode);
             return ResultResponse.createByErrorMessage("投保失败");
         }
+    }
+
+    private void savePolicy(InsuranceOrder insuranceOrder, String downloadUrl) throws IOException{
+        insuranceOrder.setPolicyDownloadUrl(downloadUrl);
+        //根据下载链接, 将图片下载存储到服务器上, 并保存访问url
+        RestTemplate rest = new RestTemplate();
+        rest.execute(downloadUrl, HttpMethod.POST, (req) -> {}, (res) -> {
+            InputStream inputStream = res.getBody();
+            FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + insuranceOrder.getInsuranceOrderNo() + ".jpg");
+            int bytesWritten = 0;
+            int byteCount = 0;
+            byte[] bytes = new byte[4096];
+            while ((byteCount = inputStream.read(bytes)) != -1)
+            {
+                out.write(bytes, bytesWritten, byteCount);
+                bytesWritten += byteCount;
+            }
+            inputStream.close();
+            out.close();
+            //保存文件名
+            insuranceOrder.setPolicyImage(insuranceOrder.getInsuranceOrderNo() + ".jpg");
+            return null;
+        });
     }
 
     private void successCallBack(InsuranceOrder insuranceOrder) {

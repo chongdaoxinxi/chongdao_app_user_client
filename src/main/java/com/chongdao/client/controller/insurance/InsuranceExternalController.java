@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @Description 保险业务对外接口
@@ -24,7 +25,7 @@ public class InsuranceExternalController {
 
     //保险发送数据给保险公司生成保单
     @PostMapping("generateInsure")
-    public ResultResponse generateInsure() {
+    public ResultResponse generateInsure()  throws IOException {
         //生成接口所需要的数据
         return insuranceExternalService.generateInsure(null);
     }
