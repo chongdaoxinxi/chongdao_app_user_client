@@ -9,6 +9,7 @@ import com.chongdao.client.utils.GenerateOrderNo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -30,6 +31,7 @@ public class InsuranceServiceImpl implements InsuranceService {
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse saveInsurance(InsuranceOrder insuranceOrder) {
         //先将数据保存在我们数据库
         InsuranceOrder order = new InsuranceOrder();

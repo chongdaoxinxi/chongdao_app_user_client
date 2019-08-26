@@ -13,11 +13,17 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * @Description TODO
@@ -206,6 +212,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "</ApplyInfo>";
 
     @Override
+    @Transactional
     public ResultResponse generateInsure(InsuranceOrder insuranceOrder) {
         String datas = "";
 //        Integer insuranceType = insuranceOrder.getInsuranceType();
@@ -224,10 +231,43 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
-        String s = service.insureService(INSURANCE_SERVICE_NO, datas);
-
-        System.out.println("返回数据:" + s);
-        return ResultResponse.createBySuccessMessage("投保成功!");
+        String resp = service.insureService(INSURANCE_SERVICE_NO, datas);
+        System.out.println("返回数据:" + resp);
+        String errorCode = "";
+        try {
+            Document document = DocumentHelper.parseText(resp);
+            Element root = document.getRootElement();
+            for (Iterator i = root.elementIterator("GeneralInfoReturn"); i.hasNext();) {
+                Element next = (Element) i.next();
+                errorCode = next.elementText("ErrorCode");
+                System.out.println("UUID:" + next.elementText("UUID"));
+                System.out.println("ErrorCode:" + next.elementText("ErrorCode"));
+                System.out.println("ErrorMessage:" + next.elementText("ErrorMessage"));
+            }
+            for (Iterator i = root.elementIterator("PolicyInfoReturns"); i.hasNext();) {
+                Element next = (Element) i.next();
+                for (Iterator j = next.elementIterator("PolicyInfoReturn"); j
+                        .hasNext();) {
+                    Element e = (Element) j.next();
+                    System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
+                    System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
+                    System.out.println("SaveResult:" + e.elementText("SaveResult"));
+                    System.out.println("SaveMessage:" + e.elementText("SaveMessage"));
+                }
+            }
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        //回调函数
+        if(errorCode.equals("00")) {
+            //投保成功
+            successCallBack(insuranceOrder);
+            return ResultResponse.createBySuccessMessage("投保成功!");
+        } else {
+            //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
+            System.out.println("ErrorCode:" + errorCode);
+            return ResultResponse.createByErrorMessage("投保失败");
+        }
     }
 
     private void successCallBack(InsuranceOrder insuranceOrder) {
