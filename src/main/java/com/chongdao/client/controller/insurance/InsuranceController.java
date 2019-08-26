@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 /**
  * @Description 保险业务
  * @Author onlineS
@@ -29,8 +31,8 @@ public class InsuranceController {
 
     //获取我的保单数据
     @PostMapping("getMyInsuranceData")
-    public ResultResponse getMyInsuranceData(String token) {
-        return insuranceService.getMyInsuranceData(token);
+    public ResultResponse getMyInsuranceData(String token, Integer pageSize, Integer pageNum) {
+        return insuranceService.getMyInsuranceData(token, pageSize, pageNum);
     }
 
     //获取保单明细信息
@@ -48,19 +50,19 @@ public class InsuranceController {
     /////////////////////PC端审核///////////////////////////////
     //获取保单分页数据
     @PostMapping("getInsuranceDataList")
-    public ResultResponse getInsuranceDataList() {
-        return null;
+    public ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize) {
+        return insuranceService.getInsuranceDataList(token, userName, insuranceOrderNo, start, end, pageNum, pageSize);
     }
 
     //一级/二级审核保单
     @PostMapping("auditInsurance")
-    public ResultResponse auditInsurance() {
-        return null;
+    public ResultResponse auditInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
+        return insuranceService.auditInsurance(insuranceOrderId, targetStatus, note);
     }
 
     //一级/二级拒绝保单
     @PostMapping("refuseInsurance")
-    public ResultResponse refuseInsurance() {
-        return null;
+    public ResultResponse refuseInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
+        return insuranceService.refuseInsurance(insuranceOrderId, targetStatus, note);
     }
 }

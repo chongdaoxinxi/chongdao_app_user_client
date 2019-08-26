@@ -2,12 +2,17 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.InsuranceOrderRepository;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.GenerateOrderNo;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +54,30 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public ResultResponse getMyInsuranceData(String token) {
-        return null;
+    public ResultResponse getMyInsuranceData(String token, Integer pageSize, Integer pageNum) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        Integer userId = tokenVo.getUserId();
+        Pageable pageable = PageRequest.of(pageNum-1,pageSize);
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), insuranceOrderRepository.findByUserId(userId, pageable));
     }
 
     @Override
     public ResultResponse getInsuranceDetail(Integer insuranceId) {
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), insuranceOrderRepository.findById(insuranceId));
+    }
+
+    @Override
+    public ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize) {
+        return null;
+    }
+
+    @Override
+    public ResultResponse auditInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
+        return null;
+    }
+
+    @Override
+    public ResultResponse refuseInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
         return null;
     }
 }
