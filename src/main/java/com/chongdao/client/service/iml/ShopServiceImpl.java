@@ -151,7 +151,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         shopVO.setCouponInfoList(couponInfoList);
         //查询用户到店铺的距离
         double distance = DistanceUtil.getDistance(lat, lng, shop.getLat(), shop.getLng());
-        shopVO.setDistance(distance + "km");
+        shopVO.setDistance(BigDecimal.valueOf(distance/1000).setScale(1, BigDecimal.ROUND_UP) + "km");
         return ResultResponse.createBySuccess(shopVO);
     }
 

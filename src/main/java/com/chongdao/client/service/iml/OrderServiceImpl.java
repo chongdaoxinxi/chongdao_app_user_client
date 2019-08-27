@@ -243,9 +243,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setServicePrice(orderInfo.getServicePrice());
         //获取店铺名称以及填充订单详情
         Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+        orderVo.setShopId(shop.getId());
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         orderVo.setShopPhone(shop.getPhone());
+        orderVo.setShopReceiveTime(orderInfo.getShopReceiveTime());
+        orderVo.setShopFinishTime(orderInfo.getShopFinishTime());
         //获取商品详情
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
         List<OrderDetailVO> orderDetailVOS = Lists.newArrayList();
@@ -290,6 +293,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderVo.setPhone(user.getPhone());
             }
         }
+        orderVo.setServiceType(orderInfo.getServiceType());
         orderVo.setRemark(orderInfo.getRemark());
         return ResultResponse.createBySuccess(orderVo);
     }
