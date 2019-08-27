@@ -78,9 +78,9 @@ public class OrderVo {
 
     private String goodsName;
 
-    private BigDecimal discountPrice;
+    private BigDecimal discountPrice = BigDecimal.ZERO;
 
-    private BigDecimal goodsTotalPrice;
+    private BigDecimal goodsTotalPrice = BigDecimal.ZERO;
 
     private Integer quantity;
 
@@ -119,10 +119,14 @@ public class OrderVo {
 
     private List<CpnThresholdRule> couponInfoList;
 
-    //优惠价（满减）
-    private BigDecimal couponPrice;
-    //满减名称
+    //优惠价（不包含满减）
+    private BigDecimal couponPrice = BigDecimal.ZERO;
+    //优惠券名称
     private String couponName;
+    //满减名称
+    private String fullCouponName;
+    //满减 4
+    private BigDecimal fullCouponPrice = BigDecimal.ZERO;
     private BigDecimal serviceCouponPrice = BigDecimal.ZERO;
     private BigDecimal goodsCouponPrice = BigDecimal.ZERO;
 

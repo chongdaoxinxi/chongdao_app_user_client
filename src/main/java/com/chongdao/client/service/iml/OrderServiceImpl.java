@@ -258,13 +258,28 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetailVO.setQuantity(orderDetail.getCount());
             orderDetailVO.setCurrentPrice(orderDetail.getCurrentPrice());
             orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
+            //获取商品折扣
+            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), 1);
+            if ((good.getDiscount() > 0 && good.getDiscount() != null)){
+                orderVo.setDiscount(good.getDiscount());
+                orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
+            }
+            if ((good.getReDiscount() > 0 && good.getReDiscount() != null)){
+                orderVo.setDiscount(good.getReDiscount());
+                orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
+            }
             orderDetailVOS.add(orderDetailVO);
         });
         //优惠券
         if (orderInfo.getCouponId() != null && orderInfo.getCouponId() > 0){
             CouponInfo couponInfo = couponInfoRepository.findById(orderInfo.getCouponId()).orElse(null);
             if (couponInfo != null) {
-                orderVo.setCouponName(couponInfo.getCpnName());
+                //满减
+                if (couponInfo.getCpnType() == 4){
+                    orderVo.setFullCouponName(couponInfo.getCpnName());
+                }else {
+                    orderVo.setCouponName(couponInfo.getCpnName());
+                }
             }
         }
         orderVo.setOrderStatus(orderInfo.getOrderStatus());
