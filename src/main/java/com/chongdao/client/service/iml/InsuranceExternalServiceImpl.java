@@ -2,6 +2,7 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.repository.InsuranceOrderRepository;
 import com.chongdao.client.repository.InsuranceShopChipRepository;
 import com.chongdao.client.repository.PetCardRepository;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
@@ -12,10 +13,21 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.Iterator;
 
 /**
  * @Description TODO
@@ -29,6 +41,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private PetCardRepository petCardRepository;
     @Autowired
     private InsuranceShopChipRepository insuranceShopChipRepository;
+    @Autowired
+    private InsuranceOrderRepository insuranceOrderRepository;
 
     private static final String COMPANY_CODE = "CDXX";
     private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
@@ -40,6 +54,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String ZCG_RATION_TYPE = "ZCG3199001";
     private static final String I9Q_RISK_CODE = "I9Q";
     private static final String I9Q_RATION_TYPE = "I9Q310000a";
+    private static final String POLICY_FOLDER_PREFIX = "../policy/";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
@@ -61,6 +76,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
             "\t\t\t<Quantity>1</Quantity>\n" +
+            "\t\t\t<PayWay>Y</PayWay>\n" +
             "\t\t\t<InsuredPlan>\n" +
             "\t\t\t\t<RationType>${RationType}</RationType>\n" +
             "\t\t\t</InsuredPlan>\n" +
@@ -97,7 +113,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t<PolicyInfos>\n" +
             "\t\t<PolicyInfo>\n" +
             "\t\t\t<SerialNo>${SerialNo}</SerialNo>\n" +
-            "\t\t\t<RiskCode>ZFO</RiskCode>\n" +
+            "\t\t\t<RiskCode>ZCG</RiskCode>\n" +
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
@@ -153,6 +169,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
             "\t\t\t<Quantity>1</Quantity>\n" +
+            "\t\t\t<PayWay>Y</PayWay>\n" +
             "\t\t\t<InsuredPlan>\n" +
             "\t\t\t\t<RationType>${RationType}</RationType>\n" +
             "\t\t\t</InsuredPlan>\n" +
@@ -200,7 +217,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "</ApplyInfo>";
 
     @Override
-    public ResultResponse generateInsure(InsuranceOrder insuranceOrder) {
+    @Transactional
+    public ResultResponse generateInsure(InsuranceOrder insuranceOrder) throws IOException {
         String datas = "";
 //        Integer insuranceType = insuranceOrder.getInsuranceType();
 //        if(insuranceType == 1) {
@@ -218,9 +236,75 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
-        String s = service.insureService(INSURANCE_SERVICE_NO, datas);
-        System.out.println("返回数据:" + s);
-        return null;
+        String resp = service.insureService(INSURANCE_SERVICE_NO, datas);
+        System.out.println("返回数据:" + resp);
+        String errorCode = "";
+        String downloadUrl = "";
+        try {
+            Document document = DocumentHelper.parseText(resp);
+            Element root = document.getRootElement();
+            for (Iterator i = root.elementIterator("GeneralInfoReturn"); i.hasNext();) {
+                Element next = (Element) i.next();
+                errorCode = next.elementText("ErrorCode");
+                System.out.println("UUID:" + next.elementText("UUID"));
+                System.out.println("ErrorCode:" + next.elementText("ErrorCode"));
+                System.out.println("ErrorMessage:" + next.elementText("ErrorMessage"));
+            }
+            for (Iterator i = root.elementIterator("PolicyInfoReturns"); i.hasNext();) {
+                Element next = (Element) i.next();
+                for (Iterator j = next.elementIterator("PolicyInfoReturn"); j
+                        .hasNext();) {
+                    Element e = (Element) j.next();
+                    downloadUrl = next.elementText("DownloadUrl");
+                    System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
+                    System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
+                    System.out.println("SaveResult:" + e.elementText("SaveResult"));
+                    System.out.println("SaveMessage:" + e.elementText("SaveMessage"));
+                }
+            }
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        //回调函数
+        if(errorCode.equals("00")) {
+            //投保成功
+            savePolicy(insuranceOrder, downloadUrl);
+            successCallBack(insuranceOrder);
+            return ResultResponse.createBySuccessMessage("投保成功!");
+        } else {
+            //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
+            System.out.println("ErrorCode:" + errorCode);
+            return ResultResponse.createByErrorMessage("投保失败");
+        }
+    }
+
+    private void savePolicy(InsuranceOrder insuranceOrder, String downloadUrl) throws IOException{
+        insuranceOrder.setPolicyDownloadUrl(downloadUrl);
+        //根据下载链接, 将图片下载存储到服务器上, 并保存访问url
+        RestTemplate rest = new RestTemplate();
+        rest.execute(downloadUrl, HttpMethod.POST, (req) -> {}, (res) -> {
+            InputStream inputStream = res.getBody();
+            FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + insuranceOrder.getInsuranceOrderNo() + ".jpg");
+            int bytesWritten = 0;
+            int byteCount = 0;
+            byte[] bytes = new byte[4096];
+            while ((byteCount = inputStream.read(bytes)) != -1)
+            {
+                out.write(bytes, bytesWritten, byteCount);
+                bytesWritten += byteCount;
+            }
+            inputStream.close();
+            out.close();
+            //保存文件名
+            insuranceOrder.setPolicyImage(insuranceOrder.getInsuranceOrderNo() + ".jpg");
+            return null;
+        });
+    }
+
+    private void successCallBack(InsuranceOrder insuranceOrder) {
+        insuranceOrder.setApplyTime(new Date());
+        insuranceOrder.setStatus(2);//已支付待一级审核
+        insuranceOrderRepository.save(insuranceOrder);
     }
 
     /**
@@ -268,7 +352,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Template template = groupTemplate.getTemplate(I9QForm);
 
         //保险信息
-        template.binding("UUID","iiiiiiiiqQpufatesQt00133");
+        template.binding("UUID","iiiiiiiiqQpufatesQt00134");
 
         ////////测试参数
         template.binding("SerialNo", "1");
@@ -279,7 +363,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("SumAmount", "10000.00");//保额
         template.binding("SumPremium", "498.00");//保费
         //测试key
-        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00133", "498.00", "Picc37mu63ht38mw"));
+        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00134", "498.00", "Picc37mu63ht38mw"));
         //投保人、被保人信息
         template.binding("RationType", rationType);
         template.binding("AppliName", "testxxx");//投保人姓名
@@ -289,7 +373,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("InsuredSeqNo", "1");
         template.binding("InsuredName", "testxxx");//被保人姓名
         template.binding("InsuredIdType", "02");//被保人证件类型
-        template.binding("InsuredIdNo", "342501199109126037");
+        template.binding("InsuredIdNo", "342501199109126039");
         template.binding("InsuredEmail", "1092347670@qq.com");
 //额外字段-医疗险字段
         template.binding("ItemAge", "01");

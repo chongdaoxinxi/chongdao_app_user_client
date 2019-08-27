@@ -50,7 +50,7 @@ public class BasicInfo {
     public static final String KeyPath = "apiclient_cert.p12";
 
     //微信回调URL
-    public static final String NotifyUrl = "http://47.100.63.167/app_client/api/callBackController/wx_pay_callback";
+    public static final String NotifyUrl = "http://47.100.63.167/app_client/api/pay/wx_pay_callback";
 
     //微信统一下单接口
     public static final String unifiedordersurl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
