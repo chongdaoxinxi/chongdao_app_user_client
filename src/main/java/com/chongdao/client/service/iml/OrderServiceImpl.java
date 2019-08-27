@@ -276,16 +276,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             if (couponInfo != null) {
                 //满减
                 if (couponInfo.getCpnType() == 4){
-                    CpnThresholdRule cpnThresholdRule = cpnThresholdRuleRepository.findByCpnId(couponInfo.getId());
                     orderVo.setFullCouponName(couponInfo.getCpnName());
-                    orderVo.setFullCouponPrice(cpnThresholdRule.getMinPrice());
-                }else if (couponInfo.getCpnType() == 1){ //红包
+                    orderVo.setFullCouponPrice(couponInfo.getCpnValue());
+                }else{ //红包
                     orderVo.setCouponName(couponInfo.getCpnName());
                     orderVo.setCouponPrice(couponInfo.getCpnValue());
-                }else{ //优惠券
-                    CpnThresholdRule cpnThresholdRule = cpnThresholdRuleRepository.findByCpnId(couponInfo.getId());
-                    orderVo.setCouponName(couponInfo.getCpnName());
-                    orderVo.setCouponPrice(cpnThresholdRule.getMinPrice());
                 }
             }
         }
