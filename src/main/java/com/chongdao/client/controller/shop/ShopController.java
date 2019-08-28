@@ -25,7 +25,7 @@ public class ShopController {
      * @param pageNum 页数
      * @param pageSize 每页数据数量
      * @param orderBy 排序方式(价格、销量、好评等)
-     * @param proActivities 1.满减活动 2.店铺打折 3.店铺红包
+     * @param proActivities 1.满减活动 0.店铺打折 3.店铺红包
      */
     @GetMapping("list")
     public ResultResponse<PageInfo> list(@RequestParam(value = "categoryId",required = false) String categoryId,
