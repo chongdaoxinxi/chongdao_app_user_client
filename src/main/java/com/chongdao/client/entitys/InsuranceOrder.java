@@ -83,13 +83,4 @@ public class InsuranceOrder implements Serializable {
 
     //分销
     private String recommendCode;//推广码
-
-    //测试使用
-    private String petName;
-    private String typeName;
-    private String birthDate;
-    private String age;
-    private String petCardType;
-    private String petCardNo;
-    private String createTimeStr;
 }

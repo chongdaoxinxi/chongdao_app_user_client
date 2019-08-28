@@ -11,6 +11,7 @@ import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceSe
 import com.chongdao.client.utils.DocxUtil;
 import com.chongdao.client.utils.Md5;
 import com.chongdao.client.utils.PdfUtil;
+import com.chongdao.client.vo.InsuranceOrderPdfVO;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Configuration;
@@ -21,6 +22,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
@@ -319,6 +321,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     }
 
     private void generatePetupPolicy(InsuranceOrder insuranceOrder) throws IOException {
+        InsuranceOrderPdfVO pdfVo = new InsuranceOrderPdfVO();
         //测试
         if(insuranceOrder == null) {
             insuranceOrder = new InsuranceOrder();
@@ -327,12 +330,19 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             insuranceOrder.setCardType("test");
             insuranceOrder.setCardNo("test");
             insuranceOrder.setOrderNo("test");
-            insuranceOrder.setCreateTimeStr(new Date().toString());
-
+            BeanUtils.copyProperties(insuranceOrder, pdfVo);
+            pdfVo.setPolicyNo("test");
+            pdfVo.setPetName("test");
+            pdfVo.setTypeName("test");
+            pdfVo.setBirthDate("test");
+            pdfVo.setAge("1");
+            pdfVo.setPetCardType("test");
+            pdfVo.setPetCardNo("test");
+            pdfVo.setCreateDate("2019-9-1");
         }
         try (InputStream inputStream = new ClassPathResource("/template/pickup_policy.docx").getInputStream()) {
             Map<String, Object> map = new HashMap<>();
-            map.put("insuranceOrder", insuranceOrder);
+            map.put("pdfVo", pdfVo);
             try {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 DocxUtil.processDocxTemplate(inputStream, outputStream, map, null);
