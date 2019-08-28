@@ -203,11 +203,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //全部 （状态含义 参考OrderStatusEnum.class）
         if ("all".contains(type)) {
             type = "1,2,3,4,5,6,7,8,9,10,11,12,13";
-        }else if (type.equals("2")){//服务中
+        } else if (type.equals("2")) {//服务中
             type = "7,10,11,12";
-        }else{//已完成
+        } else if (type.equals("1")){ //待接单
+            type = "1";
+        } else{//已完成
             type = "0,3,4,5,6,9,13";
-
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
         List<OrderVo> orderVoList = this.assembleOrderVoList(orderInfoList, userId);
@@ -243,9 +244,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setServicePrice(orderInfo.getServicePrice());
         //获取店铺名称以及填充订单详情
         Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+        orderVo.setShopId(shop.getId());
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         orderVo.setShopPhone(shop.getPhone());
+        orderVo.setShopReceiveTime(orderInfo.getShopReceiveTime());
+        orderVo.setShopFinishTime(orderInfo.getShopFinishTime());
         //获取商品详情
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
         List<OrderDetailVO> orderDetailVOS = Lists.newArrayList();
@@ -255,13 +259,30 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetailVO.setQuantity(orderDetail.getCount());
             orderDetailVO.setCurrentPrice(orderDetail.getCurrentPrice());
             orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
+            //获取商品折扣
+            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), 1);
+            if ((good.getDiscount() > 0 && good.getDiscount() != null)){
+                orderVo.setDiscount(good.getDiscount());
+                orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
+            }
+            if ((good.getReDiscount() > 0 && good.getReDiscount() != null)){
+                orderVo.setDiscount(good.getReDiscount());
+                orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
+            }
             orderDetailVOS.add(orderDetailVO);
         });
         //优惠券
         if (orderInfo.getCouponId() != null && orderInfo.getCouponId() > 0){
             CouponInfo couponInfo = couponInfoRepository.findById(orderInfo.getCouponId()).orElse(null);
             if (couponInfo != null) {
-                orderVo.setCouponName(couponInfo.getCpnName());
+                //满减
+                if (couponInfo.getCpnType() == 4){
+                    orderVo.setFullCouponName(couponInfo.getCpnName());
+                    orderVo.setFullCouponPrice(couponInfo.getCpnValue());
+                }else{ //红包
+                    orderVo.setCouponName(couponInfo.getCpnName());
+                    orderVo.setCouponPrice(couponInfo.getCpnValue());
+                }
             }
         }
         orderVo.setOrderStatus(orderInfo.getOrderStatus());
@@ -290,6 +311,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderVo.setPhone(user.getPhone());
             }
         }
+        orderVo.setServiceType(orderInfo.getServiceType());
         orderVo.setRemark(orderInfo.getRemark());
         return ResultResponse.createBySuccess(orderVo);
     }

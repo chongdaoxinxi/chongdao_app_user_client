@@ -151,6 +151,9 @@ public class CommonRepository {
     @Autowired
     protected FavouriteGoodsRepository favouriteGoodsRepository;
 
+    @Autowired
+    protected CpnThresholdRuleRepository cpnThresholdRuleRepository;
+
 
 
 

@@ -9,6 +9,8 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/shop/")
 @CrossOrigin
@@ -23,7 +25,7 @@ public class ShopController {
      * @param pageNum 页数
      * @param pageSize 每页数据数量
      * @param orderBy 排序方式(价格、销量、好评等)
-     * @param proActivities 1.满减活动 2.店铺打折 3.店铺红包
+     * @param proActivities 1.满减活动 0.店铺打折 3.店铺红包
      */
     @GetMapping("list")
     public ResultResponse<PageInfo> list(@RequestParam(value = "categoryId",required = false) String categoryId,
@@ -48,18 +50,24 @@ public class ShopController {
     @GetMapping("list/geo")
     public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat, String areaCode){
         ResultResponse resultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_shop_list_geo");
+        BigDecimal newLat = BigDecimal.valueOf(lat).setScale(3, BigDecimal.ROUND_HALF_UP);
+        BigDecimal newLng = BigDecimal.valueOf(lng).setScale(3, BigDecimal.ROUND_HALF_UP);
         if (resultResponse != null){
-            Double cacheLat = (Double) GuavaCache.getKey("home_shop_list_geo_lat");
-            Double cacheLng = (Double) GuavaCache.getKey("home_shop_list_geo_lng");
-            if (cacheLat != lat || cacheLng != lng) {
-                return shopService.listGeo(lng, lat, areaCode);
+            BigDecimal cacheLat = (BigDecimal) GuavaCache.getKey("list_geo_lat");
+            BigDecimal cacheLng = (BigDecimal) GuavaCache.getKey("list_geo_lng");
+            if (cacheLat.compareTo(newLat) != 0 &&  cacheLng.compareTo(newLng) != 0) {
+                resultResponse = shopService.listGeo(lng, lat, areaCode);
+                GuavaCache.setKey("home_shop_list_geo", resultResponse);
+                GuavaCache.setKey("list_geo_lat", newLat);
+                GuavaCache.setKey("list_geo_lng", newLng);
+                return resultResponse;
             }
             return resultResponse;
         }
         resultResponse = shopService.listGeo(lng, lat, areaCode);
-        GuavaCache.setKey("home_shop_list_geo", resultResponse );
-        GuavaCache.setKey("home_shop_list_geo_lat", lat);
-        GuavaCache.setKey("home_shop_list_geo_lng", lng);
+        GuavaCache.setKey("home_shop_list_geo", resultResponse);
+        GuavaCache.setKey("list_geo_lat", newLat);
+        GuavaCache.setKey("list_geo_lng", newLng);
         return resultResponse;
 
     }
@@ -82,12 +90,6 @@ public class ShopController {
     @GetMapping("{shopId}")
     public ResultResponse getShopById(@PathVariable Integer shopId, Double lat, Double lng,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        ResultResponse response = (ResultResponse) GuavaCache.getKey("getByShopId_" + shopId);;
-        if (response != null ){
-            return response;
-        }
-        response = shopService.getShopById(shopId,lat,lng,tokenVo.getUserId());
-        GuavaCache.setKey("getByShopId_" + shopId, response);
         return shopService.getShopById(shopId,lat,lng,tokenVo.getUserId());
     }
 

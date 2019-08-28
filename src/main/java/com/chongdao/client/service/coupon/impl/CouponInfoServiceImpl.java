@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.chongdao.client.common.CouponConst.LIMITED_GOODS;
+import static com.chongdao.client.common.CouponConst.THRESHOLD;
 
 /**
  * @author fenglong
@@ -41,9 +42,9 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
         //优惠券叠加
         this.saveCpnSuperpositionRule(couponInfo);
         //门槛规则叠加
-        //if (couponInfo.getRuleType() == THRESHOLD) {//有门槛
+        if (couponInfo.getRuleType() == THRESHOLD) {//有门槛
             this.saveCpnThresholdRule(couponInfo);
-       // }
+        }
         //适用范围类型
         this.saveCouponScopeRule(couponInfo);
         return ResultResponse.createBySuccess();
@@ -90,7 +91,7 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
             cpnUserRepository.updateState(cpnId);
         }
         couponInfoRepository.updateState(cpnId,state);
-        return null;
+        return ResultResponse.createBySuccess();
     }
 
     /**
