@@ -62,7 +62,7 @@ public class InsuranceOrder implements Serializable {
     private String petPhoto;//宠物图片->用于审核
     private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
 
-    private Integer orderNo;//运输险, 订单id
+    private String orderNo;//运输险, 订单id
 
     //订单相关属性
     private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;4:保单生成;)
@@ -83,4 +83,13 @@ public class InsuranceOrder implements Serializable {
 
     //分销
     private String recommendCode;//推广码
+
+    //测试使用
+    private String petName;
+    private String typeName;
+    private String birthDate;
+    private String age;
+    private String petCardType;
+    private String petCardNo;
+    private String createTimeStr;
 }

@@ -8,7 +8,11 @@ import com.chongdao.client.repository.PetCardRepository;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
+import com.chongdao.client.utils.DocxUtil;
 import com.chongdao.client.utils.Md5;
+import com.chongdao.client.utils.PdfUtil;
+import fr.opensagres.xdocreport.core.XDocReportException;
+import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
@@ -18,16 +22,17 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -55,6 +60,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String I9Q_RISK_CODE = "I9Q";
     private static final String I9Q_RATION_TYPE = "I9Q310000a";
     private static final String POLICY_FOLDER_PREFIX = "../policy/";
+    private static final String POLICY_REALPATH = "/home/policy/";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
@@ -66,7 +72,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t<PolicyInfos>\n" +
             "\t\t<PolicyInfo>\n" +
             "\t\t\t<SerialNo>${SerialNo}</SerialNo>\n" +
-            "\t\t\t<RiskCode>ZFO</RiskCode>\n" +
+            "\t\t\t<RiskCode>${RiskCode}</RiskCode>\n" +
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
@@ -82,17 +88,17 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t</InsuredPlan>\n" +
             "\t\t\t<Applicant>\n" +
             "\t\t\t\t<AppliName>${AppliName}</AppliName>\n" +
-            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n"+
-            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n"+
-            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n"+
+            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n" +
+            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n" +
+            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
             "\t\t\t\t<Insured>\n" +
             "\t\t\t\t\t<InsuredSeqNo>${InsuredSeqNo}</InsuredSeqNo>\n" +
-            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n"+
-            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n"+
-            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n"+
+            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n" +
+            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n" +
+            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n" +
             "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
             "\t\t\t\t</Insured>\n" +
             "\t\t\t</Insureds>\n" +
@@ -113,7 +119,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t<PolicyInfos>\n" +
             "\t\t<PolicyInfo>\n" +
             "\t\t\t<SerialNo>${SerialNo}</SerialNo>\n" +
-            "\t\t\t<RiskCode>ZCG</RiskCode>\n" +
+            "\t\t\t<RiskCode>${RiskCode}</RiskCode>\n" +
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
@@ -128,17 +134,17 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t</InsuredPlan>\n" +
             "\t\t\t<Applicant>\n" +
             "\t\t\t\t<AppliName>${AppliName}</AppliName>\n" +
-            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n"+
-            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n"+
-            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n"+
+            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n" +
+            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n" +
+            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
             "\t\t\t\t<Insured>\n" +
             "\t\t\t\t\t<InsuredSeqNo>${InsuredSeqNo}</InsuredSeqNo>\n" +
-            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n"+
-            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n"+
-            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n"+
+            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n" +
+            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n" +
+            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n" +
             "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
             "\t\t\t\t</Insured>\n" +
             "\t\t\t</Insureds>\n" +
@@ -159,7 +165,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t<PolicyInfos>\n" +
             "\t\t<PolicyInfo>\n" +
             "\t\t\t<SerialNo>${SerialNo}</SerialNo>\n" +
-            "\t\t\t<RiskCode>I9Q</RiskCode>\n" +
+            "\t\t\t<RiskCode>${RiskCode}</RiskCode>\n" +
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
@@ -175,17 +181,17 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t</InsuredPlan>\n" +
             "\t\t\t<Applicant>\n" +
             "\t\t\t\t<AppliName>${AppliName}</AppliName>\n" +
-            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n"+
-            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n"+
-            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n"+
+            "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n" +
+            "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n" +
+            "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
             "\t\t\t\t<Insured>\n" +
             "\t\t\t\t\t<InsuredSeqNo>${InsuredSeqNo}</InsuredSeqNo>\n" +
-            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n"+
-            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n"+
-            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n"+
+            "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n" +
+            "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n" +
+            "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n" +
             "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
             "\t\t\t\t</Insured>\n" +
             "\t\t\t</Insureds>\n" +
@@ -231,8 +237,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 //            //运输险
 //            datas = getRenderZCGForm(insuranceOrder);
 //        }
-        datas = getRenderI9QForm(insuranceOrder);
-    //        String datas = getRenderZCGForm();
+        datas = getRenderZCGForm(insuranceOrder);
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
@@ -243,19 +248,19 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         try {
             Document document = DocumentHelper.parseText(resp);
             Element root = document.getRootElement();
-            for (Iterator i = root.elementIterator("GeneralInfoReturn"); i.hasNext();) {
+            for (Iterator i = root.elementIterator("GeneralInfoReturn"); i.hasNext(); ) {
                 Element next = (Element) i.next();
                 errorCode = next.elementText("ErrorCode");
                 System.out.println("UUID:" + next.elementText("UUID"));
                 System.out.println("ErrorCode:" + next.elementText("ErrorCode"));
                 System.out.println("ErrorMessage:" + next.elementText("ErrorMessage"));
             }
-            for (Iterator i = root.elementIterator("PolicyInfoReturns"); i.hasNext();) {
+            for (Iterator i = root.elementIterator("PolicyInfoReturns"); i.hasNext(); ) {
                 Element next = (Element) i.next();
                 for (Iterator j = next.elementIterator("PolicyInfoReturn"); j
-                        .hasNext();) {
+                        .hasNext(); ) {
                     Element e = (Element) j.next();
-                    downloadUrl = next.elementText("DownloadUrl");
+                    downloadUrl = e.elementText("DownloadUrl");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -266,10 +271,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             e.printStackTrace();
         }
         //回调函数
-        if(errorCode.equals("00")) {
-            //投保成功
-            savePolicy(insuranceOrder, downloadUrl);
-            successCallBack(insuranceOrder);
+        if (errorCode.equals("00")) {
+            //测试
+            generatePetupPolicy(null);
+
+//            //投保成功
+//            if(insuranceType == 3) {
+//                //运输险, 由我们系统生成电子单证
+//
+//            }
+
+//            savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+//            successCallBack(insuranceOrder);//更新保单状态信息
             return ResultResponse.createBySuccessMessage("投保成功!");
         } else {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
@@ -278,27 +291,58 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         }
     }
 
-    private void savePolicy(InsuranceOrder insuranceOrder, String downloadUrl) throws IOException{
-        insuranceOrder.setPolicyDownloadUrl(downloadUrl);
-        //根据下载链接, 将图片下载存储到服务器上, 并保存访问url
-        RestTemplate rest = new RestTemplate();
-        rest.execute(downloadUrl, HttpMethod.POST, (req) -> {}, (res) -> {
-            InputStream inputStream = res.getBody();
-            FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + insuranceOrder.getInsuranceOrderNo() + ".jpg");
-            int bytesWritten = 0;
-            int byteCount = 0;
-            byte[] bytes = new byte[4096];
-            while ((byteCount = inputStream.read(bytes)) != -1)
-            {
-                out.write(bytes, bytesWritten, byteCount);
-                bytesWritten += byteCount;
+    private void savePolicy(InsuranceOrder insuranceOrder, String downloadUrl) throws IOException {
+        if (StringUtils.isNotBlank(downloadUrl)) {
+//            insuranceOrder.setPolicyDownloadUrl(downloadUrl);
+            //根据下载链接, 将图片下载存储到服务器上, 并保存访问url
+            RestTemplate rest = new RestTemplate();
+            rest.execute(downloadUrl, HttpMethod.GET, (req) -> {
+            }, (res) -> {
+                InputStream inputStream = res.getBody();
+//                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + insuranceOrder.getInsuranceOrderNo() + ".jpg");
+                //测试
+                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + "test_xxx" + ".pdf");
+//                FileOutputStream out = new FileOutputStream("F:/" + "test_xxx" + ".pdf");
+
+                int byteCount = 0;
+                while ((byteCount = inputStream.read()) != -1) {
+                    out.write(byteCount);
+                }
+                out.close();
+                inputStream.close();
+
+                //保存文件名
+//                insuranceOrder.setPolicyImage(insuranceOrder.getInsuranceOrderNo() + ".jpg");
+                return null;
+            });
+        }
+    }
+
+    private void generatePetupPolicy(InsuranceOrder insuranceOrder) throws IOException {
+        //测试
+        if(insuranceOrder == null) {
+            insuranceOrder = new InsuranceOrder();
+            insuranceOrder.setName("test");
+            insuranceOrder.setPhone("test");
+            insuranceOrder.setCardType("test");
+            insuranceOrder.setCardNo("test");
+            insuranceOrder.setOrderNo("test");
+            insuranceOrder.setCreateTimeStr(new Date().toString());
+
+        }
+        try (InputStream inputStream = new ClassPathResource("/template/pickup_policy.docx").getInputStream()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("insuranceOrder", insuranceOrder);
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                DocxUtil.processDocxTemplate(inputStream, outputStream, map, null);
+                FileOutputStream out = new FileOutputStream("F:/" + "test_xxx" + ".pdf");
+                PdfUtil.convertPdf(new ByteArrayInputStream(outputStream.toByteArray()), out);
+                outputStream.close();
+                out.close();
+            } catch (XDocReportException e) {
             }
-            inputStream.close();
-            out.close();
-            //保存文件名
-            insuranceOrder.setPolicyImage(insuranceOrder.getInsuranceOrderNo() + ".jpg");
-            return null;
-        });
+        }
     }
 
     private void successCallBack(InsuranceOrder insuranceOrder) {
@@ -309,14 +353,16 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     /**
      * 获取家庭险投保报文数据
+     *
      * @return
      */
     private String getRenderZFOFrom(InsuranceOrder insuranceOrder) {
-       return initFormStr(ZFO_RISK_CODE, ZFO_RATION_TYPE, insuranceOrder);
+        return initFormStr(ZFO_RISK_CODE, ZFO_RATION_TYPE, insuranceOrder);
     }
 
     /**
      * 获取运输险投保报文数据
+     *
      * @return
      */
     private String getRenderZCGForm(InsuranceOrder insuranceOrder) {
@@ -325,6 +371,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     /**
      * 获取医疗险投保报文数据
+     *
      * @param insuranceOrder
      * @return
      */
@@ -348,11 +395,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         //Beetl的核心GroupTemplate
         GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, config);
         //我们自定义的模板，其中${title}就Beetl默认的占位符
+        Template template = groupTemplate.getTemplate(ZCGForm);
 //        Template template = groupTemplate.getTemplate(ZFOForm);
-        Template template = groupTemplate.getTemplate(I9QForm);
+//        Template template = groupTemplate.getTemplate(I9QForm);
 
         //保险信息
-        template.binding("UUID","iiiiiiiiqQpufatesQt00134");
+        template.binding("UUID", "iiiiiiiiqQpufatesQt00334");
 
         ////////测试参数
         template.binding("SerialNo", "1");
@@ -361,9 +409,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("StartDate", "2019-09-02");//起保时间
         template.binding("EndDate", "2020-09-01");//终保时间
         template.binding("SumAmount", "10000.00");//保额
-        template.binding("SumPremium", "498.00");//保费
+        template.binding("SumPremium", "1.00");//保费
         //测试key
-        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00134", "498.00", "Picc37mu63ht38mw"));
+        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00334", "1.00", "Picc37mu63ht38mw"));
         //投保人、被保人信息
         template.binding("RationType", rationType);
         template.binding("AppliName", "testxxx");//投保人姓名
@@ -373,12 +421,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("InsuredSeqNo", "1");
         template.binding("InsuredName", "testxxx");//被保人姓名
         template.binding("InsuredIdType", "02");//被保人证件类型
-        template.binding("InsuredIdNo", "342501199109126039");
+        template.binding("InsuredIdNo", "342501199109126038");
         template.binding("InsuredEmail", "1092347670@qq.com");
 //额外字段-医疗险字段
-        template.binding("ItemAge", "01");
-        template.binding("Variety", "边境牧羊犬");
-        template.binding("BatchNo", "0001");
+//        template.binding("ItemAge", "01");
+//        template.binding("Variety", "边境牧羊犬");
+//        template.binding("BatchNo", "0001");
 
         //生产环境参数
 //        String uuid = generateUUID(insuranceOrder.getInsuranceOrderNo());
@@ -416,6 +464,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     /**
      * 生成UUID
+     *
      * @return
      */
     private String generateUUID(String orderNo) {
@@ -424,6 +473,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     /**
      * 生成MD5秘钥
+     *
      * @param uuid
      * @param SumPremium
      * @param secretKey
