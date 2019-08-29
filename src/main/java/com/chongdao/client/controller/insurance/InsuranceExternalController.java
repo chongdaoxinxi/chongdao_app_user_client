@@ -31,7 +31,7 @@ public class InsuranceExternalController {
     }
 
     @PostMapping("payInsureCallBack")
-    public ResultResponse payInsureCallBack(HttpServletRequest request, HttpServletResponse response) {
+    public ResultResponse payInsureCallBack(HttpServletRequest request, HttpServletResponse response, Object resp) {
         //TODO
         return ResultResponse.createBySuccessMessage("回调成功!");
     }

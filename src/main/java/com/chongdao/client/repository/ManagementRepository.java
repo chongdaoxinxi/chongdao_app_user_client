@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ManagementRepository extends JpaRepository<Management, Integer> {
     Optional<List<Management>> findByNameAndPasswordAndStatus(String username, String password, Integer status);
+    List<Management> findByLevel(Integer level);
+    List<Management> findByAreaCodeAndStatus(String areaCode, Integer status);
 }

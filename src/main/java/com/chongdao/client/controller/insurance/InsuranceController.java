@@ -94,8 +94,8 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("auditInsurance")
-    public ResultResponse auditInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
-        return insuranceService.auditInsurance(insuranceOrderId, targetStatus, note);
+    public ResultResponse auditInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        return insuranceService.auditInsurance(token, insuranceOrderId, targetStatus, note);
     }
 
     /**
@@ -106,7 +106,7 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("refuseInsurance")
-    public ResultResponse refuseInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
-        return insuranceService.refuseInsurance(insuranceOrderId, targetStatus, note);
+    public ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        return insuranceService.refuseInsurance(token,insuranceOrderId, targetStatus, note);
     }
 }

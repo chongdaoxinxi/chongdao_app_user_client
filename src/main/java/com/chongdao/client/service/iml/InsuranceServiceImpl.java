@@ -2,13 +2,18 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.entitys.InsuranceOrderAudit;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.mapper.InsuranceOrderMapper;
+import com.chongdao.client.repository.InsuranceOrderAuditRepository;
 import com.chongdao.client.repository.InsuranceOrderRepository;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.GenerateOrderNo;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -31,6 +37,10 @@ public class InsuranceServiceImpl implements InsuranceService {
     private InsuranceExternalService insuranceExternalService;
     @Autowired
     private InsuranceOrderRepository insuranceOrderRepository;
+    @Autowired
+    private InsuranceOrderMapper insuranceOrderMapper;
+    @Autowired
+    private InsuranceOrderAuditRepository insuranceOrderAuditRepository;
 
     /**
      * 保存保单数据
@@ -74,16 +84,40 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize) {
-        return null;
+        PageHelper.startPage(pageNum, pageSize);
+        List<InsuranceOrder> insuranceDataList = insuranceOrderMapper.getInsuranceDataList(userName, insuranceOrderNo, start, end);
+        PageInfo pageResult = new PageInfo(insuranceDataList);
+        pageResult.setList(insuranceDataList);
+        return ResultResponse.createBySuccess(pageResult);
     }
 
     @Override
-    public ResultResponse auditInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
-        return null;
+    @Transactional
+    public ResultResponse auditInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        updateInsuranceOrderStatus(token, insuranceOrderId, targetStatus, note);
+        return ResultResponse.createBySuccessMessage("审核通过成功!");
     }
 
     @Override
-    public ResultResponse refuseInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
-        return null;
+    @Transactional
+    public ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        updateInsuranceOrderStatus(token, insuranceOrderId, targetStatus, note);
+        return ResultResponse.createBySuccessMessage("拒绝审核成功!");
+    }
+
+    private void updateInsuranceOrderStatus(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
+        insuranceOrder.setStatus(targetStatus);
+        insuranceOrderRepository.save(insuranceOrder);
+        //生成审核记录
+        Integer oldStatus = insuranceOrder.getStatus();
+        InsuranceOrderAudit insuranceOrderAudit = new InsuranceOrderAudit();
+        insuranceOrderAudit.setInsuranceOrderId(insuranceOrderId);
+        insuranceOrderAudit.setOldStatus(oldStatus);
+        insuranceOrderAudit.setNewStatus(targetStatus);
+        insuranceOrderAudit.setNote(note);
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        insuranceOrderAudit.setManagementId(tokenVo.getUserId());
+        insuranceOrderAuditRepository.save(insuranceOrderAudit);
     }
 }
