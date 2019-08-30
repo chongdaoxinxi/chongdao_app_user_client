@@ -3,6 +3,7 @@ package com.chongdao.client.vo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -29,7 +30,7 @@ public class OrderEvalVO {
     private Double shopGrade;
 
     //店铺准时率
-    private Double shopPunctuality;
+    private BigDecimal shopPunctuality;
 
     private String goodsName;
 

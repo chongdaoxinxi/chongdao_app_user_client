@@ -100,7 +100,7 @@ public class CartsServiceImpl implements CartsService {
         List<OrderDetail> orderDetailList = orderDetailRepository.findByUserIdAndOrderNo(userId, orderNo);
         for (OrderDetail orderDetail : orderDetailList) {
             //排除已下架或已删除的商品
-            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), 1);
+            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), (byte) 1);
             if (good == null){
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.GOODS_NOT_EXIST.getStatus(),GoodsStatusEnum.GOODS_NOT_EXIST.getMessage());
             }

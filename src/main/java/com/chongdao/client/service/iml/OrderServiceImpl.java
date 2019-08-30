@@ -159,14 +159,17 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //地址判断
-            if (orderCommonVO.getServiceType() !=3 && (orderCommonVO.getReceiveAddressId() == null) && orderVo.getReceiveTime() == null){
+            if (orderCommonVO.getServiceType() !=3 && (orderCommonVO.getReceiveAddressId() == null) && orderCommonVO.getReceiveTime() == null){
                 if (orderCommonVO.getServiceType() == 1 && orderVo.getDeliverTime() == null){ //双程
                     return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
                 }
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
+            }else if ((orderCommonVO.getReceiveAddressId() == null) && orderCommonVO.getReceiveTime() == null){
+                return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
+            }else {
+                //创建订单
+                return this.createOrder(orderVo, orderCommonVO);
             }
-            //创建订单
-            return this.createOrder(orderVo, orderCommonVO);
         }
         return ResultResponse.createBySuccess(orderVo);
 
@@ -260,7 +263,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetailVO.setCurrentPrice(orderDetail.getCurrentPrice());
             orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
             //获取商品折扣
-            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), 1);
+            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), (byte) 1);
             if ((good.getDiscount() > 0 && good.getDiscount() != null)){
                 orderVo.setDiscount(good.getDiscount());
                 orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
@@ -583,8 +586,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setOrderNo(orderNo);
         order.setDeliverAddressId(orderCommonVO.getDeliverAddressId());
         order.setReceiveAddressId(orderCommonVO.getReceiveAddressId());
-        order.setReceiveTime(orderVo.getReceiveTime());
-        order.setDeliverTime(orderVo.getDeliverTime());
+        order.setReceiveTime(orderCommonVO.getReceiveTime());
+        order.setDeliverTime(orderCommonVO.getDeliverTime());
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         order.setPaymentTime(new Date());

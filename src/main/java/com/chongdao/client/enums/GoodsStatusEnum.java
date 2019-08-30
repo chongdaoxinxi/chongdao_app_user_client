@@ -10,7 +10,7 @@ public enum GoodsStatusEnum {
     SERVICE(1,"服务"),
 
     ON_SALE(1,"在架"),
-    ADDRESS_EMPTY(6001,"添加完地址后才可以下单哦~"),
+    ADDRESS_EMPTY(6001,"添加完地址和接送时间后才可以下单哦~"),
     SAVE_GOODS_ERROR(6002,"商品保存失败"),
     GOODS_NOT_EXIST(6003,"商品不存在"),
 
