@@ -88,8 +88,8 @@ public class TokenUtil {
                 // TODO: handle exception
                 // don't trust the JWT!
                 // jwt 解析错误
-                resp.put("status",UserStatusEnum.TOKEN_ERROR.getStatus());
-                resp.put("message",UserStatusEnum.TOKEN_ERROR.getMessage());
+                resp.put("status",UserStatusEnum.TOKEN_EXPIRED.getStatus());
+                resp.put("message",UserStatusEnum.TOKEN_EXPIRED.getMessage());
                 return resp;
             } catch (ExpiredJwtException e) {
                 // TODO: handle exception

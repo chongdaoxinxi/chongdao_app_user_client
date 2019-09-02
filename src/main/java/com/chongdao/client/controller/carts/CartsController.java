@@ -26,7 +26,7 @@ public class CartsController {
      * @return
      */
     @PostMapping("add")
-    public ResultResponse<CartVo> add(String token,Integer count, Integer goodsId,Integer shopId){
+    public ResultResponse<CartVo> add(@RequestParam String token,@RequestParam Integer count, @RequestParam Integer goodsId,@RequestParam Integer shopId){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return cartsService.add(tokenVo.getUserId(),count,goodsId,shopId);
@@ -39,7 +39,7 @@ public class CartsController {
      * @return
      */
     @GetMapping("list")
-    public ResultResponse<CartVo> list(String token,Integer shopId){
+    public ResultResponse<CartVo> list(@RequestParam String token,@RequestParam Integer shopId){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return cartsService.list(tokenVo.getUserId(),shopId);
@@ -53,7 +53,7 @@ public class CartsController {
      * @return
      */
     @PostMapping("delete")
-    public ResultResponse<CartVo> deleteGoods(String token,Integer goodsIds,Integer shopId){
+    public ResultResponse<CartVo> deleteGoods(@RequestParam String token,@RequestParam Integer goodsIds,@RequestParam Integer shopId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds,shopId);
     }
@@ -66,7 +66,7 @@ public class CartsController {
      * @return
      */
     @PostMapping("clear")
-    public ResultResponse<CartVo> clear(String token,Integer shopId){
+    public ResultResponse<CartVo> clear(@RequestParam String token,@RequestParam Integer shopId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return cartsService.clear(tokenVo.getUserId(),shopId);
     }

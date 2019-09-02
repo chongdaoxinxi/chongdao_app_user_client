@@ -1,6 +1,9 @@
 package com.chongdao.client.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.Date;
 
 
 @Data
@@ -34,5 +37,11 @@ public class OrderCommonVO {
     private Integer orderType;
 
     private Byte follow;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+    private Date receiveTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+    private Date deliverTime;
 
 }

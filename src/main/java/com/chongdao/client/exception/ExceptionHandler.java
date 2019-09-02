@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.enums.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -42,6 +43,8 @@ public class ExceptionHandler{
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_BAD_REQUEST, "需上传文件流" );
         }else if (e instanceof IllegalArgumentException){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "参数"+((IllegalArgumentException) e).getMessage() + "错误" );
+        }else if (e instanceof BadSqlGrammarException){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), "数据库操作异常" );
         }else {
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

@@ -48,7 +48,7 @@ public class ShopController {
      * @return
      */
     @GetMapping("list/geo")
-    public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat, String areaCode){
+    public ResultResponse listGeo(@RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat, @RequestParam String areaCode){
         ResultResponse resultResponse = (ResultResponse<PageInfo>) GuavaCache.getKey("home_shop_list_geo");
         BigDecimal newLat = BigDecimal.valueOf(lat).setScale(3, BigDecimal.ROUND_HALF_UP);
         BigDecimal newLng = BigDecimal.valueOf(lng).setScale(3, BigDecimal.ROUND_HALF_UP);
@@ -74,7 +74,7 @@ public class ShopController {
 
     @GetMapping("search")
     public ResultResponse pageQuery(String keyword,
-                                    String areaCode,
+                                    @RequestParam String areaCode,
                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         return ResultResponse.createBySuccess(shopService.pageQuery(keyword,areaCode,pageNum,pageSize));
@@ -88,8 +88,11 @@ public class ShopController {
      * @return
      */
     @GetMapping("{shopId}")
-    public ResultResponse getShopById(@PathVariable Integer shopId, Double lat, Double lng,String token){
+    public ResultResponse getShopById(@PathVariable Integer shopId, @RequestParam Double lat, @RequestParam Double lng,@RequestParam String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        if (lat == null || lng == null) {
+            return ResultResponse.createByErrorCodeMessage(400, "经纬度不能为空");
+        }
         return shopService.getShopById(shopId,lat,lng,tokenVo.getUserId());
     }
 
@@ -101,7 +104,7 @@ public class ShopController {
      */
     @GetMapping("{shopId}/{categoryId}")
     public ResultResponse getShopService(@PathVariable Integer shopId,
-                                         @PathVariable Integer categoryId,String token){
+                                         @PathVariable Integer categoryId,@RequestParam String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + categoryId);
         if (resultResponse != null){
@@ -136,7 +139,7 @@ public class ShopController {
      * @return
      */
     @PostMapping
-    public ResultResponse concernShop(@RequestParam Integer shopId,String token){
+    public ResultResponse concernShop(@RequestParam Integer shopId,@RequestParam String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return shopService.concernShop(tokenVo.getUserId(),shopId);
     }
@@ -147,7 +150,7 @@ public class ShopController {
      * @return
      */
     @GetMapping
-    public ResultResponse queryConcernShopList(String token,Double lng,Double lat){
+    public ResultResponse queryConcernShopList(@RequestParam String token,@RequestParam Double lng,@RequestParam Double lat){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return shopService.queryConcernShopList(tokenVo.getUserId(),lng,lat);
     }

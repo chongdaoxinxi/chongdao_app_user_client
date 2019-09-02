@@ -344,9 +344,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         Integer countAll = orderInfoMapper.findByShopIdAll(shopId);
         //获取准时完成的订单
         Integer count = orderInfoMapper.findByShopIdPunctuality(shopId);
-        Double punctuality = 100.0d;
+        BigDecimal punctuality = BigDecimal.valueOf(100.0);
         if (countAll != 0){
-            punctuality = Double.valueOf((count / countAll));
+            punctuality = BigDecimal.valueOf(count / countAll).setScale(2,BigDecimal.ROUND_HALF_UP);
         }
         orderEvalVO.setShopPunctuality(punctuality);
         orderEvalVOS.add(orderEvalVO);
@@ -424,6 +424,8 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             favouriteShopList.stream().forEach(favouriteShop -> {
                 shopIds.add(favouriteShop.getShopId());
             });
+        }else{
+            shopIds.add(0);
         }
         List<Shop> shopList = shopMapper.selectConcernShop(shopIds,lng,lat);
         List<ShopVO> shopVOList = this.shopListVOList(shopList,userId);
