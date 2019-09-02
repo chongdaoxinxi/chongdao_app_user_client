@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.InsuranceOrder;
 import com.chongdao.client.service.insurance.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +33,7 @@ public class InsuranceController {
      * @throws IOException
      */
     @PostMapping("addInsurance")
-    public ResultResponse addInsurance(InsuranceOrder insuranceOrder) throws IOException {
+    public ResultResponse addInsurance(@RequestBody InsuranceOrder insuranceOrder) throws IOException {
         return insuranceService.saveInsurance(insuranceOrder);
     }
 

@@ -4,11 +4,10 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -30,9 +29,25 @@ public class InsuranceExternalController {
         return insuranceExternalService.generateInsure(null);
     }
 
+//    @PostMapping("payInsureCallBack")
+//    public ResultResponse payInsureCallBack(@RequestBody JSONObject payCallBackInfo) {
+//        //TODO
+//        System.out.println("payCallBackInfo:" + payCallBackInfo.toJSONString());
+//        System.out.println("payCallBackInfo.code:" + payCallBackInfo.get("code"));
+//        System.out.println("payCallBackInfo.policyUrl:" + payCallBackInfo.get("policyUrl"));
+//        System.out.println("payCallBackInfo.downloadUrl:" + payCallBackInfo.get("downloadUrl"));
+//        System.out.println("回调成功!");
+//        return ResultResponse.createBySuccessMessage("回调成功!");
+//    }
+
     @PostMapping("payInsureCallBack")
-    public ResultResponse payInsureCallBack(HttpServletRequest request, HttpServletResponse response, Object resp) {
+    public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo) throws IOException {
         //TODO
-        return ResultResponse.createBySuccessMessage("回调成功!");
+        System.out.println("payCallBackInfo:" + payCallBackInfo);
+//        System.out.println("payCallBackInfo.code:" + payCallBackInfo.get("code"));
+//        System.out.println("payCallBackInfo.policyUrl:" + payCallBackInfo.get("policyUrl"));
+//        System.out.println("payCallBackInfo.downloadUrl:" + payCallBackInfo.get("downloadUrl"));
+        System.out.println("回调成功!");
+        return insuranceExternalService.payCallBackManage(payCallBackInfo);
     }
 }
