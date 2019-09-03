@@ -60,6 +60,7 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setBeneficiary(1);//被保人与投保人关系, 默认为本人
         order.setCreateTime(new Date());
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
+        //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
 
         //请求外部接口, 生成保单
         return insuranceExternalService.generateInsure(savedOrder);
@@ -86,6 +87,8 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
+        //根据token, 加入地区areaCode限制
+
         List<InsuranceOrder> insuranceDataList = insuranceOrderMapper.getInsuranceDataList(insuranceType, userName, phone, insuranceOrderNo, start, end, status);
         PageInfo pageResult = new PageInfo(insuranceDataList);
         pageResult.setList(insuranceDataList);
