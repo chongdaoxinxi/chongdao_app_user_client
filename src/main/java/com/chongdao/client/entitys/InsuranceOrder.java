@@ -84,6 +84,8 @@ public class InsuranceOrder implements Serializable {
     private String policyNo;//电子保单号
     private String policyDownloadUrl;//电子保单下载地址
     private String policyImage;//电子保单图片
+    private String policyCdxxDownloadUrl;//电子单证下载地址(见费出单时和电子保单下载地址一致, 非见费出单时由我们系统生成)
+    private String policyCdxxImage;//电子单证图片(见费出单时和电子保单下载地址一致, 非见费出单时由我们系统生成)
 
     //分销
     private String recommendCode;//推广码

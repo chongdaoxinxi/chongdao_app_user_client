@@ -372,10 +372,14 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             //保存我们生成的电子单证的访问地址和下载链接
             insuranceOrder.setPolicyNo(policyNo);
             generatePetupPolicy(insuranceOrder);
+            savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
             updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
         } else {
             insuranceOrder.setPolicyNo(policyNo);//保存电子单证号
             savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+            //对于见费出单的, 将电子单证和电子单证下载下来的图片保存到新字段
+            insuranceOrder.setPolicyCdxxDownloadUrl(insuranceOrder.getPolicyDownloadUrl());
+            insuranceOrder.setPolicyCdxxImage(insuranceOrder.getPolicyImage());
             updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
         }
         System.out.println("电子单证下载链接:" + downloadUrl);
@@ -485,13 +489,14 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 DocxUtil.processDocxTemplate(inputStream, outputStream, map, null);
                 //生产环境
-                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + pdfVo.getPolicyNo() + ".pdf");
+                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + pdfVo.getPolicyNo() + "_cdxx" + ".pdf");
                 //本地测试环境
 //                FileOutputStream out = new FileOutputStream("F:/" + pdfVo.getPolicyNo() + ".pdf");
 
                 PdfUtil.convertPdf(new ByteArrayInputStream(outputStream.toByteArray()), out);
                 outputStream.close();
                 out.close();
+                insuranceOrder.setPolicyCdxxImage(pdfVo.getPolicyNo() + "_cdxx" + ".pdf");
             } catch (XDocReportException e) {
             }
         }
