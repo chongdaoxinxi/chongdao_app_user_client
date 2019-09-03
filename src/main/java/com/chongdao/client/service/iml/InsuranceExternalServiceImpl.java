@@ -268,6 +268,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         String payUrl = "";
         String proposalNo = "";
         String policyNo = "";
+        String saveResult = "";
         try {
             Document document = DocumentHelper.parseText(resp);
             Element root = document.getRootElement();
@@ -286,6 +287,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                     downloadUrl = e.elementText("DownloadUrl");
                     proposalNo = e.elementText("ProposalNo");
                     policyNo = e.elementText("PolicyNo");
+                    saveResult = e.elementText("SaveResult");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -294,6 +296,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                     for (Iterator k = e.elementIterator("PayOnlineInfo"); ((Iterator) k).hasNext(); ) {
                         Element e1 = (Element) k.next();
                         payUrl = e1.elementText("PayURL");
+                        payUrl = payUrl.replaceAll("\n", "");
                     }
                 }
             }
@@ -301,7 +304,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             e.printStackTrace();
         }
 
-        if (errorCode.equals("00")) {
+        if (errorCode.equals("00") && saveResult.equals("00")) {
             if (insuranceType == 3) {
                 return successCallBackOperation(insuranceOrder, downloadUrl, policyNo);
             } else {
@@ -314,6 +317,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         } else {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
             System.out.println("ErrorCode:" + errorCode);
+            System.out.println("SaveResult:" + saveResult);
             return ResultResponse.createByErrorMessage("投保失败");
         }
     }
@@ -362,16 +366,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private ResultResponse successCallBackOperation(InsuranceOrder insuranceOrder, String downloadUrl, String policyNo) throws IOException {
 //        //投保成功
         Integer insuranceType = insuranceOrder.getInsuranceType();
-//        if (insuranceType == 3) {
-//            //运输险, 由我们系统生成电子单证
-//            //测试, 生成运输险的电子单证
-//            //保存我们生成的电子单证的访问地址和下载链接
-////        generatePetupPolicy(null);
-//        } else {
+        if (insuranceType == 3) {
+            //运输险, 由我们系统生成电子单证
+            //测试, 生成运输险的电子单证
+            //保存我们生成的电子单证的访问地址和下载链接
+            insuranceOrder.setPolicyNo(policyNo);
+            generatePetupPolicy(insuranceOrder);
+            updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
+        } else {
             insuranceOrder.setPolicyNo(policyNo);//保存电子单证号
             savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
             updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
-//        }
+        }
         System.out.println("电子单证下载链接:" + downloadUrl);
         return ResultResponse.createBySuccessMessage("投保成功!");
     }
@@ -462,13 +468,13 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             Integer petCardId = insuranceOrder.getPetCardId();
             PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
             if (petCard != null) {
-                pdfVo.setPolicyNo("test");
+                pdfVo.setPolicyNo(pdfVo.getPolicyNo());
                 pdfVo.setPetName(petCard.getName());
                 pdfVo.setTypeName(petCard.getTypeName());
                 pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
                 pdfVo.setAge(petCard.getAge() + "");
-                pdfVo.setPetCardType("test");
-                pdfVo.setPetCardNo("test");
+                pdfVo.setPetCardType("test");//这里数据还未处理
+                pdfVo.setPetCardNo("test");//这里数据还未处理
                 pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
             }
         }
@@ -478,7 +484,11 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             try {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 DocxUtil.processDocxTemplate(inputStream, outputStream, map, null);
-                FileOutputStream out = new FileOutputStream("F:/" + "test_xxx" + ".pdf");
+                //生产环境
+                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + pdfVo.getPolicyNo() + ".pdf");
+                //本地测试环境
+//                FileOutputStream out = new FileOutputStream("F:/" + pdfVo.getPolicyNo() + ".pdf");
+
                 PdfUtil.convertPdf(new ByteArrayInputStream(outputStream.toByteArray()), out);
                 outputStream.close();
                 out.close();
@@ -526,35 +536,15 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         return initFormStr(I9Q_RISK_CODE, I9Q_RATION_TYPE, insuranceOrder, template);
     }
 
+    /**
+     * 渲染投保报文
+     * @param riskCode
+     * @param rationType
+     * @param insuranceOrder
+     * @param template
+     * @return
+     */
     private String initFormStr(String riskCode, String rationType, InsuranceOrder insuranceOrder, Template template) {
-        //保险信息
-//        ////////测试参数
-//        template.binding("UUID", "iiiiiiiiqQpufatesQt00379");
-//        template.binding("SerialNo", "1");
-//        template.binding("RiskCode", riskCode);
-//        template.binding("OperateTimes", "2019-10-02 14:41:40");//下单时间
-//        template.binding("StartDate", "2019-10-02");//起保时间
-//        template.binding("EndDate", "2020-10-01");//终保时间
-//        template.binding("SumAmount", "10000.00");//保额
-//        template.binding("SumPremium", "498.00");//保费
-//        //测试key
-//        template.binding("Md5Value", generateMD5SecretKey("iiiiiiiiqQpufatesQt00379", "498.00", "Picc37mu63ht38mw"));
-//        //投保人、被保人信息
-//        template.binding("RationType", rationType);
-//        template.binding("AppliName", "testxxx");//投保人姓名
-//        template.binding("AppliIdType", "01");//投保人证件类型
-//        template.binding("AppliIdNo", "430381198707230426");
-//        template.binding("AppliIdMobile", "18715637638");
-//        template.binding("InsuredSeqNo", "1");
-//        template.binding("InsuredName", "testxxx");//被保人姓名
-//        template.binding("InsuredIdType", "02");//被保人证件类型
-//        template.binding("InsuredIdNo", "342501199109126050");
-//        template.binding("InsuredEmail", "1092347670@qq.com");
-////额外字段-医疗险字段
-//        template.binding("ItemAge", "1");
-//        template.binding("Variety", "边境牧羊犬");
-//        template.binding("BatchNo", "0102");
-
         //生产环境参数
         String uuid = insuranceOrder.getInsuranceOrderNo();
         template.binding("UUID", uuid);

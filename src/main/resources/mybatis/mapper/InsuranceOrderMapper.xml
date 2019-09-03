@@ -37,31 +37,44 @@
             <arg column="sum_amount" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="sum_premium" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="recommend_code" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="policyDownloadUrl" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="policyImage" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="policy_download_url" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="policy_image" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="proposal_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="policy_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, user_id, user_name, phone, lat, lng, location, address, is_default_address, create_time,
-    update_time
+        io.id, io.insurance_order_no, io.user_id, io.name, io.card_type, io.card_no, io.phone, io.is_send_msg, io.id_card_front_photo, io.id_card_reverse_photo, io.bank_card_photo, io.accept_seq_no, io.accept_name,
+    io.accept_name, io.accept_card_type, io.accept_card_no, io.accept_phone, io.accept_mail, io.beneficiary, io.ration_type, io.insurance_type, io.pet_card_id, io.pet_photo, io.medical_insurance_shop_chip_id,
+io.order_no, io.status, io.create_time, io.apply_time, io.audit_time, io.sign_bill_time, io.insurance_effect_time, io.insurance_failure_time, io.sum_amount, io.sum_premium, io.recommend_code, io.policy_download_url,
+io.policy_image, io.proposal_no, io.policy_no
     </sql>
     <select id="getInsuranceDataList" resultMap="BaseResultMap" parameterType="map">
         select
         <include refid="Base_Column_List"/>
         from insurance_order io
         where 1 = 1
+        <if test="insuranceType != null">
+            and io.insurance_type = #{insuranceType}
+        </if>
         <if test="userName != null and userName != ''">
-            and io.name like concat('%', #{userName}, '')
+            and io.name like concat('%', #{userName}, '%')
+        </if>
+        <if test="phone != null and phone != ''">
+            and io.phone like concat('%', #{phone}, '%')
         </if>
         <if test="insuranceOrderNo != null and insuranceOrderNo != ''">
-            and io.insuranceOrderNo like concat('%', #{insuranceOrderNo}, '%')
+            and io.insurance_order_no like concat('%', #{insuranceOrderNo}, '%')
         </if>
         <if test="start != null">
-            and io.applyTime &gt; #{start}
+            and io.apply_time &gt; #{start}
         </if>
         <if test="end != null">
-            and io.applyTime &lt; #{end}
+            and io.apply_time &lt; #{end}
         </if>
-        order by io.applyTime desc
+        <if test="status != null and status != 99">
+            and io.status = #{status}
+        </if>
+        order by io.apply_time desc
     </select>
 </mapper>

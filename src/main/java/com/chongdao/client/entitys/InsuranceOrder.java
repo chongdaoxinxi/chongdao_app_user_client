@@ -67,7 +67,7 @@ public class InsuranceOrder implements Serializable {
     private String orderNo;//运输险, 订单id
 
     //订单相关属性
-    private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;4:保单生成;)
+    private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;5:保单生成;)
     private Date createTime;//数据创建时间
     private Date applyTime;//保险订单下单时间(付款时间/投保日期)
     private Date auditTime;//审核完成时间(平台投保审核完成日期)

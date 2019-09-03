@@ -4,10 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
 import com.chongdao.client.service.insurance.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Date;
@@ -28,6 +25,7 @@ public class InsuranceController {
 
     /**
      * 下单 保存保单
+     *
      * @param insuranceOrder
      * @return
      * @throws IOException
@@ -39,6 +37,7 @@ public class InsuranceController {
 
     /**
      * 获取我的保单数据
+     *
      * @param token
      * @param pageSize
      * @param pageNum
@@ -51,6 +50,7 @@ public class InsuranceController {
 
     /**
      * 获取保单明细信息
+     *
      * @param insuranceId
      * @return
      */
@@ -61,6 +61,7 @@ public class InsuranceController {
 
     /**
      * 下载电子保单
+     *
      * @param insuranceOrderId
      * @return
      */
@@ -73,6 +74,7 @@ public class InsuranceController {
 
     /**
      * 获取保单分页数据
+     *
      * @param token
      * @param userName
      * @param insuranceOrderNo
@@ -83,12 +85,13 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("getInsuranceDataList")
-    public ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize) {
-        return insuranceService.getInsuranceDataList(token, userName, insuranceOrderNo, start, end, pageNum, pageSize);
+    public ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
+        return insuranceService.getInsuranceDataList(token, insuranceType, userName, phone, insuranceOrderNo, start, end, status, pageNum, pageSize);
     }
 
     /**
      * 一级/二级审核保单
+     *
      * @param insuranceOrderId
      * @param targetStatus
      * @param note
@@ -101,6 +104,7 @@ public class InsuranceController {
 
     /**
      * 一级/二级拒绝保单
+     *
      * @param insuranceOrderId
      * @param targetStatus
      * @param note
@@ -108,6 +112,6 @@ public class InsuranceController {
      */
     @PostMapping("refuseInsurance")
     public ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
-        return insuranceService.refuseInsurance(token,insuranceOrderId, targetStatus, note);
+        return insuranceService.refuseInsurance(token, insuranceOrderId, targetStatus, note);
     }
 }

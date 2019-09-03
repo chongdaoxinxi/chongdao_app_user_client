@@ -15,7 +15,7 @@ public interface InsuranceService {
 
     ResultResponse downloadElectronicInsurancePolicy(Integer insuranceId);
 
-    ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize);
+    ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize);
 
     ResultResponse auditInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note);
 

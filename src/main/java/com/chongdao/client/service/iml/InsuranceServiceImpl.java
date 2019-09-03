@@ -84,9 +84,9 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize) {
+    public ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<InsuranceOrder> insuranceDataList = insuranceOrderMapper.getInsuranceDataList(userName, insuranceOrderNo, start, end);
+        List<InsuranceOrder> insuranceDataList = insuranceOrderMapper.getInsuranceDataList(insuranceType, userName, phone, insuranceOrderNo, start, end, status);
         PageInfo pageResult = new PageInfo(insuranceDataList);
         pageResult.setList(insuranceDataList);
         return ResultResponse.createBySuccess(pageResult);
