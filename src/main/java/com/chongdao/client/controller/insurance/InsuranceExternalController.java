@@ -29,17 +29,6 @@ public class InsuranceExternalController {
         return insuranceExternalService.generateInsure(null);
     }
 
-//    @PostMapping("payInsureCallBack")
-//    public ResultResponse payInsureCallBack(@RequestBody JSONObject payCallBackInfo) {
-//        //TODO
-//        System.out.println("payCallBackInfo:" + payCallBackInfo.toJSONString());
-//        System.out.println("payCallBackInfo.code:" + payCallBackInfo.get("code"));
-//        System.out.println("payCallBackInfo.policyUrl:" + payCallBackInfo.get("policyUrl"));
-//        System.out.println("payCallBackInfo.downloadUrl:" + payCallBackInfo.get("downloadUrl"));
-//        System.out.println("回调成功!");
-//        return ResultResponse.createBySuccessMessage("回调成功!");
-//    }
-
     @PostMapping("payInsureCallBack")
     public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo) throws IOException {
         //TODO
