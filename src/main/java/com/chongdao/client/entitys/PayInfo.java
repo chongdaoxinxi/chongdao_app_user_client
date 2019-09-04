@@ -24,6 +24,8 @@ public class PayInfo {
 
     private String orderNo;
 
+    private String orderReNo;
+
     private Integer payPlatform;
 
     private String platformNumber;

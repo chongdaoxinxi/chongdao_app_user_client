@@ -14,6 +14,7 @@ import com.chongdao.client.vo.UserRecommendVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class RecommendServiceImpl implements RecommendService {
     @Autowired
     private ShopRepository shopRepository;
 
+    @Transactional
     @Override
     public ResultResponse initRecommendUrl(String role, Integer id) {
         // 推广员类型, 推广员id
@@ -52,15 +54,8 @@ public class RecommendServiceImpl implements RecommendService {
         if (type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
-        String url = RECOMMEND_URL + "type=" + type + "&recommendId=" + id;
-        RecommendInfo ri = new RecommendInfo();
-        ri.setRecommendCode(ShareCodeUtil.genShareCode(id, type));
-        ri.setRecommenderId(id);
-        ri.setType(type);
-        ri.setRecommendUrl(url);
-        ri.setCreateTime(new Date());
-        recommendInfoRepository.saveAndFlush(ri);
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), url);
+        RecommendInfo recommendInfo = generateRecommendInfo(type, id);
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), recommendInfo.getRecommendUrl());
     }
 
     /**
@@ -80,6 +75,24 @@ public class RecommendServiceImpl implements RecommendService {
         return null;
     }
 
+    /**
+     * 生成推广信息
+     * @param type
+     * @param id
+     * @return
+     */
+    private RecommendInfo generateRecommendInfo(Integer type, Integer id) {
+        String url = RECOMMEND_URL + "?type=" + type + "&recommendId=" + id;
+        RecommendInfo ri = new RecommendInfo();
+        ri.setRecommendCode(ShareCodeUtil.genShareCode(id, type));
+        ri.setRecommenderId(id);
+        ri.setType(type);
+        ri.setRecommendUrl(url);
+        ri.setCreateTime(new Date());
+        return recommendInfoRepository.saveAndFlush(ri);
+    }
+
+    @Transactional
     @Override
     public ResultResponse getMyShareInfo(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
@@ -88,7 +101,11 @@ public class RecommendServiceImpl implements RecommendService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
         List<RecommendInfo> infos = recommendInfoRepository.findByRecommenderIdAndType(tokenVo.getUserId(), type);
-        if (infos != null) {
+        if(infos == null || infos.size() == 0) {
+            //还未生成推广信息
+            RecommendInfo recommendInfo = generateRecommendInfo(type, tokenVo.getUserId());
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), recommendInfo);
+        } else {
             if (infos.size() == 1) {
                 return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), infos.get(0));
             } else if (infos.size() > 1) {
@@ -141,6 +158,7 @@ public class RecommendServiceImpl implements RecommendService {
      * @param orderId
      * @return
      */
+    @Transactional
     @Override
     public ResultResponse recommendUserFirstOrder(Integer orderId) {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
@@ -225,6 +243,13 @@ public class RecommendServiceImpl implements RecommendService {
         return null;
     }
 
+    /**
+     * 将返利存入用户账户
+     * @param id
+     * @param consumeType
+     * @param recommendTypeName
+     * @param reward
+     */
     private void storeRewardUser(Integer id, Integer consumeType, String recommendTypeName, BigDecimal reward) {
         //转钱
         User user = userRepository.findById(id).orElse(null);
@@ -250,6 +275,11 @@ public class RecommendServiceImpl implements RecommendService {
         userTransRepository.saveAndFlush(ut);
     }
 
+    /**
+     * 将返利存入配送员账户
+     * @param id
+     * @param reward
+     */
     private void storeRewardExpress(Integer id, BigDecimal reward) {
         Express express = expressRepository.findById(id).orElse(null);
         if(express != null) {
@@ -262,6 +292,12 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
+    /**
+     * 将返利存入商家账户
+     * @param id
+     * @param consumeType
+     * @param reward
+     */
     private void storeRewardShop(Integer id, Integer consumeType, BigDecimal reward) {
         Shop shop = shopRepository.findById(id).orElse(null);
         if(shop != null) {
@@ -355,5 +391,10 @@ public class RecommendServiceImpl implements RecommendService {
             resp.add(urv);
         }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), resp);
+    }
+
+    @Override
+    public ResultResponse getRecommendRankList(Integer pageNum, Integer pageSize) {
+        return null;
     }
 }

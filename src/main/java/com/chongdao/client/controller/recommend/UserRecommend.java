@@ -73,4 +73,15 @@ public class UserRecommend {
     public ResultResponse getMyRecommendUserData(String token) {
         return recommendService.getMyRecommendUserData(token);
     }
+
+    /**
+     * 获取推广返利排行
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("getRecommendRankList")
+    public ResultResponse getRecommendRankList(Integer pageNum, Integer pageSize) {
+        return recommendService.getRecommendRankList(pageNum, pageSize);
+    }
 }

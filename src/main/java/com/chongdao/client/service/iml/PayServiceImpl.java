@@ -40,10 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -52,9 +49,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     @Autowired
     private PayInfoRepository payInfoRepository;
-
-
-
 
 
     /**
@@ -70,7 +64,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         if (order == null) {
             return ResultResponse.createByErrorMessage("用户没有该订单");
         }
-        if (order.getOrderStatus() > -1){
+        if (order.getOrderStatus() > -1) {
             return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
         }
         String orderStr = "";
@@ -109,7 +103,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败!!!");
             }
             String orderStrResult = orderStr;
-            resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
+            resultMap.put("orderStr", orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");
             OrderLog orderLog = OrderLogDTO.addOrderLog(order);
@@ -123,7 +117,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId, order.getShopId(), null);
         this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }
@@ -131,17 +125,18 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     /**
      * 追加订单支付
+     *
      * @param reOrderNo
      * @param userId
      * @return
      */
     @Override
     public ResultResponse aliPayRe(String reOrderNo, Integer userId) {
-        OrderInfoRe order = orderInfoReRepository.findByReOrderNoAndStatusAndUserId(reOrderNo,-1,userId);
+        OrderInfoRe order = orderInfoReRepository.findByReOrderNoAndStatusAndUserId(reOrderNo, -1, userId);
         if (order == null) {
             return ResultResponse.createByErrorMessage("用户没有该订单");
         }
-        if (order.getStatus() == 0){
+        if (order.getStatus() == 0) {
             return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
         }
         String orderStr = "";
@@ -179,7 +174,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败(追加)!!!");
             }
             String orderStrResult = orderStr;
-            resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
+            resultMap.put("orderStr", orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");
             OrderLog orderLog = OrderLogDTO.addOrderLogRe(order);
@@ -193,7 +188,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             log.error("支付宝App支付(追加)：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId, order.getShopId(), null);
         this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }
@@ -212,23 +207,23 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         String tradeStatus = params.get("trade_status");
         OrderInfo order = null;
         //追加订单
-        if (orderNo.contains("RE")){
+        if (orderNo.contains("RE")) {
             OrderInfoRe orderInfoRe = orderInfoReRepository.findByReOrderNo(orderNo);
             if (orderInfoRe.getStatus() == 0) {
                 return ResultResponse.createBySuccess("支付宝重复调用");
             }
             if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-                orderInfoRe.setId(orderInfoRe.getId());
+//                orderInfoRe.setId(orderInfoRe.getId());
                 orderInfoRe.setPayTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
                 orderInfoRe.setStatus(0);
                 //销量更新
                 List<OrderDetail> orderDetailList = orderDetailRepository.findByUserIdAndReOrderNo(orderInfoRe.getUserId(), orderInfoRe.getReOrderNo());
                 orderDetailList.stream().forEach(orderDetail -> {
-                    goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+                    goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
                 });
                 orderInfoReRepository.save(orderInfoRe);
             }
-        }else {
+        } else {
             order = orderInfoMapper.selectByOrderNo(orderNo);
         }
         if (order == null) {
@@ -246,23 +241,23 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             //销量更新
             List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
             orderDetailList.stream().forEach(orderDetail -> {
-                goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+                goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
             });
             orderInfoMapper.updateByPrimaryKeySelective(order);
             //判断是否自动接单
             Shop shop = shopRepository.findById(order.getShopId()).get();
-            if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
+            if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
                 //推送短信到商家
-                smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
+                smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
                 //推送短信到用户
                 if (order.getReceiveAddressId() != null) {
                     UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
-                    smsService.sendNewOrderUser(orderNo,address.getPhone());
+                    smsService.sendNewOrderUser(orderNo, address.getPhone());
                 }
                 //推送短信到配送员
                 List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
                 expressList.stream().forEach(express -> {
-                    smsService.sendExpressNewOrder(orderNo,express.getPhone());
+                    smsService.sendExpressNewOrder(orderNo, express.getPhone());
                 });
 
             }
@@ -270,7 +265,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         }
 
         //生成支付信息
-
         try {
             PayInfo payInfo = new PayInfo();
             payInfo.setUserId(order.getUserId());
@@ -282,7 +276,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             payInfoRepository.save(payInfo);
         } catch (Exception e) {
             log.error(e.getMessage());
-            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}",orderNo);
+            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
         }
 
         return ResultResponse.createBySuccess();
@@ -291,12 +285,12 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     @Override
     public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr, Integer payType) {
         WxUnifiedorderModelDTO model = new WxUnifiedorderModelDTO();
-        if(payType == 1) {
+        if (payType == 1) {
             //app应用appId
             model.setAppid(StringUtils.trim(BasicInfo.APP_AppID));
             //交易类型/请求方式
             model.setTrade_type("APP");
-        } else if(payType == 2){
+        } else if (payType == 2) {
             model.setAppid(StringUtils.trim(BasicInfo.xcxID));
             //交易类型/请求方式
             model.setTrade_type("JSAPI");
@@ -341,10 +335,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 //再次签名
                 Map<String, String> finalpackage = new TreeMap<>();
                 String timestamp = (System.currentTimeMillis() / 1000) + "";
-                if(payType == 1) {
+                if (payType == 1) {
                     //app支付
                     finalpackage.put("appid", BasicInfo.APP_AppID);
-                } else if(payType == 2) {
+                } else if (payType == 2) {
                     //xcx支付
                     finalpackage.put("appid", BasicInfo.xcxID);
                 }
@@ -474,53 +468,92 @@ public class PayServiceImpl extends CommonRepository implements PayService {
      */
     private void payCallBackGenerateOrder(List<Element> list) {
         String orderNo = getCallbackInfoByName(list, "out_trade_no");
-        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
-        order.setPaymentTime(DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end")));
-        order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
-        order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
-        //销量更新
-        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
-        orderDetailList.stream().forEach(orderDetail -> {
-            goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
-        });
-        orderInfoMapper.updateByPrimaryKeySelective(order);
-        //todo 短信推送
+        Date time = DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end"));
+        String transactionId = getCallbackInfoByName(list, "transaction_id");
+        String resultCode = getCallbackInfoByName(list, "result_code");
+        if (orderNo.indexOf("RE") != -1) {
+            //追加订单
+            OrderInfoRe re = orderInfoReRepository.findByReOrderNo(orderNo);
+            re.setPayTime(time);
+            re.setStatus(0);
+            //销量更新
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNoUserId(re.getOrderNo(), re.getUserId());
+            orderDetailList.stream().forEach(orderDetail -> {
+                goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+            });
+            OrderInfoRe save = orderInfoReRepository.save(re);
+            //生成支付信息
+            generatePayInfo(save.getUserId(), save.getOrderNo(), save.getReOrderNo(), transactionId, resultCode);
+        } else {
+            OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+            order.setPaymentTime(time);
+            order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+            order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
+            //销量更新
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+            orderDetailList.stream().forEach(orderDetail -> {
+                goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+            });
+            //生成支付信息
+            generatePayInfo(order.getUserId(), order.getOrderNo(), "", transactionId, resultCode);
+            orderInfoMapper.updateByPrimaryKeySelective(order);
+            successCallBackSendMsg(order);//发送短信息
+        }
+    }
+
+    /**
+     * 成功回调的短信发送
+     * @param order
+     */
+    private void successCallBackSendMsg(OrderInfo order) {
         //判断是否自动接单
         Shop shop = shopRepository.findById(order.getShopId()).get();
-        if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
+        if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
             //推送短信到商家
-            smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
+            smsService.sendOrderAutoAcceptShop(order.getOrderNo(), shop.getPhone());
             //推送短信到用户
             if (order.getReceiveAddressId() != null) {
                 UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
-                smsService.sendNewOrderUser(orderNo,address.getPhone());
+                smsService.sendNewOrderUser(order.getOrderNo(), address.getPhone());
             }
             //推送短信到配送员
             List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
             expressList.stream().forEach(express -> {
-                smsService.sendExpressNewOrder(orderNo,express.getPhone());
+                smsService.sendExpressNewOrder(order.getOrderNo(), express.getPhone());
             });
         }
+    }
 
+    /**
+     * 成功回调后的支付信息处理
+     * @param userId
+     * @param orderNo
+     * @param orderReNo
+     * @param transactionId
+     * @param resultCode
+     */
+    private void generatePayInfo(Integer userId, String orderNo, String orderReNo, String transactionId, String resultCode) {
         //生成支付信息
         try {
             PayInfo payInfo = new PayInfo();
-            payInfo.setUserId(order.getUserId());
-            payInfo.setOrderNo(order.getOrderNo());
+            payInfo.setUserId(userId);
+            payInfo.setOrderNo(orderNo);
+            if (StringUtils.isNotBlank(orderReNo)) {
+                payInfo.setOrderReNo(orderReNo);
+            }
             payInfo.setPayPlatform(PayPlatformEnum.WX_APP_PAY.getCode());
-            payInfo.setPlatformNumber(getCallbackInfoByName(list, "transaction_id"));
-            payInfo.setPlatformStatus(getCallbackInfoByName(list, "result_code"));
-
+            payInfo.setPlatformNumber(transactionId);
+            payInfo.setPlatformStatus(resultCode);
             payInfoRepository.save(payInfo);
         } catch (Exception e) {
             log.error(e.getMessage());
-            log.error("【微信异步回调】微信支付信息生成失败: orderNo:{}",orderNo);
+            log.error("【微信异步回调】微信支付信息生成失败: orderNo:{}", orderNo);
         }
     }
 
     private String getCallbackInfoByName(List<Element> list, String name) {
         String r = "";
-        for(Element e : list) {
+        for (Element e : list) {
             if (e.getName().trim().equals(name)) {
                 r = e.getText().trim();
             }
