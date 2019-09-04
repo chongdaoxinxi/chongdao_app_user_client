@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail,Integer> {
     List<OrderDetail> findByUserIdAndOrderNo(Integer userId,String orderNo);
+
+    List<OrderDetail> findByUserIdAndReOrderNo(Integer userId,String reOrderNo);
 }

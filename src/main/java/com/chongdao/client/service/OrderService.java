@@ -4,8 +4,10 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.OrderEval;
 import com.chongdao.client.entitys.OrderExpressEval;
 import com.chongdao.client.vo.OrderCommonVO;
+import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageInfo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 ;
@@ -138,4 +140,13 @@ public interface OrderService {
      * @return
      */
     ResultResponse getShopOrderDetail(Integer userId, String orderNo);
+
+    /**
+     * 追加订单
+     * @param userId
+     * @param shopId
+     * @param orderType (4)
+     * @return
+     */
+    ResultResponse<OrderVo> reAddOrder(Integer userId, String orderNo, Integer shopId, Integer orderType, BigDecimal totalPrice);
 }

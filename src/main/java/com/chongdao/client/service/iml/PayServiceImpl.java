@@ -17,7 +17,6 @@ import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.repository.PayInfoRepository;
-import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
@@ -53,8 +52,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     @Autowired
     private PayInfoRepository payInfoRepository;
-    @Autowired
-    private OrderService orderService;
+
 
 
 
@@ -131,6 +129,75 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     }
 
 
+    /**
+     * 追加订单支付
+     * @param reOrderNo
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultResponse aliPayRe(String reOrderNo, Integer userId) {
+        OrderInfoRe order = orderInfoReRepository.findByReOrderNoAndStatusAndUserId(reOrderNo,-1,userId);
+        if (order == null) {
+            return ResultResponse.createByErrorMessage("用户没有该订单");
+        }
+        if (order.getStatus() == 0){
+            return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
+        }
+        String orderStr = "";
+        Map<String, String> resultMap = new HashMap<String, String>();
+        try {
+            //实例化客户端
+            /*
+         * 开放平台SDK封装了签名实现，只需在创建DefaultAlipayClient对象时，
+         * 设置请求网关(gateway)，应用id(app_id)，应用私钥(private_key)，编码格式(charset)，支付宝公钥(alipay_public_key)，签名类型(sign_type)即可，
+         * 报文请求时会自动进行签名
+         * */
+            AlipayClient client = new DefaultAlipayClient(AliPayConfig.GATEWAY, AliPayConfig.ALI_PAY_APPID, AliPayConfig.APP_PRIVATE_KEY, AliPayConfig.FORMAT,
+                    AliPayConfig.CHARSET, AliPayConfig.ALI_PAY_PUBLIC_KEY, AliPayConfig.SIGN_TYPE);
+
+            //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
+            AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
+            //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
+            AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+//                model.setBody(orderMap.get("body"));                      //商品信息
+            model.setSubject("追加商品");//商品名称
+            model.setOutTradeNo(reOrderNo);//商户订单号
+            model.setTimeoutExpress("120m"); //交易超时时间
+            model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额
+            model.setProductCode("FAST_INSTANT_TRADE_PAY"); //销售产品码
+            //            model.setSellerId(UID);                        //商家id
+            ali_request.setBizModel(model);
+            ali_request.setNotifyUrl(AliPayConfig.NOTIFY_URL); //App支付异步回调地址
+            ali_request.setReturnUrl(AliPayConfig.RETURN_URL); //付款完成跳转页面
+            AlipayTradeAppPayResponse response = client.sdkExecute(ali_request);
+            orderStr = response.getBody();
+            if (StringUtils.isBlank(orderStr)) {
+                OrderLog orderLog = OrderLogDTO.addOrderLogRe(order);
+                orderLog.setNote("支付宝预下单失败(追加)");
+                logRepository.save(orderLog);
+                return ResultResponse.createBySuccessMessage("支付宝预下单失败(追加)!!!");
+            }
+            String orderStrResult = orderStr;
+            resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
+            resultMap.put("status", "200");
+            resultMap.put("message", "支付宝预下单成功");
+            OrderLog orderLog = OrderLogDTO.addOrderLogRe(order);
+            orderLog.setNote("支付宝预下单成功(追加)");
+            orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+            logRepository.save(orderLog);
+            log.info("支付宝App支付(追加):支付订单创建成功out_trade_no---- {}", order.getOrderNo());
+        } catch (Exception e) {
+            resultMap.put("status", "500");
+            resultMap.put("message", "支付宝预下单失败(追加)!!!");
+            log.error("支付宝App支付(追加)：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
+        }
+        //从购物车中获取数据
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
+        this.cleanCart(cartList);
+        return ResultResponse.createBySuccess(resultMap);
+    }
+
 
     /**
      * 支付宝异步回调
@@ -143,7 +210,27 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         String orderNo = String.valueOf(params.get("out_trade_no"));
         String tradeNo = params.get("trade_no");
         String tradeStatus = params.get("trade_status");
-        OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+        OrderInfo order = null;
+        //追加订单
+        if (orderNo.contains("RE")){
+            OrderInfoRe orderInfoRe = orderInfoReRepository.findByReOrderNo(orderNo);
+            if (orderInfoRe.getStatus() == 0) {
+                return ResultResponse.createBySuccess("支付宝重复调用");
+            }
+            if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+                orderInfoRe.setId(orderInfoRe.getId());
+                orderInfoRe.setPayTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+                orderInfoRe.setStatus(0);
+                //销量更新
+                List<OrderDetail> orderDetailList = orderDetailRepository.findByUserIdAndReOrderNo(orderInfoRe.getUserId(), orderInfoRe.getReOrderNo());
+                orderDetailList.stream().forEach(orderDetail -> {
+                    goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+                });
+                orderInfoReRepository.save(orderInfoRe);
+            }
+        }else {
+            order = orderInfoMapper.selectByOrderNo(orderNo);
+        }
         if (order == null) {
             log.error("【支付回调】订单不存在:orderNo:{}", orderNo);
             return ResultResponse.createByErrorMessage("非该商铺的订单,回调忽略");
@@ -162,7 +249,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
             });
             orderInfoMapper.updateByPrimaryKeySelective(order);
-            //todo 短信推送
             //判断是否自动接单
             Shop shop = shopRepository.findById(order.getShopId()).get();
             if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
@@ -370,6 +456,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         // 返回成功信息给前台
         return ResultResponse.createBySuccessMessage("微信支付成功!");
     }
+
 
     /**
      * 统一下单成功后处理逻辑

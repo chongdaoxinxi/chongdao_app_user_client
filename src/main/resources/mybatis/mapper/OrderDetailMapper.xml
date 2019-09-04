@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.OrderDetail">
         <constructor>
             <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-            <arg column="order_no" jdbcType="INTEGER" javaType="java.lang.String"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="good_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="order_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
@@ -16,6 +16,7 @@
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="total_price" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="re_order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -191,14 +192,14 @@
         insert into order_detail (id, user_id, order_no,
         good_id, name, icon,
         current_price, count, price,total_price,
-        create_time, update_time)
+        create_time, update_time,re_order_no)
         values
         <foreach collection="orderItemList" item="item" index="index" separator=",">
             (
             #{item.id}, #{item.userId}, #{item.orderNo},
             #{item.goodId}, #{item.name}, #{item.icon},
             #{item.currentPrice}, #{item.count}, #{item.price},#{item.totalPrice},
-            now(), now()
+            now(), now(),#{item.reOrderNo}
             )
         </foreach>
     </insert>

@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/order/")
@@ -27,7 +28,7 @@ public class OrderController {
 
     /**
      * 预下单/提交订单
-     *  orderType 1代表预下单 2代表下单
+     *  orderType 1代表预下单 2代表下单 3 拼单
      *  serviceType 服务类型 1.双程 2.单程 3.到店自取
      * @return
      */
@@ -36,6 +37,23 @@ public class OrderController {
         //校验用户是否登录
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.preOrCreateOrder(tokenVo.getUserId(),orderCommonVO);
+    }
+
+    /**
+     * 追加订单
+     * @param
+     * @param token
+     * @param shopId
+     * @param orderType (4)
+     * @return
+     */
+    @PostMapping("reAddOrder")
+    public ResultResponse<OrderVo> reAddOrder(@RequestParam String token, @RequestParam String orderNo,
+                                              @RequestParam Integer shopId, @RequestParam Integer orderType,
+                                              @RequestParam BigDecimal totalPrice){
+        //校验用户是否登录
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.reAddOrder(tokenVo.getUserId(),orderNo,shopId,orderType,totalPrice);
     }
 
 

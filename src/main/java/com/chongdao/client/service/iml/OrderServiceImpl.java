@@ -34,6 +34,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -189,6 +190,45 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         return cartsService.anotherAdd(userId,orderNo,shopId);
     }
 
+
+    /**
+     * 追加订单
+     * @param userId
+     * @param shopId
+     * @param orderType (4)
+     * @return
+     */
+    @Transactional
+    @Override
+    public ResultResponse reAddOrder(Integer userId,String orderNo, Integer shopId, Integer orderType,BigDecimal totalPrice) {
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        if (orderInfo == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"追加订单不存在");
+        }
+        //可追加条件 参考orderStatusEnum类
+        if (!(Arrays.asList(-3,-2,-1, 3, 4,5,6,8,12,13).contains(orderInfo.getOrderStatus()))) {
+            throw new RuntimeException("只有已支付并且服务未完成的订单才可以追加！");
+        }
+        //查询购物车 生成订单详情
+        List<Carts> cartsList = cartsMapper.selectCartByUserId(userId, shopId);
+        ResultResponse resultResponse = this.getCartOrderItem(userId, cartsList);
+        List<OrderDetail> orderItemList = (List<OrderDetail>) resultResponse.getData();
+        OrderInfoRe orderInfoRe = new OrderInfoRe();
+        orderInfoRe.setOrderNo(orderNo);
+        orderInfoRe.setReOrderNo("RE" + orderNo);
+        orderInfoRe.setUserId(userId);
+        orderInfoRe.setCreateTime(new Date());
+        orderInfoRe.setPayment(totalPrice);
+        orderInfoRe.setShopId(shopId);
+        OrderInfoRe o = orderInfoReRepository.save(orderInfoRe);
+        for (OrderDetail orderItem : orderItemList) {
+            orderItem.setOrderNo(orderNo);
+            orderItem.setReOrderNo("RE" + orderNo);
+        }
+        //mybatis 批量插入
+        orderDetailMapper.batchInsert(orderItemList);
+        return ResultResponse.createBySuccess(o);
+    }
 
     /**
      * 根据type 获取订单列表
@@ -391,7 +431,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     /**
      * 创建订单
-     *
+     * orderType为4 是追加订单
      * @param orderVo
      * @return
      */
@@ -584,10 +624,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
         order.setSingleServiceType(orderCommonVO.getSingleServiceType());
         order.setOrderNo(orderNo);
-        order.setDeliverAddressId(orderCommonVO.getDeliverAddressId());
         order.setReceiveAddressId(orderCommonVO.getReceiveAddressId());
-        order.setReceiveTime(orderCommonVO.getReceiveTime());
-        order.setDeliverTime(orderCommonVO.getDeliverTime());
+        order.setReceiveTime(DateTimeUtil.strToDate(orderCommonVO.getReceiveTime()));
+        //双程
+        if (orderCommonVO.getServiceType() == 1) {
+            order.setDeliverTime(DateTimeUtil.strToDate(orderCommonVO.getDeliverTime()));
+            order.setDeliverAddressId(orderCommonVO.getDeliverAddressId());
+        }
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         order.setPaymentTime(new Date());
@@ -1077,6 +1120,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     public ResultResponse getShopOrderDetail(Integer userId, String orderNo) {
         return this.orderDetail(userId,orderNo);
     }
+
+
 
     /**
      * 获取使用过优惠券的订单(管理员)
