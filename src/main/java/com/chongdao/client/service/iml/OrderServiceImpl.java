@@ -76,10 +76,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         BigDecimal totalDiscount = new BigDecimal(BigInteger.ZERO);
         OrderVo orderVo = new OrderVo();
         //默认地址
-        UserAddress address = userAddressRepository.findByUserIdAndIsDefaultAddress(userId, 1);
-        if (address != null){
-            orderVo.setUserAddress(address);
-        }
+//        UserAddress address = userAddressRepository.findByUserIdAndIsDefaultAddress(userId, 1);
+//        if (address != null){
+//            orderVo.setUserAddress(address);
+//        }
         List<Integer> categoryIds = Lists.newArrayList();
         List<Integer> goodsIds = Lists.newArrayList();
         //从购物车中获取数据
