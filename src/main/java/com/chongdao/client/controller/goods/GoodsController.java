@@ -142,7 +142,7 @@ public class GoodsController {
      * @return
      */
     @PostMapping
-    public ResultResponse concernGoods(@RequestParam Integer goodsId,String token){
+    public ResultResponse concernGoods(@RequestParam Integer goodsId,@RequestParam String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return goodsService.concernGoods(tokenVo.getUserId(), goodsId);
     }
@@ -153,7 +153,7 @@ public class GoodsController {
      * @return
      */
     @GetMapping
-    public ResultResponse queryConcernShopList(String token){
+    public ResultResponse queryConcernShopList(@RequestParam String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return goodsService.queryConcernGoodsList(tokenVo.getUserId());
     }

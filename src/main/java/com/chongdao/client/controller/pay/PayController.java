@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,15 +37,26 @@ public class PayController {
 
     /**
      * 支付宝支付
-     *
      * @param orderNo
      * @param token
      * @return
      */
     @GetMapping("aliPay")
-    public ResultResponse pay(String orderNo, String token) {
+    public ResultResponse pay(@RequestParam String orderNo, @RequestParam String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return payService.aliPay(orderNo, tokenVo.getUserId());
+    }
+
+    /**
+     * 支付宝支付(追加)
+     * @param reOrderNo
+     * @param token
+     * @return
+     */
+    @GetMapping("aliPayRe")
+    public ResultResponse aliPayRe(@RequestParam String reOrderNo, @RequestParam String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return payService.aliPayRe(reOrderNo, tokenVo.getUserId());
     }
 
 

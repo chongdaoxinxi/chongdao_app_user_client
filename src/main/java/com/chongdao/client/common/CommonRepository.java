@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CommonRepository {
 
     @Autowired
+    protected OrderDetailRepository orderDetailRepository;
+
+    @Autowired
     protected GoodsService goodsService;
 
     @Autowired
@@ -153,6 +156,9 @@ public class CommonRepository {
 
     @Autowired
     protected CpnThresholdRuleRepository cpnThresholdRuleRepository;
+
+    @Autowired
+    protected OrderInfoReRepository orderInfoReRepository;
 
 
 
