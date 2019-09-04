@@ -222,63 +222,74 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
                 });
                 orderInfoReRepository.save(orderInfoRe);
+                //生成支付信息
+                try {
+                    PayInfo payInfo = new PayInfo();
+                    payInfo.setUserId(order.getUserId());
+                    payInfo.setOrderNo(order.getOrderNo());
+                    payInfo.setOrderReNo(orderInfoRe.getReOrderNo());
+                    payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+                    payInfo.setPlatformNumber(tradeNo);
+                    payInfo.setPlatformStatus(tradeStatus);
+
+                    payInfoRepository.save(payInfo);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+                }
             }
         } else {
             order = orderInfoMapper.selectByOrderNo(orderNo);
-        }
-        if (order == null) {
-            log.error("【支付回调】订单不存在:orderNo:{}", orderNo);
-            return ResultResponse.createByErrorMessage("非该商铺的订单,回调忽略");
-        }
-        if (order.getOrderStatus() >= OrderStatusEnum.PAID.getStatus()) {
-            log.error("【支付回调】支付宝重复调用: orderNo:{}", orderNo);
-            return ResultResponse.createBySuccess("支付宝重复调用");
-        }
-        if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-            order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
-            order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
-            order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
-            //销量更新
-            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
-            orderDetailList.stream().forEach(orderDetail -> {
-                goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
-            });
-            orderInfoMapper.updateByPrimaryKeySelective(order);
-            //判断是否自动接单
-            Shop shop = shopRepository.findById(order.getShopId()).get();
-            if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
-                //推送短信到商家
-                smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
-                //推送短信到用户
-                if (order.getReceiveAddressId() != null) {
-                    UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
-                    smsService.sendNewOrderUser(orderNo, address.getPhone());
-                }
-                //推送短信到配送员
-                List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
-                expressList.stream().forEach(express -> {
-                    smsService.sendExpressNewOrder(orderNo, express.getPhone());
-                });
-
+            if (order == null) {
+                log.error("【支付回调】订单不存在:orderNo:{}", orderNo);
+                return ResultResponse.createByErrorMessage("非该商铺的订单,回调忽略");
             }
+            if (order.getOrderStatus() >= OrderStatusEnum.PAID.getStatus()) {
+                log.error("【支付回调】支付宝重复调用: orderNo:{}", orderNo);
+                return ResultResponse.createBySuccess("支付宝重复调用");
+            }
+            if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+                order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+                order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+                order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
+                //销量更新
+                List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+                orderDetailList.stream().forEach(orderDetail -> {
+                    goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+                });
+                orderInfoMapper.updateByPrimaryKeySelective(order);
+                //判断是否自动接单
+                Shop shop = shopRepository.findById(order.getShopId()).get();
+                if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
+                    //推送短信到商家
+                    smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
+                    //推送短信到用户
+                    if (order.getReceiveAddressId() != null) {
+                        UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
+                        smsService.sendNewOrderUser(orderNo, address.getPhone());
+                    }
+                    //推送短信到配送员
+                    List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+                    expressList.stream().forEach(express -> {
+                        smsService.sendExpressNewOrder(orderNo, express.getPhone());
+                    });
+                }
+            }
+            //生成支付信息
+            try {
+                PayInfo payInfo = new PayInfo();
+                payInfo.setUserId(order.getUserId());
+                payInfo.setOrderNo(order.getOrderNo());
+                payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+                payInfo.setPlatformNumber(tradeNo);
+                payInfo.setPlatformStatus(tradeStatus);
 
+                payInfoRepository.save(payInfo);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+            }
         }
-
-        //生成支付信息
-        try {
-            PayInfo payInfo = new PayInfo();
-            payInfo.setUserId(order.getUserId());
-            payInfo.setOrderNo(order.getOrderNo());
-            payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
-            payInfo.setPlatformNumber(tradeNo);
-            payInfo.setPlatformStatus(tradeStatus);
-
-            payInfoRepository.save(payInfo);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
-        }
-
         return ResultResponse.createBySuccess();
     }
 
