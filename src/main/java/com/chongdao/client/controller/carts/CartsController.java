@@ -35,14 +35,12 @@ public class CartsController {
 
     /**
      * 查询购物车
-     * @param token
+     * @param userId
      * @return
      */
     @GetMapping("list")
-    public ResultResponse<CartVo> list(@RequestParam String token,@RequestParam Integer shopId){
-        //检验该用户的token
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartsService.list(tokenVo.getUserId(),shopId);
+    public ResultResponse<CartVo> list(Integer userId,@RequestParam Integer shopId){
+        return cartsService.list(userId,shopId);
     }
 
 

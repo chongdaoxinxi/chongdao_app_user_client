@@ -88,12 +88,11 @@ public class ShopController {
      * @return
      */
     @GetMapping("{shopId}")
-    public ResultResponse getShopById(@PathVariable Integer shopId, @RequestParam Double lat, @RequestParam Double lng,@RequestParam String token){
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+    public ResultResponse getShopById(@PathVariable Integer shopId, @RequestParam Double lat, @RequestParam Double lng,@RequestParam Integer userId){
         if (lat == null || lng == null) {
             return ResultResponse.createByErrorCodeMessage(400, "经纬度不能为空");
         }
-        return shopService.getShopById(shopId,lat,lng,tokenVo.getUserId());
+        return shopService.getShopById(shopId,lat,lng,userId);
     }
 
     /**
@@ -104,15 +103,14 @@ public class ShopController {
      */
     @GetMapping("{shopId}/{categoryId}")
     public ResultResponse getShopService(@PathVariable Integer shopId,
-                                         @PathVariable Integer categoryId,@RequestParam String token){
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+                                         @PathVariable Integer categoryId,@RequestParam Integer userId){
         ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + categoryId);
         if (resultResponse != null){
             return resultResponse;
         }
-        resultResponse = this.shopService.getShopService(shopId, categoryId, tokenVo.getUserId());
+        resultResponse = this.shopService.getShopService(shopId, categoryId, userId);
         GuavaCache.setKey("getShopGoods_" + shopId + "_" + categoryId, resultResponse);
-        return this.shopService.getShopService(shopId,categoryId,tokenVo.getUserId());
+        return this.shopService.getShopService(shopId,categoryId,userId);
     }
 
 

@@ -67,13 +67,12 @@ public class GoodsController {
      * @return
      */
     @GetMapping("getGoodsDetail/{goodsId}")
-    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId,String token){
-        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+    public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId, Integer userId){
         ResultResponse<GoodsDetailVo> goodsServiceGoodsDetail = (ResultResponse<GoodsDetailVo>) GuavaCache.getKey("getGoodsDetail_" + goodsId);
         if (goodsServiceGoodsDetail != null){
             return goodsServiceGoodsDetail;
         }
-        goodsServiceGoodsDetail = goodsService.getGoodsDetail(goodsId, tokenVo.getUserId());
+        goodsServiceGoodsDetail = goodsService.getGoodsDetail(goodsId, userId);
         GuavaCache.setKey("getGoodsDetail_" + goodsId ,goodsServiceGoodsDetail);
         return goodsServiceGoodsDetail;
     }
