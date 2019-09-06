@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 @RequestMapping("/api/recommend/medical/")
-public class MedicalInsuranceRecommend {
+public class MedicalInsuranceRecommendController {
 }
