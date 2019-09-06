@@ -45,6 +45,10 @@ public class RecommendServiceImpl implements RecommendService {
     private ExpressRepository expressRepository;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private InsuranceOrderRepository insuranceOrderRepository;
+    @Autowired
+    private ExpressTransRepository expressTransRepository;
 
     @Transactional
     @Override
@@ -198,7 +202,7 @@ public class RecommendServiceImpl implements RecommendService {
         RecommendRecord recommendRecord = recommendRecordRepository.saveAndFlush(rr);
 
         //将奖金存入对应的账户
-        boolean flag = storeReward(recommendRecord.getRecommenderId(), recommendRecord.getRecommendType(), recommendRecord.getConsumeType(), recommendRecord.getRewardMoney());
+        boolean flag = storeReward(recommendRecord.getId(), recommendRecord.getRecommenderId(), recommendRecord.getRecommendType(), recommendRecord.getConsumeType(), recommendRecord.getRewardMoney());
         if(flag) {
             return ResultResponse.createBySuccessMessage("存入资金成功");
         } else {
@@ -210,21 +214,22 @@ public class RecommendServiceImpl implements RecommendService {
     /**
      * 转钱
      * @param recommendId
+     * @param recommenderId
      * @param recommendType
      * @param consumeType
      * @param reward
      * @return
      */
-    private boolean storeReward(Integer recommendId, Integer recommendType, Integer consumeType, BigDecimal reward) {
+    private boolean storeReward(Integer recommendId, Integer recommenderId, Integer recommendType, Integer consumeType, BigDecimal reward) {
         if (recommendType == RecommendTypeEnum.USER_ROLE.getCode()) {
             //用户
-            storeRewardUser(recommendId, consumeType, getConsumeTypeName(consumeType), reward);
+            storeRewardUser(recommenderId, consumeType, getConsumeTypeName(consumeType), reward);
         } else if (recommendType == RecommendTypeEnum.EXPRESS_ROLE.getCode()) {
             //配送员
-            storeRewardExpress(recommendId, reward);
+            storeRewardExpress(recommendId, recommenderId, consumeType, getConsumeTypeName(consumeType), reward);
         } else if (recommendType == RecommendTypeEnum.SHOP_ROLE.getCode()) {
             //商家
-            storeRewardShop(recommendId, consumeType, reward);
+            storeRewardShop(recommendId, recommenderId, consumeType, getConsumeTypeName(consumeType), reward);
         }
         return false;
     }
@@ -277,11 +282,14 @@ public class RecommendServiceImpl implements RecommendService {
 
     /**
      * 将返利存入配送员账户
-     * @param id
+     * @param recommendId
+     * @param recommenderId
+     * @param consumeType
+     * @param recommendTypeName
      * @param reward
      */
-    private void storeRewardExpress(Integer id, BigDecimal reward) {
-        Express express = expressRepository.findById(id).orElse(null);
+    private void storeRewardExpress(Integer recommendId, Integer recommenderId, Integer consumeType, String recommendTypeName, BigDecimal reward) {
+        Express express = expressRepository.findById(recommenderId).orElse(null);
         if(express != null) {
             BigDecimal money = express.getMoney();
             if(money == null) {
@@ -289,17 +297,28 @@ public class RecommendServiceImpl implements RecommendService {
             }
             express.setMoney(money.add(reward));
             expressRepository.saveAndFlush(express);
+            //生成流水记录
+            ExpressTrans et = new ExpressTrans();
+            et.setExpressId(recommenderId);
+            et.setRecommendRecordId(recommendId);
+            et.setMoney(reward);
+            et.setComment(recommendTypeName);
+            et.setType(consumeType);
+            et.setCreateTime(new Date());
+            expressTransRepository.save(et);
         }
     }
 
     /**
      * 将返利存入商家账户
-     * @param id
+     * @param recommendId
+     * @param recommenderId
      * @param consumeType
+     * @param recommendTypeName
      * @param reward
      */
-    private void storeRewardShop(Integer id, Integer consumeType, BigDecimal reward) {
-        Shop shop = shopRepository.findById(id).orElse(null);
+    private void storeRewardShop(Integer recommendId, Integer recommenderId, Integer consumeType, String recommendTypeName, BigDecimal reward) {
+        Shop shop = shopRepository.findById(recommenderId).orElse(null);
         if(shop != null) {
             BigDecimal money = new BigDecimal("0.00");
             if(consumeType.equals(RecommendTypeEnum.ORDER.getCode())) {
@@ -330,6 +349,7 @@ public class RecommendServiceImpl implements RecommendService {
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse refundOrderDeductReward(Integer orderId) {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         if (orderInfo == null) {
@@ -343,7 +363,7 @@ public class RecommendServiceImpl implements RecommendService {
             RecommendRecord recommendRecord = recommendRecordRepository.saveAndFlush(rr);
             //扣钱
             BigDecimal rewardMoney = recommendRecord.getRewardMoney();
-            boolean flag = storeReward(recommendRecord.getRecommenderId(), recommendRecord.getRecommendType(), recommendRecord.getConsumeType(), rewardMoney.multiply(new BigDecimal("-1")));
+            boolean flag = storeReward(recommendRecord.getId(), recommendRecord.getRecommenderId(), recommendRecord.getRecommendType(), recommendRecord.getConsumeType(), rewardMoney.multiply(new BigDecimal("-1")));
             if(flag) {
                 return ResultResponse.createBySuccessMessage("扣除资金成功");
             } else {
@@ -369,6 +389,41 @@ public class RecommendServiceImpl implements RecommendService {
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
+    }
+
+    /**
+     * 保险订单完成后触发(如果保险订单填了邀请码的话)
+     * @param insuranceOrderId
+     * @return
+     */
+    @Override
+    @Transactional
+    public boolean recommendInsuranceOrder(Integer insuranceOrderId) {
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
+        String recommendCode = insuranceOrder.getRecommendCode();
+        List<RecommendInfo> riList = recommendInfoRepository.findByRecommendCode(recommendCode);
+        if(riList != null && riList.size() > 0) {
+            RecommendInfo recommendInfo = riList.get(0);
+            Integer type = recommendInfo.getType();
+            Integer recommenderId = recommendInfo.getRecommenderId();
+            //生成返利记录
+            RecommendRecord rr = new RecommendRecord();
+            rr.setUserId(insuranceOrder.getUserId());
+            rr.setRecommenderId(recommenderId);
+            rr.setRecommendType(type);
+            rr.setConsumeId(insuranceOrderId);
+            rr.setConsumeType(insuranceOrder.getInsuranceType());
+            rr.setConsumeMoney(insuranceOrder.getSumAmount());
+            rr.setRewardPercent(RecommendTypeEnum.INSURANCE_REWARD_PERCENT.getCode());
+            rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(rr.getRewardPercent()/100)));
+            rr.setIsRefund(-1);
+            rr.setCreateTime(new Date());
+            recommendRecordRepository.save(rr);
+            //根据推荐人类型将资金存入相应账户
+            storeReward(rr.getId(), rr.getRecommenderId(), rr.getRecommendType(), rr.getConsumeType(), rr.getRewardMoney());
+            return true;
+        }
+        return false;
     }
 
     @Override

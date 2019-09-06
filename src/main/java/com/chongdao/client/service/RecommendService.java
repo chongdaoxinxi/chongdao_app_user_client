@@ -42,6 +42,13 @@ public interface RecommendService {
     ResultResponse firstLoginAppCheck(String token);
 
     /**
+     * 保险订单完成生成推广记录
+     * @param insuranceOrderId
+     * @return
+     */
+    boolean recommendInsuranceOrder(Integer insuranceOrderId);
+
+    /**
      * 获取我的推广消费记录
      * @param token
      * @param consumeType
