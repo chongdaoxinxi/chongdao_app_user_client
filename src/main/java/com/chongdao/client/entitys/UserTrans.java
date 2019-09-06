@@ -30,7 +30,7 @@ public class UserTrans implements Serializable {
 	private Integer orderId;
 	private String comment;//注释
 	private BigDecimal money;
-	private Integer type;//1:用户充值;2:订单消费;3:订单退款;5:医疗险返现;6:家责险返现;4:推广用户首单返现;
+	private Integer type;//1:用户充值;2:订单消费;3:订单退款;4:医疗险返现;5:家责险返现;6:推广用户首单返现;
 
 	private Date createTime;
 	private Date updateTime;

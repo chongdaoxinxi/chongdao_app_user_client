@@ -36,6 +36,8 @@ public class ShopPcController {
     private OrderService orderService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private InsuranceFeeRecordService insuranceFeeRecordService;
 
     @GetMapping("getMyDetailInfo")
     public ResultResponse getMyDetailInfo(String token) {
@@ -43,10 +45,10 @@ public class ShopPcController {
     }
 
     @GetMapping("getModuleData")
-    public ResultResponse getModuleData(String token){
+    public ResultResponse getModuleData(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null) {
+        if (role != null) {
             return moduleService.getModuleData();
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -54,17 +56,17 @@ public class ShopPcController {
     }
 
     @GetMapping("getCategoryData")
-    public ResultResponse getCategoryData(String token){
+    public ResultResponse getCategoryData(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if(role != null && role.equals("SHOP_PC")) {
+        if (role != null && role.equals("SHOP_PC")) {
             return categoryService.getCategoryData();
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
     }
 
-    @RequestMapping(value="addGoodsType", method = RequestMethod.POST)
+    @RequestMapping(value = "addGoodsType", method = RequestMethod.POST)
     @ResponseBody
     public ResultResponse addGoodsType(GoodsType goodsType) {
         return goodsTypeService.addGoodsType(goodsType);
@@ -79,6 +81,7 @@ public class ShopPcController {
 
     /**
      * 获取规格单位
+     *
      * @param moduleId
      * @param categoryId
      * @return
@@ -90,6 +93,7 @@ public class ShopPcController {
 
     /**
      * getGoodCategoryList
+     *
      * @param moduleId
      * @param categoryId
      * @return
@@ -101,6 +105,7 @@ public class ShopPcController {
 
     /**
      * 获取商店的流水记录
+     *
      * @param token
      * @param startDate
      * @param endDate
@@ -116,6 +121,7 @@ public class ShopPcController {
 
     /**
      * 获取商店提现记录
+     *
      * @param token
      * @param startDate
      * @param endDate
@@ -131,6 +137,7 @@ public class ShopPcController {
 
     /**
      * 获取使用过优惠券的订单
+     *
      * @param token
      * @param orderNo
      * @param username
@@ -148,6 +155,7 @@ public class ShopPcController {
 
     /**
      * 获取店铺各类型订单消费明细
+     *
      * @param token
      * @param type(1:配送商品订单,2:配送服务订单,3:到店订单)
      * @param userName
@@ -166,6 +174,7 @@ public class ShopPcController {
 
     /**
      * 获取店铺医疗费用消费明细
+     *
      * @param token
      * @param userName
      * @param startDate
@@ -174,13 +183,14 @@ public class ShopPcController {
      * @param pageSize
      * @return
      */
-    @PostMapping("getMoneyInsuranceList")
-    public ResultResponse getMoneyInsuranceList(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return null;
+    @PostMapping("getInsuranceFeeRecordData")
+    public ResultResponse getInsuranceFeeRecordData(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return insuranceFeeRecordService.getInsuranceFeeRecordData(token, userName, startDate, endDate, pageNum, pageSize);
     }
 
     /**
      * 获取店铺推广奖励明细
+     *
      * @param token
      * @param userName
      * @param startDate
