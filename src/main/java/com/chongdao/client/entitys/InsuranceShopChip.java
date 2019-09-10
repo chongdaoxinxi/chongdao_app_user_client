@@ -32,4 +32,5 @@ public class InsuranceShopChip implements Serializable {
     private String core;
     private Integer status;//1:可用;0:被选择;-1:已使用;
     private Date createTime;
+    private Date updateTime;
 }

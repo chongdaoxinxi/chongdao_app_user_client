@@ -234,7 +234,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
                     payInfo.setPlatformNumber(tradeNo);
                     payInfo.setPlatformStatus(tradeStatus);
-
+                    payInfo.setType(3);
                     payInfoRepository.save(payInfo);
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -252,7 +252,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     insuranceFeeRecord.setPaymentType(PayPlatformEnum.WX_APP_PAY.getCode());
                     InsuranceFeeRecord save = insuranceFeeRecordRepository.save(insuranceFeeRecord);
                     //生成支付信息
-                    successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", "", "", PayPlatformEnum.WX_APP_PAY.getCode());
+                    successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", "", "", PayPlatformEnum.ALI_PAY.getCode());
                     //发送短消息
                     successCallBackMsgInsuranceOrderOperate(save);
                 }
@@ -303,7 +303,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
                 payInfo.setPlatformNumber(tradeNo);
                 payInfo.setPlatformStatus(tradeStatus);
-
+                payInfo.setType(1);
                 payInfoRepository.save(payInfo);
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -570,6 +570,18 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             payInfo.setPayPlatform(payCode);
 //            payInfo.setPlatformNumber(transactionId);
 //            payInfo.setPlatformStatus(resultCode);
+            if(StringUtils.isNotBlank(orderReNo)) {
+                //追加订单
+                payInfo.setType(2);
+            } else if(StringUtils.isNotBlank(orderNo)){
+                if(orderNo.indexOf("IFR") != -1) {
+                    //医疗费用订单
+                    payInfo.setType(3);
+                } else {
+                    //正常订单
+                    payInfo.setType(1);
+                }
+            }
             payInfoRepository.save(payInfo);
         } catch (Exception e) {
             log.error(e.getMessage());

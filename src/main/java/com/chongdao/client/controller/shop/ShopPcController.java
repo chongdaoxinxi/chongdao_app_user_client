@@ -8,7 +8,10 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -38,6 +41,8 @@ public class ShopPcController {
     private ShopService shopService;
     @Autowired
     private InsuranceFeeRecordService insuranceFeeRecordService;
+    @Autowired
+    private ShopChipService shopChipService;
 
     @GetMapping("getMyDetailInfo")
     public ResultResponse getMyDetailInfo(String token) {
@@ -202,5 +207,10 @@ public class ShopPcController {
     @PostMapping("getMoneyRecommendList")
     public ResultResponse getMoneyRecommendList(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
+    }
+
+    @PostMapping("importShopChipData")
+    public ResultResponse importShopChipData(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws IOException {
+        return shopChipService.importShopChipData(request.getHeader("token"), file);
     }
 }
