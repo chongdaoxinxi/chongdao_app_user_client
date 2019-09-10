@@ -3,21 +3,22 @@
 <mapper namespace="com.chongdao.client.mapper.InsuranceFeeRecordMapper">
     <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.InsuranceFeeRecord">
         <constructor>
-        <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-        <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-        <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-        <arg column="insurance_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-        <arg column="comment" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
-        <arg column="photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
-        <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-    </constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="insurance_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="comment" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        ifr.id, ifr.order_no, ifr.shop_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.create_time
+        ifr.id, ifr.order_no, ifr.shop_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.status, ifr.create_time
     </sql>
     <select id="getInsuranceFeeRecordData" resultMap="BaseResultMap" parameterType="map">
         select

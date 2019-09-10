@@ -36,5 +36,6 @@ public class PayInfo {
 
     private Date updateTime;
 
+    private Integer type;//1: 订单支付, 2:追加订单支付, 3:保险医疗费用支付
 
 }

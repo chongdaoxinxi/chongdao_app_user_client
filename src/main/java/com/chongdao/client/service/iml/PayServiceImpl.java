@@ -16,6 +16,7 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
+import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -49,6 +50,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     @Autowired
     private PayInfoRepository payInfoRepository;
+    @Autowired
+    private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
 
     /**
@@ -206,8 +209,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         String tradeNo = params.get("trade_no");
         String tradeStatus = params.get("trade_status");
         OrderInfo order = null;
-        //追加订单
         if (orderNo.contains("RE")) {
+            //追加订单
             OrderInfoRe orderInfoRe = orderInfoReRepository.findByReOrderNo(orderNo);
             if (orderInfoRe.getStatus() == 0) {
                 return ResultResponse.createBySuccess("支付宝重复调用");
@@ -238,7 +241,24 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
                 }
             }
+        } else if (orderNo.indexOf("IFR") != -1) {
+            // 医疗费用订单
+            if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+                List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
+                if (ifrs.size() > 0) {
+                    InsuranceFeeRecord insuranceFeeRecord = ifrs.get(0);
+                    insuranceFeeRecord.setStatus(1);
+                    insuranceFeeRecord.setPaymentTime(new Date());
+                    insuranceFeeRecord.setPaymentType(PayPlatformEnum.WX_APP_PAY.getCode());
+                    InsuranceFeeRecord save = insuranceFeeRecordRepository.save(insuranceFeeRecord);
+                    //生成支付信息
+                    successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", "", "", PayPlatformEnum.WX_APP_PAY.getCode());
+                    //发送短消息
+                    successCallBackMsgInsuranceOrderOperate(save);
+                }
+            }
         } else {
+            //正常订单
             order = orderInfoMapper.selectByOrderNo(orderNo);
             if (order == null) {
                 log.error("【支付回调】订单不存在:orderNo:{}", orderNo);
@@ -447,7 +467,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         }
 
         //这里是验证返回值没问题了，可以写具体的支付成功的逻辑
-        payCallBackGenerateOrder(list);
+        wxPayCallBackGenerateOrder(list);
 
         // 返回信息，防止微信重复发送报文
         String result = "<xml>"
@@ -477,7 +497,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     /**
      * 支付成功后处理逻辑
      */
-    private void payCallBackGenerateOrder(List<Element> list) {
+    private void wxPayCallBackGenerateOrder(List<Element> list) {
         String orderNo = getCallbackInfoByName(list, "out_trade_no");
         Date time = DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end"));
         String transactionId = getCallbackInfoByName(list, "transaction_id");
@@ -494,7 +514,22 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             });
             OrderInfoRe save = orderInfoReRepository.save(re);
             //生成支付信息
-            generatePayInfo(save.getUserId(), save.getOrderNo(), save.getReOrderNo(), transactionId, resultCode);
+            successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), save.getReOrderNo(), transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
+            //发送短消息
+            successCallBackMsgReOrderOperate(save);
+        } else if (orderNo.indexOf("IFR") != -1) {
+            List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
+            if (ifrs.size() > 0) {
+                InsuranceFeeRecord insuranceFeeRecord = ifrs.get(0);
+                insuranceFeeRecord.setStatus(1);
+                insuranceFeeRecord.setPaymentTime(new Date());
+                insuranceFeeRecord.setPaymentType(PayPlatformEnum.WX_APP_PAY.getCode());
+                InsuranceFeeRecord save = insuranceFeeRecordRepository.save(insuranceFeeRecord);
+                //生成支付信息
+                successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
+                //发送短消息
+                successCallBackMsgInsuranceOrderOperate(save);
+            }
         } else {
             OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
             order.setPaymentTime(time);
@@ -506,17 +541,48 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
             });
             //生成支付信息
-            generatePayInfo(order.getUserId(), order.getOrderNo(), "", transactionId, resultCode);
+            successCallBackPayInfoOperate(order.getUserId(), order.getOrderNo(), "", transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
             orderInfoMapper.updateByPrimaryKeySelective(order);
-            successCallBackSendMsg(order);//发送短信息
+            //发送短信息
+            successCallBackMsgoOrderOperate(order);
         }
     }
 
     /**
-     * 成功回调的短信发送
+     * 成功回调之后的支付信息处理
+     *
+     * @param userId
+     * @param orderNo
+     * @param orderReNo
+     * @param transactionId
+     * @param resultCode
+     * @param payCode
+     */
+    private void successCallBackPayInfoOperate(Integer userId, String orderNo, String orderReNo, String transactionId, String resultCode, Integer payCode) {
+        //生成支付信息
+        try {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(userId);
+            payInfo.setOrderNo(orderNo);
+            if (StringUtils.isNotBlank(orderReNo)) {
+                payInfo.setOrderReNo(orderReNo);
+            }
+            payInfo.setPayPlatform(payCode);
+//            payInfo.setPlatformNumber(transactionId);
+//            payInfo.setPlatformStatus(resultCode);
+            payInfoRepository.save(payInfo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("支付信息生成失败: orderNo:{}", orderNo);
+        }
+    }
+
+    /**
+     * 成功回调之后的短信处理(正常订单)
+     *
      * @param order
      */
-    private void successCallBackSendMsg(OrderInfo order) {
+    private void successCallBackMsgoOrderOperate(OrderInfo order) {
         //判断是否自动接单
         Shop shop = shopRepository.findById(order.getShopId()).get();
         if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
@@ -536,30 +602,21 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     }
 
     /**
-     * 成功回调后的支付信息处理
-     * @param userId
-     * @param orderNo
-     * @param orderReNo
-     * @param transactionId
-     * @param resultCode
+     * 成功回调之后的短信处理(医疗费用订单)
+     *
+     * @param insuranceFeeRecord
      */
-    private void generatePayInfo(Integer userId, String orderNo, String orderReNo, String transactionId, String resultCode) {
-        //生成支付信息
-        try {
-            PayInfo payInfo = new PayInfo();
-            payInfo.setUserId(userId);
-            payInfo.setOrderNo(orderNo);
-            if (StringUtils.isNotBlank(orderReNo)) {
-                payInfo.setOrderReNo(orderReNo);
-            }
-            payInfo.setPayPlatform(PayPlatformEnum.WX_APP_PAY.getCode());
-            payInfo.setPlatformNumber(transactionId);
-            payInfo.setPlatformStatus(resultCode);
-            payInfoRepository.save(payInfo);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error("【微信异步回调】微信支付信息生成失败: orderNo:{}", orderNo);
-        }
+    private void successCallBackMsgInsuranceOrderOperate(InsuranceFeeRecord insuranceFeeRecord) {
+
+    }
+
+    /**
+     * 成功回调之后的短信处理(追加订单)
+     *
+     * @param orderInfoRe
+     */
+    private void successCallBackMsgReOrderOperate(OrderInfoRe orderInfoRe) {
+
     }
 
     private String getCallbackInfoByName(List<Element> list, String name) {
