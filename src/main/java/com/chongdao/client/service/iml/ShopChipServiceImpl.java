@@ -2,10 +2,13 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceShopChip;
+import com.chongdao.client.mapper.InsuranceShopChipMapper;
 import com.chongdao.client.repository.InsuranceShopChipRepository;
 import com.chongdao.client.service.ShopChipService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -31,6 +35,8 @@ import java.util.Date;
 public class ShopChipServiceImpl implements ShopChipService {
     @Autowired
     private InsuranceShopChipRepository insuranceShopChipRepository;
+    @Autowired
+    private InsuranceShopChipMapper insuranceShopChipMapper;
 
     @Override
     @Transactional
@@ -84,6 +90,16 @@ public class ShopChipServiceImpl implements ShopChipService {
         } else {
             return ResultResponse.createBySuccessMessage("导入失败!");
         }
+    }
+
+    @Override
+    public ResultResponse getShopShipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        List<InsuranceShopChip> list = insuranceShopChipMapper.getShopChipDataList(tokenVo.getUserId(), core, status, startDate, endDate);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(list);
+        return ResultResponse.createBySuccess(pageResult);
     }
 
     public static String getCellValue(Cell cell) {

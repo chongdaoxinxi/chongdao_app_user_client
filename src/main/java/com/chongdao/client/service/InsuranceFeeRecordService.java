@@ -17,7 +17,7 @@ public interface InsuranceFeeRecordService {
      * @param pageSize
      * @return
      */
-    ResultResponse getInsuranceFeeRecordData(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+    ResultResponse getInsuranceFeeRecordData(String token, String userName,String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
     /**
      * 添加保险医疗费用记录

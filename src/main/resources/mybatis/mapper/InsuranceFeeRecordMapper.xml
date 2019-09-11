@@ -13,31 +13,36 @@
             <arg column="photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="payment_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="payment_type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        ifr.id, ifr.order_no, ifr.shop_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.status, ifr.create_time
+        ifr.id, ifr.order_no, ifr.user_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.status, ifr.create_time, ifr.payment_time, ifr.payment_type
     </sql>
     <select id="getInsuranceFeeRecordData" resultMap="BaseResultMap" parameterType="map">
         select
         <include refid="Base_Column_List"/>, u.name as user_name, s.shop_name as shop_name
         from insurance_fee_record ifr
         left join user u on ifr.user_id = u.id
-        lett join shop s on ifr.shop_id = s.id
+        left join shop s on ifr.shop_id = s.id
         where 1 = 1
         <if test="shopId != null and shopId != ''">
-            ifr.shop_id = #{shopId}
+            and ifr.shop_id = #{shopId}
         </if>
         <if test="userName != null and userName != ''">
-            u.name like concat('%', #{userName}, '%')
+            and u.name like concat('%', #{userName}, '%')
+        </if>
+        <if test="shopName != null and shopName !=''">
+            and s.shop_name like concat('%', #{shopName}, '%')
         </if>
         <if test="startDate != null">
-            ifr.create_time &gt; #{startDate}
+            and ifr.create_time &gt; #{startDate}
         </if>
         <if test="endDate != null">
-            ifr.create_date &lt; #{createDate}
+            and ifr.create_date &lt; #{endDate}
         </if>
         order by ifr.create_time desc
     </select>

@@ -1,13 +1,11 @@
 package com.chongdao.client.entitys;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,6 +19,7 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class InsuranceShopChip implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -31,6 +30,10 @@ public class InsuranceShopChip implements Serializable {
     private Integer shopId;
     private String core;
     private Integer status;//1:可用;0:被选择;-1:已使用;
+    private Date usedTime;//被使用时间
     private Date createTime;
     private Date updateTime;
+
+    @Transient
+    private String shopName;
 }

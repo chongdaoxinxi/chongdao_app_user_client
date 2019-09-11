@@ -189,8 +189,8 @@ public class ShopPcController {
      * @return
      */
     @PostMapping("getInsuranceFeeRecordData")
-    public ResultResponse getInsuranceFeeRecordData(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return insuranceFeeRecordService.getInsuranceFeeRecordData(token, userName, startDate, endDate, pageNum, pageSize);
+    public ResultResponse getInsuranceFeeRecordData(String token, String userName, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return insuranceFeeRecordService.getInsuranceFeeRecordData(token, userName, shopName, startDate, endDate, pageNum, pageSize);
     }
 
     /**
@@ -209,8 +209,24 @@ public class ShopPcController {
         return null;
     }
 
+    /**
+     * 导入宠物芯片数据
+     * @param request
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @PostMapping("importShopChipData")
     public ResultResponse importShopChipData(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws IOException {
         return shopChipService.importShopChipData(request.getHeader("token"), file);
+    }
+
+    /**
+     * 获取宠物芯片数据列表
+     * @return
+     */
+    @PostMapping("getShopChipData")
+    public ResultResponse getShopChipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return shopChipService.getShopShipData(token, core, status, startDate, endDate, pageNum, pageSize);
     }
 }
