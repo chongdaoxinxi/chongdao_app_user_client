@@ -31,6 +31,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 /**
@@ -52,8 +54,11 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
 
+    private static final String INVOICE_URL = "http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do";
     private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
+    private static final String PLATE_FORM_CODE = "CPI000865";
     private static final String SECRET_KEY = "Picc37mu63ht38mw";
+    private static final String INVOICE_TITLE= "XXX";
     private static final String INSURANCE_SERVICE_NO = "001001";
     private static final String ZFO_RISK_CODE = "ZFO";
     private static final String ZFO_RATION_TYPE = "ZFO310000a";
@@ -360,6 +365,125 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         return ResultResponse.createByErrorMessage("投保失败, 通过返回的UUID找不到对应的保险订单");
     }
 
+    @Override
+    public ResultResponse requestInvoiceInfo() {
+        Document document = DocumentHelper.createDocument();
+        Element applyInfo = document.addElement("ApplyInfo");
+
+        Element generalInfo = applyInfo.addElement("GeneralInfo");
+        //测试数据
+        generalInfo.addElement("UUID").setText("CPI000384201908050333302019");
+        generalInfo.addElement("PlateformCode").setText("CPI000865");
+        generalInfo.addElement("Md5Value").setText("37959e8f70f24471614435d5b62964f3");
+
+        Element invoiceInfo = applyInfo.addElement("InvoiceInfo");
+        invoiceInfo.addElement("Policyno").setText("PI9Q20193101Q000E01012");//投保单号
+        invoiceInfo.addElement("RequestTime").setText("2019-08-05 15:35:32");
+        invoiceInfo.addElement("InvoiceTitle").setText("onlineS");//发票抬头
+        invoiceInfo.addElement("Phone").setText("17631088624");
+        invoiceInfo.addElement("AddressAndPhone").setText("BEI-JING");//地址+电话
+        invoiceInfo.addElement("BankAccount").setText("1");//开户行+账号
+//        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("91110108101966816T");//纳税人识别号
+        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("");//纳税人识别号
+        invoiceInfo.addElement("Email").setText("1.com");
+        invoiceInfo.addElement("Type").setText("2");//1 短链接, 2 版式下载
+
+        String text = document.asXML();
+        try {
+            //Http协议调用接口，其中serviceBusURI是要调用地址
+            URL url = new URL(INVOICE_URL);
+            URLConnection con = url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestProperty("Pragma", "no-cache");
+            con.setRequestProperty("Cache-Control", "no-cache");
+            //设置编码，不然返回报文格式乱码
+            con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+            out.write(new String(text.getBytes("UTF-8")));
+            out.flush();
+            out.close();
+
+            //返回数据
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "GB2312"));
+            String line = "";
+            //存放请求内容
+            StringBuffer xml = new StringBuffer();
+            while ((line = br.readLine()) != null) {
+                xml.append(line);
+            }
+            System.out.println(xml.toString());
+            //解析报文，字符串转XML
+            Document doc = DocumentHelper.parseText(xml.toString());
+            Element root = doc.getRootElement();
+            Element errorCode = root.element("GeneralInfoReturn").element("ErrorCode");
+            String invoiceDownloadUrl = root.element("PolicyInfoReturn").elementText("Url");
+            System.out.println(errorCode.getText());
+            System.out.println(invoiceDownloadUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void requestForInvoiceInfo(Integer insuranceOrderId) {
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
+        Document document = DocumentHelper.createDocument();
+        Element applyInfo = document.addElement("ApplyInfo");
+
+        Element generalInfo = applyInfo.addElement("GeneralInfo");
+        //生产环境
+        String uuid = insuranceOrder.getInsuranceOrderNo();
+        generalInfo.addElement("UUID").setText(insuranceOrder.getInsuranceOrderNo());
+        generalInfo.addElement("PlateformCode").setText(PLATE_FORM_CODE);
+        generalInfo.addElement("Md5Value").setText(generateInvoiceMD5SecretKey(uuid, SECRET_KEY));
+
+        Element invoiceInfo = applyInfo.addElement("InvoiceInfo");
+        invoiceInfo.addElement("Policyno").setText(insuranceOrder.getPolicyNo());//投保单号
+        invoiceInfo.addElement("RequestTime").setText(DateTimeUtil.dateToStr(new Date()));
+        invoiceInfo.addElement("InvoiceTitle").setText(INVOICE_TITLE);//发票抬头
+        invoiceInfo.addElement("Phone").setText(insuranceOrder.getPhone());
+        invoiceInfo.addElement("AddressAndPhone").setText(insuranceOrder.getPhone());//地址+电话
+        invoiceInfo.addElement("BankAccount").setText("1");//开户行+账号
+        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("91110108101966816T");//纳税人识别号
+        invoiceInfo.addElement("Email").setText(insuranceOrder.getAcceptMail());
+        invoiceInfo.addElement("Type").setText("2");//1 短链接, 2 版式下载
+
+        String text = document.asXML();
+        try {
+            //Http协议调用接口，其中serviceBusURI是要调用地址
+            URL url = new URL(INVOICE_URL);
+            URLConnection con = url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestProperty("Pragma", "no-cache");
+            con.setRequestProperty("Cache-Control", "no-cache");
+            //设置编码，不然返回报文格式乱码
+            con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+            out.write(new String(text.getBytes("UTF-8")));
+            out.flush();
+            out.close();
+
+            //返回数据
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "GB2312"));
+            String line = "";
+            //存放请求内容
+            StringBuffer xml = new StringBuffer();
+            while ((line = br.readLine()) != null) {
+                xml.append(line);
+            }
+            System.out.println(xml.toString());
+            //解析报文，字符串转XML
+            Document doc = DocumentHelper.parseText(xml.toString());
+            Element root = doc.getRootElement();
+            Element errorCode = root.element("GeneralInfoReturn").element("ErrorCode");
+            String invoiceDownloadUrl = root.element("PolicyInfoReturn").elementText("Url");
+            System.out.println(errorCode.getText());
+            System.out.println(invoiceDownloadUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * 成功投保回调逻辑
      */
@@ -543,6 +667,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
     /**
      * 渲染投保报文
+     *
      * @param riskCode
      * @param rationType
      * @param insuranceOrder
@@ -560,7 +685,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("EndDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceFailureTime(), "yyyy-MM-dd"));//终保时间
         template.binding("SumAmount", insuranceOrder.getSumAmount().toString());//保额
         template.binding("SumPremium", insuranceOrder.getSumPremium().toString());//保费
-        template.binding("Md5Value", generateMD5SecretKey(uuid, insuranceOrder.getSumPremium().toString(), SECRET_KEY));
+        template.binding("Md5Value", generateInsuranceMD5SecretKey(uuid, insuranceOrder.getSumPremium().toString(), SECRET_KEY));
         template.binding("RationType", rationType);
         template.binding("AppliName", insuranceOrder.getName());//投保人姓名
         template.binding("AppliIdType", String.valueOf(insuranceOrder.getCardType()));//投保人证件类型
@@ -589,16 +714,31 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     }
 
     /**
-     * 生成MD5秘钥
+     * 生成投保MD5秘钥
      *
      * @param uuid
      * @param SumPremium
      * @param secretKey
      * @return
      */
-    private String generateMD5SecretKey(String uuid, String SumPremium, String secretKey) {
+    private String generateInsuranceMD5SecretKey(String uuid, String SumPremium, String secretKey) {
         try {
             return Md5.encodeByMd5(uuid + SumPremium + secretKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 生成请求电子发票的MD5秘钥
+     * @param uuid
+     * @param secretKey
+     * @return
+     */
+    private String generateInvoiceMD5SecretKey(String uuid, String secretKey) {
+        try {
+            return Md5.encodeByMd5(uuid + secretKey);
         } catch (Exception e) {
             e.printStackTrace();
         }

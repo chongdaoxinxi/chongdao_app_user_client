@@ -9,4 +9,6 @@ public interface InsuranceExternalService {
     ResultResponse generateInsure(InsuranceOrder insuranceOrder) throws IOException;
 
     ResultResponse payCallBackManage(String payCallBackInfo) throws IOException;
+
+    ResultResponse requestInvoiceInfo();
 }

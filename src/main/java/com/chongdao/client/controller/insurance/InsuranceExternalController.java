@@ -29,6 +29,12 @@ public class InsuranceExternalController {
         return insuranceExternalService.generateInsure(null);
     }
 
+    /**
+     * 投保支付回调
+     * @param payCallBackInfo
+     * @return
+     * @throws IOException
+     */
     @PostMapping("payInsureCallBack")
     public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo) throws IOException {
         //TODO
@@ -38,5 +44,14 @@ public class InsuranceExternalController {
 //        System.out.println("payCallBackInfo.downloadUrl:" + payCallBackInfo.get("downloadUrl"));
         System.out.println("回调成功!");
         return insuranceExternalService.payCallBackManage(payCallBackInfo);
+    }
+
+    /**
+     * 请求电子发票
+     * @return
+     */
+    @PostMapping("requestInvoiceInfo")
+    public ResultResponse requestInvoiceInfo() {
+        return insuranceExternalService.requestInvoiceInfo();
     }
 }
