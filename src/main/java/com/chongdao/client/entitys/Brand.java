@@ -19,7 +19,7 @@ public class Brand {
 
     private String type;
 
-    //private String imgUrl;
+    private String imgUrl;
 
     private Integer goodsTypeId;
 
