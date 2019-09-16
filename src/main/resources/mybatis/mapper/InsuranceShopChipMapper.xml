@@ -28,6 +28,9 @@
         <if test="core != null and core != ''">
             and isc.core like concat('%', #{core}, '%')
         </if>
+        <if test="status != null">
+            and isc.status = #{status}
+        </if>
         <if test="startDate != null">
             and isc.used_time &gt; #{startDate}
         </if>

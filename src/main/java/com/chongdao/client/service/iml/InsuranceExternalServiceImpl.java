@@ -68,6 +68,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String I9Q_RATION_TYPE = "I9Q310000a";
     private static final String POLICY_FOLDER_PREFIX = "../policy/";
     private static final String POLICY_REALPATH = "/home/policy/";
+    private static final String INVOICE_FOLDER_PREFIX = "../invoice/";
+    private static final String INVOICE_REALPATH = "/home/invoice/";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
@@ -483,7 +485,37 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * 保存电子发票文件至本地
+     */
+    private void saveInvoicePdf(InsuranceOrder insuranceOrder, String downloadUrl) {
+        if (StringUtils.isNotBlank(downloadUrl)) {
+            insuranceOrder.setInvoiceDownloadUrl(downloadUrl);
+            //根据下载链接, 将图片下载存储到服务器上, 并保存访问url
+            RestTemplate rest = new RestTemplate();
+            rest.execute(downloadUrl, HttpMethod.GET, (req) -> {
+            }, (res) -> {
+                InputStream inputStream = res.getBody();
+                FileOutputStream out = new FileOutputStream(INVOICE_FOLDER_PREFIX + insuranceOrder.getPolicyNo() + ".pdf");
+//                //测试
+//                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + "test_xxx" + ".pdf");
+//                FileOutputStream out = new FileOutputStream("F:/" + "test_xxx" + ".pdf");
+
+                int byteCount = 0;
+                while ((byteCount = inputStream.read()) != -1) {
+                    out.write(byteCount);
+                }
+                out.close();
+                inputStream.close();
+
+//                保存文件名
+                insuranceOrder.setInvoiceImage(insuranceOrder.getPolicyNo() + ".pdf");
+                return null;
+            });
+        }
+    }
+
     /**
      * 成功投保回调逻辑
      */

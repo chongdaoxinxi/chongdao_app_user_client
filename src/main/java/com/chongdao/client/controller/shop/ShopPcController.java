@@ -227,6 +227,6 @@ public class ShopPcController {
      */
     @PostMapping("getShopChipData")
     public ResultResponse getShopChipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return shopChipService.getShopShipData(token, core, status, startDate, endDate, pageNum, pageSize);
+        return shopChipService.getShopChipData(token, core, status, startDate, endDate, pageNum, pageSize);
     }
 }

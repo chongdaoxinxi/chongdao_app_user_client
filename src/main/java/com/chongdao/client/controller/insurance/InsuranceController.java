@@ -2,9 +2,13 @@ package com.chongdao.client.controller.insurance;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.service.ShopChipService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.Date;
@@ -20,6 +24,8 @@ import java.util.Date;
 public class InsuranceController {
     @Autowired
     private InsuranceService insuranceService;
+    @Autowired
+    private ShopChipService shopChipService;
 
     /////////////////////app端下单///////////////////////////////
 
@@ -57,6 +63,28 @@ public class InsuranceController {
     @PostMapping("getInsuranceDetail")
     public ResultResponse getInsuranceDetail(Integer insuranceId) {
         return insuranceService.getInsuranceDetail(insuranceId);
+    }
+
+    /**
+     * 获取指定医院的可用芯片数据
+     * @param shopId
+     * @param core
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getPetChipAppiontShop")
+    public ResultResponse getPetChipAppiontShop(Integer shopId, String core, Integer pageNum, Integer pageSize) {
+        return shopChipService.getShopChipAppointShop(shopId, core, 1, pageNum, pageSize);
+    }
+
+    /**
+     * 获取医院类商家
+     * @return
+     */
+    @PostMapping("getInsuranceShop")
+    public ResultResponse getInsuranceShop() {
+        return null;
     }
 
     /**

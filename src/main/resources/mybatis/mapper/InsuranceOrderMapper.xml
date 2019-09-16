@@ -14,6 +14,7 @@
             <arg column="id_card_front_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="id_card_reverse_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="bank_card_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="bank_card_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="accept_seq_no" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="accept_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="accept_card_type" jdbcType="VARCHAR" javaType="java.lang.String"/>
@@ -24,6 +25,10 @@
             <arg column="ration_type" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="insurance_type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="pet_card_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="pet_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pet_breed_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="pet_breed_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pet_age" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="pet_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="medical_insurance_shop_chip_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
@@ -46,8 +51,8 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        io.id, io.insurance_order_no, io.user_id, io.name, io.card_type, io.card_no, io.phone, io.is_send_msg, io.id_card_front_photo, io.id_card_reverse_photo, io.bank_card_photo, io.accept_seq_no, io.accept_name,
-    io.accept_name, io.accept_card_type, io.accept_card_no, io.accept_phone, io.accept_mail, io.beneficiary, io.ration_type, io.insurance_type, io.pet_card_id, io.pet_photo, io.medical_insurance_shop_chip_id,
+        io.id, io.insurance_order_no, io.user_id, io.name, io.card_type, io.card_no, io.phone, io.is_send_msg, io.id_card_front_photo, io.id_card_reverse_photo, io.bank_card_photo, io.bank_card_no, io.accept_seq_no, io.accept_name,
+    io.accept_name, io.accept_card_type, io.accept_card_no, io.accept_phone, io.accept_mail, io.beneficiary, io.ration_type, io.insurance_type, io.pet_card_id, io.pet_name, io.pet_breed_id, io.pet_breed_name, io.pet_age, io.pet_photo, io.medical_insurance_shop_chip_id,
 io.order_no, io.status, io.create_time, io.apply_time, io.audit_time, io.sign_bill_time, io.insurance_effect_time, io.insurance_failure_time, io.sum_amount, io.sum_premium, io.recommend_code, io.policy_download_url,
 io.policy_image, io.proposal_no, io.policy_no, io.policy_cdxx_download_url, io.policy_cdxx_image
     </sql>

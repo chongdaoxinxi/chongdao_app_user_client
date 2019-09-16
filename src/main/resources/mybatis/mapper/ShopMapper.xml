@@ -486,6 +486,20 @@
     </select>
 
 
+    <select id="selectInsuranceShopLimit3KM"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Lists" />,
+        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
+        (select ifnull(max(discount),0.0) from good where shop_id=s.id and discount > 0 order by max(discount)) discount,
+        (select ifnull(max(re_discount),0.0) from good where shop_id=s.id and re_discount > 0 order by max(re_discount)) reDiscount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000) sales
+        from  shop s
+        where s.status in (0,1) and  s.area_code = #{areaCode}
+        order by s.grade
+    </select>
+
 
     <select id="selectByAreaCodeAndShopName" parameterType="String" resultMap="BaseResultMap">
         select

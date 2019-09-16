@@ -21,5 +21,16 @@ public interface ShopChipService {
      * 获取宠物芯片数据
      * @return
      */
-    ResultResponse getShopShipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+    ResultResponse getShopChipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取指定医院的可用芯片数据
+     * @param shopId
+     * @param core
+     * @param status
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultResponse getShopChipAppointShop(Integer shopId, String core, Integer status, Integer pageNum, Integer pageSize);
 }

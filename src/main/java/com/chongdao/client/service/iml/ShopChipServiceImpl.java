@@ -93,10 +93,19 @@ public class ShopChipServiceImpl implements ShopChipService {
     }
 
     @Override
-    public ResultResponse getShopShipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getShopChipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         List<InsuranceShopChip> list = insuranceShopChipMapper.getShopChipDataList(tokenVo.getUserId(), core, status, startDate, endDate);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(list);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ResultResponse getShopChipAppointShop(Integer shopId, String core, Integer status, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<InsuranceShopChip> list = insuranceShopChipMapper.getShopChipDataList(shopId, core, status, null, null);
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);

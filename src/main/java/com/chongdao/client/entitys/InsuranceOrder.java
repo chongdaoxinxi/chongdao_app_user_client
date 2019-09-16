@@ -44,6 +44,7 @@ public class InsuranceOrder implements Serializable {
     private String idCardFrontPhoto;//投保人身份证正面照片
     private String idCardReversePhoto;//投保人身份证反面照片
     private String bankCardPhoto;//银行卡照片
+    private String bankCardNo;//银行卡号
 
     //被保人信息
     private Integer acceptSeqNo;//被保人序列号, 默认为1
@@ -61,6 +62,10 @@ public class InsuranceOrder implements Serializable {
 
     //宠物属性(宠物即被保人)
     private Integer petCardId;//宠物卡片id
+    private String petName;//宠物姓名
+    private String petBreedId;//宠物品种ID
+    private String petBreedName;//宠物品种名称
+    private Integer petAge;//宠物年龄
     private String petPhoto;//宠物图片->用于审核
     private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
 
@@ -86,6 +91,8 @@ public class InsuranceOrder implements Serializable {
     private String policyImage;//电子保单图片
     private String policyCdxxDownloadUrl;//电子单证下载地址(见费出单时和电子保单下载地址一致, 非见费出单时由我们系统生成)
     private String policyCdxxImage;//电子单证图片(见费出单时和电子保单下载地址一致, 非见费出单时由我们系统生成)
+    private String invoiceDownloadUrl;//电子发票下载地址
+    private String invoiceImage;//电子发票直接访问地址
 
     //分销
     private String recommendCode;//推广码
