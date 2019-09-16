@@ -75,7 +75,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
             "\t\t<UUID>${UUID}</UUID>\n" +
-            "\t\t<PlateformCode>CPI000865</PlateformCode>\n" +
+            "\t\t<PlateformCode>${PlateformCode}</PlateformCode>\n" +
             "\t\t<Md5Value>${Md5Value}</Md5Value>\n" +
             "\t</GeneralInfo>\n" +
             "\t<PolicyInfos>\n" +
@@ -122,7 +122,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
             "\t\t<UUID>${UUID}</UUID>\n" +
-            "\t\t<PlateformCode>CPI000865</PlateformCode>\n" +
+            "\t\t<PlateformCode>${PlateformCode}</PlateformCode>\n" +
             "\t\t<Md5Value>${Md5Value}</Md5Value>\n" +
             "\t</GeneralInfo>\n" +
             "\t<PolicyInfos>\n" +
@@ -168,7 +168,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
             "\t\t<UUID>${UUID}</UUID>\n" +
-            "\t\t<PlateformCode>CPI000865</PlateformCode>\n" +
+            "\t\t<PlateformCode>${PlateformCode}</PlateformCode>\n" +
             "\t\t<Md5Value>${Md5Value}</Md5Value>\n" +
             "\t</GeneralInfo>\n" +
             "\t<PolicyInfos>\n" +
@@ -710,6 +710,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         //生产环境参数
         String uuid = insuranceOrder.getInsuranceOrderNo();
         template.binding("UUID", uuid);
+        template.binding("PlateformCode", PLATE_FORM_CODE);
         template.binding("SerialNo", "1");
         template.binding("RiskCode", riskCode);
         template.binding("OperateTimes", DateTimeUtil.dateToStr(insuranceOrder.getApplyTime(), "yyyy-MM-dd hh:mm:ss"));//下单时间
