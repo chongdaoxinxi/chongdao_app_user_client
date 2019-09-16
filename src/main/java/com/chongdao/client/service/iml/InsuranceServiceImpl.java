@@ -58,7 +58,15 @@ public class InsuranceServiceImpl implements InsuranceService {
         //设置一些默认参数
         order.setIsSendMsg(1);//默认发送短消息
         order.setBeneficiary(1);//被保人与投保人关系, 默认为本人
+
+        order.setAcceptName(order.getName());
+        order.setAcceptPhone(order.getPhone());
+        order.setAcceptCardType(order.getCardType());
+        order.setAcceptCardNo(order.getCardNo());
+        order.setAcceptSeqNo(1);
+
         order.setCreateTime(new Date());
+        order.setApplyTime(new Date());
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
 

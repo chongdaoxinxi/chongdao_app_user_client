@@ -723,7 +723,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("AppliIdType", String.valueOf(insuranceOrder.getCardType()));//投保人证件类型
         template.binding("AppliIdNo", insuranceOrder.getCardNo());
         template.binding("AppliIdMobile", insuranceOrder.getPhone());
-        template.binding("InsuredSeqNo", insuranceOrder.getAcceptSeqNo());
+        template.binding("InsuredSeqNo", 1);
         template.binding("InsuredName", insuranceOrder.getAcceptName());//被保人姓名
         template.binding("InsuredIdType", insuranceOrder.getAcceptCardType());//被保人证件类型
         template.binding("InsuredIdNo", insuranceOrder.getAcceptCardNo());
