@@ -16,7 +16,10 @@
         select
         <include refid="Base_Column_List"/>
         from pet_breed pb
-        where pb.type = #{type}
+        where 1 = 1
+          <if test="type != null">
+              and pb.type = #{type}
+          </if>
          <if test="name != null and name != ''">
             and pb.name like concat('%', #{name}, '%')
          </if>
