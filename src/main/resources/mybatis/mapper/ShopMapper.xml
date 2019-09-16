@@ -3,38 +3,38 @@
 <mapper namespace="com.chongdao.client.mapper.ShopMapper">
     <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.Shop">
         <constructor>
-            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-            <arg column="shop_name" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="account_name" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="area_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-            <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="lat" javaType="java.lang.Double" jdbcType="DOUBLE" />
-            <arg column="lng" javaType="java.lang.Double" jdbcType="DOUBLE" />
-            <arg column="logo" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-            <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER" />
-            <arg column="grade" javaType="java.lang.Double" jdbcType="DOUBLE" />
-            <arg column="wx_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="zfb_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="bank_no" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="qr_code_url" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="show_img" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER" />
-            <arg column="service_price_ratio" javaType="java.lang.Integer" jdbcType="INTEGER" />
-            <arg column="stop_note" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="is_hot" javaType="java.lang.Byte" jdbcType="TINYINT" />
-            <arg column="is_auto_accept" javaType="java.lang.Byte" jdbcType="TINYINT" />
-            <arg column="is_join_common_weal" javaType="java.lang.Byte" jdbcType="TINYINT" />
-            <arg column="start_business_hours" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="end_business_hours" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-            <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-            <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-            <arg column="address" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <arg column="is_stop" javaType="java.lang.Byte" jdbcType="TINYINT" />
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="shop_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="account_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="area_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="lat" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+            <arg column="lng" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+            <arg column="logo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="grade" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+            <arg column="wx_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="zfb_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="bank_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="qr_code_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="show_img" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="service_price_ratio" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="stop_note" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="is_hot" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="is_auto_accept" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="is_join_common_weal" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="start_business_hours" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="end_business_hours" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="address" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="is_stop" javaType="java.lang.Byte" jdbcType="TINYINT"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -52,12 +52,13 @@
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from shop
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        delete from shop
+        delete
+        from shop
         where id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.chongdao.client.entitys.Shop">
@@ -80,7 +81,8 @@
                 #{qrCodeUrl,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR}, #{showImg,jdbcType=VARCHAR},
                 #{status,jdbcType=INTEGER}, #{servicePriceRatio,jdbcType=INTEGER}, #{stopNote,jdbcType=VARCHAR},
                 #{isHot,jdbcType=TINYINT}, #{isAutoAccept,jdbcType=TINYINT}, #{isJoinCommonWeal,jdbcType=TINYINT},
-                #{startBusinessHours,jdbcType=VARCHAR}, #{endBusinessHours,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{startBusinessHours,jdbcType=VARCHAR}, #{endBusinessHours,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP},
                 #{updateTime,jdbcType=TIMESTAMP}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{address,jdbcType=VARCHAR},
                 #{isStop,jdbcType=TINYINT})
     </insert>
@@ -384,41 +386,39 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.chongdao.client.entitys.Shop">
         update shop
-        set shop_name = #{shopName,jdbcType=VARCHAR},
-            phone = #{phone,jdbcType=VARCHAR},
-            account_name = #{accountName,jdbcType=VARCHAR},
-            password = #{password,jdbcType=VARCHAR},
-            area_id = #{areaId,jdbcType=INTEGER},
-            area_code = #{areaCode,jdbcType=VARCHAR},
-            lat = #{lat,jdbcType=DOUBLE},
-            lng = #{lng,jdbcType=DOUBLE},
-            logo = #{logo,jdbcType=VARCHAR},
-            money = #{money,jdbcType=DECIMAL},
-            type = #{type,jdbcType=INTEGER},
-            grade = #{grade,jdbcType=DOUBLE},
-            wx_no = #{wxNo,jdbcType=VARCHAR},
-            zfb_no = #{zfbNo,jdbcType=VARCHAR},
-            bank_no = #{bankNo,jdbcType=VARCHAR},
-            qr_code_url = #{qrCodeUrl,jdbcType=VARCHAR},
-            des = #{des,jdbcType=VARCHAR},
-            show_img = #{showImg,jdbcType=VARCHAR},
-            status = #{status,jdbcType=INTEGER},
-            service_price_ratio = #{servicePriceRatio,jdbcType=INTEGER},
-            stop_note = #{stopNote,jdbcType=VARCHAR},
-            is_hot = #{isHot,jdbcType=TINYINT},
-            is_auto_accept = #{isAutoAccept,jdbcType=TINYINT},
-            is_join_common_weal = #{isJoinCommonWeal,jdbcType=TINYINT},
+        set shop_name            = #{shopName,jdbcType=VARCHAR},
+            phone                = #{phone,jdbcType=VARCHAR},
+            account_name         = #{accountName,jdbcType=VARCHAR},
+            password             = #{password,jdbcType=VARCHAR},
+            area_id              = #{areaId,jdbcType=INTEGER},
+            area_code            = #{areaCode,jdbcType=VARCHAR},
+            lat                  = #{lat,jdbcType=DOUBLE},
+            lng                  = #{lng,jdbcType=DOUBLE},
+            logo                 = #{logo,jdbcType=VARCHAR},
+            money                = #{money,jdbcType=DECIMAL},
+            type                 = #{type,jdbcType=INTEGER},
+            grade                = #{grade,jdbcType=DOUBLE},
+            wx_no                = #{wxNo,jdbcType=VARCHAR},
+            zfb_no               = #{zfbNo,jdbcType=VARCHAR},
+            bank_no              = #{bankNo,jdbcType=VARCHAR},
+            qr_code_url          = #{qrCodeUrl,jdbcType=VARCHAR},
+            des                  = #{des,jdbcType=VARCHAR},
+            show_img             = #{showImg,jdbcType=VARCHAR},
+            status               = #{status,jdbcType=INTEGER},
+            service_price_ratio  = #{servicePriceRatio,jdbcType=INTEGER},
+            stop_note            = #{stopNote,jdbcType=VARCHAR},
+            is_hot               = #{isHot,jdbcType=TINYINT},
+            is_auto_accept       = #{isAutoAccept,jdbcType=TINYINT},
+            is_join_common_weal  = #{isJoinCommonWeal,jdbcType=TINYINT},
             start_business_hours = #{startBusinessHours,jdbcType=VARCHAR},
-            end_business_hours = #{endBusinessHours,jdbcType=VARCHAR},
-            create_time = #{createTime,jdbcType=TIMESTAMP},
-            update_time = #{updateTime,jdbcType=TIMESTAMP},
-            last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-            address = #{address,jdbcType=VARCHAR},
-            is_stop = #{isStop,jdbcType=TINYINT}
+            end_business_hours   = #{endBusinessHours,jdbcType=VARCHAR},
+            create_time          = #{createTime,jdbcType=TIMESTAMP},
+            update_time          = #{updateTime,jdbcType=TIMESTAMP},
+            last_login_time      = #{lastLoginTime,jdbcType=TIMESTAMP},
+            address              = #{address,jdbcType=VARCHAR},
+            is_stop              = #{isStop,jdbcType=TINYINT}
         where id = #{id,jdbcType=INTEGER}
     </update>
-
-
 
 
     <!-- 用于join, shop别名为s-->
@@ -431,82 +431,98 @@
     <!-- 获取用户收藏店铺列表 -->
     <select id="getMyFavouriteShopList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from shop s
         LEFT JOIN favourite_shop fs on s.id = fs.shop_id
         where fs.user_id = #{userId} and fs.status = 1
         order by fs.create_time desc
     </select>
 
-    <select id="selectByName"  resultMap="BaseResultMap">
+    <select id="selectInsuranceShopLimit3KM" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_Lists" />,
+        <include refid="Base_Column_Lists"/>,
         round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
-        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;=
+        1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
         CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
-        (select ifnull(max(discount),0) from good where shop_id=s.id and discount > 0 order by discount) discount,
-        (select ifnull(max(re_discount),0) from good where shop_id=s.id and re_discount > 0 order by re_discount) re_discount,
-        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
-        from  shop s
-        where s.status in (0,1) and s.area_code = #{areaCode}
-        <if test="categoryId != null">
-            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+        (select ifnull(max(discount),0.0) from good where shop_id=s.id and discount > 0 order by max(discount))
+        discount,
+        (select ifnull(max(re_discount),0.0) from good where shop_id=s.id and re_discount > 0 order by max(re_discount))
+        reDiscount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;=
+        3000) sales
+        from shop s
+        left join (select count(1) as chip_count, isc.shop_id from insurance_shop_chip isc where isc.status = 1 group by
+        isc.shop_id) A on s.id = A.shop_id
+        where s.status in (0,1) and
+        <if test="areaCode != null and areaCode != ''">
+            s.area_code = #{areaCode}
         </if>
-        <if test="discount &gt;0 ">
-            and  (select min(discount) from good g where g.shop_id=s.id and discount &gt; 0)  &gt; 0
-        </if>
-        <if test="proActivities != null">
-            and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp where cp.shop_id=s.id) in (#{proActivities})
-        </if>
-        order by ${orderBy}
-    </select>
-
-
-    <select id="selectByArrangementLimit3KM"  resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_Lists" />,
-        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
-        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
-        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
-        (select ifnull(max(discount),0.0) from good where shop_id=s.id and discount > 0 order by max(discount)) discount,
-        (select ifnull(max(re_discount),0.0) from good where shop_id=s.id and re_discount > 0 order by max(re_discount)) reDiscount,
-        (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000) sales
-        from  shop s
-        where s.status in (0,1) and  s.area_code = #{areaCode}
-        <if test="categoryId != null">
-            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
-        </if>
-        <if test="discount &gt;0 ">
-            and  (select discount from good g where g.shop_id=s.id and discount &gt; 0 limit 0,1)  &gt; 0
-        </if>
-        <if test="proActivities != null">
-            and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp where cp.shop_id=s.id) in (#{proActivities})
-        </if>
-        order by sales desc,s.grade,dis
-    </select>
-
-
-    <select id="selectInsuranceShopLimit3KM"  resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_Lists" />,
-        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
-        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
-        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
-        (select ifnull(max(discount),0.0) from good where shop_id=s.id and discount > 0 order by max(discount)) discount,
-        (select ifnull(max(re_discount),0.0) from good where shop_id=s.id and re_discount > 0 order by max(re_discount)) reDiscount,
-        (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000) sales
-        from  shop s
-        left join (select count(1) as chip_count, isc.shop_id from insurance_shop_chip isc where isc.status = 1 group by isc.shop_id) A on s.id = A.shop_id
-        where s.status in (0,1) and  s.area_code = #{areaCode}
         and s.type = 2
         and A.chip_count > 0
         order by dis
     </select>
 
 
+    <select id="selectByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Lists"/>,
+        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;=
+        1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
+        (select ifnull(max(discount),0) from good where shop_id=s.id and discount > 0 order by discount) discount,
+        (select ifnull(max(re_discount),0) from good where shop_id=s.id and re_discount > 0 order by re_discount)
+        re_discount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
+        from shop s
+        where s.status in (0,1) and s.area_code = #{areaCode}
+        <if test="categoryId != null">
+            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+        </if>
+        <if test="discount &gt;0 ">
+            and (select min(discount) from good g where g.shop_id=s.id and discount &gt; 0) &gt; 0
+        </if>
+        <if test="proActivities != null">
+            and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp
+            where cp.shop_id=s.id) in (#{proActivities})
+        </if>
+        order by ${orderBy}
+    </select>
+
+
+    <select id="selectByArrangementLimit3KM" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Lists"/>,
+        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;=
+        1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
+        (select ifnull(max(discount),0.0) from good where shop_id=s.id and discount > 0 order by max(discount))
+        discount,
+        (select ifnull(max(re_discount),0.0) from good where shop_id=s.id and re_discount > 0 order by max(re_discount))
+        reDiscount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;=
+        3000) sales
+        from shop s
+        where s.status in (0,1) and s.area_code = #{areaCode}
+        <if test="categoryId != null">
+            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+        </if>
+        <if test="discount &gt;0 ">
+            and (select discount from good g where g.shop_id=s.id and discount &gt; 0 limit 0,1) &gt; 0
+        </if>
+        <if test="proActivities != null">
+            and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp
+            where cp.shop_id=s.id) in (#{proActivities})
+        </if>
+        order by sales desc,s.grade,dis
+    </select>
+
+
     <select id="selectByAreaCodeAndShopName" parameterType="String" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_Lists" />
+        <include refid="Base_Column_Lists"/>
         from shop s
         where 1 = 1
         <if test="areaCode != null">
@@ -517,8 +533,8 @@
         </if>
         order by s.create_time asc
     </select>
-    <select id="listGeo"  resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/>,
+    <select id="listGeo" resultMap="BaseResultMap">
+        select<include refid="Base_Column_List"/>,
         (select ifnull(sum(sales),0) from good where shop_id=shop.id) sales,
         round(getDistance(lat,lng,#{lat},#{lng})) dis,
         if(round(getDistance(lat,lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(lat,lng,#{lat},#{lng})),'m'),
@@ -528,18 +544,20 @@
     </select>
 
     <!-- 查询收藏店铺-->
-    <select id="selectConcernShop"  resultMap="BaseResultMap">
+    <select id="selectConcernShop" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_Lists" />,
+        <include refid="Base_Column_Lists"/>,
         round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
-        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;=
+        1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
         CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
         (select ifnull(discount,0) from good where shop_id=s.id and discount > 0 order by discount limit 0,1) discount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
-        from  shop s
-        where s.status in (0,1) and s.id in <foreach collection="shopIds" index="index" item="id" open="(" separator="," close=")">
-        #{id}
-       </foreach>
+        from shop s
+        where s.status in (0,1) and s.id in
+        <foreach collection="shopIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
         order by dis
     </select>
 </mapper>
