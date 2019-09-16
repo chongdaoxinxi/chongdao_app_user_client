@@ -33,10 +33,20 @@ public class InsuranceFeeRecordServiceImpl implements InsuranceFeeRecordService 
     private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
     @Override
-    public ResultResponse getInsuranceFeeRecordData(String token, String userName, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getInsuranceFeeRecordData(String token, String userName, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        List<InsuranceFeeRecord> list = insuranceFeeRecordMapper.getInsuranceFeeRecordData(tokenVo.getUserId(), userName, shopName, startDate, endDate);
+        List<InsuranceFeeRecord> list = insuranceFeeRecordMapper.getInsuranceFeeRecordData(tokenVo.getUserId(), userName, shopName, status, startDate, endDate);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(list);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ResultResponse getUserFeeRecordList(String token, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        List<InsuranceFeeRecord> list = insuranceFeeRecordMapper.getUserInsuranceFeeRecordList(tokenVo.getUserId(), status, startDate, endDate);
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);

@@ -2,6 +2,7 @@ package com.chongdao.client.controller.insurance;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.service.InsuranceFeeRecordService;
 import com.chongdao.client.service.ShopChipService;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.service.insurance.InsuranceService;
@@ -29,6 +30,8 @@ public class InsuranceController {
     private ShopChipService shopChipService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private InsuranceFeeRecordService insuranceFeeRecordService;
 
     /////////////////////app端下单///////////////////////////////
 
@@ -89,6 +92,21 @@ public class InsuranceController {
     public ResultResponse getInsuranceShop(Double lng, Double lat, String areaCode, Integer pageNum, Integer pageSize) {
         return shopService.getInsranceShopLimit3KM(lng, lat, areaCode, pageNum, pageSize);
     }
+
+    /**
+     * 获取用户医疗费用消费记录
+     * @param token
+     * @param status
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getUserInsuranceFeeRecordList")
+    public ResultResponse getUserInsuranceFeeRecordList(String token, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return insuranceFeeRecordService.getUserFeeRecordList(token, status, startDate, endDate, pageNum, pageSize);
+    };
 
     /**
      * 下载电子保单

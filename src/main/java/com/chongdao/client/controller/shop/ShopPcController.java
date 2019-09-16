@@ -2,6 +2,7 @@ package com.chongdao.client.controller.shop;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.GoodsType;
+import com.chongdao.client.entitys.InsuranceFeeRecord;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
@@ -154,7 +155,7 @@ public class ShopPcController {
      * @return
      */
     @GetMapping("getConcessionalOrderListShop")
-    public ResultResponse getConcessionalOrderListShop(String token, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getConcessionalOrderListShop(String token, String orderNo, String username, String phone, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return orderService.getConcessionalOrderList(token, null, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
     }
 
@@ -189,8 +190,17 @@ public class ShopPcController {
      * @return
      */
     @PostMapping("getInsuranceFeeRecordData")
-    public ResultResponse getInsuranceFeeRecordData(String token, String userName, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return insuranceFeeRecordService.getInsuranceFeeRecordData(token, userName, shopName, startDate, endDate, pageNum, pageSize);
+    public ResultResponse getInsuranceFeeRecordData(String token, String userName, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return insuranceFeeRecordService.getInsuranceFeeRecordData(token, userName, shopName, status, startDate, endDate, pageNum, pageSize);
+    }
+
+    /**
+     * 添加保险医疗费用记录
+     * @return
+     */
+    @PostMapping("getInsuranceFeeRecordData")
+    public ResultResponse addInsuranceFeeRecord(@RequestBody InsuranceFeeRecord insuranceFeeRecord) {
+        return null;
     }
 
     /**

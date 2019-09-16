@@ -38,6 +38,31 @@
         <if test="shopName != null and shopName !=''">
             and s.shop_name like concat('%', #{shopName}, '%')
         </if>
+        <if test="status != null">
+            and ifr.status = #{status}
+        </if>
+        <if test="startDate != null">
+            and ifr.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and ifr.create_date &lt; #{endDate}
+        </if>
+        order by ifr.create_time desc
+    </select>
+
+    <select id="getUserInsuranceFeeRecordList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>, u.name as user_name, s.shop_name as shop_name
+        from insurance_fee_record ifr
+        left join user u on ifr.user_id = u.id
+        left join shop s on ifr.shop_id = s.id
+        where 1 = 1
+        <if test="userId != null and userId != ''">
+            and ifr.user_id = #{userId}
+        </if>
+        <if test="status != null">
+            and ifr.status &gt; #{status}
+        </if>
         <if test="startDate != null">
             and ifr.create_time &gt; #{startDate}
         </if>
