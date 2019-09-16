@@ -457,6 +457,21 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         }
     }
 
+    @Override
+    public ResultResponse getInsranceShopLimit3KM(Double lng, Double lat, String areaCode, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Shop> shopList = shopMapper.selectInsuranceShopLimit3KM(lng, lat, areaCode);
+        PageInfo pageInfo = new PageInfo(shopList);
+        List<ShopVO> shopVOList = Lists.newArrayList();
+        shopList.forEach(shop-> {
+            ShopVO shopVo = new ShopVO();
+            BeanUtils.copyProperties(shop, shopVo);
+            shopVOList.add(shopVo);
+        });
+        pageInfo.setList(shopVOList);
+        return ResultResponse.createBySuccess(pageInfo);
+    }
+
 
     private List<Shop> shopList(Page<Shop> shopPage){
         return shopPage.getContent();

@@ -497,7 +497,8 @@
         (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000) sales
         from  shop s
         where s.status in (0,1) and  s.area_code = #{areaCode}
-        order by s.grade
+        and s.type = 2
+        order by dis
     </select>
 
 

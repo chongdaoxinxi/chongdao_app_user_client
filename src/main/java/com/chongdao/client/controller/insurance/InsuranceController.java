@@ -3,6 +3,7 @@ package com.chongdao.client.controller.insurance;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
 import com.chongdao.client.service.ShopChipService;
+import com.chongdao.client.service.ShopService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,8 @@ public class InsuranceController {
     private InsuranceService insuranceService;
     @Autowired
     private ShopChipService shopChipService;
+    @Autowired
+    private ShopService shopService;
 
     /////////////////////app端下单///////////////////////////////
 
@@ -83,8 +86,8 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("getInsuranceShop")
-    public ResultResponse getInsuranceShop() {
-        return null;
+    public ResultResponse getInsuranceShop(Double lng, Double lat, String areaCode, Integer pageNum, Integer pageSize) {
+        return shopService.getInsranceShopLimit3KM(lng, lat, areaCode, pageNum, pageSize);
     }
 
     /**

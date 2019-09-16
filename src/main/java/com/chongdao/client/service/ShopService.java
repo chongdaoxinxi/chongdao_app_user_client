@@ -7,9 +7,10 @@ import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 
-public interface ShopService{
+public interface ShopService {
     /**
      * 首页商铺展示
+     *
      * @param categoryId
      * @param proActivities
      * @param orderBy
@@ -17,10 +18,11 @@ public interface ShopService{
      * @param pageSize
      * @return
      */
-    ResultResponse<PageInfo> list( Integer userId,String categoryId, String  proActivities, String orderBy, Double lng,Double lat,String areaCode,int pageNum, int pageSize);
+    ResultResponse<PageInfo> list(Integer userId, String categoryId, String proActivities, String orderBy, Double lng, Double lat, String areaCode, int pageNum, int pageSize);
 
     /**
      * 获取商店列表(管理员)
+     *
      * @param managementId
      * @param shopName
      * @param pageNum
@@ -31,23 +33,26 @@ public interface ShopService{
 
     /**
      * 获取店铺
+     *
      * @param shopId
      * @return
      */
-    ResultResponse getShopById(Integer shopId,Double lat, Double lng,Integer userId);
+    ResultResponse getShopById(Integer shopId, Double lat, Double lng, Integer userId);
 
     ResultResponse addShop(Shop shop);
 
     /**
      * 获取店铺商品
+     *
      * @param shopId
-     * @param type 0 商品 1
+     * @param type   0 商品 1
      * @return
      */
-    ResultResponse getShopService(Integer shopId, Integer type,Integer userId);
+    ResultResponse getShopService(Integer shopId, Integer type, Integer userId);
 
     /**
      * 获取店铺所有订单评价以及店铺总评价
+     *
      * @param shopId
      * @return
      */
@@ -55,6 +60,7 @@ public interface ShopService{
 
     /**
      * 更新商店余额
+     *
      * @param shopId
      * @param money
      * @return
@@ -63,15 +69,17 @@ public interface ShopService{
 
     /**
      * 搜索店铺
+     *
      * @param keyword
      * @param pageNum
      * @param pageSize
      * @return
      */
-    Page<Shop> pageQuery(String keyword, String areaCode,int pageNum, int pageSize);
+    Page<Shop> pageQuery(String keyword, String areaCode, int pageNum, int pageSize);
 
     /**
      * 关注店铺
+     *
      * @param userId
      * @param shopId
      * @return
@@ -80,13 +88,15 @@ public interface ShopService{
 
     /**
      * 查看关注店铺列表
+     *
      * @param userId
      * @return
      */
-    ResultResponse queryConcernShopList(Integer userId,Double lng,Double lat);
+    ResultResponse queryConcernShopList(Integer userId, Double lng, Double lat);
 
     /**
      * 地图商家数据
+     *
      * @param lng
      * @param lat
      * @return
@@ -95,8 +105,20 @@ public interface ShopService{
 
     /**
      * 获取店铺信息(PC端)
+     *
      * @param token
      * @return
      */
     ResultResponse getShopInfo(String token);
+
+    /**
+     * 获取3公里内的医院类店铺
+     * @param lng
+     * @param lat
+     * @param areaCode
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultResponse getInsranceShopLimit3KM(Double lng, Double lat, String areaCode, Integer pageNum, Integer pageSize);
 }
