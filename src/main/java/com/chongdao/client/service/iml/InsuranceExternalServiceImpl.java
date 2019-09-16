@@ -736,8 +736,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄
             template.binding("Variety", petCard.getBreed());//宠物品种
             Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();
-            InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);
-            template.binding("BatchNo", insuranceShopChip.getCore());//宠物芯片代码
+            if(medicalInsuranceShopChipId != null) {
+                InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);
+                template.binding("BatchNo", insuranceShopChip.getCore());//宠物芯片代码
+            } else {
+                template.binding("BatchNo", insuranceOrder.getShopChipCode());
+            }
         }
 
         //渲染字符串
