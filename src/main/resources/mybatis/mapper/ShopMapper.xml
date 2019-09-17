@@ -454,9 +454,9 @@
         from shop s
         left join (select count(1) as chip_count, isc.shop_id from insurance_shop_chip isc where isc.status = 1 group by
         isc.shop_id) A on s.id = A.shop_id
-        where s.status in (0,1) and
+        where s.status in (0,1)
         <if test="areaCode != null and areaCode != ''">
-            s.area_code = #{areaCode}
+            and s.area_code = #{areaCode}
         </if>
         and s.type = 2
         and A.chip_count > 0
