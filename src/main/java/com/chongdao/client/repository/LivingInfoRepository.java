@@ -11,7 +11,7 @@ public interface LivingInfoRepository extends JpaRepository<LivingInfo,Integer> 
 
     Page<List<LivingInfo>> findByPetTypeIdAndStatus(Integer petTypeId, Pageable pageable, Integer status);
 
-    Page<List<LivingInfo>> findByPetTypeIdAndStatusAndOrderByPriceAsc(Integer petTypeId, Pageable pageable, Integer status);
+    Page<List<LivingInfo>> findByPetTypeIdAndStatusOrderByPriceAsc(Integer petTypeId, Pageable pageable, Integer status);
 
-    Page<List<LivingInfo>> findByPetTypeIdAndStatusAndOrderByPriceDesc(Integer petTypeId, Pageable pageable, Integer status);
+    Page<List<LivingInfo>> findByPetTypeIdAndStatusOrderByPriceDesc(Integer petTypeId, Pageable pageable, Integer status);
 }

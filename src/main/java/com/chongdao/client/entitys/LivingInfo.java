@@ -80,7 +80,7 @@ public class LivingInfo {
     private Integer type;
     //点赞个数
     private Integer supportCount;
-    //默认上架(0 下架 -1 删除 1 下架)
+    //默认上架(0 下架 -1 删除 1 上架)
     private Integer status = 1;
     private Date createTime;
     private Date updateTime;
