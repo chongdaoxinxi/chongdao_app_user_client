@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class InsuranceOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -42,6 +44,7 @@ public class InsuranceOrder implements Serializable {
     private String idCardFrontPhoto;//投保人身份证正面照片
     private String idCardReversePhoto;//投保人身份证反面照片
     private String bankCardPhoto;//银行卡照片
+    private String bankCardNo;//银行卡号
 
     //被保人信息
     private Integer acceptSeqNo;//被保人序列号, 默认为1
@@ -59,13 +62,21 @@ public class InsuranceOrder implements Serializable {
 
     //宠物属性(宠物即被保人)
     private Integer petCardId;//宠物卡片id
+    private String petName;//宠物姓名
+    private String petBreedId;//宠物品种ID
+    private String petBreedName;//宠物品种名称
+    private Integer petAge;//宠物年龄
     private String petPhoto;//宠物图片->用于审核
+    private String petPhotoFlank;//侧面宠物照片
+    private String petPhotoFront;//正面面宠物照片
+    private String petPhotoReverse;//反面宠物照片
     private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
+    private Integer shopChipCode;//宠物芯片代码
 
-    private Integer orderNo;//运输险, 订单id
+    private String orderNo;//运输险, 订单id
 
     //订单相关属性
-    private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;4:保单生成;)
+    private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;5:保单生成;)
     private Date createTime;//数据创建时间
     private Date applyTime;//保险订单下单时间(付款时间/投保日期)
     private Date auditTime;//审核完成时间(平台投保审核完成日期)
@@ -78,8 +89,14 @@ public class InsuranceOrder implements Serializable {
     private BigDecimal sumAmount;//保额
     private BigDecimal sumPremium;//保费
 
+    private String proposalNo;//投保预下单单号(只有见费出单的才会有, 如ZFO, I9Q)
+    private String policyNo;//电子保单号
     private String policyDownloadUrl;//电子保单下载地址
     private String policyImage;//电子保单图片
+    private String policyCdxxDownloadUrl;//电子单证下载地址(见费出单时和电子保单下载地址一致, 非见费出单时由我们系统生成)
+    private String policyCdxxImage;//电子单证图片(见费出单时和电子保单下载地址一致, 非见费出单时由我们系统生成)
+    private String invoiceDownloadUrl;//电子发票下载地址
+    private String invoiceImage;//电子发票直接访问地址
 
     //分销
     private String recommendCode;//推广码

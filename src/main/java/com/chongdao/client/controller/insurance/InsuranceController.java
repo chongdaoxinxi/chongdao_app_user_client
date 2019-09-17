@@ -2,9 +2,13 @@ package com.chongdao.client.controller.insurance;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.service.InsuranceFeeRecordService;
+import com.chongdao.client.service.ShopChipService;
+import com.chongdao.client.service.ShopService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,22 +26,30 @@ import java.util.Date;
 public class InsuranceController {
     @Autowired
     private InsuranceService insuranceService;
+    @Autowired
+    private ShopChipService shopChipService;
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private InsuranceFeeRecordService insuranceFeeRecordService;
 
     /////////////////////app端下单///////////////////////////////
 
     /**
      * 下单 保存保单
+     *
      * @param insuranceOrder
      * @return
      * @throws IOException
      */
     @PostMapping("addInsurance")
-    public ResultResponse addInsurance(InsuranceOrder insuranceOrder) throws IOException {
+    public ResultResponse addInsurance(@RequestBody InsuranceOrder insuranceOrder) throws IOException {
         return insuranceService.saveInsurance(insuranceOrder);
     }
 
     /**
      * 获取我的保单数据
+     *
      * @param token
      * @param pageSize
      * @param pageNum
@@ -50,6 +62,7 @@ public class InsuranceController {
 
     /**
      * 获取保单明细信息
+     *
      * @param insuranceId
      * @return
      */
@@ -59,7 +72,45 @@ public class InsuranceController {
     }
 
     /**
+     * 获取指定医院的可用芯片数据
+     * @param shopId
+     * @param core
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getPetChipAppiontShop")
+    public ResultResponse getPetChipAppiontShop(Integer shopId, String core, Integer pageNum, Integer pageSize) {
+        return shopChipService.getShopChipAppointShop(shopId, core, 1, pageNum, pageSize);
+    }
+
+    /**
+     * 获取医院类商家
+     * @return
+     */
+    @PostMapping("getInsuranceShop")
+    public ResultResponse getInsuranceShop(Double lng, Double lat, String areaCode, Integer pageNum, Integer pageSize) {
+        return shopService.getInsranceShopLimit3KM(lng, lat, areaCode, pageNum, pageSize);
+    }
+
+    /**
+     * 获取用户医疗费用消费记录
+     * @param token
+     * @param status
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getUserInsuranceFeeRecordList")
+    public ResultResponse getUserInsuranceFeeRecordList(String token, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return insuranceFeeRecordService.getUserFeeRecordList(token, status, startDate, endDate, pageNum, pageSize);
+    };
+
+    /**
      * 下载电子保单
+     *
      * @param insuranceOrderId
      * @return
      */
@@ -72,6 +123,7 @@ public class InsuranceController {
 
     /**
      * 获取保单分页数据
+     *
      * @param token
      * @param userName
      * @param insuranceOrderNo
@@ -82,31 +134,33 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("getInsuranceDataList")
-    public ResultResponse getInsuranceDataList(String token, String userName, String insuranceOrderNo, Date start, Date end, Integer pageNum, Integer pageSize) {
-        return insuranceService.getInsuranceDataList(token, userName, insuranceOrderNo, start, end, pageNum, pageSize);
+    public ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
+        return insuranceService.getInsuranceDataList(token, insuranceType, userName, phone, insuranceOrderNo, start, end, status, pageNum, pageSize);
     }
 
     /**
      * 一级/二级审核保单
+     *
      * @param insuranceOrderId
      * @param targetStatus
      * @param note
      * @return
      */
     @PostMapping("auditInsurance")
-    public ResultResponse auditInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
-        return insuranceService.auditInsurance(insuranceOrderId, targetStatus, note);
+    public ResultResponse auditInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        return insuranceService.auditInsurance(token, insuranceOrderId, targetStatus, note);
     }
 
     /**
      * 一级/二级拒绝保单
+     *
      * @param insuranceOrderId
      * @param targetStatus
      * @param note
      * @return
      */
     @PostMapping("refuseInsurance")
-    public ResultResponse refuseInsurance(Integer insuranceOrderId, Integer targetStatus, String note) {
-        return insuranceService.refuseInsurance(insuranceOrderId, targetStatus, note);
+    public ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
+        return insuranceService.refuseInsurance(token, insuranceOrderId, targetStatus, note);
     }
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.InsuranceFeeRecordMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.InsuranceFeeRecord">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="insurance_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="comment" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="payment_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="payment_type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ifr.id, ifr.order_no, ifr.user_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.status, ifr.create_time, ifr.payment_time, ifr.payment_type
+    </sql>
+    <select id="getInsuranceFeeRecordData" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>, u.name as user_name, s.shop_name as shop_name
+        from insurance_fee_record ifr
+        left join user u on ifr.user_id = u.id
+        left join shop s on ifr.shop_id = s.id
+        where 1 = 1
+        <if test="shopId != null and shopId != ''">
+            and ifr.shop_id = #{shopId}
+        </if>
+        <if test="userName != null and userName != ''">
+            and u.name like concat('%', #{userName}, '%')
+        </if>
+        <if test="shopName != null and shopName !=''">
+            and s.shop_name like concat('%', #{shopName}, '%')
+        </if>
+        <if test="status != null">
+            and ifr.status = #{status}
+        </if>
+        <if test="startDate != null">
+            and ifr.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and ifr.create_date &lt; #{endDate}
+        </if>
+        order by ifr.create_time desc
+    </select>
+
+    <select id="getUserInsuranceFeeRecordList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>, u.name as user_name, s.shop_name as shop_name
+        from insurance_fee_record ifr
+        left join user u on ifr.user_id = u.id
+        left join shop s on ifr.shop_id = s.id
+        where 1 = 1
+        <if test="userId != null and userId != ''">
+            and ifr.user_id = #{userId}
+        </if>
+        <if test="status != null">
+            and ifr.status &gt; #{status}
+        </if>
+        <if test="startDate != null">
+            and ifr.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and ifr.create_date &lt; #{endDate}
+        </if>
+        order by ifr.create_time desc
+    </select>
+</mapper>

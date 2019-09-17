@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface InsuranceOrderRepository extends JpaRepository<InsuranceOrder, Integer> {
     List<InsuranceOrder> findByUserId(Integer userId, Pageable pageable);
+
+    List<InsuranceOrder> findByInsuranceOrderNo(String insuranceOrderNo);
+
+    List<InsuranceOrder> findByProposalNo(String proposalNo);
 }

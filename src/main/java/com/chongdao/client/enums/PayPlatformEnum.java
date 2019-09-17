@@ -17,4 +17,20 @@ public enum PayPlatformEnum {
         this.code = code;
         this.value = value;
     }
+
+    public static String getPayName(Integer payCode) {
+        String payName = "";
+        switch (payCode) {
+            case 1:
+                payName =  ALI_PAY.getValue();
+                break;
+            case 2:
+                payName =  WX_APP_PAY.getValue();
+                break;
+            case 3:
+                payName =  WX_XCX_PAY.getValue();
+                break;
+        }
+        return payName;
+    }
 }

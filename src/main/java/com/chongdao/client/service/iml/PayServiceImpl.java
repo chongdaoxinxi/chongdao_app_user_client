@@ -16,6 +16,7 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
+import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -40,10 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -52,9 +50,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     @Autowired
     private PayInfoRepository payInfoRepository;
-
-
-
+    @Autowired
+    private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
 
     /**
@@ -70,7 +67,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         if (order == null) {
             return ResultResponse.createByErrorMessage("用户没有该订单");
         }
-        if (order.getOrderStatus() > -1){
+        if (order.getOrderStatus() > -1) {
             return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
         }
         String orderStr = "";
@@ -109,7 +106,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败!!!");
             }
             String orderStrResult = orderStr;
-            resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
+            resultMap.put("orderStr", orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");
             OrderLog orderLog = OrderLogDTO.addOrderLog(order);
@@ -123,7 +120,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId, order.getShopId(), null);
         this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }
@@ -131,17 +128,18 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     /**
      * 追加订单支付
+     *
      * @param reOrderNo
      * @param userId
      * @return
      */
     @Override
     public ResultResponse aliPayRe(String reOrderNo, Integer userId) {
-        OrderInfoRe order = orderInfoReRepository.findByReOrderNoAndStatusAndUserId(reOrderNo,-1,userId);
+        OrderInfoRe order = orderInfoReRepository.findByReOrderNoAndStatusAndUserId(reOrderNo, -1, userId);
         if (order == null) {
             return ResultResponse.createByErrorMessage("用户没有该订单");
         }
-        if (order.getStatus() == 0){
+        if (order.getStatus() == 0) {
             return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
         }
         String orderStr = "";
@@ -179,7 +177,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 return ResultResponse.createBySuccessMessage("支付宝预下单失败(追加)!!!");
             }
             String orderStrResult = orderStr;
-            resultMap.put("orderStr",orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
+            resultMap.put("orderStr", orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
             resultMap.put("message", "支付宝预下单成功");
             OrderLog orderLog = OrderLogDTO.addOrderLogRe(order);
@@ -193,7 +191,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             log.error("支付宝App支付(追加)：支付订单生成失败out_trade_no---- {}", order.getOrderNo());
         }
         //从购物车中获取数据
-        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId,order.getShopId(),null);
+        List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(userId, order.getShopId(), null);
         this.cleanCart(cartList);
         return ResultResponse.createBySuccess(resultMap);
     }
@@ -211,92 +209,119 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         String tradeNo = params.get("trade_no");
         String tradeStatus = params.get("trade_status");
         OrderInfo order = null;
-        //追加订单
-        if (orderNo.contains("RE")){
+        if (orderNo.contains("RE")) {
+            //追加订单
             OrderInfoRe orderInfoRe = orderInfoReRepository.findByReOrderNo(orderNo);
             if (orderInfoRe.getStatus() == 0) {
                 return ResultResponse.createBySuccess("支付宝重复调用");
             }
             if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-                orderInfoRe.setId(orderInfoRe.getId());
+//                orderInfoRe.setId(orderInfoRe.getId());
                 orderInfoRe.setPayTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
                 orderInfoRe.setStatus(0);
                 //销量更新
                 List<OrderDetail> orderDetailList = orderDetailRepository.findByUserIdAndReOrderNo(orderInfoRe.getUserId(), orderInfoRe.getReOrderNo());
                 orderDetailList.stream().forEach(orderDetail -> {
-                    goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
+                    goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
                 });
                 orderInfoReRepository.save(orderInfoRe);
-            }
-        }else {
-            order = orderInfoMapper.selectByOrderNo(orderNo);
-        }
-        if (order == null) {
-            log.error("【支付回调】订单不存在:orderNo:{}", orderNo);
-            return ResultResponse.createByErrorMessage("非该商铺的订单,回调忽略");
-        }
-        if (order.getOrderStatus() >= OrderStatusEnum.PAID.getStatus()) {
-            log.error("【支付回调】支付宝重复调用: orderNo:{}", orderNo);
-            return ResultResponse.createBySuccess("支付宝重复调用");
-        }
-        if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-            order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
-            order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
-            order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
-            //销量更新
-            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
-            orderDetailList.stream().forEach(orderDetail -> {
-                goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
-            });
-            orderInfoMapper.updateByPrimaryKeySelective(order);
-            //判断是否自动接单
-            Shop shop = shopRepository.findById(order.getShopId()).get();
-            if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
-                //推送短信到商家
-                smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
-                //推送短信到用户
-                if (order.getReceiveAddressId() != null) {
-                    UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
-                    smsService.sendNewOrderUser(orderNo,address.getPhone());
+                //生成支付信息
+                try {
+                    PayInfo payInfo = new PayInfo();
+                    payInfo.setUserId(order.getUserId());
+                    payInfo.setOrderNo(order.getOrderNo());
+                    payInfo.setOrderReNo(orderInfoRe.getReOrderNo());
+                    payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+                    payInfo.setPlatformNumber(tradeNo);
+                    payInfo.setPlatformStatus(tradeStatus);
+                    payInfo.setType(3);
+                    payInfoRepository.save(payInfo);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
                 }
-                //推送短信到配送员
-                List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
-                expressList.stream().forEach(express -> {
-                    smsService.sendExpressNewOrder(orderNo,express.getPhone());
-                });
-
             }
-
+        } else if (orderNo.indexOf("IFR") != -1) {
+            // 医疗费用订单
+            if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+                List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
+                if (ifrs.size() > 0) {
+                    InsuranceFeeRecord insuranceFeeRecord = ifrs.get(0);
+                    insuranceFeeRecord.setStatus(1);
+                    insuranceFeeRecord.setPaymentTime(new Date());
+                    insuranceFeeRecord.setPaymentType(PayPlatformEnum.WX_APP_PAY.getCode());
+                    InsuranceFeeRecord save = insuranceFeeRecordRepository.save(insuranceFeeRecord);
+                    //生成支付信息
+                    successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", "", "", PayPlatformEnum.ALI_PAY.getCode());
+                    //发送短消息
+                    successCallBackMsgInsuranceOrderOperate(save);
+                }
+            }
+        } else {
+            //正常订单
+            order = orderInfoMapper.selectByOrderNo(orderNo);
+            if (order == null) {
+                log.error("【支付回调】订单不存在:orderNo:{}", orderNo);
+                return ResultResponse.createByErrorMessage("非该商铺的订单,回调忽略");
+            }
+            if (order.getOrderStatus() >= OrderStatusEnum.PAID.getStatus()) {
+                log.error("【支付回调】支付宝重复调用: orderNo:{}", orderNo);
+                return ResultResponse.createBySuccess("支付宝重复调用");
+            }
+            if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+                order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+                order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+                order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
+                //销量更新
+                List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+                orderDetailList.stream().forEach(orderDetail -> {
+                    goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+                });
+                orderInfoMapper.updateByPrimaryKeySelective(order);
+                //判断是否自动接单
+                Shop shop = shopRepository.findById(order.getShopId()).get();
+                if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
+                    //推送短信到商家
+                    smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
+                    //推送短信到用户
+                    if (order.getReceiveAddressId() != null) {
+                        UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
+                        smsService.sendNewOrderUser(orderNo, address.getPhone());
+                    }
+                    //推送短信到配送员
+                    List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+                    expressList.stream().forEach(express -> {
+                        smsService.sendExpressNewOrder(orderNo, express.getPhone());
+                    });
+                }
+            }
+            //生成支付信息
+            try {
+                PayInfo payInfo = new PayInfo();
+                payInfo.setUserId(order.getUserId());
+                payInfo.setOrderNo(order.getOrderNo());
+                payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+                payInfo.setPlatformNumber(tradeNo);
+                payInfo.setPlatformStatus(tradeStatus);
+                payInfo.setType(1);
+                payInfoRepository.save(payInfo);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+            }
         }
-
-        //生成支付信息
-
-        try {
-            PayInfo payInfo = new PayInfo();
-            payInfo.setUserId(order.getUserId());
-            payInfo.setOrderNo(order.getOrderNo());
-            payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
-            payInfo.setPlatformNumber(tradeNo);
-            payInfo.setPlatformStatus(tradeStatus);
-
-            payInfoRepository.save(payInfo);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}",orderNo);
-        }
-
         return ResultResponse.createBySuccess();
     }
 
     @Override
     public ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr, Integer payType) {
         WxUnifiedorderModelDTO model = new WxUnifiedorderModelDTO();
-        if(payType == 1) {
+        if (payType == 1) {
             //app应用appId
             model.setAppid(StringUtils.trim(BasicInfo.APP_AppID));
             //交易类型/请求方式
             model.setTrade_type("APP");
-        } else if(payType == 2){
+        } else if (payType == 2) {
             model.setAppid(StringUtils.trim(BasicInfo.xcxID));
             //交易类型/请求方式
             model.setTrade_type("JSAPI");
@@ -341,10 +366,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 //再次签名
                 Map<String, String> finalpackage = new TreeMap<>();
                 String timestamp = (System.currentTimeMillis() / 1000) + "";
-                if(payType == 1) {
+                if (payType == 1) {
                     //app支付
                     finalpackage.put("appid", BasicInfo.APP_AppID);
-                } else if(payType == 2) {
+                } else if (payType == 2) {
                     //xcx支付
                     finalpackage.put("appid", BasicInfo.xcxID);
                 }
@@ -442,7 +467,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         }
 
         //这里是验证返回值没问题了，可以写具体的支付成功的逻辑
-        payCallBackGenerateOrder(list);
+        wxPayCallBackGenerateOrder(list);
 
         // 返回信息，防止微信重复发送报文
         String result = "<xml>"
@@ -472,55 +497,143 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     /**
      * 支付成功后处理逻辑
      */
-    private void payCallBackGenerateOrder(List<Element> list) {
+    private void wxPayCallBackGenerateOrder(List<Element> list) {
         String orderNo = getCallbackInfoByName(list, "out_trade_no");
-        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
-        order.setPaymentTime(DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end")));
-        order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
-        order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
-        //销量更新
-        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
-        orderDetailList.stream().forEach(orderDetail -> {
-            goodsRepository.updateGoodIdIn(orderDetail.getCount(),orderDetail.getGoodId());
-        });
-        orderInfoMapper.updateByPrimaryKeySelective(order);
-        //todo 短信推送
+        Date time = DateTimeUtil.strToDate(getCallbackInfoByName(list, "time_end"));
+        String transactionId = getCallbackInfoByName(list, "transaction_id");
+        String resultCode = getCallbackInfoByName(list, "result_code");
+        if (orderNo.indexOf("RE") != -1) {
+            //追加订单
+            OrderInfoRe re = orderInfoReRepository.findByReOrderNo(orderNo);
+            re.setPayTime(time);
+            re.setStatus(0);
+            //销量更新
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNoUserId(re.getOrderNo(), re.getUserId());
+            orderDetailList.stream().forEach(orderDetail -> {
+                goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+            });
+            OrderInfoRe save = orderInfoReRepository.save(re);
+            //生成支付信息
+            successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), save.getReOrderNo(), transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
+            //发送短消息
+            successCallBackMsgReOrderOperate(save);
+        } else if (orderNo.indexOf("IFR") != -1) {
+            List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
+            if (ifrs.size() > 0) {
+                InsuranceFeeRecord insuranceFeeRecord = ifrs.get(0);
+                insuranceFeeRecord.setStatus(1);
+                insuranceFeeRecord.setPaymentTime(new Date());
+                insuranceFeeRecord.setPaymentType(PayPlatformEnum.WX_APP_PAY.getCode());
+                InsuranceFeeRecord save = insuranceFeeRecordRepository.save(insuranceFeeRecord);
+                //生成支付信息
+                successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
+                //发送短消息
+                successCallBackMsgInsuranceOrderOperate(save);
+            }
+        } else {
+            OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+            order.setPaymentTime(time);
+            order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
+            order.setPaymentType(PaymentTypeEnum.WX_APP_PAY.getStatus());
+            //销量更新
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+            orderDetailList.stream().forEach(orderDetail -> {
+                goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+            });
+            //生成支付信息
+            successCallBackPayInfoOperate(order.getUserId(), order.getOrderNo(), "", transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
+            orderInfoMapper.updateByPrimaryKeySelective(order);
+            //发送短信息
+            successCallBackMsgoOrderOperate(order);
+        }
+    }
+
+    /**
+     * 成功回调之后的支付信息处理
+     *
+     * @param userId
+     * @param orderNo
+     * @param orderReNo
+     * @param transactionId
+     * @param resultCode
+     * @param payCode
+     */
+    private void successCallBackPayInfoOperate(Integer userId, String orderNo, String orderReNo, String transactionId, String resultCode, Integer payCode) {
+        //生成支付信息
+        try {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(userId);
+            payInfo.setOrderNo(orderNo);
+            if (StringUtils.isNotBlank(orderReNo)) {
+                payInfo.setOrderReNo(orderReNo);
+            }
+            payInfo.setPayPlatform(payCode);
+//            payInfo.setPlatformNumber(transactionId);
+//            payInfo.setPlatformStatus(resultCode);
+            if(StringUtils.isNotBlank(orderReNo)) {
+                //追加订单
+                payInfo.setType(2);
+            } else if(StringUtils.isNotBlank(orderNo)){
+                if(orderNo.indexOf("IFR") != -1) {
+                    //医疗费用订单
+                    payInfo.setType(3);
+                } else {
+                    //正常订单
+                    payInfo.setType(1);
+                }
+            }
+            payInfoRepository.save(payInfo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("支付信息生成失败: orderNo:{}", orderNo);
+        }
+    }
+
+    /**
+     * 成功回调之后的短信处理(正常订单)
+     *
+     * @param order
+     */
+    private void successCallBackMsgoOrderOperate(OrderInfo order) {
         //判断是否自动接单
         Shop shop = shopRepository.findById(order.getShopId()).get();
-        if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1){
+        if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
             //推送短信到商家
-            smsService.sendOrderAutoAcceptShop(orderNo,shop.getPhone());
+            smsService.sendOrderAutoAcceptShop(order.getOrderNo(), shop.getPhone());
             //推送短信到用户
             if (order.getReceiveAddressId() != null) {
                 UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
-                smsService.sendNewOrderUser(orderNo,address.getPhone());
+                smsService.sendNewOrderUser(order.getOrderNo(), address.getPhone());
             }
             //推送短信到配送员
             List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
             expressList.stream().forEach(express -> {
-                smsService.sendExpressNewOrder(orderNo,express.getPhone());
+                smsService.sendExpressNewOrder(order.getOrderNo(), express.getPhone());
             });
         }
+    }
 
-        //生成支付信息
-        try {
-            PayInfo payInfo = new PayInfo();
-            payInfo.setUserId(order.getUserId());
-            payInfo.setOrderNo(order.getOrderNo());
-            payInfo.setPayPlatform(PayPlatformEnum.WX_APP_PAY.getCode());
-            payInfo.setPlatformNumber(getCallbackInfoByName(list, "transaction_id"));
-            payInfo.setPlatformStatus(getCallbackInfoByName(list, "result_code"));
+    /**
+     * 成功回调之后的短信处理(医疗费用订单)
+     *
+     * @param insuranceFeeRecord
+     */
+    private void successCallBackMsgInsuranceOrderOperate(InsuranceFeeRecord insuranceFeeRecord) {
 
-            payInfoRepository.save(payInfo);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error("【微信异步回调】微信支付信息生成失败: orderNo:{}",orderNo);
-        }
+    }
+
+    /**
+     * 成功回调之后的短信处理(追加订单)
+     *
+     * @param orderInfoRe
+     */
+    private void successCallBackMsgReOrderOperate(OrderInfoRe orderInfoRe) {
+
     }
 
     private String getCallbackInfoByName(List<Element> list, String name) {
         String r = "";
-        for(Element e : list) {
+        for (Element e : list) {
             if (e.getName().trim().equals(name)) {
                 r = e.getText().trim();
             }
