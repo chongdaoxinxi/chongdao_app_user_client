@@ -198,7 +198,7 @@ public class ShopPcController {
      * 添加保险医疗费用记录
      * @return
      */
-    @PostMapping("getInsuranceFeeRecordData")
+    @PostMapping("addInsuranceFeeRecord")
     public ResultResponse addInsuranceFeeRecord(@RequestBody InsuranceFeeRecord insuranceFeeRecord) {
         return null;
     }
