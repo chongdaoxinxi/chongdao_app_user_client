@@ -86,10 +86,10 @@ public class LivingController {
         if (petBreedId != null && StringUtils.isNotBlank(param)){
             if (StringUtils.equals(param,"asc")){
                 //价格升序
-                listPage = livingInfoRepository.findByPetTypeIdAndStatusAndOrderByPriceAsc(petBreedId, request, 1);
+                listPage = livingInfoRepository.findByPetTypeIdAndStatusOrderByPriceAsc(petBreedId, request, 1);
             } else {
                 //价格降序
-                listPage = livingInfoRepository.findByPetTypeIdAndStatusAndOrderByPriceDesc(petBreedId, request, 1);
+                listPage = livingInfoRepository.findByPetTypeIdAndStatusOrderByPriceDesc(petBreedId, request, 1);
             }
         }else {
             listPage = livingInfoRepository.findByPetTypeIdAndStatus(petBreedId, request, 1);
