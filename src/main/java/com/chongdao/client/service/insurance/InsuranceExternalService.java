@@ -10,5 +10,5 @@ public interface InsuranceExternalService {
 
     ResultResponse payCallBackManage(String payCallBackInfo) throws IOException;
 
-    ResultResponse requestInvoiceInfo();
+    ResultResponse requestInvoiceInfo(Integer insuranceOrderId);
 }

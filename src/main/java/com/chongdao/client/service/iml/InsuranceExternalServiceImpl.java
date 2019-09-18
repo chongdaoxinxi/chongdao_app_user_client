@@ -380,75 +380,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     }
 
     @Override
-    public ResultResponse requestInvoiceInfo() {
+    public ResultResponse requestInvoiceInfo(Integer insuranceOrderId) {
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
+        if(insuranceOrder == null) {
+            return ResultResponse.createByErrorMessage("无效的保险订单ID!");
+        }
         Document document = DocumentHelper.createDocument();
         Element applyInfo = document.addElement("ApplyInfo");
 
         Element generalInfo = applyInfo.addElement("GeneralInfo");
         //测试数据
-        generalInfo.addElement("UUID").setText("CDXXKJ20190917143459");
-        generalInfo.addElement("PlateformCode").setText("CPI000865");
-        generalInfo.addElement("Md5Value").setText(generateInvoiceMD5SecretKey("CDXXKJ20190917143459", SECRET_KEY));
-//        generalInfo.addElement("Md5Value").setText("37959e8f70f24471614435d5b62964f3");
-
-        Element invoiceInfo = applyInfo.addElement("InvoiceInfo");
-        invoiceInfo.addElement("Policyno").setText("PI9Q20193101Q000E01012");//投保单号
-        invoiceInfo.addElement("RequestTime").setText("2019-08-05 15:35:32");
-        invoiceInfo.addElement("InvoiceTitle").setText("onlineS");//发票抬头
-        invoiceInfo.addElement("Phone").setText("17631088624");
-        invoiceInfo.addElement("AddressAndPhone").setText("BEI-JING");//地址+电话
-        invoiceInfo.addElement("BankAccount").setText("1");//开户行+账号
-//        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("91110108101966816T");//纳税人识别号
-        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("");//纳税人识别号
-        invoiceInfo.addElement("Email").setText("1.com");
-        invoiceInfo.addElement("Type").setText("2");//1 短链接, 2 版式下载
-
-        String text = document.asXML();
-        try {
-            //Http协议调用接口，其中serviceBusURI是要调用地址
-            URL url = new URL(INVOICE_URL);
-            URLConnection con = url.openConnection();
-            con.setDoOutput(true);
-            con.setRequestProperty("Pragma", "no-cache");
-            con.setRequestProperty("Cache-Control", "no-cache");
-            //设置编码，不然返回报文格式乱码
-            con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
-            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-            out.write(new String(text.getBytes("UTF-8")));
-            out.flush();
-            out.close();
-
-            //返回数据
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "GB2312"));
-            String line = "";
-            //存放请求内容
-            StringBuffer xml = new StringBuffer();
-            while ((line = br.readLine()) != null) {
-                xml.append(line);
-            }
-            System.out.println(xml.toString());
-            //解析报文，字符串转XML
-            Document doc = DocumentHelper.parseText(xml.toString());
-            Element root = doc.getRootElement();
-            Element errorCode = root.element("GeneralInfoReturn").element("ErrorCode");
-            String invoiceDownloadUrl = root.element("PolicyInfoReturn").elementText("Url");
-            System.out.println(errorCode.getText());
-            System.out.println(invoiceDownloadUrl);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void requestForInvoiceInfo(Integer insuranceOrderId) {
-        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
-        Document document = DocumentHelper.createDocument();
-        Element applyInfo = document.addElement("ApplyInfo");
-
-        Element generalInfo = applyInfo.addElement("GeneralInfo");
-        //生产环境
         String uuid = insuranceOrder.getInsuranceOrderNo();
-        generalInfo.addElement("UUID").setText(insuranceOrder.getInsuranceOrderNo());
+        generalInfo.addElement("UUID").setText(uuid);
         generalInfo.addElement("PlateformCode").setText(PLATE_FORM_CODE);
         generalInfo.addElement("Md5Value").setText(generateInvoiceMD5SecretKey(uuid, SECRET_KEY));
 
@@ -457,10 +400,10 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         invoiceInfo.addElement("RequestTime").setText(DateTimeUtil.dateToStr(new Date()));
         invoiceInfo.addElement("InvoiceTitle").setText(INVOICE_TITLE);//发票抬头
         invoiceInfo.addElement("Phone").setText(insuranceOrder.getPhone());
-        invoiceInfo.addElement("AddressAndPhone").setText(insuranceOrder.getPhone());//地址+电话
-        invoiceInfo.addElement("BankAccount").setText("1");//开户行+账号
-        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("91110108101966816T");//纳税人识别号
-        invoiceInfo.addElement("Email").setText(insuranceOrder.getAcceptMail());
+        invoiceInfo.addElement("AddressAndPhone").setText(insuranceOrder.getAddress());//地址+电话
+        invoiceInfo.addElement("BankAccount").setText(insuranceOrder.getBankCardNo());//开户行+账号
+        invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("");//纳税人识别号
+        invoiceInfo.addElement("Email").setText(insuranceOrder.getEmail());
         invoiceInfo.addElement("Type").setText("2");//1 短链接, 2 版式下载
 
         String text = document.asXML();
@@ -494,9 +437,11 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             String invoiceDownloadUrl = root.element("PolicyInfoReturn").elementText("Url");
             System.out.println(errorCode.getText());
             System.out.println(invoiceDownloadUrl);
+            saveInvoicePdf(insuranceOrder, invoiceDownloadUrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -511,10 +456,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             }, (res) -> {
                 InputStream inputStream = res.getBody();
                 FileOutputStream out = new FileOutputStream(INVOICE_FOLDER_PREFIX + insuranceOrder.getPolicyNo() + ".pdf");
-//                //测试
-//                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + "test_xxx" + ".pdf");
-//                FileOutputStream out = new FileOutputStream("F:/" + "test_xxx" + ".pdf");
-
                 int byteCount = 0;
                 while ((byteCount = inputStream.read()) != -1) {
                     out.write(byteCount);

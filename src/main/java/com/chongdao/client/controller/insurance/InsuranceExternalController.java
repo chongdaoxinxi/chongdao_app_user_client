@@ -59,7 +59,7 @@ public class InsuranceExternalController {
      * @return
      */
     @PostMapping("requestInvoiceInfo")
-    public ResultResponse requestInvoiceInfo() {
-        return insuranceExternalService.requestInvoiceInfo();
+    public ResultResponse requestInvoiceInfo(Integer insuranceOrderId) {
+        return insuranceExternalService.requestInvoiceInfo(insuranceOrderId);
     }
 }
