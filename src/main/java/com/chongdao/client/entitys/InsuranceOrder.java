@@ -36,6 +36,8 @@ public class InsuranceOrder implements Serializable {
     private String cardType;//01:身份证;02:户口本;03:护照;04:军人证件;05:驾驶执照;06:返乡证;07:港澳身份证;08:工号;09:赴台通行证;10:港澳通行证;15:士兵证;16:外国人永久通行证;25:港澳居民来往内地通行证;26:台湾居民来往内地通行证;31:组织机构代码;37:统一社会信用代码;99:其他;
     private String cardNo;
     private String phone;
+    private String email;
+    private String address;
     private Integer isSendMsg;//是否发送短信给投保人, 默认为1
 
     private String idCardFrontPhoto;//投保人身份证正面照片

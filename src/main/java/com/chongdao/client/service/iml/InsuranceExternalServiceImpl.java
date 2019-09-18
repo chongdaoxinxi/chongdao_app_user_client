@@ -100,6 +100,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n" +
             "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n" +
             "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
+            "\t\t\t\t<AppliIdEmail>${AppliIdEmail}</AppliIdEmail>\n" +
+            "\t\t\t\t<AppliAddress>${AppliAddress}</AppliAddress>\n" +
+            "\t\t\t\t<AppliIdentity>0</AppliIdentity>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
@@ -108,6 +111,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n" +
             "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n" +
             "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n" +
+            "\t\t\t\t\t<InsuredAddress>${InsuredAddress}</InsuredAddress>\n" +
+            "\t\t\t\t\t<InsuredIdMobile>${InsuredIdMobile}</InsuredIdMobile>\n" +
             "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
             "\t\t\t\t</Insured>\n" +
             "\t\t\t</Insureds>\n" +
@@ -193,6 +198,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n" +
             "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n" +
             "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
+            "\t\t\t\t<AppliIdEmail>${AppliIdEmail}</AppliIdEmail>\n" +
+            "\t\t\t\t<AppliAddress>${AppliAddress}</AppliAddress>\n" +
+            "\t\t\t\t<AppliIdentity>0</AppliIdentity>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
@@ -729,15 +737,15 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("AppliIdType", String.valueOf(insuranceOrder.getCardType()));//投保人证件类型
         template.binding("AppliIdNo", insuranceOrder.getCardNo());
         template.binding("AppliIdMobile", insuranceOrder.getPhone());
+        template.binding("AppliIdEmail", insuranceOrder.getEmail());
+        template.binding("AppliAddress", insuranceOrder.getAddress());
         template.binding("InsuredSeqNo", 1);
         template.binding("InsuredName", insuranceOrder.getAcceptName());//被保人姓名
         template.binding("InsuredIdType", insuranceOrder.getAcceptCardType());//被保人证件类型
         template.binding("InsuredIdNo", insuranceOrder.getAcceptCardNo());
-        if (insuranceOrder.getInsuranceType() == 1) {
-            template.binding("InsuredAddress", "上海市嘉定区");
-            template.binding("InsuredIdMobile", "18715637638");
-        }
-        template.binding("InsuredEmail", insuranceOrder.getAcceptMail());
+        template.binding("InsuredAddress", insuranceOrder.getAddress());
+        template.binding("InsuredIdMobile", insuranceOrder.getPhone());//同投保人
+        template.binding("InsuredEmail", insuranceOrder.getEmail());
 //        额外字段-医疗险字段
         if (insuranceOrder.getInsuranceType() == 1) {
 //            Integer petCardId = insuranceOrder.getPetCardId();
