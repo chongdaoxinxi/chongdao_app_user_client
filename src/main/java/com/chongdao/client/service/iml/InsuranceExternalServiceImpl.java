@@ -66,9 +66,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String ZCG_RATION_TYPE = "ZCG3199001";
     private static final String I9Q_RISK_CODE = "I9Q";
     private static final String I9Q_RATION_TYPE = "I9Q310000a";
-    private static final String POLICY_FOLDER_PREFIX = "../policy/";
+    private static final String POLICY_FOLDER_PREFIX = "../../policy/";
     private static final String POLICY_REALPATH = "/home/policy/";
-    private static final String INVOICE_FOLDER_PREFIX = "../invoice/";
+    private static final String INVOICE_FOLDER_PREFIX = "../../invoice/";
     private static final String INVOICE_REALPATH = "/home/invoice/";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
@@ -201,6 +201,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t\t<InsuredName>${InsuredName}</InsuredName>\n" +
             "\t\t\t\t\t<InsuredIdType>${InsuredIdType}</InsuredIdType>\n" +
             "\t\t\t\t\t<InsuredIdNo>${InsuredIdNo}</InsuredIdNo>\n" +
+            "\t\t\t\t\t<InsuredAddress>${InsuredAddress}</InsuredAddress>\n" +
+            "\t\t\t\t\t<InsuredIdMobile>${InsuredIdMobile}</InsuredIdMobile>\n" +
             "\t\t\t\t\t<InsuredEmail>${InsuredEmail}</InsuredEmail>\n" +
             "\t\t\t\t</Insured>\n" +
             "\t\t\t</Insureds>\n" +
@@ -731,6 +733,10 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("InsuredName", insuranceOrder.getAcceptName());//被保人姓名
         template.binding("InsuredIdType", insuranceOrder.getAcceptCardType());//被保人证件类型
         template.binding("InsuredIdNo", insuranceOrder.getAcceptCardNo());
+        if (insuranceOrder.getInsuranceType() == 1) {
+            template.binding("InsuredAddress", "上海市嘉定区");
+            template.binding("InsuredIdMobile", "18715637638");
+        }
         template.binding("InsuredEmail", insuranceOrder.getAcceptMail());
 //        额外字段-医疗险字段
         if (insuranceOrder.getInsuranceType() == 1) {
