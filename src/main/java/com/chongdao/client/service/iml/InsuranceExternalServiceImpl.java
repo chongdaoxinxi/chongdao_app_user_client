@@ -55,7 +55,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private OrderInfoRepository orderInfoRepository;
 
     private static final String INVOICE_URL = "http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do";
-    private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
+        private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
     private static final String PLATE_FORM_CODE = "CPI000865";
     private static final String SECRET_KEY = "Picc37mu63ht38mw";
     private static final String INVOICE_TITLE= "XXX";
@@ -219,6 +219,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<AgeUnit>01</AgeUnit>\n" +
             "\t\t\t\t<BirthRank>00</BirthRank>\n" +
             "\t\t\t\t<Variety>${Variety}</Variety>\n" +
+            "\t\t\t\t<PetName>${PetName}</PetName>\n" +
             "\t\t\t\t<FarmingMethod>1</FarmingMethod>\n" +
             "\t\t\t\t<BatchNo>${BatchNo}</BatchNo>\n" +
             "\t\t\t\t<Unit>09</Unit>\n" +
@@ -317,6 +318,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             } else {
                 //对于见费出单的保险, 需要保存预下单号
                 insuranceOrder.setProposalNo(proposalNo);
+                insuranceOrder.setStatus(1);//将订单状态设为待支付
                 insuranceOrderRepository.save(insuranceOrder);
                 System.out.println("支付链接:" + payUrl);
                 return ResultResponse.createBySuccess("预下单成功, 返回支付链接", payUrl);
@@ -374,9 +376,10 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
         Element generalInfo = applyInfo.addElement("GeneralInfo");
         //测试数据
-        generalInfo.addElement("UUID").setText("CPI000384201908050333302019");
+        generalInfo.addElement("UUID").setText("CDXXKJ20190917143459");
         generalInfo.addElement("PlateformCode").setText("CPI000865");
-        generalInfo.addElement("Md5Value").setText("37959e8f70f24471614435d5b62964f3");
+        generalInfo.addElement("Md5Value").setText(generateInvoiceMD5SecretKey("CDXXKJ20190917143459", SECRET_KEY));
+//        generalInfo.addElement("Md5Value").setText("37959e8f70f24471614435d5b62964f3");
 
         Element invoiceInfo = applyInfo.addElement("InvoiceInfo");
         invoiceInfo.addElement("Policyno").setText("PI9Q20193101Q000E01012");//投保单号
@@ -665,7 +668,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
      */
     private void updateInsuranceOrderStatus(InsuranceOrder insuranceOrder) {
         insuranceOrder.setApplyTime(new Date());
-        insuranceOrder.setStatus(2);//已支付待一级审核
+        insuranceOrder.setStatus(2);//已支付进入等待期
         insuranceOrderRepository.save(insuranceOrder);
     }
 
@@ -731,10 +734,13 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("InsuredEmail", insuranceOrder.getAcceptMail());
 //        额外字段-医疗险字段
         if (insuranceOrder.getInsuranceType() == 1) {
-            Integer petCardId = insuranceOrder.getPetCardId();
-            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
-            template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄
-            template.binding("Variety", petCard.getBreed());//宠物品种
+//            Integer petCardId = insuranceOrder.getPetCardId();
+//            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
+//            template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄
+//            template.binding("Variety", petCard.getBreed());//宠物品种
+            template.binding("ItemAge", insuranceOrder.getPetAge());
+            template.binding("Variety", insuranceOrder.getPetBreedName());
+            template.binding("PetName", insuranceOrder.getPetName());
             Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();
             if(medicalInsuranceShopChipId != null) {
                 InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);

@@ -10,4 +10,6 @@ import java.util.List;
 @Mapper
 public interface InsuranceOrderMapper {
     List<InsuranceOrder> getInsuranceDataList(@Param("insuranceType") Integer insuranceType, @Param("userName") String userName, @Param("phone") String phone, @Param("insuranceOrderNo") String insuranceOrderNo, @Param("start") Date start, @Param("end") Date end, @Param("status") Integer status);
+
+    InsuranceOrder getInsuranceOrderDetail(@Param("insuranceId") Integer insuranceId);
 }

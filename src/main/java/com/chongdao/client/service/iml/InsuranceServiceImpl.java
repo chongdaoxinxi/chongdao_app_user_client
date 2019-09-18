@@ -62,6 +62,7 @@ public class InsuranceServiceImpl implements InsuranceService {
         //设置一些默认参数
         order.setIsSendMsg(1);//默认发送短消息
         order.setBeneficiary(1);//被保人与投保人关系, 默认为本人
+        order.setStatus(0);
 
         order.setAcceptName(order.getName());
         order.setAcceptPhone(order.getPhone());
@@ -105,7 +106,7 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResultResponse getInsuranceDetail(Integer insuranceId) {
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), insuranceOrderRepository.findById(insuranceId));
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), insuranceOrderMapper.getInsuranceOrderDetail(insuranceId));
     }
 
     @Override

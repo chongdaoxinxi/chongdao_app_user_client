@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -63,7 +60,7 @@ public class InsuranceOrder implements Serializable {
     //宠物属性(宠物即被保人)
     private Integer petCardId;//宠物卡片id
     private String petName;//宠物姓名
-    private String petBreedId;//宠物品种ID
+    private Integer petBreedId;//宠物品种ID
     private String petBreedName;//宠物品种名称
     private Integer petAge;//宠物年龄
     private String petPhoto;//宠物图片->用于审核
@@ -71,12 +68,12 @@ public class InsuranceOrder implements Serializable {
     private String petPhotoFront;//正面面宠物照片
     private String petPhotoReverse;//反面宠物照片
     private Integer medicalInsuranceShopChipId;//选择的宠物芯片的id
-    private Integer shopChipCode;//宠物芯片代码
+    private String shopChipCode;//宠物芯片代码
 
     private String orderNo;//运输险, 订单id
 
     //订单相关属性
-    private Integer status;//订单状态(0:保存;1:待支付;2:已支付待一级审核;3:待二级审核;4:待生成保单;5:保单生成;)
+    private Integer status;//订单状态(-1:删除;0:保存;1:已投保待支付;2:已经支付保单生成(进入30天等待期);3:保障期(过完30天等待期);4:理赔中;5:保障期结束;)
     private Date createTime;//数据创建时间
     private Date applyTime;//保险订单下单时间(付款时间/投保日期)
     private Date auditTime;//审核完成时间(平台投保审核完成日期)
@@ -100,4 +97,7 @@ public class InsuranceOrder implements Serializable {
 
     //分销
     private String recommendCode;//推广码
+
+    @Transient
+    private String shopName;
 }
