@@ -57,7 +57,7 @@ public class InsuranceServiceImpl implements InsuranceService {
         //先将数据保存在我们数据库
         InsuranceOrder order = new InsuranceOrder();
         BeanUtils.copyProperties(insuranceOrder, order);
-        if(order.getId() != null) {
+        if(order.getId() == null) {
             //新订单, 新生成的数据
             //生成订单号
             order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID, 作为两边对接的唯一标识

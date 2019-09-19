@@ -55,7 +55,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private OrderInfoRepository orderInfoRepository;
 
     private static final String INVOICE_URL = "http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do";
-        private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
+    private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
+    private static final String SUCCESS_PAY_REDIRECT_URL = "http://47.100.63.167/insurance/insurance_index.html";
     private static final String PLATE_FORM_CODE = "CPI000865";
     private static final String SECRET_KEY = "Picc37mu63ht38mw";
     private static final String INVOICE_TITLE= "XXX";
@@ -400,10 +401,22 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         invoiceInfo.addElement("RequestTime").setText(DateTimeUtil.dateToStr(new Date()));
         invoiceInfo.addElement("InvoiceTitle").setText(INVOICE_TITLE);//发票抬头
         invoiceInfo.addElement("Phone").setText(insuranceOrder.getPhone());
-        invoiceInfo.addElement("AddressAndPhone").setText(insuranceOrder.getAddress());//地址+电话
-        invoiceInfo.addElement("BankAccount").setText(insuranceOrder.getBankCardNo());//开户行+账号
+        String address = insuranceOrder.getAddress();
+        if(address == null) {
+            address = "";
+        }
+        invoiceInfo.addElement("AddressAndPhone").setText(address);//地址+电话
+        String bankCardNo = insuranceOrder.getBankCardNo();
+        if(bankCardNo == null) {
+            bankCardNo = "";
+        }
+        invoiceInfo.addElement("BankAccount").setText(bankCardNo);//开户行+账号
         invoiceInfo.addElement("BuyerTaxpayerIdentifyNumber").setText("");//纳税人识别号
-        invoiceInfo.addElement("Email").setText(insuranceOrder.getEmail());
+        String email = insuranceOrder.getEmail();
+        if(email == null) {
+            email = "";
+        }
+        invoiceInfo.addElement("Email").setText(email);
         invoiceInfo.addElement("Type").setText("2");//1 短链接, 2 版式下载
 
         String text = document.asXML();
@@ -438,6 +451,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             System.out.println(errorCode.getText());
             System.out.println(invoiceDownloadUrl);
             saveInvoicePdf(insuranceOrder, invoiceDownloadUrl);
+            return ResultResponse.createBySuccess(invoiceDownloadUrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -629,7 +643,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
      * @return
      */
     private String getRenderZFOFrom(InsuranceOrder insuranceOrder, Template template) {
-        return initFormStr(ZFO_RISK_CODE, ZFO_RATION_TYPE, insuranceOrder, template);
+        return initFormStr(ZFO_RISK_CODE, insuranceOrder.getRationType(), insuranceOrder, template);
     }
 
     /**
@@ -638,7 +652,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
      * @return
      */
     private String getRenderZCGForm(InsuranceOrder insuranceOrder, Template template) {
-        return initFormStr(ZCG_RISK_CODE, ZCG_RATION_TYPE, insuranceOrder, template);
+        return initFormStr(ZCG_RISK_CODE, insuranceOrder.getRationType(), insuranceOrder, template);
     }
 
     /**
@@ -648,7 +662,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
      * @return
      */
     private String getRenderI9QForm(InsuranceOrder insuranceOrder, Template template) {
-        return initFormStr(I9Q_RISK_CODE, I9Q_RATION_TYPE, insuranceOrder, template);
+        return initFormStr(I9Q_RISK_CODE, insuranceOrder.getRationType(), insuranceOrder, template);
     }
 
     /**

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -28,10 +29,10 @@ public class InsuranceExternalController {
 
     //保险发送数据给保险公司生成保单
     @PostMapping("generateInsure")
-    public ResultResponse generateInsure(Integer insuranceOrderId)  throws IOException {
+    public ResultResponse generateInsure(Integer insuranceOrderId) throws IOException {
         //生成接口所需要的数据
         InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
-        if(insuranceOrder == null) {
+        if (insuranceOrder == null) {
             return ResultResponse.createByErrorMessage("无效的保险订单ID!");
         }
         return insuranceExternalService.generateInsure(insuranceOrder);
@@ -39,23 +40,24 @@ public class InsuranceExternalController {
 
     /**
      * 投保支付回调
+     *
      * @param payCallBackInfo
      * @return
      * @throws IOException
      */
     @PostMapping("payInsureCallBack")
-    public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo) throws IOException {
+    public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo, HttpServletResponse response) throws IOException {
         //TODO
         System.out.println("payCallBackInfo:" + payCallBackInfo);
-//        System.out.println("payCallBackInfo.code:" + payCallBackInfo.get("code"));
-//        System.out.println("payCallBackInfo.policyUrl:" + payCallBackInfo.get("policyUrl"));
-//        System.out.println("payCallBackInfo.downloadUrl:" + payCallBackInfo.get("downloadUrl"));
         System.out.println("回调成功!");
-        return insuranceExternalService.payCallBackManage(payCallBackInfo);
+        ResultResponse resultResponse = insuranceExternalService.payCallBackManage(payCallBackInfo);
+        response.sendRedirect("http://47.100.63.167/insurance/insurance_index.html");
+        return resultResponse;
     }
 
     /**
      * 请求电子发票
+     *
      * @return
      */
     @PostMapping("requestInvoiceInfo")
