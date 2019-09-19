@@ -96,6 +96,9 @@ public class ShopChipServiceImpl implements ShopChipService {
     public ResultResponse getShopChipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        if(status != null && status == 99) {
+            status = null;
+        }
         List<InsuranceShopChip> list = insuranceShopChipMapper.getShopChipDataList(tokenVo.getUserId(), core, status, startDate, endDate);
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);

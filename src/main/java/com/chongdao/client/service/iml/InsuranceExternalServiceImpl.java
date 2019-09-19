@@ -323,7 +323,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             e.printStackTrace();
         }
 
-        if (errorCode.equals("00") && saveResult.equals("00")) {
+//        if (errorCode.equals("00") && saveResult.equals("00")) {
+        if (saveResult.equals("00")) { //just for test
             if (insuranceType == 3) {
                 return successCallBackOperation(insuranceOrder, downloadUrl, policyNo);
             } else {
