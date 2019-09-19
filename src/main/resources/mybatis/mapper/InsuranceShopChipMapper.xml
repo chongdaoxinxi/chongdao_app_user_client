@@ -7,6 +7,7 @@
             <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="core" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="selected_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="used_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
@@ -14,7 +15,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        isc.id, isc.shop_id, isc.core, isc.status, isc.used_time, isc.create_time, isc.update_time
+        isc.id, isc.shop_id, isc.core, isc.status, isc.selected_time, isc.used_time, isc.create_time, isc.update_time
     </sql>
     <select id="getShopChipDataList" resultMap="BaseResultMap" parameterType="map">
         select
