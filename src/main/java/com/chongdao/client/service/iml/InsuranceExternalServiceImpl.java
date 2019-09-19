@@ -103,7 +103,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
             "\t\t\t\t<AppliIdEmail>${AppliIdEmail}</AppliIdEmail>\n" +
             "\t\t\t\t<AppliAddress>${AppliAddress}</AppliAddress>\n" +
-            "\t\t\t\t<AppliIdentity>0</AppliIdentity>\n" +
+            "\t\t\t\t<AppliIdentity>${AppliIdentity}</AppliIdentity>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
@@ -201,7 +201,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
             "\t\t\t\t<AppliIdEmail>${AppliIdEmail}</AppliIdEmail>\n" +
             "\t\t\t\t<AppliAddress>${AppliAddress}</AppliAddress>\n" +
-            "\t\t\t\t<AppliIdentity>0</AppliIdentity>\n" +
+            "\t\t\t\t<AppliIdentity>${AppliIdentity}</AppliIdentity>\n" +
             "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
@@ -689,21 +689,23 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("SumPremium", insuranceOrder.getSumPremium().toString());//保费
         template.binding("Md5Value", generateInsuranceMD5SecretKey(uuid, insuranceOrder.getSumPremium().toString(), SECRET_KEY));
         template.binding("RationType", rationType);
-        template.binding("AppliName", insuranceOrder.getName());//投保人姓名
-        template.binding("AppliIdType", String.valueOf(insuranceOrder.getCardType()));//投保人证件类型
+        template.binding("AppliName", insuranceOrder.getName());
+        template.binding("AppliIdType", String.valueOf(insuranceOrder.getCardType()));
         template.binding("AppliIdNo", insuranceOrder.getCardNo());
         template.binding("AppliIdMobile", insuranceOrder.getPhone());
         template.binding("AppliIdEmail", insuranceOrder.getEmail());
         template.binding("AppliAddress", insuranceOrder.getAddress());
-        template.binding("InsuredSeqNo", 1);
-        template.binding("InsuredName", insuranceOrder.getAcceptName());//被保人姓名
-        template.binding("InsuredIdType", insuranceOrder.getAcceptCardType());//被保人证件类型
+        template.binding("AppliIdentity", insuranceOrder.getBeneficiary());
+        template.binding("InsuredSeqNo", insuranceOrder.getAcceptSeqNo());
+        template.binding("InsuredName", insuranceOrder.getAcceptName());
+        template.binding("InsuredIdType", insuranceOrder.getAcceptCardType());
         template.binding("InsuredIdNo", insuranceOrder.getAcceptCardNo());
-        template.binding("InsuredAddress", insuranceOrder.getAddress());
-        template.binding("InsuredIdMobile", insuranceOrder.getPhone());//同投保人
-        template.binding("InsuredEmail", insuranceOrder.getEmail());
+        template.binding("InsuredAddress", insuranceOrder.getAcceptAddress());
+        template.binding("InsuredIdMobile", insuranceOrder.getAcceptPhone());
+        template.binding("InsuredEmail", insuranceOrder.getAcceptMail());
 //        额外字段-医疗险字段
         if (insuranceOrder.getInsuranceType() == 1) {
+            // 由于H5投保放弃了宠物卡片, 所以此处代码暂时注销
 //            Integer petCardId = insuranceOrder.getPetCardId();
 //            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
 //            template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄

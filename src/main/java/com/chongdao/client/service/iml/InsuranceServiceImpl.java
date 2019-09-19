@@ -57,31 +57,31 @@ public class InsuranceServiceImpl implements InsuranceService {
         //先将数据保存在我们数据库
         InsuranceOrder order = new InsuranceOrder();
         BeanUtils.copyProperties(insuranceOrder, order);
-        if(order.getId() == null) {
+        if (order.getId() == null) {
             //新订单, 新生成的数据
             //生成订单号
             order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID, 作为两边对接的唯一标识
-            //设置一些默认参数
-            order.setIsSendMsg(1);//默认发送短消息
-            order.setBeneficiary(1);//被保人与投保人关系, 默认为本人
-            order.setStatus(0);
 
-            order.setAcceptName(order.getName());
-            order.setAcceptPhone(order.getPhone());
-            order.setAcceptCardType(order.getCardType());
-            order.setAcceptCardNo(order.getCardNo());
+            //如果投保人与被保人关系为本人时, 复制投保人信息至被保人
             order.setAcceptSeqNo(1);
-
-            order.setCreateTime(new Date());
+            if (order.getInsuranceType() != 2 || order.getBeneficiary() == 0) {
+                //非家责险或者被保人与投保人关系为别人
+                order.setAcceptName(order.getName());
+                order.setAcceptPhone(order.getPhone());
+                order.setAcceptMail(order.getEmail());
+                order.setAcceptAddress(order.getAddress());
+                order.setAcceptCardType(order.getCardType());
+                order.setAcceptCardNo(order.getCardNo());
+            }
 
             //校验宠物芯片是否被使用
             Integer medicalInsuranceShopChipId = order.getMedicalInsuranceShopChipId();
-            if(medicalInsuranceShopChipId != null) {
+            if (medicalInsuranceShopChipId != null) {
                 InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);
-                if(insuranceShopChip == null) {
+                if (insuranceShopChip == null) {
                     return ResultResponse.createByErrorMessage("无效的宠物芯片, 请重新选择!");
                 } else {
-                    if(insuranceShopChip.getStatus() != 1) {
+                    if (insuranceShopChip.getStatus() != 1) {
                         return ResultResponse.createByErrorMessage("所选宠物芯片已被使用, 请重新选择!");
                     } else {
                         insuranceShopChip.setStatus(0);
@@ -90,6 +90,11 @@ public class InsuranceServiceImpl implements InsuranceService {
                     }
                 }
             }
+
+            //设置一些默认参数
+            order.setIsSendMsg(1);//默认发送短消息
+            order.setStatus(0);
+            order.setCreateTime(new Date());
         }
         order.setApplyTime(new Date());
 
