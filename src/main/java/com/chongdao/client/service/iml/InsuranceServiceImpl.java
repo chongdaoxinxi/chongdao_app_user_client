@@ -85,6 +85,7 @@ public class InsuranceServiceImpl implements InsuranceService {
                         return ResultResponse.createByErrorMessage("所选宠物芯片已被使用, 请重新选择!");
                     } else {
                         insuranceShopChip.setStatus(0);
+                        insuranceShopChip.setSelectedTime(new Date());//更新被选中时间
                         insuranceShopChipRepository.save(insuranceShopChip);//更新所选宠物芯片的状态
                     }
                 }
