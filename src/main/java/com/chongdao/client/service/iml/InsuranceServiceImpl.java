@@ -64,12 +64,16 @@ public class InsuranceServiceImpl implements InsuranceService {
 
             //如果投保人与被保人关系为本人时, 复制投保人信息至被保人
             order.setAcceptSeqNo(1);
-            if (order.getInsuranceType() != 2 || order.getBeneficiary() == 0) {
+            if ((order.getInsuranceType() != null && order.getInsuranceType() != 2) || ( order.getBeneficiary() != null && order.getBeneficiary() == 0)) {
                 //非家责险或者被保人与投保人关系为别人
                 order.setAcceptName(order.getName());
                 order.setAcceptPhone(order.getPhone());
-                order.setAcceptMail(order.getEmail());
-                order.setAcceptAddress(order.getAddress());
+                if(order.getEmail() != null) {
+                    order.setAcceptMail(order.getEmail());
+                }
+                if(order.getAddress() != null) {
+                    order.setAcceptAddress(order.getAddress());
+                }
                 order.setAcceptCardType(order.getCardType());
                 order.setAcceptCardNo(order.getCardNo());
             }
@@ -90,6 +94,11 @@ public class InsuranceServiceImpl implements InsuranceService {
                     }
                 }
             }
+
+            //for test
+            order.setCardType("01");
+            order.setAcceptCardType("01");
+
 
             //设置一些默认参数
             order.setIsSendMsg(1);//默认发送短消息
