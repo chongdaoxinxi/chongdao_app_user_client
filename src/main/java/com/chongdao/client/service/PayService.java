@@ -29,4 +29,8 @@ public interface PayService {
     ResultResponse wxPayCallback(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     ResultResponse aliPayRe(String reOrderNo, Integer userId);
+
+    ResultResponse payHT(String htOrderNo, Integer userId);
+
+    ResultResponse aliPayCallbackHT(Map<String, String> params);
 }

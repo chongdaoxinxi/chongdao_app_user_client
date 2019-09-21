@@ -7,8 +7,11 @@ import com.chongdao.client.entitys.Support;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.*;
+import com.chongdao.client.service.LivingService;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.HTOrderInfoVO;
 import com.chongdao.client.vo.LivingInfoVO;
+import com.chongdao.client.vo.ResultTokenVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +48,9 @@ public class LivingController {
 
     @Autowired
     private SupportRepository supportRepository;
+
+    @Autowired
+    private LivingService livingService;
 
 
     /**
@@ -128,22 +134,23 @@ public class LivingController {
 
     /**
      * 收藏活体
-     * @param userId
+     * @param token
      * @param livingId
      * @param status 是否收藏 0 否 1 是
      * @return
      */
     @PostMapping("collect")
-    public ResultResponse collect(@RequestBody Integer userId, @RequestBody Integer livingId, @RequestBody Integer status){
+    public ResultResponse collect( @RequestParam Integer livingId, @RequestParam Integer status,@RequestParam String token){
+        ResultTokenVo tokenVo =  LoginUserUtil.resultTokenVo(token);
         //收藏先查询是否存在该活体
-        LivingCollect livingCollect = livingCollectRepository.findByUserIdAndLivingId(userId, livingId);
+        LivingCollect livingCollect = livingCollectRepository.findByUserIdAndLivingId(tokenVo.getUserId(), livingId);
         if (livingCollect != null) {
             livingCollect.setId(livingCollect.getId());
         }else{
             livingCollect.setCreateTime(new Date());
         }
         livingCollect.setEnabledCollect(status);
-        livingCollect.setUserId(userId);
+        livingCollect.setUserId(tokenVo.getUserId());
         livingCollect.setLivingId(livingId);
         livingCollect.setUpdateTime(new Date());
         livingCollectRepository.save(livingCollect);
@@ -156,18 +163,37 @@ public class LivingController {
      * @return
      */
     @PostMapping("support")
-    public ResultResponse support(@RequestBody Integer livingId, @RequestBody Integer userId, @RequestBody Integer status){
-        Support support = supportRepository.findByUserIdAndLivingId(userId, livingId);
+    public ResultResponse support(@RequestParam Integer livingId,
+                                  @RequestParam Integer status,@RequestParam String token){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        Support support = supportRepository.findByUserIdAndLivingId(tokenVo.getUserId(), livingId);
         if (support != null) {
             support.setId(support.getId());
         }
         support.setStatus(status);
-        support.setUserId(userId);
+        support.setUserId(tokenVo.getUserId());
         support.setLivingId(livingId);
         supportRepository.save(support);
         return ResultResponse.createBySuccess();
     }
 
+
+    /**
+     * 预下单/下单
+     * 订单类型 1：活体 2领养
+     * 服务类型：1 单程 2到店自取
+     * @param htOrderInfoVO
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("preOrCreateOrder")
+    public ResultResponse preOrCreateOrder(@RequestBody @Valid HTOrderInfoVO htOrderInfoVO, BindingResult bindingResult){
+        LoginUserUtil.resultTokenVo(htOrderInfoVO.getToken());
+        if (bindingResult.hasErrors()) {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),bindingResult.getFieldError().getDefaultMessage());
+        }
+        return livingService.preOrCreateOrder(htOrderInfoVO);
+    }
 
 
 
