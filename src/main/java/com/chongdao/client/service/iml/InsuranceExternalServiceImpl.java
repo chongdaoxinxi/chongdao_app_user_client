@@ -336,7 +336,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 Map r = new HashMap();
                 r.put("payUrl", payUrl);
                 r.put("insuranceOrderId", insuranceOrder.getId());
-                return ResultResponse.createBySuccess("预下单成功, 返回支付链接和保险订单ID", r);
+                return ResultResponse.createBySuccess("预下单成功, 返回支付链接", payUrl);
+//                return ResultResponse.createBySuccess("预下单成功, 返回支付链接和保险订单ID", r);
             }
         } else {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
