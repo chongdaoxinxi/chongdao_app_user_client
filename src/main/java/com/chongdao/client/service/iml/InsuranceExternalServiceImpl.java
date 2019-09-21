@@ -333,14 +333,17 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 insuranceOrder.setStatus(1);//将订单状态设为待支付
                 insuranceOrderRepository.save(insuranceOrder);
                 System.out.println("支付链接:" + payUrl);
-                return ResultResponse.createBySuccess("预下单成功, 返回支付链接", payUrl);
+                Map r = new HashMap();
+                r.put("payUrl", payUrl);
+                r.put("insuranceOrderId", insuranceOrder.getId());
+                return ResultResponse.createBySuccess("预下单成功, 返回支付链接和保险订单ID", r);
             }
         } else {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
             System.out.println("ErrorCode:" + errorCode);
             System.out.println("SaveResult:" + saveResult);
 //            return ResultResponse.createByErrorMessage("投保失败");
-            return ResultResponse.createByErrorMessage("saveMessage:" + saveMessage + ";errorMessage:" + errorMessage);
+            return ResultResponse.createByErrorMessage("投保失败!, " + "saveMessage:" + saveMessage + ";errorMessage:" + errorMessage);
         }
     }
 
