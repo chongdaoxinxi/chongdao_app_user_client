@@ -119,6 +119,16 @@ public class InsuranceController {
         return insuranceService.downloadElectronicInsurancePolicy(insuranceOrderId);
     }
 
+    /**
+     * 轮询校验订单是否已经支付完成
+     * @param insuranceOrderId
+     * @return
+     */
+    @PostMapping("pollingCheckOrderStatus")
+    public ResultResponse pollingCheckOrderStatus(Integer insuranceOrderId) {
+        return insuranceService.pollingCheckOrderStatus(insuranceOrderId);
+    }
+
     /////////////////////PC端审核///////////////////////////////
 
     /**

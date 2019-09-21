@@ -14,7 +14,6 @@ import com.chongdao.client.repository.HtOrderInfoRepository;
 import com.chongdao.client.repository.LivingInfoRepository;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.LivingService;
-import com.chongdao.client.utils.GenerateOrderNo;
 import com.chongdao.client.vo.HTOrderInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +93,7 @@ public class LivingServiceImpl  extends CommonRepository implements LivingServic
             htOrderInfo.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
             htOrderInfo.setCreateTime(new Date());
             htOrderInfo.setUpdateTime(new Date());
-            htOrderInfo.setHtOrderNo(GenerateOrderNo.genHTUniqueKey());
+//            htOrderInfo.setHtOrderNo(GenerateOrderNo.genHTUniqueKey());
             htOrderInfoRepository.save(htOrderInfo);
 
         }

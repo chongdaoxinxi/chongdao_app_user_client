@@ -54,22 +54,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
 
-    private static final String INVOICE_URL = "http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do";
-    private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";
-    private static final String SUCCESS_PAY_REDIRECT_URL = "http://47.100.63.167/insurance/insurance_index.html";
-    private static final String PLATE_FORM_CODE = "CPI000865";
-    private static final String SECRET_KEY = "Picc37mu63ht38mw";
-    private static final String INVOICE_TITLE= "XXX";
+    private static final String INVOICE_URL = "http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do";//请求电子发票接口
+    private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";//投保接口
+    private static final String PLATE_FORM_CODE = "CPI000865";//平台代码(保险公司提供)
+    private static final String SECRET_KEY = "Picc37mu63ht38mw";//秘钥(保险公司提供)
+    private static final String INVOICE_TITLE= "XXX";//电子发票抬头
     private static final String INSURANCE_SERVICE_NO = "001001";
     private static final String ZFO_RISK_CODE = "ZFO";
-    private static final String ZFO_RATION_TYPE = "ZFO310000a";
     private static final String ZCG_RISK_CODE = "ZCG";
-    private static final String ZCG_RATION_TYPE = "ZCG3199001";
     private static final String I9Q_RISK_CODE = "I9Q";
-    private static final String I9Q_RATION_TYPE = "I9Q310000a";
-    private static final String POLICY_FOLDER_PREFIX = "../../policy/";
+    private static final String POLICY_FOLDER_PREFIX = "../../policy/";//电子单证本地保存地址
     private static final String POLICY_REALPATH = "/home/policy/";
-    private static final String INVOICE_FOLDER_PREFIX = "../../invoice/";
+    private static final String INVOICE_FOLDER_PREFIX = "../../invoice/";//电子发票本地保存地址
     private static final String INVOICE_REALPATH = "/home/invoice/";
 
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
@@ -283,17 +279,20 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         System.out.println("返回数据:" + resp);
 
         String errorCode = "";
+        String errorMessage = "";
         String downloadUrl = "";
         String payUrl = "";
         String proposalNo = "";
         String policyNo = "";
         String saveResult = "";
+        String saveMessage = "";
         try {
             Document document = DocumentHelper.parseText(resp);
             Element root = document.getRootElement();
             for (Iterator i = root.elementIterator("GeneralInfoReturn"); i.hasNext(); ) {
                 Element next = (Element) i.next();
                 errorCode = next.elementText("ErrorCode");
+                errorMessage = next.elementText("ErrorMessage");
                 System.out.println("UUID:" + next.elementText("UUID"));
                 System.out.println("ErrorCode:" + next.elementText("ErrorCode"));
                 System.out.println("ErrorMessage:" + next.elementText("ErrorMessage"));
@@ -307,6 +306,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                     proposalNo = e.elementText("ProposalNo");
                     policyNo = e.elementText("PolicyNo");
                     saveResult = e.elementText("SaveResult");
+                    saveMessage = e.elementText("saveMessage");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -333,13 +333,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 insuranceOrder.setStatus(1);//将订单状态设为待支付
                 insuranceOrderRepository.save(insuranceOrder);
                 System.out.println("支付链接:" + payUrl);
+                Map r = new HashMap();
+                r.put("payUrl", payUrl);
+                r.put("insuranceOrderId", insuranceOrder.getId());
                 return ResultResponse.createBySuccess("预下单成功, 返回支付链接", payUrl);
+//                return ResultResponse.createBySuccess("预下单成功, 返回支付链接和保险订单ID", r);
             }
         } else {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
             System.out.println("ErrorCode:" + errorCode);
             System.out.println("SaveResult:" + saveResult);
-            return ResultResponse.createByErrorMessage("投保失败");
+//            return ResultResponse.createByErrorMessage("投保失败");
+            return ResultResponse.createByErrorMessage("投保失败!, " + "saveMessage:" + saveMessage + ";errorMessage:" + errorMessage);
         }
     }
 
