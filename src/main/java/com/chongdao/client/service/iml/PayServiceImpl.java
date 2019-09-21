@@ -16,6 +16,7 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 import com.chongdao.client.enums.PaymentTypeEnum;
+import com.chongdao.client.repository.HtOrderInfoRepository;
 import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.PayService;
@@ -53,6 +54,9 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     @Autowired
     private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
+    @Autowired
+    private HtOrderInfoRepository htOrderInfoRepository;
+
 
     /**
      * 支付宝对接
@@ -71,7 +75,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
         }
         String orderStr = "";
-        Map<String, String> resultMap = new HashMap<String, String>();
+        Map<String, String> resultMap = new HashMap<>();
         try {
             //实例化客户端
             /*
@@ -196,6 +200,127 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         return ResultResponse.createBySuccess(resultMap);
     }
 
+    /**
+     * 活体支付
+     * @param htOrderNo
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultResponse payHT(String htOrderNo, Integer userId) {
+        HtOrderInfo order = htOrderInfoRepository.findByHtOrderNoAndOrderStatusAndBuyerUserId(htOrderNo, -1, userId);
+        if (order == null) {
+            return ResultResponse.createByErrorMessage("用户没有该订单");
+        }
+        if (order.getOrderStatus() == 0) {
+            return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
+        }
+        String orderStr = "";
+        Map<String, String> resultMap = new HashMap<String, String>();
+        try {
+            //实例化客户端
+            /*
+         * 开放平台SDK封装了签名实现，只需在创建DefaultAlipayClient对象时，
+         * 设置请求网关(gateway)，应用id(app_id)，应用私钥(private_key)，编码格式(charset)，支付宝公钥(alipay_public_key)，签名类型(sign_type)即可，
+         * 报文请求时会自动进行签名
+         * */
+            AlipayClient client = new DefaultAlipayClient(AliPayConfig.GATEWAY, AliPayConfig.ALI_PAY_APPID, AliPayConfig.APP_PRIVATE_KEY, AliPayConfig.FORMAT,
+                    AliPayConfig.CHARSET, AliPayConfig.ALI_PAY_PUBLIC_KEY, AliPayConfig.SIGN_TYPE);
+
+            //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
+            AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
+            //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
+            AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+//                model.setBody(orderMap.get("body"));                      //商品信息
+            model.setSubject("活体商品");//商品名称
+            model.setOutTradeNo(htOrderNo);//商户订单号
+            model.setTimeoutExpress("120m"); //交易超时时间
+            model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额
+            model.setProductCode("FAST_INSTANT_TRADE_PAY"); //销售产品码
+            //            model.setSellerId(UID);                        //商家id
+            ali_request.setBizModel(model);
+            ali_request.setNotifyUrl(AliPayConfig.NOTIFY_URL_HT); //App支付异步回调地址
+            ali_request.setReturnUrl(AliPayConfig.RETURN_URL); //付款完成跳转页面
+            AlipayTradeAppPayResponse response = client.sdkExecute(ali_request);
+            orderStr = response.getBody();
+            if (StringUtils.isBlank(orderStr)) {
+                OrderLog orderLog = OrderLogDTO.addOrderLogHT(order);
+                orderLog.setNote("支付宝预下单失败(活体)");
+                logRepository.save(orderLog);
+                return ResultResponse.createBySuccessMessage("支付宝预下单失败(追加)!!!");
+            }
+            String orderStrResult = orderStr;
+            resultMap.put("orderStr", orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
+            resultMap.put("status", "200");
+            resultMap.put("message", "支付宝预下单成功");
+            OrderLog orderLog = OrderLogDTO.addOrderLogHT(order);
+            orderLog.setNote("支付宝预下单成功(活体)");
+            orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+            logRepository.save(orderLog);
+            log.info("支付宝App支付(活体):支付订单创建成功out_trade_no---- {}", order.getHtOrderNo());
+        } catch (Exception e) {
+            resultMap.put("status", "500");
+            resultMap.put("message", "支付宝预下单失败(追加)!!!");
+            log.error("支付宝App支付(活体)：支付订单生成失败out_trade_no---- {}", order.getHtOrderNo());
+        }
+        return ResultResponse.createBySuccess(resultMap);
+    }
+
+    /**
+     * 活体异步回调
+     * @param params
+     * @return
+     */
+    @Override
+    public ResultResponse aliPayCallbackHT(Map<String, String> params) {
+
+        String htOrderNo = String.valueOf(params.get("out_trade_no"));
+        String tradeNo = params.get("trade_no");
+        String tradeStatus = params.get("trade_status");
+        //正常订单
+        HtOrderInfo order = htOrderInfoRepository.findByHtOrderNo(htOrderNo);
+        if (order == null) {
+            log.error("【支付回调】订单不存在:htOrderNo:{}", htOrderNo);
+            return ResultResponse.createByErrorMessage("非该商铺的订单,回调忽略");
+        }
+        if (order.getOrderStatus() >= OrderStatusEnum.PAID.getStatus()) {
+            log.error("【支付回调】支付宝重复调用: orderNo:{}", htOrderNo);
+            return ResultResponse.createBySuccess("支付宝重复调用");
+        }
+        if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+            htOrderInfoRepository.updateHtOrderInfoOrderStatus(htOrderNo);
+            //推送短信到商家
+            //推送短信到用户
+            if (order.getReceiveId() != null) {
+                UserAddress address = userAddressRepository.findById(order.getReceiveId()).get();
+                smsService.sendNewOrderUser(htOrderNo, address.getPhone());
+            }
+            //推送短信到配送员
+            if (order.getServiceType() != 3) {
+                List<Express> expressList = expressRepository.findByAreaCodeAndStatus(order.getAreaCode(), 1);
+                expressList.stream().forEach(express -> {
+                    smsService.sendExpressNewOrder(htOrderNo, express.getPhone());
+                });
+            }
+        }
+        //生成支付信息
+        try {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(order.getBuyerUserId());
+            payInfo.setOrderNo(order.getHtOrderNo());
+            payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+            payInfo.setPlatformNumber(tradeNo);
+            payInfo.setPlatformStatus(tradeStatus);
+            payInfo.setType(1);
+            payInfoRepository.save(payInfo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("【支付宝异步回调】支付信息生成失败: htOrderNo:{}", htOrderNo);
+        }
+
+        return ResultResponse.createBySuccess();
+    }
+
 
     /**
      * 支付宝异步回调
@@ -289,10 +414,12 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                         smsService.sendNewOrderUser(orderNo, address.getPhone());
                     }
                     //推送短信到配送员
-                    List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
-                    expressList.stream().forEach(express -> {
-                        smsService.sendExpressNewOrder(orderNo, express.getPhone());
-                    });
+                    if (order.getServiceType() != 3) {
+                        List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+                        expressList.stream().forEach(express -> {
+                            smsService.sendExpressNewOrder(orderNo, express.getPhone());
+                        });
+                    }
                 }
             }
             //生成支付信息

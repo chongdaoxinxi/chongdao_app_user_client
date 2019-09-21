@@ -59,6 +59,20 @@ public class PayController {
         return payService.aliPayRe(reOrderNo, tokenVo.getUserId());
     }
 
+    /**
+     * 支付宝支付(活体)
+     * @param htOrderNo
+     * @param token
+     * @return
+     */
+    @GetMapping("aliPayHT")
+    public ResultResponse payHT(@RequestParam String htOrderNo, @RequestParam String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return payService.payHT(htOrderNo, tokenVo.getUserId());
+    }
+
+
+
 
     /**
      * 回调函数验证参数
@@ -102,6 +116,50 @@ public class PayController {
         }
         return Const.AliPayCallback.RESPONSE_FAILED;
     }
+
+
+    /**
+     * 活体支付回调
+     * @param request
+     * @return
+     */
+    @RequestMapping("aliPayCallbackHT")
+    public Object aliPayCallbackHT(HttpServletRequest request) {
+        Map<String, String> params = Maps.newHashMap();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+        log.info("活体支付回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
+
+        //非常重要,验证回调的正确性,是不是支付宝发的.并且呢还要避免重复通知.
+
+        params.remove("sign_type");
+        try {
+            boolean aliPayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, AliPayConfig.ALI_PAY_PUBLIC_KEY, AliPayConfig.CHARSET, AliPayConfig.SIGN_TYPE);
+
+            if (!aliPayRSACheckedV2) {
+                log.error("【活体支付回调】非法请求,验证不通过 params = {}",params);
+                return ResultResponse.createByErrorMessage("非法请求,验证不通过");
+            }
+        } catch (AlipayApiException e) {
+            log.error("活体支付回调异常", e);
+        }
+
+        ResultResponse response = payService.aliPayCallbackHT(params);
+        if (response.isSuccess()) {
+            return Const.AliPayCallback.RESPONSE_SUCCESS;
+        }
+        return Const.AliPayCallback.RESPONSE_FAILED;
+    }
+
 
     /**
      * 微信支付

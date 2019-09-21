@@ -304,13 +304,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
             //获取商品折扣
             Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), (byte) 1);
-            if ((good.getDiscount() > 0 && good.getDiscount() != null)){
-                orderVo.setDiscount(good.getDiscount());
-                orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
-            }
-            if ((good.getReDiscount() > 0 && good.getReDiscount() != null)){
-                orderVo.setDiscount(good.getReDiscount());
-                orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(1,BigDecimal.ROUND_HALF_UP)));
+            if (good != null) {
+                if ((good.getDiscount() != null && good.getDiscount() > 0)) {
+                    orderVo.setDiscount(good.getDiscount());
+                    orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10).setScale(1, BigDecimal.ROUND_HALF_UP)));
+                }
+                if ((good.getReDiscount() != null && good.getReDiscount() > 0)) {
+                    orderVo.setDiscount(good.getReDiscount());
+                    orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10).setScale(1, BigDecimal.ROUND_HALF_UP)));
+                }
             }
             orderDetailVOS.add(orderDetailVO);
         });
@@ -502,26 +504,31 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderVo orderVo = new OrderVo();
         BeanUtils.copyProperties(order, orderVo);
         //查询店铺
-//        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-//        if(shop != null) {
-//            orderVo.setShopName(shop.getShopName());
-//            orderVo.setShopLogo(shop.getLogo());
-//            orderVo.setShopPhone(shop.getPhone());
-//        }
-//        //接宠地址
-//        UserAddress receiveAddress = addressMapper.selectByPrimaryKey(order.getReceiveAddressId());
-//        //送宠地址
-//        UserAddress deliverAddress = addressMapper.selectByPrimaryKey(order.getDeliverAddressId());
-//        if (receiveAddress != null) {
-//            orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
-//            orderVo.setPhone(receiveAddress.getPhone());
-//        }
-//        if (deliverAddress != null) {
-//            orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
-//            if(receiveAddress == null) {
-//                orderVo.setPhone(deliverAddress.getPhone());
-//            }
-//        }
+        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
+        if(shop != null) {
+            orderVo.setShopName(shop.getShopName());
+            orderVo.setShopLogo(shop.getLogo());
+            orderVo.setShopPhone(shop.getPhone());
+        }
+        //接宠地址
+        UserAddress receiveAddress = null;
+        if (order.getReceiveAddressId() != null) {
+            receiveAddress = userAddressRepository.findById(order.getReceiveAddressId()).orElse(null);
+            if (receiveAddress != null) {
+                orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+                orderVo.setPhone(receiveAddress.getPhone());
+            }
+        }
+        //送宠地址
+        UserAddress deliverAddress = null;
+        if (deliverAddress != null) {
+            deliverAddress = userAddressRepository.findById(order.getDeliverAddressId()).orElse(null);
+            if (deliverAddress != null) {
+                orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+                orderVo.setPhone(deliverAddress.getPhone());
+            }
+        }
+
         //订单明细
         List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
         //购买商品数目
@@ -551,11 +558,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderVo.setTotalPrice(servicePrice);
             }
         }
-//        //设置用户人姓名
-//        User user = userRepository.findById(order.getUserId()).orElse(null);
-//        if(user != null) {
-//            orderVo.setUsername(user.getName());
-//        }
+        //设置用户人姓名
+        User user = userRepository.findById(order.getUserId()).orElse(null);
+        if(user != null) {
+            orderVo.setUsername(user.getName());
+        }
 
         orderVo.setGoodsCount(goodsCount);
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
