@@ -157,6 +157,15 @@ public class InsuranceServiceImpl implements InsuranceService {
         return ResultResponse.createBySuccessMessage("拒绝审核成功!");
     }
 
+    @Override
+    public ResultResponse pollingCheckOrderStatus(Integer insuranceOrderId) {
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
+        if(insuranceOrder == null) {
+            return ResultResponse.createByErrorMessage("无效的订单ID!");
+        }
+        return ResultResponse.createBySuccess(insuranceOrder.getStatus());
+    }
+
     private void updateInsuranceOrderStatus(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
         InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
         insuranceOrder.setStatus(targetStatus);

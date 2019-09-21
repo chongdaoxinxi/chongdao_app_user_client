@@ -20,4 +20,6 @@ public interface InsuranceService {
     ResultResponse auditInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note);
 
     ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note);
+
+    ResultResponse pollingCheckOrderStatus(Integer insuranceOrderId);
 }
