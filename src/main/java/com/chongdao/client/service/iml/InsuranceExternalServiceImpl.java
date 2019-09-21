@@ -279,17 +279,20 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         System.out.println("返回数据:" + resp);
 
         String errorCode = "";
+        String errorMessage = "";
         String downloadUrl = "";
         String payUrl = "";
         String proposalNo = "";
         String policyNo = "";
         String saveResult = "";
+        String saveMessage = "";
         try {
             Document document = DocumentHelper.parseText(resp);
             Element root = document.getRootElement();
             for (Iterator i = root.elementIterator("GeneralInfoReturn"); i.hasNext(); ) {
                 Element next = (Element) i.next();
                 errorCode = next.elementText("ErrorCode");
+                errorMessage = next.elementText("ErrorMessage");
                 System.out.println("UUID:" + next.elementText("UUID"));
                 System.out.println("ErrorCode:" + next.elementText("ErrorCode"));
                 System.out.println("ErrorMessage:" + next.elementText("ErrorMessage"));
@@ -303,6 +306,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                     proposalNo = e.elementText("ProposalNo");
                     policyNo = e.elementText("PolicyNo");
                     saveResult = e.elementText("SaveResult");
+                    saveMessage = e.elementText("saveMessage");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -335,7 +339,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
             System.out.println("ErrorCode:" + errorCode);
             System.out.println("SaveResult:" + saveResult);
-            return ResultResponse.createByErrorMessage("投保失败");
+//            return ResultResponse.createByErrorMessage("投保失败");
+            return ResultResponse.createByErrorMessage("saveMessage:" + saveMessage + ";errorMessage:" + errorMessage);
         }
     }
 
