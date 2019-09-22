@@ -167,7 +167,23 @@ public class InsuranceServiceImpl implements InsuranceService {
         if(insuranceOrder == null) {
             return ResultResponse.createByErrorMessage("无效的订单ID!");
         }
-        return ResultResponse.createBySuccess(insuranceOrder.getStatus());
+        Integer status = insuranceOrder.getStatus();
+        if(status != null && status == 1) {
+            Date applyTime = insuranceOrder.getApplyTime();
+            if(applyTime != null) {
+                Date now = new Date();
+                long l = now.getTime() - applyTime.getTime();
+                double r = l*1.0/(1000*60*60);
+                if(r > 24) {
+                    return ResultResponse.createByErrorMessage("支付有效期已过!");
+                }
+            } else {
+                return ResultResponse.createByErrorMessage("没有找到有效的预下单时间!");
+            }
+        } else {
+            return ResultResponse.createByErrorMessage("无效的订单状态!");
+        }
+        return ResultResponse.createBySuccess(true);
     }
 
     private void updateInsuranceOrderStatus(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
