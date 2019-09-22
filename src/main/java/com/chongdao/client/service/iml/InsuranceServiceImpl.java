@@ -109,7 +109,7 @@ public class InsuranceServiceImpl implements InsuranceService {
             order.setStatus(0);
             order.setCreateTime(new Date());
         }
-        order.setApplyTime(new Date());
+//        order.setApplyTime(new Date());
 
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
