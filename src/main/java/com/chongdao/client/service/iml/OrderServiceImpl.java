@@ -271,7 +271,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderVo orderVo = new OrderVo();
         //获取配送员信息（姓名、电话号码）
         OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
-        orderVo.setCreateTime(orderInfo.getCreateTime());
         orderVo.setOrderNo(orderNo);
         if (orderInfo.getExpressId() != null){
             Express express = expressRepository.findById(orderInfo.getExpressId()).orElse(null);
@@ -335,6 +334,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setPayment(orderInfo.getPayment());
         orderVo.setExpressReceiveTime(orderInfo.getExpressReceiveTime());
         orderVo.setExpressFinishTime(orderInfo.getExpressFinishTime());
+        orderVo.setReceiveTime(orderInfo.getReceiveTime());
+        orderVo.setDeliverTime(orderInfo.getDeliverTime());
+        orderVo.setCreateTime(orderInfo.getCreateTime());
         //接宠地址
         if (orderInfo.getReceiveAddressId() != null) {
             UserAddress receiveAddress = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), orderInfo.getUserId());
@@ -354,8 +356,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             if (user != null) {
                 orderVo.setUsername(user.getName());
                 orderVo.setPhone(user.getPhone());
+                orderVo.setUserId(userId);
             }
         }
+        orderVo.setId(orderInfo.getId());
         orderVo.setServiceType(orderInfo.getServiceType());
         orderVo.setRemark(orderInfo.getRemark());
         return ResultResponse.createBySuccess(orderVo);

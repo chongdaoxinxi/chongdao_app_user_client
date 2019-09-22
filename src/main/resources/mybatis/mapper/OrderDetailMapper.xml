@@ -21,7 +21,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         id, order_no, count, good_id, order_id,name, price, icon, current_price, create_time, update_time,
-    user_id, total_price
+    user_id, total_price,re_order_no
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -38,11 +38,11 @@
         insert into order_detail (id, order_no, count,
                                   good_id, order_id, name, price,
                                   icon, current_price, create_time,
-                                  update_time, user_id, total_price)
+                                  update_time, user_id, total_price,re_order_no)
         values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER},
                 #{goodId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
                 #{icon,jdbcType=VARCHAR}, #{currentPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
-                #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL})
+                #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL},#{reOrderNo,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderDetail">
         insert into order_detail
@@ -86,6 +86,9 @@
             <if test="totalPrice != null">
                 total_price,
             </if>
+            <if test="reOrderNo != null">
+                re_order_no,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -126,6 +129,9 @@
             </if>
             <if test="totalPrice != null">
                 #{totalPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="reOrderNo != null">
+                #{reOrderNo,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -168,6 +174,9 @@
             <if test="totalPrice != null">
                 total_price = #{totalPrice,jdbcType=DECIMAL},
             </if>
+            <if test="reOrderNo != null">
+                re_order_no = #{reOrderNo,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -184,7 +193,8 @@
             create_time   = #{createTime,jdbcType=TIMESTAMP},
             update_time   = #{updateTime,jdbcType=TIMESTAMP},
             user_id       = #{userId,jdbcType=INTEGER},
-            total_price   = #{totalPrice,jdbcType=DECIMAL}
+            total_price   = #{totalPrice,jdbcType=DECIMAL},
+            re_order_no      = #{reOrderNo,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 
