@@ -66,7 +66,7 @@ public class InsuranceServiceImpl implements InsuranceService {
             order.setAcceptSeqNo(1);
 
             //just for test
-            order.setBeneficiary(0);
+//            order.setBeneficiary(0);
 
             if ((order.getInsuranceType() != null && order.getInsuranceType() != 2) || ( order.getBeneficiary() != null && order.getBeneficiary() == 0)) {
                 //非家责险或者被保人与投保人关系为别人
@@ -100,8 +100,8 @@ public class InsuranceServiceImpl implements InsuranceService {
             }
 
             //for test
-            order.setCardType("01");
-            order.setAcceptCardType("01");
+//            order.setCardType("01");
+//            order.setAcceptCardType("01");
 
 
             //设置一些默认参数
