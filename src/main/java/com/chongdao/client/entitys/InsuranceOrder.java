@@ -89,6 +89,7 @@ public class InsuranceOrder implements Serializable {
     private BigDecimal sumAmount;//保额
     private BigDecimal sumPremium;//保费
 
+    private String payUrl;//支付链接
     private String proposalNo;//投保预下单单号(只有见费出单的才会有, 如ZFO, I9Q)
     private String policyNo;//电子保单号
     private String policyDownloadUrl;//电子保单下载地址

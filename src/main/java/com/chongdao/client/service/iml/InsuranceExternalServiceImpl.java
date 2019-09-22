@@ -331,6 +331,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 //对于见费出单的保险, 需要保存预下单号
                 insuranceOrder.setProposalNo(proposalNo);
                 insuranceOrder.setStatus(1);//将订单状态设为待支付
+                insuranceOrder.setPayUrl(payUrl);//保存支付链接
+                insuranceOrder.setApplyTime(new Date());//预下单成功时间, 可支付时间为此时间后的24小时内
                 insuranceOrderRepository.save(insuranceOrder);
                 System.out.println("支付链接:" + payUrl);
                 Map r = new HashMap();
