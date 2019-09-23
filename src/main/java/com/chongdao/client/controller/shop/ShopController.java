@@ -2,6 +2,7 @@ package com.chongdao.client.controller.shop;
 
 import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -18,6 +19,10 @@ public class ShopController {
 
     @Autowired
     private ShopService shopService;
+
+    @Autowired
+    private GoodsService goodsService;
+
 
 
     /**
@@ -96,21 +101,34 @@ public class ShopController {
     }
 
     /**
-     * 获取该店铺的服务和商品
-     * @param shopId
+     * 获取店铺分类
      * @param categoryId 0 商品 1 服务
      * @return
      */
-    @GetMapping("{shopId}/{categoryId}")
-    public ResultResponse getShopService(@PathVariable Integer shopId,
-                                         @PathVariable Integer categoryId,@RequestParam Integer userId){
-        ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + categoryId);
+    @GetMapping("getCategoryList/{categoryId}")
+    public ResultResponse getGoodCategoryList(@PathVariable Integer categoryId) {
+        return goodsService.getGoodCategoryList(categoryId);
+    }
+
+
+
+
+    /**
+     * 根据分类商品id获取该店铺的服务和商品
+     * @param shopId
+     * @param goodsTypeId
+     * @return
+     */
+    @GetMapping("getShopGoodsList")
+    public ResultResponse getShopGoodsList(@RequestParam Integer shopId,
+                                         @RequestParam Integer goodsTypeId,Integer userId){
+        ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + goodsTypeId);
         if (resultResponse != null){
             return resultResponse;
         }
-        resultResponse = this.shopService.getShopService(shopId, categoryId, userId);
-        GuavaCache.setKey("getShopGoods_" + shopId + "_" + categoryId, resultResponse);
-        return this.shopService.getShopService(shopId,categoryId,userId);
+        resultResponse = this.shopService.getShopService(shopId, goodsTypeId, userId);
+        GuavaCache.setKey("getShopGoods_" + shopId + "_" + goodsTypeId, resultResponse);
+        return this.shopService.getShopService(shopId,goodsTypeId,userId);
     }
 
 

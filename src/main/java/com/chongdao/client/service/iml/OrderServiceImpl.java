@@ -250,7 +250,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             type = "7,10,11,12";
         } else if (type.equals("1")){ //待接单
             type = "1";
-        } else{//已完成
+        } else if (type.equals("-1")){
+            type = "-1";
+        }else{  //已完成
             type = "0,3,4,5,6,9,13";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
