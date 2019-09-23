@@ -56,6 +56,16 @@ public class InsuranceServiceImpl implements InsuranceService {
     public ResultResponse saveInsurance(InsuranceOrder insuranceOrder) throws IOException {
         //先将数据保存在我们数据库
         InsuranceOrder order = new InsuranceOrder();
+        Integer beneficiary = insuranceOrder.getBeneficiary();
+        //基础校验
+        if(beneficiary == null) {
+            return ResultResponse.createByErrorMessage("被保人与投保人关系不能为空!");
+        }
+        if(beneficiary != null && beneficiary == 0) {
+            if(insuranceOrder.getAcceptName() == null || insuranceOrder.getAcceptPhone() == null || insuranceOrder.getAcceptCardNo() == null || insuranceOrder.getAcceptAddress() == null || insuranceOrder.getAcceptCardType() == null) {
+                return ResultResponse.createByErrorMessage("被保人必填信息(身份证类型/身份证号/被保人名称/被保人号码/被保人地址)不完整!");
+            }
+        }
         BeanUtils.copyProperties(insuranceOrder, order);
         if (order.getId() == null) {
             //新订单, 新生成的数据
@@ -63,11 +73,6 @@ public class InsuranceServiceImpl implements InsuranceService {
             order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID, 作为两边对接的唯一标识
 
             //如果投保人与被保人关系为本人时, 复制投保人信息至被保人
-            order.setAcceptSeqNo(1);
-
-            //just for test
-//            order.setBeneficiary(0);
-
             if ((order.getInsuranceType() != null && order.getInsuranceType() != 2) || ( order.getBeneficiary() != null && order.getBeneficiary() == 0)) {
                 //非家责险或者被保人与投保人关系为别人
                 order.setAcceptName(order.getName());
@@ -99,17 +104,12 @@ public class InsuranceServiceImpl implements InsuranceService {
                 }
             }
 
-            //for test
-//            order.setCardType("01");
-//            order.setAcceptCardType("01");
-
-
             //设置一些默认参数
+            order.setAcceptSeqNo(1);//默认被保人只有1个
             order.setIsSendMsg(1);//默认发送短消息
-            order.setStatus(0);
+            order.setStatus(0);//状态初始化为已保存
             order.setCreateTime(new Date());
         }
-//        order.setApplyTime(new Date());
 
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
