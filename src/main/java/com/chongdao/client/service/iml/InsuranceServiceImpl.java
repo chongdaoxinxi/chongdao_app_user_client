@@ -66,7 +66,7 @@ public class InsuranceServiceImpl implements InsuranceService {
             order.setAcceptSeqNo(1);
 
             //just for test
-            order.setBeneficiary(0);
+//            order.setBeneficiary(0);
 
             if ((order.getInsuranceType() != null && order.getInsuranceType() != 2) || ( order.getBeneficiary() != null && order.getBeneficiary() == 0)) {
                 //非家责险或者被保人与投保人关系为别人
@@ -100,8 +100,8 @@ public class InsuranceServiceImpl implements InsuranceService {
             }
 
             //for test
-            order.setCardType("01");
-            order.setAcceptCardType("01");
+//            order.setCardType("01");
+//            order.setAcceptCardType("01");
 
 
             //设置一些默认参数
@@ -109,7 +109,7 @@ public class InsuranceServiceImpl implements InsuranceService {
             order.setStatus(0);
             order.setCreateTime(new Date());
         }
-        order.setApplyTime(new Date());
+//        order.setApplyTime(new Date());
 
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
@@ -167,7 +167,23 @@ public class InsuranceServiceImpl implements InsuranceService {
         if(insuranceOrder == null) {
             return ResultResponse.createByErrorMessage("无效的订单ID!");
         }
-        return ResultResponse.createBySuccess(insuranceOrder.getStatus());
+        Integer status = insuranceOrder.getStatus();
+        if(status != null && status == 1) {
+            Date applyTime = insuranceOrder.getApplyTime();
+            if(applyTime != null) {
+                Date now = new Date();
+                long l = now.getTime() - applyTime.getTime();
+                double r = l*1.0/(1000*60*60);
+                if(r > 24) {
+                    return ResultResponse.createByErrorMessage("支付有效期已过!");
+                }
+            } else {
+                return ResultResponse.createByErrorMessage("没有找到有效的预下单时间!");
+            }
+        } else {
+            return ResultResponse.createByErrorMessage("无效的订单状态!");
+        }
+        return ResultResponse.createBySuccess(true);
     }
 
     private void updateInsuranceOrderStatus(String token, Integer insuranceOrderId, Integer targetStatus, String note) {

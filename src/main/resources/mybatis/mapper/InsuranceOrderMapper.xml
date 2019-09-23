@@ -48,6 +48,7 @@
             <arg column="insurance_failure_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="sum_amount" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="sum_premium" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="pay_url" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="proposal_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="policy_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="policy_download_url" jdbcType="VARCHAR" javaType="java.lang.String"/>
@@ -63,7 +64,7 @@
     <sql id="Base_Column_List">
         io.id, io.insurance_order_no, io.user_id, io.name, io.card_type, io.card_no, io.phone, io.email, io.address, io.is_send_msg, io.id_card_front_photo, io.id_card_reverse_photo, io.bank_card_photo, io.bank_card_no, io.accept_seq_no, io.accept_name,
     io.accept_name, io.accept_card_type, io.accept_card_no, io.accept_phone, io.accept_address, io.accept_mail, io.beneficiary, io.ration_type, io.insurance_type, io.pet_card_id, io.pet_name, io.pet_breed_id, io.pet_breed_name, io.pet_age, io.pet_photo, io.pet_photo_flank, io.pet_photo_front, io.pet_photo_reverse, io.medical_insurance_shop_chip_id,
-io.shop_chip_code, io.order_no, io.status, io.create_time, io.apply_time, io.audit_time, io.sign_bill_time, io.insurance_effect_time, io.insurance_failure_time, io.sum_amount, io.sum_premium, io.proposal_no, io.policy_no, io.policy_download_url,
+io.shop_chip_code, io.order_no, io.status, io.create_time, io.apply_time, io.audit_time, io.sign_bill_time, io.insurance_effect_time, io.insurance_failure_time, io.sum_amount, io.sum_premium, io.pay_url, io.proposal_no, io.policy_no, io.policy_download_url,
 io.policy_image, io.policy_cdxx_download_url, io.policy_cdxx_image, io.invoice_download_url, io.invoice_image, io.recommend_code
     </sql>
     <select id="getInsuranceDataList" resultMap="BaseResultMap" parameterType="map">
