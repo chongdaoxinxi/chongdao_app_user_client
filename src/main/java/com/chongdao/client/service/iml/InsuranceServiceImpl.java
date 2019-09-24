@@ -61,7 +61,7 @@ public class InsuranceServiceImpl implements InsuranceService {
         if(beneficiary == null) {
             return ResultResponse.createByErrorMessage("被保人与投保人关系不能为空!");
         }
-        if(beneficiary != null && beneficiary == 0) {
+        if(beneficiary != null && beneficiary != 0) {
             if(insuranceOrder.getAcceptName() == null || insuranceOrder.getAcceptPhone() == null || insuranceOrder.getAcceptCardNo() == null || insuranceOrder.getAcceptAddress() == null || insuranceOrder.getAcceptCardType() == null) {
                 return ResultResponse.createByErrorMessage("被保人必填信息(身份证类型/身份证号/被保人名称/被保人号码/被保人地址)不完整!");
             }

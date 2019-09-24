@@ -306,7 +306,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                     proposalNo = e.elementText("ProposalNo");
                     policyNo = e.elementText("PolicyNo");
                     saveResult = e.elementText("SaveResult");
-                    saveMessage = e.elementText("saveMessage");
+                    saveMessage = e.elementText("SaveMessage");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -346,7 +346,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             System.out.println("ErrorCode:" + errorCode);
             System.out.println("SaveResult:" + saveResult);
 //            return ResultResponse.createByErrorMessage("投保失败");
-            return ResultResponse.createByErrorMessage("投保失败!, " + "saveMessage:" + saveMessage + ";errorMessage:" + errorMessage);
+            return ResultResponse.createByErrorMessage("投保失败!, " + "SaveMessage:" + saveMessage + ";ErrorMessage:" + errorMessage);
         }
     }
 
