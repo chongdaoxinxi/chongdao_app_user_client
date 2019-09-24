@@ -689,7 +689,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("PlateformCode", PLATE_FORM_CODE);
         template.binding("SerialNo", "1");
         template.binding("RiskCode", riskCode);
-        template.binding("OperateTimes", DateTimeUtil.dateToStr(insuranceOrder.getApplyTime(), "yyyy-MM-dd hh:mm:ss"));//下单时间
+        template.binding("OperateTimes", DateTimeUtil.dateToStr(insuranceOrder.getCreateTime(), "yyyy-MM-dd hh:mm:ss"));//下单时间
         template.binding("StartDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceEffectTime(), "yyyy-MM-dd"));//起保时间
         template.binding("EndDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceFailureTime(), "yyyy-MM-dd"));//终保时间
         template.binding("SumAmount", insuranceOrder.getSumAmount().toString());//保额
