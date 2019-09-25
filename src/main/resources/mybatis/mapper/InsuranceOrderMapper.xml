@@ -31,7 +31,7 @@
             <arg column="pet_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_breed_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="pet_breed_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="pet_age" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="pet_age" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
             <arg column="pet_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo_flank" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo_front" jdbcType="VARCHAR" javaType="java.lang.String"/>
@@ -104,5 +104,11 @@ io.policy_image, io.policy_cdxx_download_url, io.policy_cdxx_image, io.invoice_d
         left join insurance_shop_chip isc on io.medical_insurance_shop_chip_id = isc.id
         left join shop s on isc.shop_id = s.id
         where io.id = #{insuranceId}
+    </select>
+
+    <select id="checkShopChipIsUsed" resultType="java.lang.Integer" parameterType="map">
+        select ifnull(count(1), 0) as amount
+        from insurance_order io
+        where io.shop_chip_code = #{shopChipCode}
     </select>
 </mapper>

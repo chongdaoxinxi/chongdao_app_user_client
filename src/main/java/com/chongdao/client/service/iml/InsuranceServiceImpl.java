@@ -16,6 +16,7 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -103,6 +104,16 @@ public class InsuranceServiceImpl implements InsuranceService {
                     }
                 }
             }
+
+            //校验宠物芯片代码是否存在重复
+            String shopChipCode = order.getShopChipCode();
+            if(StringUtils.isNotBlank(shopChipCode)) {
+                Integer amount = insuranceOrderMapper.checkShopChipIsUsed(shopChipCode);
+                if(amount != null && amount > 0) {
+                    return ResultResponse.createByErrorMessage("已存在相同的宠物芯片代码, 请检查宠物芯片代码是否正确!");
+                }
+            }
+
 
             //设置一些默认参数
             order.setAcceptSeqNo(1);//默认被保人只有1个
