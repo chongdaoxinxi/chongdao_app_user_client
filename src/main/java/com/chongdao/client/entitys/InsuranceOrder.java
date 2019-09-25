@@ -65,7 +65,7 @@ public class InsuranceOrder implements Serializable {
     private String petName;//宠物姓名
     private Integer petBreedId;//宠物品种ID
     private String petBreedName;//宠物品种名称
-    private String petAge;//宠物年龄
+    private Integer petAge;//宠物年龄
     private String petPhoto;//宠物图片->用于审核
     private String petPhotoFlank;//侧面宠物照片
     private String petPhotoFront;//正面面宠物照片

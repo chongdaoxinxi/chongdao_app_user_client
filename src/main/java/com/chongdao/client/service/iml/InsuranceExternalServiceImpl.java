@@ -223,7 +223,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<Pregnancy>00</Pregnancy>\n" +
             "\t\t\t\t<Calving>00</Calving>\n" +
             "\t\t\t\t<ItemAge>${ItemAge}</ItemAge>\n" +
-            "\t\t\t\t<AgeUnit>01</AgeUnit>\n" +
+            "\t\t\t\t<AgeUnit>02</AgeUnit>\n" +
             "\t\t\t\t<BirthRank>00</BirthRank>\n" +
             "\t\t\t\t<Variety>${Variety}</Variety>\n" +
             "\t\t\t\t<PetName>${PetName}</PetName>\n" +
@@ -717,7 +717,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 //            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
 //            template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄
 //            template.binding("Variety", petCard.getBreed());//宠物品种
-            template.binding("ItemAge", insuranceOrder.getPetAge());
+            Integer petAge = insuranceOrder.getPetAge();
+            if(petAge != null) {
+                template.binding("ItemAge", petAge*12);
+            } else {
+                template.binding("ItemAge", 0);
+            }
             template.binding("Variety", insuranceOrder.getPetBreedName());
             template.binding("PetName", insuranceOrder.getPetName());
             Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();

@@ -31,7 +31,7 @@
             <arg column="pet_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_breed_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="pet_breed_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="pet_age" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pet_age" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="pet_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo_flank" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo_front" jdbcType="VARCHAR" javaType="java.lang.String"/>
