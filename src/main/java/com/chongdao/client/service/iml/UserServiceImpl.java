@@ -212,6 +212,11 @@ public class UserServiceImpl implements UserService {
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
     }
 
+    @Override
+    public ResultResponse checkSmsCode(String phone, String code) {
+        return checkCodeValid(phone, code);
+    }
+
     private void initNewUserCommonFields(User u) {
         u.setCreateTime(new Date());
         u.setMoney(new BigDecimal(0));

@@ -66,4 +66,9 @@ public class UserController {
     public ResultResponse<List<Package>> getPackage() {
         return packageService.getPackageList();
     }
+
+    @PostMapping("checkSmsCode")
+    public ResultResponse checkSmsCode(String phone, String code) {
+        return userService.checkSmsCode(phone, code);
+    }
 }

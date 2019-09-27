@@ -22,4 +22,6 @@ public interface UserService {
     ResultResponse getFavouriteGoodList(Integer userId);
 
     ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId, String code);
+
+    ResultResponse checkSmsCode(String phone, String code);
 }
