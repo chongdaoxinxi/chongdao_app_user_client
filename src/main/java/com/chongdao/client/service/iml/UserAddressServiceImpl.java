@@ -48,12 +48,13 @@ public class UserAddressServiceImpl implements UserAddressService {
     public ResultResponse saveUserAddress(UserAddress uAddr) {
         return Optional.ofNullable(uAddr).map(u -> {
             if(Optional.ofNullable(u.getId()).isPresent()) {
-                if(u.getIsDefaultAddress() == 1) {
-                    disableDefaultAddress();
-                }
                 u.setUpdateTime(new Date());
             } else {
                 u.setCreateTime(new Date());
+            }
+            //如果新增/编辑的是默认地址的话, 将其他默认地址变为非默认地址
+            if(u.getIsDefaultAddress() == 1) {
+                disableDefaultAddress();
             }
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAddressRepository.saveAndFlush(u));
         }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
