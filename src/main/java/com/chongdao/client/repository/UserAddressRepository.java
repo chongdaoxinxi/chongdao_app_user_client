@@ -19,7 +19,7 @@ public interface UserAddressRepository extends JpaRepository<UserAddress, Intege
 
     Page<UserAddress> findByUserId(Integer userId, Pageable pageable);
 
-    Page<UserAddress> findByUserIdAAndStatus(Integer userId, Integer status, Pageable pageable);
+    Page<UserAddress> findByUserIdAndStatus(Integer userId, Integer status, Pageable pageable);
 
     UserAddress findByUserIdAndIsDefaultAddress(Integer userId,Integer defaultAddress);
 
