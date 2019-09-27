@@ -223,7 +223,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<Pregnancy>00</Pregnancy>\n" +
             "\t\t\t\t<Calving>00</Calving>\n" +
             "\t\t\t\t<ItemAge>${ItemAge}</ItemAge>\n" +
-            "\t\t\t\t<AgeUnit>01</AgeUnit>\n" +
+            "\t\t\t\t<AgeUnit>02</AgeUnit>\n" +
             "\t\t\t\t<BirthRank>00</BirthRank>\n" +
             "\t\t\t\t<Variety>${Variety}</Variety>\n" +
             "\t\t\t\t<PetName>${PetName}</PetName>\n" +
@@ -306,7 +306,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                     proposalNo = e.elementText("ProposalNo");
                     policyNo = e.elementText("PolicyNo");
                     saveResult = e.elementText("SaveResult");
-                    saveMessage = e.elementText("saveMessage");
+                    saveMessage = e.elementText("SaveMessage");
                     System.out.println("PolicyUrl:" + e.elementText("PolicyUrl"));
                     System.out.println("DownloadUrl:" + e.elementText("DownloadUrl"));
                     System.out.println("SaveResult:" + e.elementText("SaveResult"));
@@ -346,7 +346,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             System.out.println("ErrorCode:" + errorCode);
             System.out.println("SaveResult:" + saveResult);
 //            return ResultResponse.createByErrorMessage("投保失败");
-            return ResultResponse.createByErrorMessage("投保失败!, " + "saveMessage:" + saveMessage + ";errorMessage:" + errorMessage);
+            return ResultResponse.createByErrorMessage("投保失败!, " + "SaveMessage:" + saveMessage + ";ErrorMessage:" + errorMessage);
         }
     }
 
@@ -689,7 +689,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("PlateformCode", PLATE_FORM_CODE);
         template.binding("SerialNo", "1");
         template.binding("RiskCode", riskCode);
-        template.binding("OperateTimes", DateTimeUtil.dateToStr(insuranceOrder.getApplyTime(), "yyyy-MM-dd hh:mm:ss"));//下单时间
+        template.binding("OperateTimes", DateTimeUtil.dateToStr(insuranceOrder.getCreateTime(), "yyyy-MM-dd hh:mm:ss"));//下单时间
         template.binding("StartDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceEffectTime(), "yyyy-MM-dd"));//起保时间
         template.binding("EndDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceFailureTime(), "yyyy-MM-dd"));//终保时间
         template.binding("SumAmount", insuranceOrder.getSumAmount().toString());//保额
@@ -717,7 +717,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 //            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
 //            template.binding("ItemAge", String.valueOf(petCard.getAge()));//宠物年龄
 //            template.binding("Variety", petCard.getBreed());//宠物品种
-            template.binding("ItemAge", insuranceOrder.getPetAge());
+            BigDecimal petAge = insuranceOrder.getPetAge();
+            if(petAge != null) {
+                template.binding("ItemAge", petAge.multiply(new BigDecimal(12)));
+            } else {
+                template.binding("ItemAge", 0);
+            }
             template.binding("Variety", insuranceOrder.getPetBreedName());
             template.binding("PetName", insuranceOrder.getPetName());
             Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();
