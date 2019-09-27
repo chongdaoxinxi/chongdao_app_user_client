@@ -63,6 +63,14 @@ public class DateTimeUtil {
         return dateTime.toString(STANDARD_FORMAT);
     }
 
+    public static String dateToStr2(Date date){
+        if (date == null){
+            return StringUtils.EMPTY;
+        }
+        DateTime dateTime = new DateTime(date);
+        return dateTime.toString(STR_TO_DATE_FORMAT);
+    }
+
     public static Time strToTime(String str) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         java.util.Date d = null;

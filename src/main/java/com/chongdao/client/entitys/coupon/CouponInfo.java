@@ -49,7 +49,7 @@ public class CouponInfo {
 
     private Integer ruleType;  //门槛规则 0 无门槛 1有门槛
 
-    private Integer scopeType; //适用范围类型 1全场通用 2限品类(暂定) 3限商品 4限服务 5配送单程 6配送双程 7仅限服务（配送单程） 8仅限服务（双程） 9 仅限商品（配送单程） 10仅限商品（配送双程）
+    private Integer scopeType; //适用范围类型 1全场通用 2限品类(暂定) 3限商品 4限服务 5仅限服务（配送单程） 6仅限服务（双程） 7 仅限商品（配送单程） 8仅限商品（配送双程）
 
     private Integer validityType;    //有效期类型 1绝对有效期（XX年XX月XX日 - XX年XX月XX日）2 相对有效期（XX天内有效）
 

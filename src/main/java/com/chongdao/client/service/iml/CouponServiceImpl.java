@@ -11,9 +11,11 @@ import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.CouponService;
 import com.chongdao.client.utils.DateTimeUtil;
+import com.chongdao.client.vo.CpnInfoVo;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -180,23 +182,53 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
     }
 
     /**
-     * 卡包
+     * 卡包（优惠券）
      * @param userId
      * @return
      */
     @Override
     public ResultResponse couponList(Integer userId) {
         List<CpnUser> cpnUserList = cpnUserRepository.findByUserIdAndUserCpnStateAndIsDelete(userId, 0, 0);
-        List<CpnUser> cpnUsers = Lists.newArrayList();
+        List<CpnInfoVo> cpnInfoVos = Lists.newArrayList();
+        List<Integer> cpnIds = Lists.newArrayList();
         cpnUserList.stream().forEach(e ->{
             //二次校验，过滤过期的优惠券
             //查询截止日期与当前日期差
             long result = this.computerTime(e.getValidityEndDate());
             if (result > 0){
-                cpnUsers.add(e);
+                cpnIds.add(e.getCpnId());
             }
         });
-        return ResultResponse.createBySuccess(cpnUsers);
+        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByIdIn(cpnIds);
+        if (!CollectionUtils.isEmpty(couponInfoList)) {
+            couponInfoList.stream().forEach(couponInfo -> {
+                StringBuilder sb = new StringBuilder();
+                CpnInfoVo cpnInfoVo = new CpnInfoVo();
+                cpnInfoVo.setCpnId(couponInfo.getId());
+                cpnInfoVo.setCpnName(couponInfo.getCpnName());
+                cpnInfoVo.setCpnType(couponInfo.getCpnType());
+                cpnInfoVo.setCpnValue(couponInfo.getCpnValue());
+                cpnInfoVo.setValidityStartDate(DateTimeUtil.dateToStr2(couponInfo.getValidityStartDate()));
+                cpnInfoVo.setValidityEndDate(DateTimeUtil.dateToStr2(couponInfo.getValidityEndDate()));
+                List<Shop> shopList = shopMapper.selectByShopIds(couponInfo.getScopeShopId());
+                if (!CollectionUtils.isEmpty(shopList)) {
+                    cpnInfoVo.setScopeTypeShopId(couponInfo.getScopeShopId());
+                    for (Shop shop : shopList) {
+                        sb.append(shop.getShopName() + ",");
+                    }
+                    //拼接适用范围名称 一般指适用店铺
+                    cpnInfoVo.setScopeName(sb.substring(0, sb.length() - 1));
+                }
+                if (couponInfo.getShopId() != null) {
+                    cpnInfoVo.setShopId(couponInfo.getShopId());
+                    cpnInfoVo.setShopName(shopRepository.findById(couponInfo.getShopId()).orElse(null).getShopName());
+                }
+                cpnInfoVo.setScopeType(couponInfo.getScopeType());
+                cpnInfoVos.add(cpnInfoVo);
+            });
+
+        }
+        return ResultResponse.createBySuccess(cpnInfoVos);
     }
 
 
