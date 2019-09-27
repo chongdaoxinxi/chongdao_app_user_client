@@ -147,9 +147,15 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(uso).map(usoP -> usoP.getUserId())
                 .map(userId -> userRepository.findById(userId).orElse(null))
                 .map(u -> {
-                    u.setName(uso.getName());
-                    u.setIcon(uso.getIcon());
-                    u.setPhone(uso.getPhone());
+                    if(StringUtils.isNotBlank(uso.getName())) {
+                        u.setName(uso.getName());
+                    }
+                    if(StringUtils.isNotBlank(uso.getIcon())) {
+                        u.setIcon(uso.getIcon());
+                    }
+                    if(StringUtils.isNotBlank(uso.getPhone())) {
+                        u.setPhone(uso.getPhone());
+                    }
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
                 }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
