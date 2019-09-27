@@ -564,4 +564,11 @@
         </foreach>
         order by dis
     </select>
+
+
+
+    <select id="selectByShopIds" resultMap="BaseResultMap" parameterType="String">
+        select <include refid="Base_Column_List"/>
+        from shop where id in (${shopIds})
+    </select>
 </mapper>

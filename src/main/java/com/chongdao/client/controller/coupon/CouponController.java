@@ -54,7 +54,7 @@ public class CouponController {
      * @return
      */
     @GetMapping("couponList/{userId}")
-    public ResultResponse couponList(@PathVariable Integer userId,String token){
+    public ResultResponse couponList(@PathVariable Integer userId,@RequestParam String token){
         LoginUserUtil.resultTokenVo(token);
         return couponService.couponList(userId);
 

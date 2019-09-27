@@ -39,4 +39,7 @@ public interface ShopMapper {
     List<Shop> listGeo(@Param("lng") Double lng,@Param("lat")Double lat,@Param("areaCode") String areaCode);
 
     List<Shop> selectConcernShop(@Param("shopIds") List<Integer> shopIds,@Param("lng") Double lng,@Param("lat")Double lat);
+
+
+    List<Shop> selectByShopIds(@Param("shopIds") String shopIds);
 }
