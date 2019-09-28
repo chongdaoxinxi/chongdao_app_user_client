@@ -4,6 +4,9 @@ import com.chongdao.client.entitys.UserTrans;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 /**
  * @Description 用户账户交易记录JPA
@@ -13,4 +16,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  **/
 public interface UserTransRepository extends JpaRepository<UserTrans, Integer> {
     Page<UserTrans> findByUserIdAndType(Integer userId, Integer type, Pageable pageable);
+
+    @Query(value="select ut.* from user_trans ut where ut.type = 4 or ut.type = 5 or ut.type = 6 order by ut.create_time desc limit ?1, ?2", nativeQuery = true)
+    List<UserTrans> getRewardUserTrans(Integer pageNum, Integer pageSize);
 }

@@ -26,7 +26,7 @@ spring:
    jpa:
       hibernate:
          ddl-auto: none
-      show-sql: false   #是否输出sql
+      show-sql: true   #是否输出sql
       properties:
          hibernate:
             format_sql: true

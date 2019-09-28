@@ -2,13 +2,11 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAccount;
-import com.chongdao.client.entitys.UserTrans;
 import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.service.UserTransService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,7 +56,7 @@ public class UserAccountController {
      * @return
      */
     @GetMapping("getUserTrans")
-    public ResultResponse<Page<UserTrans>> getUserTrans(String token, Integer type, Integer pageNum, Integer pageSize) {
+    public ResultResponse getUserTrans(String token, Integer type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userTransService.getUserTrans(tokenVo.getUserId(), type, pageNum, pageSize);
     }

@@ -7,7 +7,6 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.UserTransRepository;
 import com.chongdao.client.service.UserTransService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,10 +43,14 @@ public class UserTransServiceImpl implements UserTransService {
     }
 
     @Override
-    public ResultResponse<Page<UserTrans>> getUserTrans(Integer userId, Integer type, Integer pageNum, Integer pageSize) {
+    public ResultResponse getUserTrans(Integer userId, Integer type, Integer pageNum, Integer pageSize) {
         if(userId != null && type != null && pageNum != null && pageSize != null) {
-            Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "createTime");
-            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userTransRepository.findByUserIdAndType(userId, type, pageable));
+            if(type != 4) {
+                Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "createTime");
+                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userTransRepository.findByUserIdAndType(userId, type, pageable));
+            } else {
+                return ResultResponse.createBySuccess(userTransRepository.getRewardUserTrans(pageNum, pageSize));
+            }
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
