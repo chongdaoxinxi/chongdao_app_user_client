@@ -31,6 +31,6 @@ public class GoodTasteServiceImpl implements GoodTasteService {
 
     @Override
     public ResultResponse getGoodTasteList() {
-        return ResultResponse.createBySuccess(goodTasteRepository.findAllByOrOrderByCreateTimeDesc());
+        return ResultResponse.createBySuccess(goodTasteRepository.findAllByOrderByCreateTimeDesc());
     }
 }
