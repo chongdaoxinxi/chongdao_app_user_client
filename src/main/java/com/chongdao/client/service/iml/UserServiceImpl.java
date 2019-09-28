@@ -214,6 +214,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultResponse checkSmsCode(String phone, String code) {
+        List<User> list = userRepository.findByPhone(phone);
+        if(list != null && list.size() > 0) {
+            return ResultResponse.createByErrorMessage("该手机号已存在!");
+        }
         return checkCodeValid(phone, code);
     }
 

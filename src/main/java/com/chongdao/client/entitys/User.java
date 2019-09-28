@@ -39,7 +39,7 @@ public class User {
     /** 集分 */
     private Integer points;
 
-    private Integer status; //待明确
+    private Integer status; //待明确 -1:非正常状态 1:正常状态
 
     /** 用户类型（1:app用户,2:微信用户） */
     private Integer type;
