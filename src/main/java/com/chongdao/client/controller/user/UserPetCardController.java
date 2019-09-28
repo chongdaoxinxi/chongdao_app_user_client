@@ -69,4 +69,14 @@ public class UserPetCardController {
     public ResultResponse savePetCard(PetCard petCard) {
         return petCardService.savePetCard(petCard);
     }
+
+    /**
+     * 删除宠物卡片
+     * @param petCardId
+     * @return
+     */
+    @PostMapping("removePetCard")
+    public ResultResponse removePetCard(Integer petCardId) {
+        return petCardService.removePetCard(petCardId);
+    }
 }

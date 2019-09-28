@@ -14,4 +14,6 @@ public interface PetCardService {
     ResultResponse<List<PetCard>> getPetCardByUserIdAndStatus(Integer userId, Integer status);
 
     ResultResponse savePetCard(PetCard petCard);
+
+    ResultResponse removePetCard(Integer petCardId);
 }

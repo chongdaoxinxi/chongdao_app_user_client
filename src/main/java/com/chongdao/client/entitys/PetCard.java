@@ -25,12 +25,12 @@ public class PetCard implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
-    private int userId;//主人id
+    private Integer id;
+    private Integer userId;//主人id
     private String name;//宠物昵称
     private String icon;//宠物头像
     private Integer sex;//宠物性别, 1:男, 2:绝育男, 3:女, 4:绝育女
-    private int typeId;//宠物种类id
+    private Integer typeId;//宠物种类id
     private Integer breedId;//宠物品种ID
     private String breed;//宠物品种
     private BigDecimal weight;//宠物体重

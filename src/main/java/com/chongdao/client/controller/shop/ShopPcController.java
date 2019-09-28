@@ -44,6 +44,8 @@ public class ShopPcController {
     private InsuranceFeeRecordService insuranceFeeRecordService;
     @Autowired
     private ShopChipService shopChipService;
+    @Autowired
+    private GoodTasteService goodTasteService;
 
     @GetMapping("getMyDetailInfo")
     public ResultResponse getMyDetailInfo(String token) {
@@ -95,6 +97,11 @@ public class ShopPcController {
     @GetMapping("getUnitList")
     public ResultResponse getUnitList(Integer moduleId, Integer categoryId) {
         return unitService.getUnitList(moduleId, categoryId);
+    }
+
+    @GetMapping("getGoodTasteList")
+    public ResultResponse getGoodTasteList() {
+        return goodTasteService.getGoodTasteList();
     }
 
     /**

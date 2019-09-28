@@ -44,11 +44,28 @@ public class PetCardServiceImpl implements PetCardService {
     @Override
     public ResultResponse savePetCard(PetCard petCard) {
         if(Optional.of(petCard).isPresent()) {
-            petCard.setCreateTime(new Date());
+            if(petCard.getId() == null) {
+                petCard.setCreateTime(new Date());
+            }
             petCardRepository.saveAndFlush(petCard);
             return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage());
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    public ResultResponse removePetCard(Integer petCardId) {
+        if(petCardId != null) {
+            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
+            if(petCard != null) {
+                petCard.setStatus(-1);
+                return ResultResponse.createBySuccess("删除成功!", petCardRepository.saveAndFlush(petCard));
+            } else {
+                return ResultResponse.createByErrorMessage("无效的卡片ID");
+            }
+        } else {
+            return ResultResponse.createByErrorMessage("卡片ID不能为空!");
         }
     }
 }
