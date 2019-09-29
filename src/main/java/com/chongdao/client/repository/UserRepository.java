@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "select count(1) from user where name= ?1",nativeQuery = true)
     int checkUserName(String str);
 
-    List<User> findByPhone(String phone);
+    User findByPhone(String phone);
 
     List<User> findByRecommendIdAndRecommendType(Integer recommendId, Integer recommendType);
 

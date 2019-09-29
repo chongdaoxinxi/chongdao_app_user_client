@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(phone)){
             return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USERNAME_OR_CODE_EMPTY.getStatus(), UserStatusEnum.USERNAME_OR_CODE_EMPTY.getMessage());
         }
-        User user = userRepository.findByName(phone);
+        User user = userRepository.findByPhone(phone);
         UserLoginVO userLoginVO = new UserLoginVO();
         userLoginVO.setLastLoginTime(new Date());
         userLoginVO.setCode(code);
@@ -197,8 +197,8 @@ public class UserServiceImpl implements UserService {
             return response;
         }
         //校验手机是否已经存在
-        List<User> userList = userRepository.findByPhone(phone);
-        if(userList.size() > 0) {
+        User user = userRepository.findByPhone(phone);
+        if(user == null) {
             return ResultResponse.createByErrorMessage("该手机号已经注册过!");
         }
 
@@ -214,8 +214,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultResponse checkSmsCode(String phone, String code) {
-        List<User> list = userRepository.findByPhone(phone);
-        if(list != null && list.size() > 0) {
+        User user = userRepository.findByPhone(phone);
+        if(user != null) {
             return ResultResponse.createByErrorMessage("该手机号已存在!");
         }
         return checkCodeValid(phone, code);
