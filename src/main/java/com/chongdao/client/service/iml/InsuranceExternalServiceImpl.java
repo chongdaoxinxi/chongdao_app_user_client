@@ -398,7 +398,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Element applyInfo = document.addElement("ApplyInfo");
 
         Element generalInfo = applyInfo.addElement("GeneralInfo");
-        //测试数据
         String uuid = insuranceOrder.getInsuranceOrderNo();
         generalInfo.addElement("UUID").setText(uuid);
         generalInfo.addElement("PlateformCode").setText(PLATE_FORM_CODE);
@@ -428,6 +427,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         invoiceInfo.addElement("Type").setText("2");//1 短链接, 2 版式下载
 
         String text = document.asXML();
+        System.out.println("请求报文:" + text);
         try {
             //Http协议调用接口，其中serviceBusURI是要调用地址
             URL url = new URL(INVOICE_URL);
