@@ -68,6 +68,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private static final String INVOICE_FOLDER_PREFIX = "../../invoice/";//电子发票本地保存地址
     private static final String INVOICE_REALPATH = "/home/invoice/";
 
+    /**
+     * 家责险xml报文模本
+     */
     private String ZFOForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
@@ -120,6 +123,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t</PolicyInfos>\n" +
             "</ApplyInfo>";
 
+    /**
+     * 运输险xml报文模本
+     */
     private String ZCGForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
@@ -166,6 +172,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t</PolicyInfos>\n" +
             "</ApplyInfo>";
 
+    /**
+     * 医疗险xml报文模版
+     */
     private String I9QForm = "<?xml version=\"1.0\" encoding=\"GB2312\" standalone=\"yes\"?>" +
             "<ApplyInfo>\n" +
             "\t<GeneralInfo>\n" +
@@ -339,17 +348,21 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 r.put("payUrl", payUrl);
                 r.put("insuranceOrderId", insuranceOrder.getId());
                 return ResultResponse.createBySuccess("预下单成功, 返回支付链接", payUrl);
-//                return ResultResponse.createBySuccess("预下单成功, 返回支付链接和保险订单ID", r);
             }
         } else {
             //投保失败, 就不做详细处理了, 打印出errorCode, 再自己去比对
             System.out.println("ErrorCode:" + errorCode);
             System.out.println("SaveResult:" + saveResult);
-//            return ResultResponse.createByErrorMessage("投保失败");
             return ResultResponse.createByErrorMessage("投保失败!, " + "SaveMessage:" + saveMessage + ";ErrorMessage:" + errorMessage);
         }
     }
 
+    /**
+     * 成功回调处理
+     * @param payCallBackInfo
+     * @return
+     * @throws IOException
+     */
     @Override
     public ResultResponse payCallBackManage(String payCallBackInfo) throws IOException {
         String downloadUrl = "";
@@ -388,6 +401,11 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         return ResultResponse.createByErrorMessage("投保失败, 通过返回的UUID找不到对应的保险订单");
     }
 
+    /**
+     * 请求电子发票
+     * @param insuranceOrderId
+     * @return
+     */
     @Override
     public ResultResponse requestInvoiceInfo(Integer insuranceOrderId) {
         InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);

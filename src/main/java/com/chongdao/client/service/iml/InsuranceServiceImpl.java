@@ -1,14 +1,10 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.InsuranceOrder;
-import com.chongdao.client.entitys.InsuranceOrderAudit;
-import com.chongdao.client.entitys.InsuranceShopChip;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.InsuranceOrderMapper;
-import com.chongdao.client.repository.InsuranceOrderAuditRepository;
-import com.chongdao.client.repository.InsuranceOrderRepository;
-import com.chongdao.client.repository.InsuranceShopChipRepository;
+import com.chongdao.client.repository.*;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.InsuranceUUIDUtil;
@@ -25,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +43,10 @@ public class InsuranceServiceImpl implements InsuranceService {
     private InsuranceOrderAuditRepository insuranceOrderAuditRepository;
     @Autowired
     private InsuranceShopChipRepository insuranceShopChipRepository;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * 保存保单数据
@@ -58,70 +59,101 @@ public class InsuranceServiceImpl implements InsuranceService {
         //先将数据保存在我们数据库
         InsuranceOrder order = new InsuranceOrder();
         Integer beneficiary = insuranceOrder.getBeneficiary();
-        //基础校验
-        if(beneficiary == null) {
-            return ResultResponse.createByErrorMessage("被保人与投保人关系不能为空!");
-        }
-        if(beneficiary != null && beneficiary != 0) {
-            if(insuranceOrder.getAcceptName() == null || insuranceOrder.getAcceptPhone() == null || insuranceOrder.getAcceptCardNo() == null || insuranceOrder.getAcceptAddress() == null || insuranceOrder.getAcceptCardType() == null) {
-                return ResultResponse.createByErrorMessage("被保人必填信息(身份证类型/身份证号/被保人名称/被保人号码/被保人地址)不完整!");
-            }
-        }
-        BeanUtils.copyProperties(insuranceOrder, order);
-        if (order.getId() == null) {
-            //新订单, 新生成的数据
-            //生成订单号
-            order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID, 作为两边对接的唯一标识
 
-            //如果投保人与被保人关系为本人时, 复制投保人信息至被保人
-            if ((order.getInsuranceType() != null && order.getInsuranceType() != 2) || ( order.getBeneficiary() != null && order.getBeneficiary() == 0)) {
-                //非家责险或者被保人与投保人关系为别人
-                order.setAcceptName(order.getName());
-                order.setAcceptPhone(order.getPhone());
-                if(order.getEmail() != null) {
-                    order.setAcceptMail(order.getEmail());
-                }
-                if(order.getAddress() != null) {
-                    order.setAcceptAddress(order.getAddress());
-                }
-                order.setAcceptCardType(order.getCardType());
-                order.setAcceptCardNo(order.getCardNo());
+        Integer insuranceType = insuranceOrder.getInsuranceType();
+        if(insuranceType != null && (insuranceType == 1 || insuranceType == 2)) {
+            //基础校验
+            if(beneficiary == null) {
+                return ResultResponse.createByErrorMessage("被保人与投保人关系不能为空!");
             }
+            if(beneficiary != null && beneficiary != 0) {
+                if(insuranceOrder.getAcceptName() == null || insuranceOrder.getAcceptPhone() == null || insuranceOrder.getAcceptCardNo() == null || insuranceOrder.getAcceptAddress() == null || insuranceOrder.getAcceptCardType() == null) {
+                    return ResultResponse.createByErrorMessage("被保人必填信息(身份证类型/身份证号/被保人名称/被保人号码/被保人地址)不完整!");
+                }
+            }
+            BeanUtils.copyProperties(insuranceOrder, order);
+            if (order.getId() == null) {
+                //新订单, 新生成的数据
+                //生成订单号
+                order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID
 
-            //校验宠物芯片是否被使用
-            Integer medicalInsuranceShopChipId = order.getMedicalInsuranceShopChipId();
-            if (medicalInsuranceShopChipId != null) {
-                InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);
-                if (insuranceShopChip == null) {
-                    return ResultResponse.createByErrorMessage("无效的宠物芯片, 请重新选择!");
-                } else {
-                    if (insuranceShopChip.getStatus() != 1) {
-                        return ResultResponse.createByErrorMessage("所选宠物芯片已被使用, 请重新选择!");
+                //如果投保人与被保人关系为本人时, 复制投保人信息至被保人
+                if ((order.getInsuranceType() != null && order.getInsuranceType() != 2) || ( order.getBeneficiary() != null && order.getBeneficiary() == 0)) {
+                    //非家责险或者被保人与投保人关系为别人
+                    order.setAcceptName(order.getName());
+                    order.setAcceptPhone(order.getPhone());
+                    if(order.getEmail() != null) {
+                        order.setAcceptMail(order.getEmail());
+                    }
+                    if(order.getAddress() != null) {
+                        order.setAcceptAddress(order.getAddress());
+                    }
+                    order.setAcceptCardType(order.getCardType());
+                    order.setAcceptCardNo(order.getCardNo());
+                }
+
+                //校验宠物芯片是否被使用
+                Integer medicalInsuranceShopChipId = order.getMedicalInsuranceShopChipId();
+                if (medicalInsuranceShopChipId != null) {
+                    InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(medicalInsuranceShopChipId).orElse(null);
+                    if (insuranceShopChip == null) {
+                        return ResultResponse.createByErrorMessage("无效的宠物芯片, 请重新选择!");
                     } else {
-                        insuranceShopChip.setStatus(0);
-                        insuranceShopChip.setSelectedTime(new Date());//更新被选中时间
-                        insuranceShopChipRepository.save(insuranceShopChip);//更新所选宠物芯片的状态
+                        if (insuranceShopChip.getStatus() != 1) {
+                            return ResultResponse.createByErrorMessage("所选宠物芯片已被使用, 请重新选择!");
+                        } else {
+                            insuranceShopChip.setStatus(0);
+                            insuranceShopChip.setSelectedTime(new Date());//更新被选中时间
+                            insuranceShopChipRepository.save(insuranceShopChip);//更新所选宠物芯片的状态
+                        }
+                    }
+                }
+
+                //校验宠物芯片代码是否存在重复
+                String shopChipCode = order.getShopChipCode();
+                if(StringUtils.isNotBlank(shopChipCode)) {
+                    Integer amount = insuranceOrderMapper.checkShopChipIsUsed(shopChipCode);
+                    if(amount != null && amount > 0) {
+                        return ResultResponse.createByErrorMessage("已存在相同的宠物芯片代码, 请检查宠物芯片代码是否正确!");
                     }
                 }
             }
+        } else if(insuranceType != null && insuranceType == 3) {
+            //运输险
+            String orderNo = insuranceOrder.getOrderNo();
+            OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+            Integer userId = orderInfo.getUserId();
+            User user = userRepository.findById(userId).orElse(null);
+            //新订单, 新生成的数据
+            //生成订单号
+            order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID
+            //根据配送订单号保存相关的保险订单信息(用户信息及保险时间信息等)
+            order.setBeneficiary(0);
+            order.setName(user.getName());
+            order.setPhone(user.getPhone());
+            order.setCardType("01");//默认类型为身份证
+            order.setCardNo("");//身份证号
+            order.setAddress("");//地址
+            //被保人与投保人相同, 即为下单人
+            order.setAcceptName(user.getName());
+            order.setAcceptPhone(user.getPhone());
+            order.setAcceptCardType("01");
+            order.setAcceptCardNo("");
+            order.setAddress("");
+            order.setInsuranceEffectTime(null);//保单开始时间
+            order.setInsuranceFailureTime(null);//保单结束时间
 
-            //校验宠物芯片代码是否存在重复
-            String shopChipCode = order.getShopChipCode();
-            if(StringUtils.isNotBlank(shopChipCode)) {
-                Integer amount = insuranceOrderMapper.checkShopChipIsUsed(shopChipCode);
-                if(amount != null && amount > 0) {
-                    return ResultResponse.createByErrorMessage("已存在相同的宠物芯片代码, 请检查宠物芯片代码是否正确!");
-                }
-            }
-
-
-            //设置一些默认参数
-            order.setAcceptSeqNo(1);//默认被保人只有1个
-            order.setIsSendMsg(1);//默认发送短消息
-            order.setStatus(0);//状态初始化为已保存
-            order.setCreateTime(new Date());
+            //存入配送险相关信息
+            order.setRationType("ZCG3199001");
+            order.setSumAmount(new BigDecimal(10000.0));//保额
+            order.setSumPremium(new BigDecimal(1.00));//保费
         }
 
+        //设置一些默认参数
+        order.setAcceptSeqNo(1);//默认被保人只有1个
+        order.setIsSendMsg(1);//默认发送短消息
+        order.setStatus(0);//状态初始化为已保存
+        order.setCreateTime(new Date());
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
 
