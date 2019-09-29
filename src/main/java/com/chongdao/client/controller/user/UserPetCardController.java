@@ -34,8 +34,14 @@ public class UserPetCardController {
      * @return
      */
     @GetMapping("getPetBreed")
-    public ResultResponse getPetBreed(Integer type, String name) {
-        return petBreedService.getPetBreedByType(type, name);
+    public ResultResponse getPetBreed(Integer type, String name, Integer pageNum, Integer pageSize) {
+        if(pageNum == null) {
+            pageNum = 0;
+        }
+        if(pageSize == null) {
+            pageSize = 999;
+        }
+        return petBreedService.getPetBreedByType(type, name, pageNum, pageSize);
     }
 
     /**

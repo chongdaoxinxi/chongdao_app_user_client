@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface PetBreedMapper {
-    List<PetBreed> getDataByTypeAndName(@Param("type") Integer type, @Param("name") String name);
+    List<PetBreed> getDataByTypeAndName(@Param("type") Integer type, @Param("name") String name, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 }

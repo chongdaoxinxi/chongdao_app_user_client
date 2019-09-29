@@ -23,6 +23,6 @@
          <if test="name != null and name != ''">
             and pb.name like concat('%', #{name}, '%')
          </if>
-        limit 0, 10
+        limit #{pageNum}, #{pageSize}
     </select>
 </mapper>
