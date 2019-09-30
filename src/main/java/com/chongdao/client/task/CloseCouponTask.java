@@ -127,7 +127,7 @@ public class CloseCouponTask extends CommonRepository {
             oe.setShopId(e.getShopId());
             oe.setStatus(1);
             oe.setContent("该用户默认好评");
-            oe.setGrade(5);
+            oe.setGrade(5.0d);
             oe.setCreateTime(new Date());
             oe.setUpdateTime(new Date());
             orderEvalRepository.save(oe);

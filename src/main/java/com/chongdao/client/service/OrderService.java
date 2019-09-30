@@ -1,9 +1,8 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.OrderEval;
-import com.chongdao.client.entitys.OrderExpressEval;
 import com.chongdao.client.vo.OrderCommonVO;
+import com.chongdao.client.vo.OrderEvalVO;
 import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageInfo;
 
@@ -49,10 +48,10 @@ public interface OrderService {
 
     /**
      * 订单评价
-     * @param orderEval
+     * @param orderEvalVO
      * @return
      */
-    ResultResponse orderEval(OrderEval orderEval, OrderExpressEval orderExpressEval);
+    ResultResponse orderEval(OrderEvalVO orderEvalVO);
 
     /**
      * 评价晒单（初始数据加载）
