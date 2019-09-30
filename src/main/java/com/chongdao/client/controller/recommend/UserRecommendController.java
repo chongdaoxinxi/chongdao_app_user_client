@@ -5,7 +5,7 @@ import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +26,7 @@ public class UserRecommendController {
      *
      * @return
      */
-    @GetMapping("initRecommendUrl")
+    @PostMapping("initRecommendUrl")
     public ResultResponse initRecommendUrl(String token) {
         // 推广员类型, 推广员id
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
@@ -38,7 +38,7 @@ public class UserRecommendController {
      * @param token
      * @return
      */
-    @GetMapping("getMyShareInfo")
+    @PostMapping("getMyShareInfo")
     public ResultResponse getMyShareInfo(String token) {
         return recommendService.getMyShareInfo(token);
     }
@@ -48,7 +48,7 @@ public class UserRecommendController {
      * @param token
      * @return
      */
-    @GetMapping("firstLoginAppCheck")
+    @PostMapping("firstLoginAppCheck")
     public ResultResponse firstLoginAppCheck(String token) {
         return recommendService.firstLoginAppCheck(token);
     }
@@ -59,7 +59,7 @@ public class UserRecommendController {
      * @param consumeType
      * @return
      */
-    @GetMapping("getMyRecommendRecordData")
+    @PostMapping("getMyRecommendRecordData")
     public ResultResponse getMyRecommendRecordData(String token, Integer consumeType) {
         return recommendService.getMyRecommendRecordData(token, consumeType);
     }
@@ -69,7 +69,7 @@ public class UserRecommendController {
      * @param token
      * @return
      */
-    @GetMapping("getMyRecommendUserData")
+    @PostMapping("getMyRecommendUserData")
     public ResultResponse getMyRecommendUserData(String token) {
         return recommendService.getMyRecommendUserData(token);
     }
@@ -80,8 +80,17 @@ public class UserRecommendController {
      * @param pageSize
      * @return
      */
-    @GetMapping("getRecommendRankList")
+    @PostMapping("getRecommendRankList")
     public ResultResponse getRecommendRankList(Integer pageNum, Integer pageSize) {
         return recommendService.getRecommendRankList(pageNum, pageSize);
+    }
+
+    /**
+     * 获取我的邀请返利明细
+     * @return
+     */
+    @PostMapping("getMyRecommendDetail")
+    public ResultResponse getMyRecommendDetail(String token) {
+        return recommendService.getMyRecommendDetail(token);
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.RecommendMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.vo.RecommendRankVO">
+        <constructor>
+            <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ab.id, ab.shop_id, ab.order_id, ab.price, ab.note, ab.type, ab.create_time
+    </sql>
+    <select id="getRecommendRankList" resultMap="BaseResultMap" parameterType="map">
+        select
+          A.*, u.name
+        from (
+          SELECT sum(rr.reward_money) AS totalMoney, rr.user_id AS user_id FROM recommend_record rr WHERE rr.is_refund = - 1 GROUP BY rr.user_id
+          ) A
+        LEFT JOIN user u ON A.user_id = u.id
+        order by A.totalMoney desc
+    </select>
+
+    <select id="getMyRecommendTotalMoney" resultType="java.math.BigDecimal" parameterType="map">
+        select
+            sum(rr.reward_money) as totalMoney
+        from recommend_record rr
+        where rr.recommender_id = #{recommenderId} and rr.is_refund = -1
+    </select>
+</mapper>

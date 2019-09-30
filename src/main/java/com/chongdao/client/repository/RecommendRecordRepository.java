@@ -11,4 +11,6 @@ public interface RecommendRecordRepository extends JpaRepository<RecommendRecord
     List<RecommendRecord> findByRecommenderIdAndRecommendTypeAndConsumeType(Integer recommenderId, Integer recommendType, Integer consumeType);
 
     List<RecommendRecord> findByUserIdAndRecommenderIdAndRecommendType(Integer userId, Integer recommenderId, Integer recommendType);
+
+    List<RecommendRecord> findByRecommenderIdAndIsRefundOrderByCreateTimeDesc(Integer recommenderId, Integer isRefund);
 }

@@ -70,4 +70,11 @@ public interface RecommendService {
      * @return
      */
     ResultResponse getRecommendRankList(Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取我的推广返利记录
+     * @param token
+     * @return
+     */
+    ResultResponse getMyRecommendDetail(String token);
 }

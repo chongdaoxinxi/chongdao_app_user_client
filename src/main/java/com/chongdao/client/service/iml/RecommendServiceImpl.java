@@ -5,21 +5,22 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.RecommendTypeEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
+import com.chongdao.client.mapper.RecommendMapper;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.utils.ShareCodeUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserRecommendVO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description TODO
@@ -49,6 +50,8 @@ public class RecommendServiceImpl implements RecommendService {
     private InsuranceOrderRepository insuranceOrderRepository;
     @Autowired
     private ExpressTransRepository expressTransRepository;
+    @Autowired
+    private RecommendMapper recommendMapper;
 
     @Transactional
     @Override
@@ -450,6 +453,18 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public ResultResponse getRecommendRankList(Integer pageNum, Integer pageSize) {
-        return null;
+        PageHelper.startPage(pageNum, pageSize);
+        return ResultResponse.createBySuccess(new PageInfo(recommendMapper.getRecommendRankList()));
+    }
+
+    @Override
+    public ResultResponse getMyRecommendDetail(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        Map resp = new HashMap();
+        List<RecommendRecord> list = recommendRecordRepository.findByRecommenderIdAndIsRefundOrderByCreateTimeDesc(tokenVo.getUserId(), -1);
+        BigDecimal money = recommendMapper.getMyRecommendTotalMoney(tokenVo.getUserId());
+        resp.put("totalMoney", money);
+        resp.put("list", list);
+        return ResultResponse.createBySuccess(resp);
     }
 }
