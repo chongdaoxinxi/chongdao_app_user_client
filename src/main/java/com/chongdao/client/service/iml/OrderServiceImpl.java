@@ -54,6 +54,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     @Autowired
     private FreightComputer freightComputer;
 
+//    @Autowired
+//    private OrderFeignClient orderFeignClient;
+
     @Value("${sms.phone}")
     private String phone;
 
@@ -273,6 +276,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderVo orderVo = new OrderVo();
         //获取配送员信息（姓名、电话号码）
         OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        //判断该订单是否属于app，否则为小程序
+//        if (orderInfo == null) {
+//           return this.orderDetailWxMini(userId, orderNo);
+//        }
         orderVo.setOrderNo(orderNo);
         if (orderInfo.getExpressId() != null){
             Express express = expressRepository.findById(orderInfo.getExpressId()).orElse(null);
@@ -333,7 +340,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         orderVo.setOrderStatus(orderInfo.getOrderStatus());
         orderVo.setOrderDetailVOList(orderDetailVOS);
-        orderVo.setPayment(orderInfo.getPayment());
+        orderVo.setPayment(orderInfo.getGoodsPrice());
         orderVo.setExpressReceiveTime(orderInfo.getExpressReceiveTime());
         orderVo.setExpressFinishTime(orderInfo.getExpressFinishTime());
         orderVo.setReceiveTime(orderInfo.getReceiveTime());
@@ -368,6 +375,83 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     }
 
     /**
+     * 小程序订单详情
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+//    private ResultResponse orderDetailWxMini(Integer userId, String orderNo){
+//        //获取订单
+//        com.chongdao.client.client.dto.OrderInfo orderInfo = orderFeignClient.getOrderInfoByOrderNo(orderNo);
+//        if (orderInfo == null) {
+//            return null;
+//        }
+//        OrderVo orderVo = new OrderVo();
+//        orderVo.setOrderNo(orderNo);
+//        orderVo.setId(orderInfo.getId());
+//        if (orderInfo.getExpressId() != null){
+//            Express express = orderFeignClient.getExpressById(orderInfo.getExpressId());
+//            //填充配送员信息
+//            if (express != null) {
+//                orderVo.setExpressId(orderInfo.getExpressId());
+//                orderVo.setExpressName(express.getName());
+//                orderVo.setExpressPhone(express.getPhone());
+//            }
+//        }
+//        //配送费
+//        orderVo.setServicePrice(orderInfo.getServicePrice());
+//        //获取店铺名称以及填充订单详情
+//        com.chongdao.client.client.dto.Shop shop = orderFeignClient.getShop(orderInfo.getShopId());
+//        orderVo.setShopId(shop.getId());
+//        orderVo.setShopName(shop.getName());
+//        orderVo.setShopLogo(shop.getLogo());
+//        orderVo.setShopPhone(shop.getTel());
+//        orderVo.setShopReceiveTime(null);
+//        orderVo.setShopFinishTime(null);
+//
+//        //获取商品详情
+//        List<com.chongdao.client.client.dto.OrderDetail> orderDetailList = orderFeignClient.detail(orderInfo.getId());
+//        List<OrderDetailVO> orderDetailVOS = Lists.newArrayList();
+//        orderDetailList.stream().forEach(orderDetail -> {
+//            OrderDetailVO orderDetailVO = new OrderDetailVO();
+//            orderDetailVO.setGoodsName(orderDetail.getGoodsName());
+//            orderDetailVO.setQuantity(orderDetail.getCount());
+//            orderDetailVO.setCurrentPrice(orderDetail.getPrice());
+//            orderDetailVO.setTotalPrice(orderDetail.getPrice().multiply(new BigDecimal(orderDetail.getCount())));
+//            orderDetailVOS.add(orderDetailVO);
+//        });
+//        orderVo.setOrderDetailVOList(orderDetailVOS);
+//        if (userId != null) {
+//            com.chongdao.client.client.dto.User user = orderFeignClient.getUser(userId);
+//            if (user != null) {
+//                orderVo.setUsername(user.getName());
+//                orderVo.setPhone(user.getTel());
+//                orderVo.setUserId(userId);
+//            }
+//        }
+//
+//        //接宠地址
+//        List<com.chongdao.client.client.dto.OrderAddress> addressList = orderFeignClient.getAddress(orderInfo.getId());
+//        if (!CollectionUtils.isEmpty(addressList)) {
+//            if (addressList.size() > 1) {
+//                //双程
+//                addressList.stream().forEach(orderAddress -> {
+//                    orderVo.setReceiveAddressName(orderAddress.getAddress());
+//                    orderVo.setDeliverAddressName(orderAddress.getAddress());
+//                });
+//
+//            } else {
+//                addressList.stream().forEach(orderAddress -> {
+//                    orderVo.setReceiveAddressName(orderAddress.getAddress());
+//                });
+//            }
+//        }
+//        orderVo.setPayment(orderInfo.getGoodsPrice());
+//        orderVo.setId(orderInfo.getId());
+//        return ResultResponse.createBySuccess(orderVo);
+//    }
+
+    /**
      * 获取订单列表PC端
      * @param mgtId
      * @param orderNo
@@ -395,12 +479,20 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     /**
      * 订单评价
-     * @param orderEval
+     * @param orderEvalVO
      * @return
      */
     @Override
-    public ResultResponse orderEval(OrderEval orderEval,OrderExpressEval orderExpressEval) {
+    public ResultResponse orderEval(OrderEvalVO orderEvalVO) {
+        OrderEval orderEval = new OrderEval();
         //商铺评价
+        orderEval.setUserId(orderEvalVO.getUserId());
+        orderEval.setContent(orderEvalVO.getShopContent());
+        orderEval.setGrade(orderEvalVO.getShopGrade());
+        orderEval.setOrderNo(orderEvalVO.getOrderNo());
+        orderEval.setShopId(orderEvalVO.getShopId());
+        orderEval.setEnabledAnonymous(orderEvalVO.getShopEnabledAnonymous());
+        orderEval.setImg(orderEvalVO.getShopImg());
         orderEval.setCreateTime(new Date());
         orderEval.setUpdateTime(new Date());
         orderEvalRepository.save(orderEval);
@@ -410,6 +502,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         shopRepository.save(shop);
 
         //配送员评价
+        OrderExpressEval orderExpressEval = new OrderExpressEval();
+        orderExpressEval.setUserId(orderEvalVO.getUserId());
+        orderExpressEval.setContent(orderEvalVO.getExpressContent());
+        orderExpressEval.setGrade(orderEvalVO.getExpressGrade());
+        orderExpressEval.setOrderNo(orderEvalVO.getOrderNo());
+        orderExpressEval.setShopId(orderEvalVO.getShopId());
+        orderExpressEval.setEnabledAnonymous(orderEvalVO.getExpressEnabledAnonymous());
+        orderExpressEval.setImg(orderEvalVO.getExpressImg());
         orderExpressEval.setCreateTime(new Date());
         orderExpressEval.setUpdateTime(new Date());
         orderExpressEvalRepository.save(orderExpressEval);
@@ -427,12 +527,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderEvalVO orderEvalVO = null;
         if (orderInfo != null){
             Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
-            Express express = expressRepository.findById(orderInfo.getExpressId()).get();
+            Express express = expressRepository.findById(orderInfo.getExpressId()).orElse(null);
             orderEvalVO = new OrderEvalVO();
-            orderEvalVO.setShopName(shop.getShopName());
-            orderEvalVO.setShopId(shop.getId());
-            orderEvalVO.setExpressName(express.getName());
-            orderEvalVO.setExpressId(express.getId());
+            if (shop != null && express != null) {
+                orderEvalVO.setShopName(shop.getShopName());
+                orderEvalVO.setShopId(shop.getId());
+                orderEvalVO.setLogo(shop.getLogo());
+                orderEvalVO.setExpressName(express.getName());
+                orderEvalVO.setExpressId(express.getId());
+            }
         }
         return ResultResponse.createBySuccess(orderEvalVO);
     }
@@ -495,6 +598,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
             orderVoList.add(orderVo);
         }
+
         return orderVoList;
     }
 
@@ -718,11 +822,37 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         } else if (type.equals("4")) {
             type = "0,4,5,8,9";//退款中
         } else {
-            type = "";
+            type = "-2";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdList(shopId, type);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
         PageInfo pageResult = new PageInfo(orderInfoList);
+        //小程序数据填充
+//        List<com.chongdao.client.client.dto.OrderInfo> list = orderFeignClient.list(shopId, type);
+//        list.stream().forEach(orderInfo -> {
+//            OrderVo orderVo = new OrderVo();
+//            List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
+//            List<com.chongdao.client.client.dto.OrderDetail> detailList = orderFeignClient.detail(orderInfo.getId());
+//            detailList.stream().forEach(orderDetail -> {
+//                Shop shop = shopRepository.findById(orderInfo.getShopId()).orElse(null);
+//                orderVo.setUserId(orderInfo.getUserId());
+//                orderVo.setOrderNo(orderInfo.getOrderNo());
+////                orderVo.setReceiveTime(DateTimeUtil.strToDate(orderInfo.getReceiveTime()));
+////                orderVo.setDeliverTime(DateTimeUtil.strToTime(orderInfo.getDeliverTime()));
+//                orderVo.setPayment(orderInfo.getPayoffamount());
+//                orderVo.setShopName(shop.getShopName());
+//                orderVo.setOrderStatus(orderInfo.getOrderStatus());
+//                OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
+//                orderGoodsVo.setGoodsIcon(orderDetail.getIcon());
+//                orderGoodsVo.setDiscount(orderDetail.getDiscount());
+//                orderGoodsVo.setGoodsName(orderDetail.getGoodsName());
+//                orderGoodsVo.setGoodsPrice(orderDetail.getPrice());
+//                orderVo.setGoodsCount(orderDetail.getCount());
+//                orderGoodsVoList.add(orderGoodsVo);
+//                orderVo.setOrderGoodsVoList(orderGoodsVoList);
+//                orderVoList.add(orderVo);
+//            });
+//        });
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
     }
@@ -1106,20 +1236,20 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderInfoRepository.save(orderInfo);
         //UserAddress user = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), userId);
         //短信推送
-        Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
-        smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
-        //推送管理员
-        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(),shop.getShopName(),phone);
-        //推送配送员
-        if (orderInfo.getExpressId() == null){
-            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
-            expressList.stream().forEach(express -> {
-                smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
-            });
-        }else{
-            Express express = expressRepository.findById(orderInfo.getExpressId()).get();
-            smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
-        }
+//        Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+//        smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
+//        //推送管理员
+//        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(),shop.getShopName(),phone);
+//        //推送配送员
+//        if (orderInfo.getExpressId() == null){
+//            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
+//            expressList.stream().forEach(express -> {
+//                smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
+//            });
+//        }else{
+//            Express express = expressRepository.findById(orderInfo.getExpressId()).get();
+//            smsService.sendOrderUserRefundExpress(orderInfo.getOrderNo(),express.getPhone());
+//        }
         return ResultResponse.createBySuccess();
     }
 

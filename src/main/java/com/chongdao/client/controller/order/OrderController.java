@@ -1,12 +1,13 @@
 package com.chongdao.client.controller.order;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.OrderEval;
-import com.chongdao.client.entitys.OrderExpressEval;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.LoginUserUtil;
-import com.chongdao.client.vo.*;
+import com.chongdao.client.vo.OrderCommonVO;
+import com.chongdao.client.vo.OrderEvalVO;
+import com.chongdao.client.vo.OrderVo;
+import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+
+
 
 
     /**
@@ -113,18 +117,18 @@ public class OrderController {
 
     /**
      * 订单评价
-     * @param orderEval
+     * @param orderEvalVO
      * @return
      */
     @PostMapping("orderEval")
-    public ResultResponse evalOrder(@Valid OrderEval orderEval, @Valid OrderExpressEval orderExpressEval,
+    public ResultResponse evalOrder(@Valid OrderEvalVO orderEvalVO,
                                     BindingResult bindingResult){
-        LoginUserUtil.resultTokenVo(orderEval.getToken());
+        LoginUserUtil.resultTokenVo(orderEvalVO.getToken());
         if (bindingResult.hasErrors()){
-            log.error("【订单评价】参数不正确，orderEval={}:",orderEval);
+            log.error("【订单评价】参数不正确，orderEvalVO={}:",orderEvalVO);
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),bindingResult.getFieldError().getDefaultMessage());
         }
-        return orderService.orderEval(orderEval,orderExpressEval);
+        return orderService.orderEval(orderEvalVO);
     }
 
     /**

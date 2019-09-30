@@ -30,9 +30,9 @@ public class OrderEval {
     @NotEmpty(message = "评价内容必填")
     private String content;
 
-    private Integer grade; //评价等级
+    private Double grade; //评价等级
 
-    private Integer status;
+    private Integer status = 1;
 
     private String img; //图片地址
 
@@ -42,10 +42,9 @@ public class OrderEval {
 
     private Date updateTime;
 
-    @Transient
-    private String token;
 
-    public OrderEval(Integer id, Integer userId, Integer shopId, String orderNo, String content, Integer grade, Integer status, String img, Date createTime, Date updateTime) {
+
+    public OrderEval(Integer id, Integer userId, Integer shopId, String orderNo, String content, Double grade, Integer status, String img, Date createTime, Date updateTime) {
         this.id = id;
         this.userId = userId;
         this.shopId = shopId;

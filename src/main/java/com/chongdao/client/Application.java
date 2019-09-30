@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @MapperScan("com.chongdao.client.mapper")
 @EnableScheduling
+//@EnableFeignClients
+//@EnableCircuitBreaker
 public class Application {
 
     public static void main(String[] args) {

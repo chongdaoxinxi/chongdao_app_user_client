@@ -15,8 +15,8 @@ public enum  CouponScopeEnum {
     LIMITED_TWO_WAY(6, "限配送双程"),
     LIMITED_SERVICE_ONE_WAY(7, "限服务配送单程"),
     LIMITED_SERVICE_TWO_WAY(8, "限服务配送双程"),
-    LIMITED_GOODS_ONE_WAY(7, "限商品配送单程"),
-    LIMITED_GOODS_TWO_WAY(8, "限商品配送双程"),
+    LIMITED_GOODS_ONE_WAY(9, "限商品配送单程"),
+    LIMITED_GOODS_TWO_WAY(10, "限商品配送双程"),
 
     ;
 

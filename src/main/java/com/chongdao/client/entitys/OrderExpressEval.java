@@ -35,9 +35,9 @@
         @NotEmpty(message = "评价内容必填")
         private String content;
 
-        private Integer grade;
+        private Double grade;
 
-        private Integer status;
+        private Integer status = 1;
 
         private String img;
 
