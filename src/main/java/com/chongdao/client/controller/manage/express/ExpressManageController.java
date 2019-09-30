@@ -9,6 +9,7 @@ import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,7 +58,7 @@ public class ExpressManageController {
      * @param pageSize
      * @return
      */
-    @GetMapping("getExpressOrderList")
+    @PostMapping("getExpressOrderList")
     public ResultResponse<PageInfo> getExpressOrderList(String token, String type, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.expressOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
@@ -71,7 +72,7 @@ public class ExpressManageController {
      * @param pageSize
      * @return
      */
-    @GetMapping("getExpressManageOrderList")
+    @PostMapping("getExpressManageOrderList")
     public ResultResponse<PageInfo> getExpressManageOrderList(String token, String type, Integer pageNum, Integer pageSize) {
         return orderService.expressAdminOrderList(type, pageNum, pageSize);
     }
