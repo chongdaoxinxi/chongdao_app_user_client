@@ -491,7 +491,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderEval.setGrade(orderEvalVO.getShopGrade());
         orderEval.setOrderNo(orderEvalVO.getOrderNo());
         orderEval.setShopId(orderEvalVO.getShopId());
-        orderEval.setEnabledAnonymous(orderEvalVO.getEnabledAnonymous());
+        orderEval.setEnabledAnonymous(orderEvalVO.getShopEnabledAnonymous());
         orderEval.setImg(orderEvalVO.getShopImg());
         orderEval.setCreateTime(new Date());
         orderEval.setUpdateTime(new Date());
@@ -508,7 +508,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderExpressEval.setGrade(orderEvalVO.getExpressGrade());
         orderExpressEval.setOrderNo(orderEvalVO.getOrderNo());
         orderExpressEval.setShopId(orderEvalVO.getShopId());
-        orderExpressEval.setEnabledAnonymous(orderEvalVO.getEnabledAnonymous());
+        orderExpressEval.setEnabledAnonymous(orderEvalVO.getExpressEnabledAnonymous());
         orderExpressEval.setImg(orderEvalVO.getExpressImg());
         orderExpressEval.setCreateTime(new Date());
         orderExpressEval.setUpdateTime(new Date());

@@ -61,7 +61,9 @@ public class OrderEvalVO {
     @NotEmpty(message = "expressId不能为空")
     private Integer expressId;
 
-    private Integer enabledAnonymous; //匿名 0 否 1是
+    private Integer shopEnabledAnonymous; //匿名 0 否 1是
+
+    private Integer expressEnabledAnonymous;
 
     @Transient
     private String token;
