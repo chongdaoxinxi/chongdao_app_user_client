@@ -132,7 +132,7 @@ public class InsuranceServiceImpl implements InsuranceService {
             order.setName(user.getName());
             order.setPhone(user.getPhone());
             order.setCardType("01");//默认类型为身份证
-            order.setCardNo("");//身份证号
+            order.setCardNo("");//身份证号userShareCallBack
             order.setAddress("");//地址
             //被保人与投保人相同, 即为下单人
             order.setAcceptName(user.getName());

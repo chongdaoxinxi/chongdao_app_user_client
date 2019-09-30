@@ -59,7 +59,7 @@ public class RecommendServiceImpl implements RecommendService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
         RecommendInfo recommendInfo = generateRecommendInfo(type, id);
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), recommendInfo.getRecommendUrl());
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), recommendInfo);
     }
 
     /**
