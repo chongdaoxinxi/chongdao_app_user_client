@@ -361,7 +361,11 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         FavouriteShop shop = favouriteShopRepository.findByUserIdAndAndShopId(userId,  shopId);
         if (shop != null){
             //取消关注
-            shop.setStatus(0);
+            if (shop.getStatus() == 0){
+                shop.setStatus(1);
+            }else{
+                shop.setStatus(0);
+            }
             shop.setUpdateTime(new Date());
             favouriteShopRepository.save(shop);
         }else {

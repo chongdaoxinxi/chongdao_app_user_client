@@ -65,7 +65,6 @@ public class LivingInfo {
     @NotEmpty(message = "schemeId不能为空")
     private Integer schemeId;
     //微信二维码
-    @NotEmpty(message = "微信二维码不能为空")
     private String wxCode;
     //联系电话
     @NotEmpty(message = "联系电话不能为空")
@@ -76,12 +75,17 @@ public class LivingInfo {
     //宠物昵称（领养必填）
     private String nickName;
     //活体类型（0 活体 1 领养）
-    @NotEmpty(message = "请选择活体类型：0 活体，1领养")
+    @NotEmpty(message = "请选择活体类型：0 活体，1领养 ，2.寻宠")
     private Integer type;
     //点赞个数
     private Integer supportCount;
     //默认上架(0 下架 -1 删除 1 上架)
     private Integer status = 1;
+
+    //走失时间
+    private Date lostTime;
+    //走失地址
+    private String lostAddress;
     private Date createTime;
     private Date updateTime;
 
@@ -89,6 +93,12 @@ public class LivingInfo {
     @Transient
     @NotEmpty(message = "token不能为空")
     private String token;
+
+    @Transient
+    private String userName;
+
+    @Transient
+    private String icon;
 
 
 }

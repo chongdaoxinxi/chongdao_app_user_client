@@ -1,29 +1,34 @@
 package com.chongdao.client.controller.living;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.LivingCollect;
-import com.chongdao.client.entitys.LivingInfo;
-import com.chongdao.client.entitys.Support;
-import com.chongdao.client.entitys.User;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.mapper.LivingInfoMapper;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.LivingService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.HTOrderInfoVO;
 import com.chongdao.client.vo.LivingInfoVO;
+import com.chongdao.client.vo.ProviderSeekFavorVO;
 import com.chongdao.client.vo.ResultTokenVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+
+import static com.chongdao.client.common.LivingInfoOrderBy.OrderBy.*;
 
 /**
  * @author fenglong
@@ -36,6 +41,7 @@ public class LivingController {
 
     @Autowired
     private LivingInfoRepository livingInfoRepository;
+
 
     @Autowired
     private PetBreedRepository breedRepository;
@@ -51,6 +57,12 @@ public class LivingController {
 
     @Autowired
     private LivingService livingService;
+
+    @Autowired
+    private ProviderSeekFavorRepository providerSeekFavorRepository;
+
+    @Autowired
+    private LivingInfoMapper livingInfoMapper;
 
 
     /**
@@ -128,6 +140,8 @@ public class LivingController {
                     livingInfoVO.setEnabledSupport(1);
                 }
             }
+            //寻宠详情封装
+            this.assembelProviderSeekFavor(userId,user,livingInfoVO);
         }
         return ResultResponse.createBySuccess(livingInfoVO);
     }
@@ -196,13 +210,134 @@ public class LivingController {
     }
 
 
+    /**
+     * 根据活体类型展示列表
+     * 活体类型：0 活体，1领养 ，2.寻宠
+     * @param type
+     * @return
+     */
+    @GetMapping("getLivingByType")
+    public ResultResponse getLivingByType(@RequestParam Integer type,
+                                          @RequestParam String orderBy,
+                                          @RequestParam Integer pageNum,
+                                          @RequestParam Integer pageSize){
+//        PageRequest request = PageRequest.of(pageNum, pageSize);
+//        Page<List<LivingInfo>> listPage = livingInfoRepository.findByTypeAndStatus(type,1, request);
+        PageHelper.startPage(pageNum,pageSize);
+        //排序规则
+        if (StringUtils.isNotBlank(orderBy)){
+            if (PRICE_ASC_DESC.contains(orderBy) || DISTANCE_ASC_DESC.contains(orderBy) || DISTANCE_ASC_DESC.contains(TIME_ASC_DESC)){
+                String[] orderByArray = orderBy.split("_");
+                //价格排序、销量排序
+                orderBy = orderByArray[0] + " " + orderByArray[1];
+            }
+        }
+        List<LivingInfo> livingInfoList = livingInfoMapper.findByTypeAndStatus(type, orderBy,1);
+        if (CollectionUtils.isEmpty(livingInfoList)) {
+            livingInfoList.stream().forEach(livingInfo -> {
+                User user = userRepository.findById(livingInfo.getUserId()).orElse(null);
+                if (user != null) {
+                    livingInfo.setUserName(user.getName());
+                    livingInfo.setIcon(user.getIcon());
+                }
+            });
+        }
+        PageInfo<LivingInfo> pageInfo = new PageInfo<>(livingInfoList);
+        pageInfo.setList(livingInfoList);
+        return ResultResponse.createBySuccess(pageInfo);
+    }
 
 
 
 
+    /**
+     * 提供宠物丢失线索
+     * @param livingId
+     * @param providerUserId
+     * @param lostUserId
+     * @return
+     */
+    @PostMapping("providerClues")
+    public ResultResponse providerClues(@RequestParam Integer livingId,
+                                        @RequestParam Integer providerUserId,
+                                        @RequestParam Integer lostUserId){
+        ProviderSeekFavor providerSeekFavor = new ProviderSeekFavor();
+        providerSeekFavor.setCreateTime(new Date());
+        providerSeekFavor.setUpdateTime(new Date());
+        providerSeekFavor.setLivingId(livingId);
+        providerSeekFavor.setProviderUserId(providerUserId);
+        providerSeekFavor.setLostUserId(lostUserId);
+        providerSeekFavorRepository.save(providerSeekFavor);
+        return ResultResponse.createBySuccess();
+    }
+
+    /**
+     * 给予奖励
+     * @param livingId
+     * @param providerUserId
+     * @param lostUserId
+     * @return
+     */
+    @PostMapping("reward")
+    public ResultResponse reward(@RequestParam Integer livingId,
+                                 @RequestParam Integer providerUserId,
+                                 @RequestParam Integer lostUserId){
+        ProviderSeekFavor providerSeekFavor = providerSeekFavorRepository.findByLivingIdAndLostUserIdAndProviderUserId(livingId, lostUserId, providerUserId);
+        if (providerSeekFavor != null) {
+            providerSeekFavor.setLostUserId(lostUserId);
+            providerSeekFavor.setProviderUserId(providerUserId);
+            providerSeekFavor.setLivingId(livingId);
+            providerSeekFavor.setStatus(0);
+            providerSeekFavorRepository.saveAndFlush(providerSeekFavor);
+        }
+        return ResultResponse.createBySuccess();
+    }
 
 
 
+    @GetMapping("getLivingByType")
+    public ResultResponse getLivingByType(@RequestParam Integer type,
+                                          @RequestParam Integer userId) {
+        List<LivingInfo> livingInfoList = Lists.newArrayList();
+        if (type.equals("all")) {
+            livingInfoList = livingInfoRepository.findByTypeAndStatus(1, userId);
+        }else {
+            livingInfoList = livingInfoRepository.findByTypeAndStatusAndUserId(type,1, userId);
+        }
+        return ResultResponse.createBySuccess(livingInfoList);
+    }
+
+    /**
+     * 封装寻宠详情
+     * @param userId
+     * @param user
+     * @return
+     */
+    private LivingInfoVO assembelProviderSeekFavor(Integer userId, User user, LivingInfoVO livingInfoVO){
+        //给予线索用户列表(需要判断当前查看详情的用户是否是失主本人，如果是则需要标识 "给予奖励" 按钮)
+        List<ProviderSeekFavorVO> providerSeekFavorVOList = Lists.newArrayList();
+        List<ProviderSeekFavor> providerSeekFavorList = providerSeekFavorRepository.findByLivingId(livingInfoVO.getId());
+        if (!CollectionUtils.isEmpty(providerSeekFavorList)) {
+            providerSeekFavorList.stream().forEach(providerSeekFavor -> {
+                User u = userRepository.findById(providerSeekFavor.getProviderUserId()).orElse(null);
+                ProviderSeekFavorVO providerSeekFavorVO = new ProviderSeekFavorVO();
+                if (u != null) {
+                    if (userId == livingInfoVO.getUserId()) {
+                        providerSeekFavorVO.setEnabled(0);
+                    }
+                    providerSeekFavorVO.setIcon(user.getIcon());
+                    providerSeekFavorVO.setStatus(providerSeekFavor.getStatus());
+                    providerSeekFavorVO.setUserId(user.getId());
+                    providerSeekFavorVO.setUserName(user.getName());
+                    providerSeekFavorVO.setCreateTime(providerSeekFavor.getCreateTime());
+                }
+                providerSeekFavorVOList.add(providerSeekFavorVO);
+
+            });
+        }
+        livingInfoVO.setProviderSeekFavorVOList(providerSeekFavorVOList);
+        return livingInfoVO;
+    }
 
 
 

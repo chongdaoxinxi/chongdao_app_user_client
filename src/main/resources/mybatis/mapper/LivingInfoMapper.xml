@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.LivingInfoMapper">
+    <select id="findByTypeAndStatus" resultType="com.chongdao.client.entitys.LivingInfo">
+        select * from living_info
+         <where>
+           <if test="type != null">
+               and type = #{type}
+           </if>
+             <if test="status != null">
+                 and status = #{status}
+             </if>
+         </where>
+        order by ${orderBy}
+    </select>
+
+</mapper>
