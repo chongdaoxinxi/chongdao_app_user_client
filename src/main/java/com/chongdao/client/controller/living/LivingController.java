@@ -295,7 +295,7 @@ public class LivingController {
 
 
 
-    @GetMapping("getLivingByType")
+    @GetMapping("getLivingByTypeAndUserId")
     public ResultResponse getLivingByType(@RequestParam Integer type,
                                           @RequestParam Integer userId) {
         List<LivingInfo> livingInfoList = Lists.newArrayList();
