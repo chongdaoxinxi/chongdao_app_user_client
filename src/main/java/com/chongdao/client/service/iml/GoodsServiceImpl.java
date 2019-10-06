@@ -564,7 +564,11 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         //取消收藏
         if (good != null){
             //取消关注
-            good.setStatus(0);
+            if (good.getStatus() == 0) {
+                good.setStatus(0);
+            }else {
+                good.setStatus(1);
+            }
             good.setUpdateTime(new Date());
             favouriteGoodsRepository.save(good);
         }else {

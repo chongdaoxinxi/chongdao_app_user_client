@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author fenglong
@@ -63,6 +64,14 @@ public class LivingInfoVO {
 
     //用户是否点赞 1 是 0 否
     private Integer enabledSupport = 0;
+
+
+    private List<ProviderSeekFavorVO> providerSeekFavorVOList;
+
+    private String icon;
+
+
+
 
 
 }
