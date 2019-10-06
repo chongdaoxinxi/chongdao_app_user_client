@@ -45,4 +45,20 @@ public interface ExpressOrderService {
      * @return
      */
     ResultResponse expressStartServiceInSingleTripNotice(Integer expressId, Integer orderId);
+
+    /**
+     * 接到宠物/商品
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    ResultResponse received(Integer expressId, Integer orderId);
+
+    /**
+     * 送达宠物/商品
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    ResultResponse delivery(Integer expressId, Integer orderId);
 }

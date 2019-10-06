@@ -236,6 +236,28 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     /**
+     * 接到
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse received(Integer expressId, Integer orderId) {
+        return null;
+    }
+
+    /**
+     * 送达
+     * @param expressId
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ResultResponse delivery(Integer expressId, Integer orderId) {
+        return null;
+    }
+
+    /**
      * 取消订单(状态变为-1)-----------?? 此方法存在合理嘛
      *
      * @param expressId

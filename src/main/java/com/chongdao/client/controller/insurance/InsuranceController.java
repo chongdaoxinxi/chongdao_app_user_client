@@ -129,6 +129,24 @@ public class InsuranceController {
         return insuranceService.pollingCheckOrderStatus(insuranceOrderId);
     }
 
+    /**
+     * 申请理赔
+     * @return
+     */
+    @PostMapping("applyInsuranceClaims")
+    public ResultResponse applyInsuranceClaims() {
+        return null;
+    }
+
+    /**
+     * 确认理赔金额
+     * @return
+     */
+    @PostMapping("confirmInsuranceClaimsMoney")
+    public ResultResponse confirmInsuranceClaimsMoney() {
+        return null;
+    }
+
     /////////////////////PC端审核///////////////////////////////
 
     /**
@@ -172,5 +190,14 @@ public class InsuranceController {
     @PostMapping("refuseInsurance")
     public ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note) {
         return insuranceService.refuseInsurance(token, insuranceOrderId, targetStatus, note);
+    }
+
+    /**
+     * 审核理赔(包括平台审核, 保险公司审核)
+     * @return
+     */
+    @PostMapping("auditInsuranceClaims")
+    public ResultResponse auditInsuranceClaims() {
+        return null;
     }
 }

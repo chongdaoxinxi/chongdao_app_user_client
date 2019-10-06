@@ -136,4 +136,26 @@ public class ExpressManageController {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return expressOrderService.expressStartServiceInSingleTripNotice(tokenVo.getUserId(), orderId);
     }
+
+    /**
+     * 接到宠物(不管是店->家, 还是家->店, 亦或是双程)
+     * @param token
+     * @param orderId
+     * @return
+     */
+    @PostMapping("received")
+    public ResultResponse received(String token, Integer orderId) {
+        return null;
+    }
+
+    /**
+     * 送达宠物(不管是店->家, 还是家->店, 亦或是双程)
+     * @param token
+     * @param orderId
+     * @return
+     */
+    @PostMapping("delivery")
+    public ResultResponse delivery(String token, Integer orderId) {
+        return null;
+    }
 }
