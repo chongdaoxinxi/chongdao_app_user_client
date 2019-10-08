@@ -12,7 +12,7 @@
     </sql>
     <select id="getRecommendRankList" resultMap="BaseResultMap" parameterType="map">
         select
-          A.*, u.name
+            u.name, A.totalMoney as money
         from (
           SELECT sum(rr.reward_money) AS totalMoney, rr.user_id AS user_id FROM recommend_record rr WHERE rr.is_refund = - 1 GROUP BY rr.user_id
           ) A
