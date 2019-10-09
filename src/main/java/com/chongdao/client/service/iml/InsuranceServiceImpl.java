@@ -3,12 +3,16 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.mapper.InsuranceClaimsMapper;
+import com.chongdao.client.mapper.InsuranceFeeRecordMapper;
 import com.chongdao.client.mapper.InsuranceOrderMapper;
+import com.chongdao.client.mapper.InsuranceShopChipMapper;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.InsuranceUUIDUtil;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.InsuranceTodoVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +52,12 @@ public class InsuranceServiceImpl implements InsuranceService {
     private OrderInfoRepository orderInfoRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private InsuranceClaimsMapper insuranceClaimsMapper;
+    @Autowired
+    private InsuranceShopChipMapper insuranceShopChipMapper;
+    @Autowired
+    private InsuranceFeeRecordMapper insuranceFeeRecordMapper;
 
     /**
      * 保存保单数据
@@ -227,6 +238,41 @@ public class InsuranceServiceImpl implements InsuranceService {
             return ResultResponse.createByErrorMessage("无效的订单状态!");
         }
         return ResultResponse.createBySuccess(true);
+    }
+
+    @Override
+    public ResultResponse getInsuranceUserTodo(String token) {
+        //理赔金额待办
+
+        //宠物芯片核销待办
+
+        //医疗费用待办
+
+        return null;
+    }
+
+    /**
+     * 理赔金额待办
+     */
+    private void getClaimsTodo(Integer userId) {
+        List<InsuranceClaims> list = insuranceClaimsMapper.getUserTodoList(userId);
+        List<InsuranceTodoVO> resp = new ArrayList<>();
+        for(InsuranceClaims ic : list) {
+        }
+    }
+
+    /**
+     * 宠物芯片核销待办
+     */
+    private void getChipTodo(Integer userId) {
+        List<InsuranceShopChip> list = insuranceShopChipMapper.getUserTodoList(userId);
+    }
+
+    /**
+     * 医疗费用待办
+     */
+    private void getInsuraneFeeTodo(Integer userId) {
+        List<InsuranceFeeRecord> list = insuranceFeeRecordMapper.getUserTodoList(userId);
     }
 
     private void updateInsuranceOrderStatus(String token, Integer insuranceOrderId, Integer targetStatus, String note) {

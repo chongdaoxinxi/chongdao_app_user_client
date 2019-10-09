@@ -35,6 +35,7 @@ public class InsuranceFeeRecord implements Serializable {
     private String comment;//说明
     private BigDecimal money;//医疗费用
     private String photo;//照片
+    private Integer type;//1:保险类;2:非保险类
     private Integer status;// -1: 待支付; 1:已支付
     private Date createTime;
     private Date paymentTime;

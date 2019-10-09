@@ -10,4 +10,6 @@ import java.util.List;
 @Mapper
 public interface InsuranceShopChipMapper {
     List<InsuranceShopChip> getShopChipDataList(@Param("shopId") Integer shopId, @Param("core") String core, @Param("status") Integer status, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    List<InsuranceShopChip> getUserTodoList(@Param("userId") Integer userId);
 }

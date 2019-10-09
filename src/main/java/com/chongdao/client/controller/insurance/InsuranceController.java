@@ -1,7 +1,9 @@
 package com.chongdao.client.controller.insurance;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.InsuranceClaims;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.service.InsuranceClaimsService;
 import com.chongdao.client.service.InsuranceFeeRecordService;
 import com.chongdao.client.service.ShopChipService;
 import com.chongdao.client.service.ShopService;
@@ -32,6 +34,8 @@ public class InsuranceController {
     private ShopService shopService;
     @Autowired
     private InsuranceFeeRecordService insuranceFeeRecordService;
+    @Autowired
+    private InsuranceClaimsService insuranceClaimsService;
 
     /////////////////////app端下单///////////////////////////////
 
@@ -134,8 +138,8 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("applyInsuranceClaims")
-    public ResultResponse applyInsuranceClaims() {
-        return null;
+    public ResultResponse applyInsuranceClaims(@RequestBody InsuranceClaims insuranceClaims) {
+        return insuranceClaimsService.saveInsuranceClaims(insuranceClaims);
     }
 
     /**
@@ -143,8 +147,28 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("confirmInsuranceClaimsMoney")
-    public ResultResponse confirmInsuranceClaimsMoney() {
-        return null;
+    public ResultResponse confirmInsuranceClaimsMoney(Integer claimsId) {
+        return insuranceClaimsService.confirmInsuranceClaimsMoney(claimsId);
+    }
+
+    /**
+     * 获取我的理赔记录
+     * @param token
+     * @return
+     */
+    @PostMapping("getUserClaimsList")
+    public ResultResponse getUserClaimsList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return insuranceClaimsService.getMyClaimsList(token, startDate, endDate, pageNum, pageSize);
+    }
+
+    /**
+     * 获取指定保险订单的理赔记录
+     * @param insuranceOrderId
+     * @return
+     */
+    @PostMapping("getAppiontInsuranceOrderClaims")
+    public ResultResponse getAppiontInsuranceOrderClaims(Integer insuranceOrderId) {
+        return insuranceClaimsService.getAppiontInsuranceOrderClaims(insuranceOrderId);
     }
 
     /**
@@ -154,6 +178,11 @@ public class InsuranceController {
     @PostMapping("confirmShopChipVerify")
     public ResultResponse confirmShopChipVerify(Integer insuranceShopChipId) {
         return shopChipService.confirmShopChipVerify(insuranceShopChipId);
+    }
+
+    @PostMapping("getInsuranceUserTodo")
+    public ResultResponse getInsuranceUserTodo(String token) {
+        return null;
     }
 
     /////////////////////PC端审核///////////////////////////////

@@ -22,4 +22,6 @@ public interface InsuranceService {
     ResultResponse refuseInsurance(String token, Integer insuranceOrderId, Integer targetStatus, String note);
 
     ResultResponse pollingCheckOrderStatus(Integer insuranceOrderId);
+
+    ResultResponse getInsuranceUserTodo(String token);
 }
