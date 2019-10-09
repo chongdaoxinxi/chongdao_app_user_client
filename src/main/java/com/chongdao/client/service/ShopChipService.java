@@ -48,4 +48,18 @@ public interface ShopChipService {
      * @return
      */
     ResultResponse removeShopChop(Integer insuranceShopChipId);
+
+    /**
+     * 发起芯片核销
+     * @param insuranceShopChipId
+     * @return
+     */
+    ResultResponse startShopChipVerify(Integer insuranceShopChipId);
+
+    /**
+     * 确认芯片核销
+     * @param insuranceShopChipId
+     * @return
+     */
+    ResultResponse confirmShopChipVerify(Integer insuranceShopChipId);
 }

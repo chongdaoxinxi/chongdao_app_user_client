@@ -150,6 +150,32 @@ public class ShopChipServiceImpl implements ShopChipService {
         return ResultResponse.createBySuccess();
     }
 
+    @Override
+    public ResultResponse startShopChipVerify(Integer insuranceShopChipId) {
+        InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(insuranceShopChipId).orElse(null);
+        if(insuranceShopChip != null) {
+            return updateShopChipStatus(insuranceShopChip, 1);
+        } else {
+            return ResultResponse.createByErrorMessage("无效的宠物芯片ID!");
+        }
+    }
+
+    @Override
+    public ResultResponse confirmShopChipVerify(Integer insuranceShopChipId) {
+        InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(insuranceShopChipId).orElse(null);
+        if(insuranceShopChip != null) {
+            return updateShopChipStatus(insuranceShopChip, 2);
+        } else {
+            return ResultResponse.createByErrorMessage("无效的宠物芯片ID!");
+        }
+    }
+
+    private ResultResponse updateShopChipStatus(InsuranceShopChip insuranceShopChip, Integer targetStatus) {
+        insuranceShopChip.setStatus(targetStatus);
+        insuranceShopChipRepository.save(insuranceShopChip);
+        return ResultResponse.createBySuccess();
+    }
+
     private Boolean checkChipCodeUnique(Integer id, String core) {
         List<InsuranceShopChip> list = insuranceShopChipRepository.findByCore(core);
         boolean flag = false;

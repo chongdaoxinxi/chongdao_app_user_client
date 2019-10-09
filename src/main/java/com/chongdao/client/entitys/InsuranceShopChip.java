@@ -29,7 +29,7 @@ public class InsuranceShopChip implements Serializable {
 
     private Integer shopId;
     private String core;
-    private Integer status;//1:可用;0:被选择;-1:已使用;
+    private Integer status;//1:可用;0:被选择;2:待核销;3:已核销;
     private Date selectedTime;//被选中的时间
     private Date usedTime;//被使用时间
     private Date createTime;

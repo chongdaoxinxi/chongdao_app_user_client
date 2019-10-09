@@ -99,9 +99,6 @@ public class InsuranceOrder implements Serializable {
     private String invoiceDownloadUrl;//电子发票下载地址
     private String invoiceImage;//电子发票直接访问地址
 
-    //核销
-    private Integer chipVerifyStatus;//宠物芯片核销状态, -1:取消;0:待核销;1:已核销
-
     //分销
     private String recommendCode;//推广码
 

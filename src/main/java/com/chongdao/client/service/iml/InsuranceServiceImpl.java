@@ -105,9 +105,6 @@ public class InsuranceServiceImpl implements InsuranceService {
                             insuranceShopChip.setStatus(0);
                             insuranceShopChip.setSelectedTime(new Date());//更新被选中时间
                             insuranceShopChipRepository.save(insuranceShopChip);//更新所选宠物芯片的状态
-
-                            //设置订单中的宠物芯片核销状态为待核销
-                            order.setChipVerifyStatus(0);
                         }
                     }
                 }

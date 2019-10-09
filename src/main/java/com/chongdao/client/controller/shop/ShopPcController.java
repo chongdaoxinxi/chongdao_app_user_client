@@ -267,4 +267,13 @@ public class ShopPcController {
     public ResultResponse getShopChipData(String token, String core, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return shopChipService.getShopChipData(token, core, status, startDate, endDate, pageNum, pageSize);
     }
+
+    /**
+     * 商家发起宠物核销
+     * @return
+     */
+    @PostMapping("startChipVerify")
+    public ResultResponse startChipVerify(Integer shopChipId) {
+        return shopChipService.startShopChipVerify(shopChipId);
+    }
 }

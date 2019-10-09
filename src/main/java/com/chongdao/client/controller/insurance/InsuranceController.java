@@ -147,6 +147,15 @@ public class InsuranceController {
         return null;
     }
 
+    /**
+     * 确认宠物芯片核销
+     * @return
+     */
+    @PostMapping("confirmShopChipVerify")
+    public ResultResponse confirmShopChipVerify(Integer insuranceShopChipId) {
+        return shopChipService.confirmShopChipVerify(insuranceShopChipId);
+    }
+
     /////////////////////PC端审核///////////////////////////////
 
     /**
