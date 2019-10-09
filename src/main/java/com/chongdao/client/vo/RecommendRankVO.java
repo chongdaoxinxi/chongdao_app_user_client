@@ -2,6 +2,7 @@ package com.chongdao.client.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -15,7 +16,9 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RecommendRankVO {
     private String name;
     private BigDecimal money;
+    private String icon;
 }

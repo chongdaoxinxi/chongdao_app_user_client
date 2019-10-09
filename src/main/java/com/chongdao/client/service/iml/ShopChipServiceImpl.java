@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,6 +113,58 @@ public class ShopChipServiceImpl implements ShopChipService {
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Transactional
+    @Override
+    public ResultResponse addShopChip(InsuranceShopChip insuranceShopChip) {
+        Integer id = insuranceShopChip.getId();
+        String core = insuranceShopChip.getCore();
+        if(StringUtils.isNotBlank(core)) {
+            return ResultResponse.createByErrorMessage("芯片代码不能为空!");
+        }
+        //校验芯片码是否已经存在
+        Boolean flag = checkChipCodeUnique(id, core);
+        if(flag) {
+            return ResultResponse.createByErrorMessage("新增/添加的芯片代码已经存在!");
+        }
+        if(id != null) {
+            //编辑
+            insuranceShopChip.setUpdateTime(new Date());
+            insuranceShopChipRepository.save(insuranceShopChip);
+            return ResultResponse.createBySuccess();
+        } else {
+            //新增
+            InsuranceShopChip add = new InsuranceShopChip();
+            BeanUtils.copyProperties(insuranceShopChip, add);
+            add.setStatus(1);
+            add.setCreateTime(new Date());
+            return ResultResponse.createBySuccess();
+        }
+    }
+
+    @Transactional
+    @Override
+    public ResultResponse removeShopChop(Integer insuranceShopChipId) {
+        insuranceShopChipRepository.deleteById(insuranceShopChipId);
+        return ResultResponse.createBySuccess();
+    }
+
+    private Boolean checkChipCodeUnique(Integer id, String core) {
+        List<InsuranceShopChip> list = insuranceShopChipRepository.findByCore(core);
+        boolean flag = false;
+        if(list != null && list.size() > 0) {
+            if(id == null) {
+                flag = true;
+            } else {
+                for(InsuranceShopChip isc : list) {
+                    if(isc.getId() != id) {
+                        flag = true;
+                    }
+                }
+            }
+        }
+        return flag;
     }
 
     public static String getCellValue(Cell cell) {

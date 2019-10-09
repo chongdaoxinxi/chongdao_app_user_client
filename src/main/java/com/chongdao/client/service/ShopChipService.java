@@ -1,6 +1,7 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.InsuranceShopChip;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,4 +34,18 @@ public interface ShopChipService {
      * @return
      */
     ResultResponse getShopChipAppointShop(Integer shopId, String core, Integer status, Integer pageNum, Integer pageSize);
+
+    /**
+     * 新增/编辑
+     * @param insuranceShopChip
+     * @return
+     */
+    ResultResponse addShopChip(InsuranceShopChip insuranceShopChip);
+
+    /**
+     * 删除
+     * @param insuranceShopChipId
+     * @return
+     */
+    ResultResponse removeShopChop(Integer insuranceShopChipId);
 }

@@ -3,6 +3,7 @@ package com.chongdao.client.controller.shop;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.entitys.InsuranceFeeRecord;
+import com.chongdao.client.entitys.InsuranceShopChip;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
@@ -236,6 +237,26 @@ public class ShopPcController {
     @PostMapping("importShopChipData")
     public ResultResponse importShopChipData(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws IOException {
         return shopChipService.importShopChipData(request.getHeader("token"), file);
+    }
+
+    /**
+     * 添加/编辑宠物芯片
+     * @param insuranceShopChip
+     * @return
+     */
+    @PostMapping("addShopChip")
+    public ResultResponse addShopChip(@RequestBody InsuranceShopChip insuranceShopChip) {
+        return shopChipService.addShopChip(insuranceShopChip);
+    }
+
+    /**
+     * 删除芯片
+     * @param insuranceShopChipId
+     * @return
+     */
+    @PostMapping("removeShopChip")
+    public ResultResponse removeShopChip(Integer insuranceShopChipId) {
+        return shopChipService.removeShopChop(insuranceShopChipId);
     }
 
     /**

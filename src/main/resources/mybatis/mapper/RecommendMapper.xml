@@ -5,6 +5,7 @@
         <constructor>
             <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="icon" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -12,7 +13,7 @@
     </sql>
     <select id="getRecommendRankList" resultMap="BaseResultMap" parameterType="map">
         select
-            u.name, A.totalMoney as money
+            u.name, A.totalMoney as money, u.icon
         from (
           SELECT sum(rr.reward_money) AS totalMoney, rr.user_id AS user_id FROM recommend_record rr WHERE rr.is_refund = - 1 GROUP BY rr.user_id
           ) A

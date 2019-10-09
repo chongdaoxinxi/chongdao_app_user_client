@@ -10,6 +10,7 @@ import com.chongdao.client.repository.*;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.utils.ShareCodeUtil;
+import com.chongdao.client.vo.RecommendRecordVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserRecommendVO;
 import com.github.pagehelper.PageHelper;
@@ -448,7 +449,7 @@ public class RecommendServiceImpl implements RecommendService {
             BeanUtils.copyProperties(user, urv);
             resp.add(urv);
         }
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), resp);
+        return ResultResponse.createBySuccess(resp);
     }
 
     @Override
@@ -462,9 +463,21 @@ public class RecommendServiceImpl implements RecommendService {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         Map resp = new HashMap();
         List<RecommendRecord> list = recommendRecordRepository.findByRecommenderIdAndIsRefundOrderByCreateTimeDesc(tokenVo.getUserId(), -1);
+        List<RecommendRecordVO> voList = new ArrayList<>();
+        for(RecommendRecord rr : list) {
+            RecommendRecordVO rrv = new RecommendRecordVO();
+            BeanUtils.copyProperties(rr, rrv);
+            Integer userId = rr.getUserId();
+            User user = userRepository.findById(userId).orElse(null);
+            if(user != null) {
+                rrv.setUserName(user.getName());
+                rrv.setIcon(user.getIcon());
+            }
+            voList.add(rrv);
+        }
         BigDecimal money = recommendMapper.getMyRecommendTotalMoney(tokenVo.getUserId());
         resp.put("totalMoney", money);
-        resp.put("list", list);
+        resp.put("list", voList);
         return ResultResponse.createBySuccess(resp);
     }
 }
