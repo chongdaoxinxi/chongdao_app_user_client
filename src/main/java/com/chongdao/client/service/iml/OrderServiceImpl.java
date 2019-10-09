@@ -215,6 +215,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //查询购物车 生成订单详情
         List<Carts> cartsList = cartsMapper.selectCartByUserId(userId, shopId);
         ResultResponse resultResponse = this.getCartOrderItem(userId, cartsList);
+        if (resultResponse.getData() == null) {
+            return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.ORDER_VALID.getStatus(),OrderStatusEnum.ORDER_VALID.getMessage());
+        }
         List<OrderDetail> orderItemList = (List<OrderDetail>) resultResponse.getData();
         OrderInfoRe orderInfoRe = new OrderInfoRe();
         orderInfoRe.setOrderNo(orderNo);
@@ -288,6 +291,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderVo.setExpressId(orderInfo.getExpressId());
                 orderVo.setExpressName(express.getName());
                 orderVo.setExpressPhone(express.getPhone());
+                orderVo.setExpressLng(express.getLastLng());
+                orderVo.setExpressLat(express.getLastLat());
             }
         }
 
@@ -299,6 +304,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         orderVo.setShopPhone(shop.getPhone());
+        orderVo.setShopLng(shop.getLng());
+        orderVo.setShopLat(shop.getLat());
         orderVo.setShopReceiveTime(orderInfo.getShopReceiveTime());
         orderVo.setShopFinishTime(orderInfo.getShopFinishTime());
         //获取商品详情
@@ -351,7 +358,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             UserAddress receiveAddress = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), orderInfo.getUserId());
             if (receiveAddress != null) {
                 orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+                orderVo.setUserLng(receiveAddress.getLng());
+                orderVo.setUserLat(receiveAddress.getLat());
             }
+
         }
         //送宠地址
         if (orderInfo.getDeliverAddressId() != null ) {
@@ -483,7 +493,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse orderEval(OrderEvalVO orderEvalVO) {
+        OrderEval s = orderEvalRepository.findByOrderNo(orderEvalVO.getOrderNo());
+        if (s != null ) {
+            return ResultResponse.createByErrorCodeMessage(4007, "该订单已评价，无需再次评价");
+        }
         OrderEval orderEval = new OrderEval();
         //商铺评价
         orderEval.setUserId(orderEvalVO.getUserId());
@@ -574,6 +589,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         //mybatis 批量插入
         orderDetailMapper.batchInsert(orderItemList);
+        //清空购物车
+        this.cleanCart(cartList);
         return ResultResponse.createBySuccess(order);
     }
 
@@ -736,7 +753,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         order.setCouponId(orderCommonVO.getCouponId());
         order.setCardId(orderCommonVO.getCardId());
-        order.setFollow(Integer.valueOf(orderVo.getFollow()));
+        if (orderVo.getFollow() != null) {
+            order.setFollow(Integer.valueOf(orderVo.getFollow()));
+        }
         order.setShopId(orderCommonVO.getShopId());
         order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
         order.setSingleServiceType(orderCommonVO.getSingleServiceType());
@@ -1408,6 +1427,19 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsDTO.setCartTotalPrice(cartTotalPrice);
         }
         return orderGoodsDTO;
+    }
+
+
+
+    /**
+     * 清空购物车
+     *
+     * @param cartList
+     */
+    private void cleanCart(List<Carts> cartList) {
+        for (Carts cart : cartList) {
+            cartsMapper.deleteByPrimaryKey(cart.getId());
+        }
     }
 }
 

@@ -30,17 +30,18 @@
             <arg column="bathing_service_id" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="sort" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="qr_code" javaType="java.lang.String" jdbcType="VARCHAR" />
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
         id, name, icon, price, discount,re_discount, unit, unit_name, des, goods_type_id, shop_id, ratio, ratio_price,
     stock, create_time, update_time, status, module_id, category_id, sales, type_name,
-    brand_id, scope_id, pet_category_id, bathing_service_id,sort,area_code
+    brand_id, scope_id, pet_category_id, bathing_service_id,sort,area_code,qr_code
     </sql>
     <sql id="Base_Column_Lists">
         g.id, g.name, g.icon, g.price, g.discount, g.re_discount, g.unit, g.unit_name, g.des, g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,
     g.stock, g.create_time, g.update_time, g.status, g.module_id, g.category_id, g.sales, g.type_name,
-    g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id,sort,area_code
+    g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id,sort,area_code,qr_code
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -61,7 +62,7 @@
                           create_time, update_time, status,
                           module_id, category_id, sales,
                           type_name, brand_id, scope_id,
-                          pet_category_id, bathing_service_id,sort,area_code)
+                          pet_category_id, bathing_service_id,sort,area_code,qr_code)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
                 #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{reDiscount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
                 #{unitName,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodsTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
@@ -69,7 +70,7 @@
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
                 #{moduleId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{sales,jdbcType=INTEGER},
                 #{typeName,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, #{scopeId,jdbcType=INTEGER},
-                #{petCategoryId,jdbcType=INTEGER}, #{bathingServiceId,jdbcType=VARCHAR},#{sort,jdbcType=INTEGER},#{areaCode,jdbcType=INTEGER})
+                #{petCategoryId,jdbcType=INTEGER}, #{bathingServiceId,jdbcType=VARCHAR},#{sort,jdbcType=INTEGER},#{areaCode,jdbcType=VARCHAR},#{qrCode,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Good">
         insert into good
@@ -155,6 +156,9 @@
             <if test="areaCode != null">
                 area_code,
             </if>
+            <if test="qrCode != null">
+                qr_code,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -236,7 +240,10 @@
                 #{sort,jdbcType=INTEGER},
             </if>
             <if test="areaCode != null">
-                #{areaCode,jdbcType=INTEGER},
+                #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCode != null">
+                #{qrCode,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -319,7 +326,10 @@
                sort = #{sort,jdbcType=INTEGER},
             </if>
             <if test="areaCode != null">
-                area_code = #{areaCode,jdbcType=INTEGER},
+                area_code = #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCode != null">
+                qr_code = #{qrCode,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -351,7 +361,8 @@
             pet_category_id = #{petCategoryId,jdbcType=INTEGER},
             bathing_service_id = #{bathingServiceId,jdbcType=VARCHAR},
             sort = #{sort,jdbcType=INTEGER},
-            area_code = #{areaCode,jdbcType=INTEGER}
+            area_code = #{areaCode,jdbcType=VARCHAR},
+            qr_code = #{qrCode,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 

@@ -6,11 +6,12 @@
             <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-            <arg column="order_no" jdbcType="INTEGER" javaType="java.lang.String"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="grade" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="grade" jdbcType="DOUBLE" javaType="java.lang.Double"/>
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="img" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="enabled_anonymous" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
@@ -25,7 +26,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        id, user_id, shop_id, order_no, content, grade, status, img, create_time, update_time
+        id, user_id, shop_id, order_no, content, grade, status, img,enabled_anonymous, create_time, update_time
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -41,11 +42,11 @@
     <insert id="insert" parameterType="com.chongdao.client.entitys.OrderEval">
         insert into order_eval (id, user_id, shop_id, order_no,
                                 content, grade, status,
-                                img, create_time, update_time)
+                                img, enabled_anonymous, create_time, update_time)
         values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
                 #{orderNo,jdbcType=VARCHAR},
-                #{content,jdbcType=VARCHAR}, #{grade,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
-                #{img,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+                #{content,jdbcType=VARCHAR}, #{grade,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER},
+                #{img,jdbcType=VARCHAR}, #{enabledAnonymous,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderEval">
         insert into order_eval
@@ -74,6 +75,9 @@
             <if test="img != null">
                 img,
             </if>
+            <if test="enabledAnonymous != null">
+                enabled_anonymous,
+            </if>
             <if test="createTime != null">
                 create_time,
             </if>
@@ -98,13 +102,16 @@
                 #{content,jdbcType=VARCHAR},
             </if>
             <if test="grade != null">
-                #{grade,jdbcType=INTEGER},
+                #{grade,jdbcType=DOUBLE},
             </if>
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
             </if>
             <if test="img != null">
                 #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="enabledAnonymous != null">
+                #{enabledAnonymous,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -130,13 +137,16 @@
                 content = #{content,jdbcType=VARCHAR},
             </if>
             <if test="grade != null">
-                grade = #{grade,jdbcType=INTEGER},
+                grade = #{grade,jdbcType=DOUBLE},
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=INTEGER},
             </if>
             <if test="img != null">
                 img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="enabledAnonymous != null">
+                enabled_anonymous = #{enabledAnonymous,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -153,9 +163,10 @@
             shop_id     = #{shopId,jdbcType=INTEGER},
             order_no    = #{orderNo,jdbcType=VARCHAR},
             content     = #{content,jdbcType=VARCHAR},
-            grade       = #{grade,jdbcType=INTEGER},
+            grade       = #{grade,jdbcType=DOUBLE},
             status      = #{status,jdbcType=INTEGER},
             img         = #{img,jdbcType=VARCHAR},
+            enabled_anonymous = #{enabledAnonymous,jdbcType=INTEGER},
             create_time = #{createTime,jdbcType=TIMESTAMP},
             update_time = #{updateTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}

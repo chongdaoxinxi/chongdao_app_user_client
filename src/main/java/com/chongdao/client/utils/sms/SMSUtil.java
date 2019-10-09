@@ -60,4 +60,5 @@ public class SMSUtil {
 	private String UserAcceptAdtOrder;
 	private String UserRefuseAdtOrder;
 	private String UserRefundAdtOrder;
+	private String UserReminder;
 }

@@ -8,6 +8,7 @@
     import javax.persistence.GenerationType;
     import javax.persistence.Id;
     import javax.validation.constraints.NotEmpty;
+    import javax.validation.constraints.NotNull;
     import java.util.Date;
 
     /**
@@ -23,10 +24,10 @@
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer id;
 
-        @NotEmpty(message = "userId不能为空")
+        @NotNull(message = "userId不能为空")
         private Integer userId;
 
-        @NotEmpty(message = "shopId不能为空")
+        @NotNull(message = "shopId不能为空")
         private Integer shopId;
 
         @NotEmpty(message = "订单号必填")

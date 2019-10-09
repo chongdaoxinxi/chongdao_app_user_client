@@ -48,6 +48,8 @@ public class ExceptionHandler{
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), "数据库操作异常");
         } else if (e instanceof WebServiceException){
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_INTERNAL_SERVER_ERROR,"投保异常");
+        } else if (e instanceof NullPointerException) {
+            return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_INTERNAL_SERVER_ERROR, "服务异常(空)");
         } else {
             return ResultResponse.createByErrorCodeMessage(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

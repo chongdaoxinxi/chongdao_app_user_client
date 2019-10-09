@@ -133,4 +133,16 @@ public class OrderVo {
     //商家管理（商品数目）
     private Integer goodsCount = 0;
 
+
+    private Double expressLng;
+
+    private Double expressLat;
+
+    private Double userLng;
+
+    private Double userLat;
+
+    private Double shopLng;
+
+    private Double shopLat;
 }

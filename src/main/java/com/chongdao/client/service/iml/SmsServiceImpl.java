@@ -490,4 +490,22 @@ public class SmsServiceImpl implements SmsService {
             return;
         }
     }
+
+    /**
+     * 客户催单
+     * @param orderNo
+     * @param phone
+     */
+    @Override
+    public void sendUserReminder(String orderNo, String phone) {
+        String params = phone+","+orderNo;
+        SmsVariableRequest smsVariableRequest=new SmsVariableRequest(this.smsUtil.getAccount(), this.smsUtil.getPassword(),
+                this.smsUtil.getUserReminder(), params);
+        String requestJson = gson.toJson(smsVariableRequest);
+        String response = SmsSender253.sendSmsByPost(this.smsUtil.getUrl(), requestJson);
+        SmsVariableResponse resp = gson.fromJson(response, SmsVariableResponse.class);
+        if ("0".equals(resp.getCode())) {
+            return;
+        }
+    }
 }

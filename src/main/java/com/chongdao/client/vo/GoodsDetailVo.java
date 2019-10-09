@@ -32,7 +32,10 @@ public class GoodsDetailVo {
     /** 销量*/
     private Integer sales;
 
-    /** 优惠券*/
+    /** 满减*/
+    private List<CouponInfo> couponInfoFullList;
+
+    //优惠券
     private List<CouponInfo> couponInfoList;
 
     /** 地址 */
@@ -53,6 +56,8 @@ public class GoodsDetailVo {
     /** 商品描述 */
     private String des;
 
+    private Double shopGrade;
+
 
     /** 品牌id */
     private Integer brandId;
@@ -70,5 +75,7 @@ public class GoodsDetailVo {
     private Integer concernStatus;
 
     private Integer valid;
+
+    private String img;
 
 }

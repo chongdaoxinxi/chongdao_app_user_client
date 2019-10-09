@@ -1,8 +1,13 @@
 package com.chongdao.client.controller.order;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.OrderInfo;
+import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.repository.OrderInfoRepository;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.OrderService;
+import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderEvalVO;
@@ -26,7 +31,14 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
+    @Autowired
+    private SmsService smsService;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
 
 
@@ -141,6 +153,26 @@ public class OrderController {
     public ResultResponse refund(String orderNo,String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.refund(tokenVo.getUserId(), orderNo);
+    }
+
+
+    /**
+     * 催单
+     * @param orderNo
+     * @param token
+     * @return
+     */
+    @GetMapping("reminder")
+    public ResultResponse reminder(String orderNo,String token){
+        LoginUserUtil.resultTokenVo(token);
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        if (orderInfo != null) {
+            Shop shop = shopRepository.findById(orderInfo.getId()).orElse(null);
+            if (shop != null){
+                smsService.sendUserReminder(orderNo,shop.getPhone());
+            }
+        }
+        return ResultResponse.createBySuccess();
     }
 
 }

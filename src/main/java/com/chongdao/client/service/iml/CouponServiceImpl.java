@@ -115,6 +115,11 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         //领取数量+1
         couponInfoRepository.updateReceiveCountByCouponId(couponInfo.getId(),String.valueOf(couponInfo.getShopId()));
         //插入用户优惠券表记录
+        couponInfo = couponInfoRepository.findById(couponInfo.getId()).orElse(null);
+        if (couponInfo == null) {
+            return ResultResponse.createByErrorCodeMessage(CouponStatusEnum.COUPON_NOT_EXIST.getStatus(),
+                    CouponStatusEnum.COUPON_NOT_EXIST.getMessage());
+        }
         cpnUser = new CpnUser();
         cpnUser.setCount(1);
         cpnUser.setCpnBatchId(couponInfo.getBatchId());

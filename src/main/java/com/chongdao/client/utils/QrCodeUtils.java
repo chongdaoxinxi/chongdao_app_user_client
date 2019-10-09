@@ -12,6 +12,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
@@ -51,7 +52,12 @@ public class QrCodeUtils {
             return image;
         }
         // 插入图片
-        QrCodeUtils.insertImage(image, logoPath, needCompress);
+        boolean flag = false;
+        if (content.contains("goodsId")) {
+            flag = true;
+        }
+        QrCodeUtils.insertImage(image, logoPath, needCompress, flag);
+
         return image;
     }
 
@@ -66,13 +72,20 @@ public class QrCodeUtils {
      *            是否压缩
      * @throws Exception
      */
-    private static void insertImage(BufferedImage source, String fileName, boolean needCompress) throws Exception {
+    private static void insertImage(BufferedImage source, String fileName, boolean needCompress, boolean containsGoodsId) throws Exception {
        // new File("/static/images", newName);
-        File file = new File( "/static/images",fileName);
+        String str = fileName.substring(fileName.indexOf("group1") + 6, fileName.lastIndexOf("/"));
+        String url = "/home/fastdfs/fasdfs_storage_data/data" + str;
+        String newFileName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+        if (!containsGoodsId) {
+            url = "/static/images";
+            newFileName = fileName;
+        }
+        File file = new File( url,newFileName);
         if (!file.exists()) {
             throw new Exception("logo file not found.");
         }
-        Image src = ImageIO.read(new File( "/static/images",fileName));
+        Image src = ImageIO.read(new File( url,newFileName));
         int width = src.getWidth(null);
         int height = src.getHeight(null);
         if (needCompress) { // 压缩LOGO
@@ -99,6 +112,9 @@ public class QrCodeUtils {
         graph.draw(shape);
         graph.dispose();
     }
+
+
+
 
     /**
      * 生成二维码(内嵌LOGO)
@@ -275,15 +291,33 @@ public class QrCodeUtils {
 
 
         //String text = "https://www.chongdaopet.com/mobile/";
-        String text = "https://dev.chongdaopet.com/mobile/?express_5=1";
+       // String text = "https://dev.chongdaopet.com/mobile/?express_5=1";
         //https://www.chongdaopet.com/mobile/getShopById.do?id=128&lng=121.26621&lat=31.37482
         //不含Logo
         //QrCodeUtils.encode(text, null, "D:/images", true);
         //含Logo，不指定二维码图片名
-        QrCodeUtils.encode(text, "/Users/fenglong/Downloads/logo.jpg", "/Users/fenglong/Downloads/", true);
+        //QrCodeUtils.encode(text, "/Users/fenglong/Downloads/logo.jpg", "/Users/fenglong/Downloads/", true);
         //QrCodeUtils.encode(text, "/Users/ianly/Documents/picture/google-icon.jpg", "/Users/ianly/Documents/picture/", true);
         //含Logo，指定二维码图片名
         // QrCodeUtils.encode(text,  "养宠有道", "C:/Users/Dell/Desktop/images", true);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        list.add("d");
+        //注意 坑
+        //int length = list.size();
+        //for(int i=0 ;i<length;i++)
+//        for(int i=0;i<list.size();i++){
+//            if(list.get(i)==("c")){
+//                list.remove(i);
+//            }
+//        }
+        for (String s : list) {
+            if (s.equals("c")) {
+                list.remove(s);
+            }
+        }
     }
 
 }
