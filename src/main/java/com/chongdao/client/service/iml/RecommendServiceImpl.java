@@ -464,12 +464,14 @@ public class RecommendServiceImpl implements RecommendService {
         Map resp = new HashMap();
         List<RecommendRecord> list = recommendRecordRepository.findByRecommenderIdAndIsRefundOrderByCreateTimeDesc(tokenVo.getUserId(), -1);
         List<RecommendRecordVO> voList = new ArrayList<>();
+        Set temp = new HashSet();
         for(RecommendRecord rr : list) {
             RecommendRecordVO rrv = new RecommendRecordVO();
             BeanUtils.copyProperties(rr, rrv);
             Integer userId = rr.getUserId();
             User user = userRepository.findById(userId).orElse(null);
             if(user != null) {
+                temp.add(userId);
                 rrv.setUserName(user.getName());
                 rrv.setIcon(user.getIcon());
             }
@@ -478,6 +480,7 @@ public class RecommendServiceImpl implements RecommendService {
         BigDecimal money = recommendMapper.getMyRecommendTotalMoney(tokenVo.getUserId());
         resp.put("totalMoney", money);
         resp.put("list", voList);
+        resp.put("count", temp.size());
         return ResultResponse.createBySuccess(resp);
     }
 }
