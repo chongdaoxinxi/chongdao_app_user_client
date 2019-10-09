@@ -193,11 +193,18 @@ public class CartsServiceImpl implements CartsService {
                     cartGoodsVo.setGoodsName(good.getName());
                     cartGoodsVo.setGoodsPrice(good.getPrice());
                     cartGoodsVo.setGoodsStatus(Integer.valueOf(good.getStatus()));
+                    cartGoodsVo.setCategoryId(good.getCategoryId());
                     //用户购买的商品数量
                     cartGoodsVo.setQuantity(cart.getQuantity());
                     cartGoodsVo.setGoodsChecked(cart.getChecked());
                     //计算总价
                     cartGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
+                    //折扣价
+                    if (good.getDiscount() != null && good.getDiscount() > 0.0d) {
+                        cartGoodsVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
+                        cartGoodsVo.setDiscount(good.getDiscount());
+                    }
+                    cartGoodsVo.setReDiscount(good.getReDiscount());
                 }
                 //如果用户选中商品，则价格相加
                 if (cart.getChecked() == Const.Cart.CHECKED){

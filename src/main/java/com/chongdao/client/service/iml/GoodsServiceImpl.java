@@ -86,6 +86,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         //封装详情VO类
         GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
         goodsDetailVo.setGoodsId(goodsId);
+        goodsDetailVo.setImg(good.getIcon());
         //产品重量
         goodsDetailVo.setUnit(good.getUnit());
         goodsDetailVo.setUnitName(good.getUnitName());
@@ -107,21 +108,25 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         BeanUtils.copyProperties(good, goodsDetailVo);
         //计算打折后的价格。折扣必须大于0且不能为空
         if (good.getDiscount() > 0 && good.getDiscount() !=null){
-            goodsDetailVo.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount())));
+            goodsDetailVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2,BigDecimal.ROUND_HALF_UP)));
         }
         //商家设置第二件折扣
         if (good.getReDiscount() > 0.0D && good.getReDiscount() != null){
             goodsDetailVo.setReDiscountDesc("第2件" + good.getReDiscount() + "折");
         }
         //查询优惠券（属于该商品可以使用或者领取的）
-        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnState(good.getShopId(), 1);
-        goodsDetailVo.setCouponInfoList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
+        //获取满减
+        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnStateAndCpnType(good.getShopId(), 1,4);
+        goodsDetailVo.setCouponInfoFullList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
+        //优惠券
+        List<CouponInfo> couponInfos = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(good.getShopId(), 1, 4);
+        goodsDetailVo.setCouponInfoList(couponInfos);
         //查询店铺信息
         Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
         if (shop == null){
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
-        goodsDetailVo.setValid(1);//无效参数
+        goodsDetailVo.setShopGrade(shop.getGrade());
         goodsDetailVo.setShopName(shop.getShopName());
         goodsDetailVo.setStartBusinessHours(shop.getStartBusinessHours());
         goodsDetailVo.setEndBusinessHours(shop.getEndBusinessHours());
@@ -146,7 +151,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             BeanUtils.copyProperties(good,goodsListVO);
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
-                goodsListVO.setDiscountPrice(good.getPrice().multiply(new BigDecimal(good.getDiscount()/10)));
+                goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
             }
             //商家设置第二件折扣
             if (good.getReDiscount() > 0.0D && good.getReDiscount() != null){

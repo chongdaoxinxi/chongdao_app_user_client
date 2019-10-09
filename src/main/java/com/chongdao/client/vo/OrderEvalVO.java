@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -14,10 +15,10 @@ public class OrderEvalVO {
 
     private Integer id;
 
-    @NotEmpty(message = "userId不能为空")
+    @NotNull(message = "userId不能为空")
     private Integer userId;
 
-    @NotEmpty(message = "shopId不能为空")
+    @NotNull(message = "shopId不能为空")
     private Integer shopId;
 
     @NotEmpty(message = "订单号不能为空")
@@ -26,11 +27,17 @@ public class OrderEvalVO {
     @NotEmpty(message = "商家评价内容不能为空")
     private String shopContent;
 
-    @NotEmpty(message = "配送员评价星级不能为空")
+    @NotNull(message = "配送员评价星级不能为空")
     private Double expressGrade;
 
     @NotEmpty(message = "配送员评价内容不能为空")
     private String expressContent;
+    //店铺评分
+    @NotNull(message = "商家评价星级不能为空")
+    private Double shopGrade;
+
+    @NotNull(message = "expressId不能为空")
+    private Integer expressId;
 
     private String shopImg;
 
@@ -38,9 +45,7 @@ public class OrderEvalVO {
 
     private String userName;
 
-    //店铺评分
-    @NotEmpty(message = "商家评价星级不能为空")
-    private Double shopGrade;
+
 
     //店铺准时率
     private BigDecimal shopPunctuality;
@@ -58,8 +63,7 @@ public class OrderEvalVO {
 
     private String logo;
 
-    @NotEmpty(message = "expressId不能为空")
-    private Integer expressId;
+
 
     private Integer shopEnabledAnonymous; //匿名 0 否 1是
 
@@ -68,4 +72,31 @@ public class OrderEvalVO {
     @Transient
     private String token;
 
+
+    @Override
+    public String toString() {
+        return "OrderEvalVO{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", shopId=" + shopId +
+                ", orderNo='" + orderNo + '\'' +
+                ", shopContent='" + shopContent + '\'' +
+                ", expressGrade=" + expressGrade +
+                ", expressContent='" + expressContent + '\'' +
+                ", shopGrade=" + shopGrade +
+                ", expressId=" + expressId +
+                ", shopImg='" + shopImg + '\'' +
+                ", expressImg='" + expressImg + '\'' +
+                ", userName='" + userName + '\'' +
+                ", shopPunctuality=" + shopPunctuality +
+                ", goodsName='" + goodsName + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", expressName='" + expressName + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", logo='" + logo + '\'' +
+                ", shopEnabledAnonymous=" + shopEnabledAnonymous +
+                ", expressEnabledAnonymous=" + expressEnabledAnonymous +
+                '}';
+    }
 }

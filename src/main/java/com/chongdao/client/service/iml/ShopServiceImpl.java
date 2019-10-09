@@ -199,6 +199,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 if (good.getUnitName() != null){
                     goodsListVO.setName(good.getName() + good.getUnitName());
                 }
+                if (good.getDiscount() != null && good.getDiscount() > 0.0d) {
+                    goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
+                }
                 //宠物卡片
                 this.assembelGoodsTypeVO(good, goodsListVO, unitList, petCardDogs, petCardCats,userId);
                 goodsListVOList.add(goodsListVO);
@@ -291,9 +294,12 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         orderEvalList.forEach(e -> {
             OrderEvalVO orderEvalVO = new OrderEvalVO();
             BeanUtils.copyProperties(e,orderEvalVO);
+            orderEvalVO.setShopContent(e.getContent());
+            orderEvalVO.setShopImg(e.getImg());
             //获取用户
             User user = userRepository.findById(e.getUserId()).get();
             orderEvalVO.setUserName(user.getName());
+            orderEvalVO.setLogo(user.getIcon());
             //获取购买商品
             List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(e.getOrderNo());
             if (!CollectionUtils.isEmpty(orderDetailList)){

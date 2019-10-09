@@ -20,7 +20,11 @@ public enum CouponStatusEnum {
     COUPON_SERVICE_DELIVERY(1,"配送优惠券"),
 
 
-    COUPON_PUBLISHED(1,"已发布");
+    COUPON_PUBLISHED(1,"已发布"),
+
+    COUPON_NOT_EXIST(5002,"优惠券不存在");
+
+
 
 
 

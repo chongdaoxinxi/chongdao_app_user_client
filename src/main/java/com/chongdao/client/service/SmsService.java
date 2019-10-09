@@ -175,4 +175,11 @@ public interface SmsService {
      */
     void sendOrderUserRefundUser(String orderNo,String shopName,String phone);
 
+    /**
+     * 客户催单
+     * @param orderNo
+     * @param phone
+     */
+    void sendUserReminder(String orderNo,String phone);
+
 }
