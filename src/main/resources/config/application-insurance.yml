@@ -6,10 +6,11 @@ insurance:
    zcgPhone: 18715637638 #   运输险固定投保人/被保人电话
    zcgMail: 1092347670@qq.com #   运输险固定投保人/被保人邮箱
    zcgAddress: 上海市嘉定区嘉戬公路500号 #   运输险固定投保人/被保人地址
+   zcgSustainTime: 12 # 运输险自动往后顺延12小时
 #   invoiceUrl: http://www.epicc.com.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   正式环境 请求发票地址
 #   insuranceUrl: http://www.epicc.com.cn/ecooperation/webservice/insure?wsdl #   正式环境 投保地址
    invoiceTitle: 上海宠道信息科技 #   发票抬头
-   plateFormCode: CPI000865 #   投保平代码
+   plateFormCode: CPI000865 #   投保平台代码
 #   secretKey: Picc89MK8yjq6h7j #   正式环境 秘钥
    insuranceServiceNo: 001001 #   wsdl接口代码
    zfoRiskCode: ZFO #   家责险标识

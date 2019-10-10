@@ -47,7 +47,7 @@
         <include refid="Base_Column_List"/>, io.pet_name, io.pet_photo, io.pet_breed_name, io.pet_age
         from insurance_claims ic
         left join insurance_order io on ic.medical_insurance_order_id = io.id
-        where io.medical_insurance_order_id = #{insuranceOrderId}
+        where ic.medical_insurance_order_id = #{insuranceOrderId}
         limit 0, 1
     </select>
 
