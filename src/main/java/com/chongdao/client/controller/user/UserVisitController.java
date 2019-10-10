@@ -6,6 +6,8 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Description TODO
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @Date 2019/10/10
  * @Version 1.0
  **/
+@RestController
+@RequestMapping("/api/visit/")
 public class UserVisitController {
     @Autowired
     private UserVisitService userVisitService;
