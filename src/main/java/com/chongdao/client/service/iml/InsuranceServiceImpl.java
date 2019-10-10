@@ -163,9 +163,6 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse insuranceZcg(OrderInfo orderInfo) throws IOException {
         Integer insuranceCount = orderInfo.getPetCount();//根据宠物数量来投保
-        if(orderInfo.getServiceType() == 2) {
-            insuranceCount = insuranceCount * 2;//如果是双程, 保险数量*2
-        }
         for(int i = 0; i < insuranceCount; i++) {
             InsuranceOrder order = setZcgInsuranceOrderParam();
             InsuranceOrder savedOrder = insuranceOrderRepository.save(order);

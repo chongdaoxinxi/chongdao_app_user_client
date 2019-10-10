@@ -2,6 +2,8 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 
+import java.io.IOException;
+
 /**
  * 配送端获取订单列表接口
  */
@@ -52,7 +54,7 @@ public interface ExpressOrderService {
      * @param orderId
      * @return
      */
-    ResultResponse received(Integer expressId, Integer orderId);
+    ResultResponse received(Integer expressId, Integer orderId) throws IOException;
 
     /**
      * 送达宠物/商品
