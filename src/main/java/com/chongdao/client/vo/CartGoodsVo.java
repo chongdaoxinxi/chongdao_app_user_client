@@ -22,7 +22,7 @@ public class CartGoodsVo {
     private Integer productChecked;
     private Byte goodsChecked;
     private Integer petCount;
-
+    private Integer petId;
     private BigDecimal discountPrice;
     private Double discount = 0.0d;
     private Double reDiscount = 0.0d;

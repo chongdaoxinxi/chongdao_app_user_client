@@ -22,6 +22,7 @@ import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -94,6 +95,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         //宠物数量
         Integer petCount = 0;
+        String petIds = "";
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -103,7 +105,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setQuantity(cart.getQuantity());
             orderGoodsVoList.add(orderGoodsVo);
             petCount = petCount + cart.getPetCount();
+            petIds = Joiner.on(",").skipNulls().join(cart.getPetId(),petIds);
         }
+        orderVo.setPetIds(petIds.substring(0,petIds.length() - 1));
         orderVo.setPetCount(petCount);
         //查询商品
         OrderGoodsDTO orderGoodsDTO = this.orderGoodsDTO(goodsIds, categoryIds, orderGoodsVoList, orderVo, cartTotalPrice);
@@ -788,6 +792,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if (orderVo.getFollow() != null) {
             order.setFollow(Integer.valueOf(orderVo.getFollow()));
         }
+        order.setPetId(orderVo.getPetIds());
         order.setPetCount(orderVo.getPetCount());
         order.setShopId(orderCommonVO.getShopId());
         order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));

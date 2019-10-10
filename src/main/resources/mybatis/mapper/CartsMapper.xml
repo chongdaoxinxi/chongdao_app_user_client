@@ -11,11 +11,12 @@
       <arg column="checked" jdbcType="TINYINT" javaType="java.lang.Byte" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="pet_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
       <arg column="pet_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, goods_id,shop_id, quantity, checked, create_time, update_time,pet_count
+    id, user_id, goods_id,shop_id, quantity, checked, create_time, update_time,pet_id,pet_count
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -30,11 +31,11 @@
   <insert id="insert" parameterType="com.chongdao.client.entitys.Carts" >
     insert into cart (id, user_id, goods_id, shop_id,
       quantity, checked, create_time, 
-      update_time,pet_count)
+      update_time,pet_id,pet_count)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
       #{shopId,jdbcType=INTEGER},
       #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP},#{petCount,jdbcType=INTEGER})
+      #{updateTime,jdbcType=TIMESTAMP},#{petId,jdbcType=INTEGER},#{petCount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.chongdao.client.entitys.Carts" >
     insert into cart
@@ -62,6 +63,9 @@
       </if>
       <if test="updateTime != null" >
         update_time,
+      </if>
+      <if test="petId != null">
+        pet_id,
       </if>
       <if test="petCount != null">
         pet_count,
@@ -92,6 +96,9 @@
       <if test="updateTime != null" >
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="petId != null">
+        #{petId,jdbcType=INTEGER},
+      </if>
       <if test="petCount != null">
         #{petCount,jdbcType=INTEGER},
       </if>
@@ -121,6 +128,9 @@
       <if test="updateTime != null" >
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="petId != null">
+        pet_id = #{petId,jdbcType=INTEGER},
+      </if>
       <if test="petCount != null">
         pet_count = #{petCount,jdbcType=INTEGER},
       </if>
@@ -136,6 +146,7 @@
       checked = #{checked,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
+      pet_id = #{petId,jdbcType=INTEGER},
       pet_count = #{petCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>

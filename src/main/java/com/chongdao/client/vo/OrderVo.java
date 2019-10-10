@@ -148,5 +148,7 @@ public class OrderVo {
 
     private Integer petCount;
 
+    private String petIds;
+
     private BigDecimal insurancePrice;
 }

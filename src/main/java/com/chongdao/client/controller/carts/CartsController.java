@@ -27,10 +27,11 @@ public class CartsController {
      */
     @PostMapping("add")
     public ResultResponse<CartVo> add(@RequestParam String token,@RequestParam Integer count,
-                                      @RequestParam Integer goodsId,@RequestParam Integer shopId,Integer petCount){
+                                      @RequestParam Integer goodsId,@RequestParam Integer shopId,
+                                      Integer petId,Integer petCount){
         //检验该用户的token
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartsService.add(tokenVo.getUserId(),count,goodsId,shopId,petCount);
+        return cartsService.add(tokenVo.getUserId(),count,goodsId,shopId,petId,petCount);
     }
 
 
