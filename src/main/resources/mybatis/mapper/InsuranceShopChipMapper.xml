@@ -14,6 +14,14 @@
             <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
+    <resultMap id="ShopChipNotice" type="com.chongdao.client.vo.ShopChipNoticeTaskVO">
+        <constructor>
+            <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="left_chip_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        </constructor>
+    </resultMap>
     <sql id="Base_Column_List">
         isc.id, isc.shop_id, isc.core, isc.status, isc.selected_time, isc.used_time, isc.create_time, isc.update_time
     </sql>
@@ -42,5 +50,12 @@
     </select>
 
     <select id="getUserTodoList" resultMap="BaseResultMap" parameterType="map">
+    </select>
+
+    <select id="getNeedNoticeShopList" resultMap="ShopChipNotice" parameterType="map">
+      select A.*, IFNULL(B.count, 0) as left_chip_count
+      FROM(SELECT s.id as shop_id, s.shop_name, s.phone FROM shop s WHERE s.is_shop_chip = 1) A
+      LEFT JOIN (select isc.shop_id as isc_shop_id, count(isc.id) as count from insurance_shop_chip isc where isc.status = 1 GROUP BY isc.shop_id) B on A.shop_id = B.isc_shop_id
+      order by A.shop_id asc
     </select>
 </mapper>
