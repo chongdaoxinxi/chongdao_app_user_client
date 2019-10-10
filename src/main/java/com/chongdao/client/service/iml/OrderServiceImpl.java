@@ -287,15 +287,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         PageHelper.startPage(pageNum, pageSize);
         //全部 （状态含义 参考OrderStatusEnum.class）
         if ("all".contains(type)) {
-            type = "1,2,3,4,5,6,7,8,9,10,11,12,13";
+            type = "-3,-2,-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
         } else if (type.equals("2")) {//服务中
-            type = "7,10,11,12";
+            type = "7,11,12,14,15";
         } else if (type.equals("1")){ //待接单
             type = "1";
-        } else if (type.equals("-1")){
+        } else if (type.equals("-1")){ //待支付
             type = "-1";
         }else{  //已完成
-            type = "0,3,4,5,6,9,13";
+            type = "-3,-2,-1,0,3,4,5,6,8,9,10,13";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
         List<OrderVo> orderVoList = this.assembleOrderVoList(orderInfoList, userId);
@@ -869,17 +869,17 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         PageHelper.startPage(pageNum, pageSize);
         if ("all".contains(type)) {
-            type = null;//全部
+            type = "-3,-2,-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";//全部
         } else if (type.equals("1")) {
             type = "1";//待接单
         } else if (type.equals("2")) {
-            type = "2,7,10,11,12,13";//已接单
+            type = "2,7,11,12,14,15";//已接单
         } else if (type.equals("3")) {
             type = "3,6";//已完成
         } else if (type.equals("4")) {
             type = "0,4,5,8,9";//退款中
         } else {
-            type = "-2";
+            type = "";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdList(shopId, type);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
@@ -1201,6 +1201,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             //已完成
             type = "3,6";
         }
+
         List<OrderInfo> orderInfos = orderInfoMapper.selectExpressOrderList(expressId, type);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
         PageInfo pageResult = new PageInfo(orderInfos);
