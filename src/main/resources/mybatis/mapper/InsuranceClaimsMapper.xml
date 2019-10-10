@@ -12,6 +12,8 @@
             <arg column="pet_photo_flank" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo_front" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo_reverse" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="bank_card_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="bank_card_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="audit_status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
@@ -23,7 +25,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        ic.id, ic.medical_insurance_order_id, ic.diagnostic_proof, ic.cost_list, ic.pay_credentials, ic.ohter_materials, ic.pet_photo_flank, ic.pet_photo_front, ic.pet_photo_reverse, ic.audit_status, ic.money, ic.create_time, ic.update_time
+        ic.id, ic.medical_insurance_order_id, ic.diagnostic_proof, ic.cost_list, ic.pay_credentials, ic.ohter_materials, ic.pet_photo_flank, ic.pet_photo_front, ic.pet_photo_reverse, ic.bank_card_no, ic.bank_card_photo, ic.audit_status, ic.money, ic.create_time, ic.update_time
     </sql>
     <select id="getMyClaimsList" resultMap="BaseResultMap" parameterType="map">
         select

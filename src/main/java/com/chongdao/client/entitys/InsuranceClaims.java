@@ -36,6 +36,8 @@ public class InsuranceClaims implements Serializable {
     private String petPhotoFlank;//侧面宠物照片
     private String petPhotoFront;//正面面宠物照片
     private String petPhotoReverse;//反面宠物照片
+    private String bankCardPhoto;//银行卡照片
+    private String bankCardNo;//银行卡号
     private Integer auditStatus;//审核状态; -2: 拒绝;-1:已保存;0:待审核;1;平台审核通过;2:保险公司审核通过;3:等待用户确认理赔金额;4:用户确认理赔金额;5:理赔完成;
     private BigDecimal money;//理赔金额
     private Date createTime;
