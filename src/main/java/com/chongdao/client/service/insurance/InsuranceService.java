@@ -2,12 +2,15 @@ package com.chongdao.client.service.insurance;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.entitys.OrderInfo;
 
 import java.io.IOException;
 import java.util.Date;
 
 public interface InsuranceService {
     ResultResponse saveInsurance(InsuranceOrder insuranceOrder) throws IOException;
+
+    ResultResponse insuranceZcg(OrderInfo orderInfo) throws IOException;
 
     ResultResponse getMyInsuranceData(String token, Integer pageSize, Integer pageNum);
 

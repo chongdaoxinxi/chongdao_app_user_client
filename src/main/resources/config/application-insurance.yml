@@ -6,6 +6,9 @@ insurance:
    zcgPhone: 18715637638 #   运输险固定投保人/被保人电话
    zcgMail: 1092347670@qq.com #   运输险固定投保人/被保人邮箱
    zcgAddress: 上海市嘉定区嘉戬公路500号 #   运输险固定投保人/被保人地址
+   zcgRationType: ZCG3199001 # 运输险代码
+   zcgSumAmount: 10000.0 # 运输险保额
+   zcgSumPremium: 1.0 # 运输险保费
    zcgSustainTime: 12 # 运输险自动往后顺延12小时
 #   invoiceUrl: http://www.epicc.com.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   正式环境 请求发票地址
 #   insuranceUrl: http://www.epicc.com.cn/ecooperation/webservice/insure?wsdl #   正式环境 投保地址
