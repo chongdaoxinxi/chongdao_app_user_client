@@ -176,16 +176,16 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      */
     private void expressServiceCompleteSmsSender(OrderInfo orderInfo) {
         List<String> phoneList = smsService.getUserPhoneListByOrderId(orderInfo.getId());
-        if(phoneList.size() > 0) {
+        if (phoneList.size() > 0) {
             String msg = "";
             Integer serviceType = orderInfo.getServiceType();
             if (serviceType == 1) {
                 //单程服务完成分两种情况: 店->家, 家->店
                 Integer isService = orderInfo.getIsService();
-                if(isService == -1) {
+                if (isService == -1) {
                     //商品
                     msg = smsUtil.getOrderGoodsServedUser();
-                } else if(isService == 1) {
+                } else if (isService == 1) {
                     //服务
                     Integer singleServiceType = orderInfo.getSingleServiceType();
                     if (singleServiceType != null) {
@@ -202,7 +202,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 //双程
                 msg = smsUtil.getOrderPetArrivedUser();
             }
-            if(StringUtils.isNotBlank(msg)) {
+            if (StringUtils.isNotBlank(msg)) {
                 smsService.customOrderMsgSenderPatchNoShopName(msg, orderInfo.getOrderNo(), phoneList);
             }
         }
@@ -241,22 +241,53 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
 
     /**
      * 接到
+     *
      * @param expressId
      * @param orderId
      * @return
      */
     @Override
     public ResultResponse received(Integer expressId, Integer orderId) throws IOException {
+        //仅推送短信给用户, 使用户体验更好
+        List<String> phoneList = smsService.getUserPhoneListByOrderId(orderId);
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
-        // 接到宠物开始配送订单相关逻辑
+        Integer isService = orderInfo.getIsService();
+        Integer serviceType = orderInfo.getServiceType();
+        if (isService == -1) {
+            //商品
+            orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
+            smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripGoodServiceStartUser(), orderInfo.getOrderNo(), phoneList);
+        } else if (isService == 1) {
+            //服务
+            // 接到宠物开始配送订单相关逻辑
+            if (serviceType == 1) {
+                //单程
+                orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
+                smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
+            } else if (serviceType == 2) {
+                //双程
+                Integer orderStatus = orderInfo.getOrderStatus();
+                if (orderStatus == OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus()) {
+                    orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
+                    smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
+                } else if (orderStatus == OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus()) {
+                    orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus());//返程开始配送
+                    smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
+                }
+            }
+        }
 
         //判断是否投保运输险
-        insuranceService.insuranceZcg(orderInfo);
-        return null;
+        if (orderInfo.getPetCount() != null && orderInfo.getPetCount() > 0 && serviceType != null && serviceType != 3) {
+            //非到店自取, 且宠物数量大于0的
+            insuranceService.insuranceZcg(orderInfo);
+        }
+        return ResultResponse.createBySuccess();
     }
 
     /**
      * 送达
+     *
      * @param expressId
      * @param orderId
      * @return
