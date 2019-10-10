@@ -10,6 +10,7 @@ sms:
 ## 用户下单
   NewOrderUser: 【养宠有道】您已下单成功，订单：{$var} 正在等待商家确认
   NewOrderShop: 【养宠有道】您有新订单了，请接单, 订单号：{$var}
+  UserReminder: 【养宠有道】客户催单，订单号:{$var}
 
 ## 商家接单
   OrderAutoAcceptShop: 【养宠有道】您的订单：{$var} 已被自动确认，请进入商家管理平台查看详情并及时安排服务时间

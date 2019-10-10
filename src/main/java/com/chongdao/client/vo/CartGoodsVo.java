@@ -21,6 +21,7 @@ public class CartGoodsVo {
     private BigDecimal goodsTotalPrice;
     private Integer productChecked;
     private Byte goodsChecked;
+    private Integer petCount;
 
     private BigDecimal discountPrice;
     private Double discount = 0.0d;

@@ -34,7 +34,9 @@ public class Carts {
 
     private Date updateTime;
 
-    public Carts(Integer id, Integer userId, Integer goodsId, Integer shopId, Integer quantity, Byte checked, Date createTime, Date updateTime) {
+    private Integer petCount = 0;
+
+    public Carts(Integer id, Integer userId, Integer goodsId, Integer shopId, Integer quantity, Byte checked, Date createTime, Date updateTime,Integer petCount) {
         this.id = id;
         this.userId = userId;
         this.goodsId = goodsId;
@@ -43,6 +45,7 @@ public class Carts {
         this.checked = checked;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.petCount = petCount;
     }
 
 

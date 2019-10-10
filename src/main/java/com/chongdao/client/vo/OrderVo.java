@@ -145,4 +145,6 @@ public class OrderVo {
     private Double shopLng;
 
     private Double shopLat;
+
+    private Integer petCount;
 }

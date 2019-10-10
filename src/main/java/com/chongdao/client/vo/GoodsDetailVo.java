@@ -78,4 +78,6 @@ public class GoodsDetailVo {
 
     private String img;
 
+    private String shopLogo;
+
 }

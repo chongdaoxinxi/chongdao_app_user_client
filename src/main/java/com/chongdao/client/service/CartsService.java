@@ -12,7 +12,7 @@ public interface CartsService {
      * @param goodsId
      * @return
      */
-    ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId);
+    ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId, Integer petCount);
 
 
     /**
