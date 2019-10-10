@@ -245,7 +245,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"追加订单不存在");
         }
         //可追加条件 参考orderStatusEnum类
-        if (!(Arrays.asList(-3,-2,-1, 3, 4,5,6,8,12,13).contains(orderInfo.getOrderStatus()))) {
+        if (!(Arrays.asList(7,11,12,14,15).contains(orderInfo.getOrderStatus()))) {
             throw new RuntimeException("只有已支付并且服务未完成的订单才可以追加！");
         }
         //查询购物车 生成订单详情
