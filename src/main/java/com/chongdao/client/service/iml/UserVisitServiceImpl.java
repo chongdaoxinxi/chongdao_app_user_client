@@ -11,6 +11,7 @@ import com.chongdao.client.repository.UserSystemVisitRepository;
 import com.chongdao.client.service.UserVisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ public class UserVisitServiceImpl implements UserVisitService {
     @Autowired
     private UserSystemVisitRepository userSystemVisitRepository;
 
+    @Transactional
     @Override
     public ResultResponse addUserShopVisit(Integer userId, Integer shopId, Integer source) {
         if (userId == null) {
@@ -47,6 +49,7 @@ public class UserVisitServiceImpl implements UserVisitService {
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userShopVisitRepository.saveAndFlush(usv));
     }
 
+    @Transactional
     @Override
     public ResultResponse addUserSystemVisit(Integer userId, Integer source) {
         if (userId == null) {
