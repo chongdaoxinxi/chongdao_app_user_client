@@ -91,6 +91,8 @@ public class OrderInfo {
 
     private Integer petCount;
 
+    private BigDecimal insurancePrice;
+
 
 
     public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
@@ -132,6 +134,7 @@ public class OrderInfo {
         this.enabledSpell = enabledSpell;
         this.petId = petId;
         this.petCount = petCount;
+        this.insurancePrice = insurancePrice;
     }
 
 

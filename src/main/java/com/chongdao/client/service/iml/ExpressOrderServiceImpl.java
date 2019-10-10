@@ -10,11 +10,13 @@ import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ExpressOrderService;
 import com.chongdao.client.service.SmsService;
+import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.sms.SMSUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     private ShopRepository shopRepository;
     @Autowired
     private SMSUtil smsUtil;
+    @Autowired
+    private InsuranceService insuranceService;
 
     /**
      * 接单
@@ -242,7 +246,12 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      * @return
      */
     @Override
-    public ResultResponse received(Integer expressId, Integer orderId) {
+    public ResultResponse received(Integer expressId, Integer orderId) throws IOException {
+        OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
+        // 接到宠物开始配送订单相关逻辑
+
+        //判断是否投保运输险
+        insuranceService.insuranceZcg(orderInfo);
         return null;
     }
 

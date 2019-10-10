@@ -105,6 +105,8 @@ public class Shop extends PageParams implements Serializable {
 
 	private Byte isStop;
 
+	private Integer isShopChip;//是否含有注入宠物芯片权限
+
 	@Transient
 	private Integer sales;
 

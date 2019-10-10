@@ -23,6 +23,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -54,19 +55,36 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
 
-    private static final String INVOICE_URL = "http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do";//请求电子发票接口
-    private static final String INSURANCE_URL = "http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl";//投保接口
-    private static final String PLATE_FORM_CODE = "CPI000865";//平台代码(保险公司提供)
-    private static final String SECRET_KEY = "Picc37mu63ht38mw";//秘钥(保险公司提供)
-    private static final String INVOICE_TITLE= "XXX";//电子发票抬头
-    private static final String INSURANCE_SERVICE_NO = "001001";
-    private static final String ZFO_RISK_CODE = "ZFO";
-    private static final String ZCG_RISK_CODE = "ZCG";
-    private static final String I9Q_RISK_CODE = "I9Q";
-    private static final String POLICY_FOLDER_PREFIX = "../../policy/";//电子单证本地保存地址
-    private static final String POLICY_REALPATH = "/home/policy/";
-    private static final String INVOICE_FOLDER_PREFIX = "../../invoice/";//电子发票本地保存地址
-    private static final String INVOICE_REALPATH = "/home/invoice/";
+    @Value("${insurance.invoiceUrl}")
+    private String INVOICE_URL;//请求电子发票接口
+    @Value("${insurance.invoiceTitle}")
+    private String INVOICE_TITLE= "XXX";//电子发票抬头
+    @Value("${insurance.plateFormCode}")
+    private String PLATE_FORM_CODE;//平台代码(保险公司提供)
+    @Value("${insurance.secretKey}")
+    private String SECRET_KEY;//秘钥(保险公司提供)
+    @Value("${insurance.insuranceServiceNo}")
+    private String INSURANCE_SERVICE_NO = "001001"; // wsdl接口代码
+    @Value("${insurance.zfoRiskCode}")
+    private String ZFO_RISK_CODE = "ZFO";
+    @Value("${insurance.zcgRiskCode}")
+    private String ZCG_RISK_CODE = "ZCG";
+    @Value("${insurance.i9qRiskCode}")
+    private String I9Q_RISK_CODE = "I9Q";
+    @Value("${insurance.policyFolderPrefix}")
+    private String POLICY_FOLDER_PREFIX = "../../policy/";//电子单证本地保存地址
+    @Value("${insurance.invoiceFolderPrefix}")
+    private String INVOICE_FOLDER_PREFIX = "../../invoice/";//电子发票本地保存地址
+    @Value("${insurance.zcgName}")
+    private String zcgName;//运输险固定投保人/被保人姓名
+    @Value("${insurance.zcgCardNo}")
+    private String zcgCardNo;//运输险固定投保人/被保人身份证号
+    @Value("${insurance.zcgPhone}")
+    private String zcgPhone;//运输险固定投保人/被保人电话
+    @Value("${insurance.zcgMail}")
+    private String zcgMail;//运输险固定投保人/被保人邮箱
+    @Value("${insurance.zcgAddress}")
+    private String zcgAddress;//运输险固定投保人/被保人地址
 
     /**
      * 家责险xml报文模本
