@@ -42,6 +42,10 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
         if (medicalInsuranceOrderId == null) {
             return ResultResponse.createByErrorMessage("保险订单ID不能为空!");
         }
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(medicalInsuranceOrderId).orElse(null);
+        if (insuranceOrder == null) {
+            return ResultResponse.createByErrorMessage("无效的保险订单ID");
+        }
         if (id != null) {
             //编辑
             insuranceClaims.setUpdateTime(new Date());
@@ -51,10 +55,6 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
             InsuranceClaims add = new InsuranceClaims();
             BeanUtils.copyProperties(insuranceClaims, add);
             add.setCreateTime(new Date());
-            InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(medicalInsuranceOrderId).orElse(null);
-            if (insuranceOrder == null) {
-                return ResultResponse.createByErrorMessage("无效的保险订单ID");
-            }
 //            //冗余部分保险订单数据
 //            if (StringUtils.isNotBlank(insuranceOrder.getPetName()))
 //                add.setPetName(insuranceOrder.getPetName());
@@ -65,6 +65,10 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
 //            if (insuranceOrder.getPetAge() != null)
 //                add.setPetAge(insuranceOrder.getPetAge());
             insuranceClaimsRepository.save(add);
+        }
+        if(insuranceClaims.getAuditStatus() != null && insuranceClaims.getAuditStatus() == 0) {
+            insuranceOrder.setStatus(4);//将保单状态修改为理赔中
+            insuranceOrderRepository.save(insuranceOrder);
         }
         return ResultResponse.createBySuccess();
     }
