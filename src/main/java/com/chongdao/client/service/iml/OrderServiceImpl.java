@@ -109,6 +109,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         orderVo.setPetIds(petIds.substring(0,petIds.length() - 1));
         orderVo.setPetCount(petCount);
+        //订单类型非"到店自取"时，需要判断当前用户是否选择宠物卡片，否则提示用户去选择宠物卡片
+        if (orderCommonVO.getServiceType() != 3 && StringUtils.isBlank(petIds) && petCount < 1) {
+            return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.PET_CARD_EMPTY.getStatus(), OrderStatusEnum.PET_CARD_EMPTY.getMessage());
+        }
         //查询商品
         OrderGoodsDTO orderGoodsDTO = this.orderGoodsDTO(goodsIds, categoryIds, orderGoodsVoList, orderVo, cartTotalPrice);
         //购物车总价
