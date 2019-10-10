@@ -1196,7 +1196,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             type = "2";
         } else if (type.equals("2")) {
             //已接单
-            type = "4,5,7,8,9,10,11,12,13";
+            type = "4,5,7,8,9,10,11,12,13,14,15";
         } else if (type.equals("3")) {
             //已完成
             type = "3,6";
@@ -1228,7 +1228,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             type = "-1,0,1";
         } else if (type.equals("2")) {
             //商家已接单
-            type = "2,3,4,5,6,7,8,9,10,11,12,13";
+            type = "2,3,4,5,6,7,8,9,10,11,12,13,14,15";
         }
         List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
