@@ -92,6 +92,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             //订单失效或者已重复支付
             return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.ORDER_VALID.getStatus(),OrderStatusEnum.ORDER_VALID.getMessage());
         }
+        //宠物数量
+        Integer petCount = 0;
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -100,7 +102,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setGoodsId(cart.getGoodsId());
             orderGoodsVo.setQuantity(cart.getQuantity());
             orderGoodsVoList.add(orderGoodsVo);
+            petCount = petCount + cart.getPetCount();
         }
+        orderVo.setPetCount(petCount);
         //查询商品
         OrderGoodsDTO orderGoodsDTO = this.orderGoodsDTO(goodsIds, categoryIds, orderGoodsVoList, orderVo, cartTotalPrice);
         //购物车总价
@@ -756,6 +760,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if (orderVo.getFollow() != null) {
             order.setFollow(Integer.valueOf(orderVo.getFollow()));
         }
+        order.setPetCount(orderVo.getPetCount());
         order.setShopId(orderCommonVO.getShopId());
         order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
         order.setSingleServiceType(orderCommonVO.getSingleServiceType());

@@ -41,6 +41,7 @@ public class OrderInfo {
 
     private Integer cardId;
 
+
     private String remark;
 
     private Date createTime;
@@ -86,11 +87,14 @@ public class OrderInfo {
     //0 不拼单 1 拼单
     private Integer enabledSpell;
 
+    private Integer petCount;
+
+
     public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
                      BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
                      Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
                      BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
-                     Date updateTime, Integer enabledSpell) {
+                     Date updateTime, Integer enabledSpell, Integer petCount) {
         this.id = id;
         this.serviceType = serviceType;
         this.orderNo = orderNo;
@@ -123,6 +127,7 @@ public class OrderInfo {
         this.updateTime = updateTime;
         this.areaCode = areaCode;
         this.enabledSpell = enabledSpell;
+        this.petCount = petCount;
     }
 
 

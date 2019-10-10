@@ -126,6 +126,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (shop == null){
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
+        goodsDetailVo.setShopLogo(shop.getLogo());
         goodsDetailVo.setShopGrade(shop.getGrade());
         goodsDetailVo.setShopName(shop.getShopName());
         goodsDetailVo.setStartBusinessHours(shop.getStartBusinessHours());

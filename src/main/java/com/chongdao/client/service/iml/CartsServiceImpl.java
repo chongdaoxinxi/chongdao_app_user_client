@@ -59,7 +59,7 @@ public class CartsServiceImpl implements CartsService {
      */
     @Transactional
     @Override
-    public ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId) {
+    public ResultResponse<CartVo> add(Integer userId, Integer count, Integer goodsId,Integer shopId, Integer petCount) {
         if (count == null || goodsId == null || shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
@@ -75,12 +75,19 @@ public class CartsServiceImpl implements CartsService {
             cartItem.setCreateTime(new Date());
             cartItem.setUpdateTime(new Date());
             cartItem.setShopId(shopId);
+            if (petCount != null) {
+                cartItem.setPetCount(petCount);
+            }
             cartsMapper.insert(cartItem);
         }else{
             //这个产品已经在购物车里了.
             //如果产品已存在,数量相加
             count = cart.getQuantity() + count;
             cart.setQuantity(count);
+            if (petCount != null) {
+                petCount =  cart.getPetCount() + petCount;
+                cart.setPetCount(petCount);
+            }
             cart.setUpdateTime(new Date());
             cartsMapper.updateByPrimaryKeySelective(cart);
         }
@@ -194,6 +201,7 @@ public class CartsServiceImpl implements CartsService {
                     cartGoodsVo.setGoodsPrice(good.getPrice());
                     cartGoodsVo.setGoodsStatus(Integer.valueOf(good.getStatus()));
                     cartGoodsVo.setCategoryId(good.getCategoryId());
+                    cartGoodsVo.setPetCount(cart.getPetCount());
                     //用户购买的商品数量
                     cartGoodsVo.setQuantity(cart.getQuantity());
                     cartGoodsVo.setGoodsChecked(cart.getChecked());
