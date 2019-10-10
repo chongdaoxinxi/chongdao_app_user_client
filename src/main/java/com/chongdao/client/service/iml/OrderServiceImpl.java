@@ -164,6 +164,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setServiceType(orderCommonVO.getServiceType());
         //实际付款（包含配送费）
         orderVo.setPayment(cartTotalPrice.add(orderVo.getServicePrice()));
+
+        //如果是配送订单(非到店自取)且宠物数量大于1, 那么计算运输险费用并更新OrderVo实体
+        Integer serviceType = orderCommonVO.getServiceType();
+        if(serviceType != null && serviceType == 3 && petCount != null && petCount > 1) {
+            setInsurancePrice(orderVo);
+        }
+
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //地址判断
@@ -184,7 +191,28 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     }
 
-
+    /**
+     * 将运输险价格加入
+     * @param orderVo
+     */
+    private void setInsurancePrice(OrderVo orderVo) {
+        BigDecimal singlePrice = new BigDecimal(1.5);//单个运输险的价格
+        Integer serviceType = orderVo.getServiceType();
+        Integer petCount = orderVo.getPetCount();
+        BigDecimal totalPrice = orderVo.getTotalPrice();
+        BigDecimal payment = orderVo.getPayment();
+        BigDecimal insurancePrice = new BigDecimal(0);
+        if(serviceType == 1) {
+            //单程, 平台承担一只的运输险费用
+            insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1));
+        } else if(serviceType == 2) {
+            //双程, 平台承担一只的往返运输险费用
+            insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1)).multiply(new BigDecimal(2));
+        }
+        orderVo.setInsurancePrice(insurancePrice);
+        orderVo.setTotalPrice(totalPrice.add(insurancePrice));
+        orderVo.setPayment(payment.add(insurancePrice));
+    }
 
     /**
      * 再来一单
