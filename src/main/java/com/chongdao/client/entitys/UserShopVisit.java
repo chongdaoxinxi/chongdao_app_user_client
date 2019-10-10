@@ -30,7 +30,7 @@ public class UserShopVisit implements Serializable {
 
     private Integer userId;
     private Integer shopId;
-    private Integer isOld;
-    private Integer source;
+    private Integer isOld;//-1:非老用户, 1:老用户
+    private Integer source;//1:小程序;2:android;3:ios;
     private Date createTime;
 }

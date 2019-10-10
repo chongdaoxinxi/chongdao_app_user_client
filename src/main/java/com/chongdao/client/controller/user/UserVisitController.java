@@ -1,6 +1,10 @@
 package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.service.UserVisitService;
+import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.ResultTokenVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @Version 1.0
  **/
 public class UserVisitController {
+    @Autowired
+    private UserVisitService userVisitService;
 
     /**
      * 访问系统记录
@@ -17,8 +23,9 @@ public class UserVisitController {
      * @return
      */
     @PostMapping("systemVisit")
-    public ResultResponse systemVisit(String token){
-        return null;
+    public ResultResponse systemVisit(String token, Integer source){
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userVisitService.addUserSystemVisit(tokenVo.getUserId(), source);
     }
 
     /**
@@ -27,7 +34,8 @@ public class UserVisitController {
      * @return
      */
     @PostMapping("shopVisit")
-    public ResultResponse shopVisit(String token) {
-        return null;
+    public ResultResponse shopVisit(String token, Integer shopId, Integer source) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return userVisitService.addUserShopVisit(tokenVo.getUserId(), shopId, source);
     }
 }

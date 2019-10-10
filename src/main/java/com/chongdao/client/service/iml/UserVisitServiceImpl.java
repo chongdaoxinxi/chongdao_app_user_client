@@ -32,6 +32,12 @@ public class UserVisitServiceImpl implements UserVisitService {
 
     @Override
     public ResultResponse addUserShopVisit(Integer userId, Integer shopId, Integer source) {
+        if (userId == null) {
+            return ResultResponse.createByErrorMessage("用户ID不能为空!");
+        }
+        if (shopId == null) {
+            return ResultResponse.createByErrorMessage("商店ID不能为空!");
+        }
         UserShopVisit usv = new UserShopVisit();
         usv.setUserId(userId);
         usv.setShopId(shopId);
@@ -42,10 +48,18 @@ public class UserVisitServiceImpl implements UserVisitService {
     }
 
     @Override
-    public ResultResponse addUserSystemVisit(Integer userId, Integer isOld, Integer source) {
+    public ResultResponse addUserSystemVisit(Integer userId, Integer source) {
+        if (userId == null) {
+            return ResultResponse.createByErrorMessage("用户ID不能为空!");
+        }
+        List<UserSystemVisit> list = userSystemVisitRepository.findByUserId(userId);
         UserSystemVisit usv = new UserSystemVisit();
         usv.setUserId(userId);
-        usv.setIsOld(isOld);
+        if (list != null && list.size() > 0) {
+            usv.setIsOld(1);
+        } else {
+            usv.setIsOld(-1);
+        }
         usv.setSource(source);
         usv.setCreateTime(new Date());
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userSystemVisitRepository.saveAndFlush(usv));
@@ -53,7 +67,7 @@ public class UserVisitServiceImpl implements UserVisitService {
 
     private Integer isOldOfShop(Integer userId, Integer shopId) {
         List<OrderInfo> list = orderInfoRepository.findByUserIdAndShopId(userId, shopId).orElse(null);
-        if(list != null && list.size() > 0) {
+        if (list != null && list.size() > 0) {
             return 1;
         }
         return -1;
