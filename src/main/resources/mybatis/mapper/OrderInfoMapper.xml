@@ -35,6 +35,7 @@
             <arg column="single_service_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
             <arg column="enabled_spell" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="pet_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
             <arg column="pet_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
         </constructor>
     </resultMap>
@@ -43,14 +44,14 @@
     total_discount, is_service, payment, follow, card_id, remark, area_code, deliver_time, payment_time,
     payment_type, shop_receive_time, shop_finish_time, express_id, express_receive_time, express_finish_time,
     reward, receive_address_id, deliver_address_id, receive_time, coupon_id, create_time,
-    single_service_type, update_time,enabled_spell,pet_count
+    single_service_type, update_time,enabled_spell,pet_id,pet_count
     </sql>
     <sql id="Base_Alias_Column_List">
         o.id, o.service_type, o.order_no, o.user_id, o.shop_id, o.order_status, o.goods_price, o.service_price,
     o.total_discount, o.is_service, o.payment, o.follow, o.card_id, o.remark, o.area_code, o.deliver_time, o.payment_time,
     o.payment_type, o.shop_receive_time, o.shop_finish_time, o.express_id, o.express_receive_time, o.express_finish_time,
     o.reward, o.receive_address_id, o.deliver_address_id, o.receive_time, o.coupon_id, o.create_time,
-    o.single_service_type, o.update_time,o.enabled_spell,o.pet_count
+    o.single_service_type, o.update_time,o.enabled_spell,o.pet_id,o.pet_count
     </sql>
     <select id="selectByPrimaryKey" parameterType="com.chongdao.client.entitys.OrderInfo" resultMap="BaseResultMap">
         select
@@ -73,7 +74,7 @@
                                 express_id, express_receive_time, express_finish_time,
                                 reward, receive_address_id, deliver_address_id,
                                 receive_time, coupon_id, create_time,
-                                single_service_type, update_time, enabled_spell,pet_count)
+                                single_service_type, update_time, enabled_spell,pet_id,pet_count)
         values (#{id,jdbcType=INTEGER}, #{serviceType,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR},
                 #{userId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER}, #{orderStatus,jdbcType=INTEGER},
                 #{goodsPrice,jdbcType=DECIMAL}, #{servicePrice,jdbcType=DECIMAL}, #{totalDiscount,jdbcType=DECIMAL},
@@ -88,7 +89,7 @@
                 #{reward,jdbcType=DECIMAL}, #{receiveAddressId,jdbcType=INTEGER}, #{deliverAddressId,jdbcType=INTEGER},
                 #{receiveTime,jdbcType=TIMESTAMP}, #{couponId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
                 #{singleServiceType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
-                #{enabledSpell,jdbcType=INTEGER},#{petCount,jdbcType=INTEGER})
+                #{enabledSpell,jdbcType=INTEGER}, #{petId,jdbcType=VARCHAR},#{petCount,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.chongdao.client.entitys.OrderInfo">
         insert into order_info
@@ -189,10 +190,13 @@
             <if test="enabledSpell != null">
                 enabled_spell,
             </if>
-
+            <if test="petId != null">
+                pet_id,
+            </if>
             <if test="petCount != null">
                 pet_count,
             </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -290,6 +294,9 @@
             </if>
             <if test="enabledSpell != null">
                 #{enabledSpell,jdbcType=INTEGER},
+            </if>
+            <if test="petId != null">
+                #{petId,jdbcType=VARCHAR},
             </if>
             <if test="petCount != null">
                 #{petCount,jdbcType=INTEGER},
@@ -389,6 +396,9 @@
             <if test="enabledSpell != null">
                 enabled_spell = #{enabledSpell,jdbcType=INTEGER},
             </if>
+            <if test="petId != null">
+                pet_id = #{petId,jdbcType=VARCHAR},
+            </if>
             <if test="petCount != null">
                 pet_count = #{petCount,jdbcType=INTEGER},
             </if>
@@ -427,6 +437,7 @@
             single_service_type  = #{singleServiceType,jdbcType=INTEGER},
             update_time          = #{updateTime,jdbcType=TIMESTAMP},
             enabled_spell        = #{enabledSpell,jdbcType=INTEGER},
+            pet_id = #{petId,jdbcType=VARCHAR},
             pet_count            = #{petCount,jdbcType=INTEGER}
         where id = #{id,jdbcType=INTEGER}
     </update>

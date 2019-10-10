@@ -147,4 +147,6 @@ public class OrderVo {
     private Double shopLat;
 
     private Integer petCount;
+
+    private String petIds;
 }
