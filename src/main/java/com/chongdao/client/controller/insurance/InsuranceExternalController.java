@@ -50,9 +50,9 @@ public class InsuranceExternalController {
         //TODO
         System.out.println("payCallBackInfo:" + payCallBackInfo);
         System.out.println("回调成功!");
-        ResultResponse resultResponse = insuranceExternalService.payCallBackManage(payCallBackInfo);
-        response.sendRedirect("http://47.100.63.167/insurance/insurance_index.html");
-        return resultResponse;
+        insuranceExternalService.payCallBackManage(payCallBackInfo);
+//        response.sendRedirect("http://47.100.63.167/insurance/insurance_index.html");
+        return ResultResponse.createBySuccess();
     }
 
     /**
