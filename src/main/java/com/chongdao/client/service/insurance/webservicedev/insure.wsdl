@@ -1,4 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?><wsdl:definitions name="EcooperationWebServiceService" targetNamespace="http://webservice.ecooperation.epicc.com.cn/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.ecooperation.epicc.com.cn/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version='1.0' encoding='utf-8'?>
+<wsdl:definitions name="EcooperationWebServiceService" targetNamespace="http://webservice.ecooperation.epicc.com.cn/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://webservice.ecooperation.epicc.com.cn/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <wsdl:types>
 <xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.ecooperation.epicc.com.cn/" xmlns:tns="http://webservice.ecooperation.epicc.com.cn/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <xsd:element name="shortInsureService" type="tns:shortInsureService"></xsd:element>

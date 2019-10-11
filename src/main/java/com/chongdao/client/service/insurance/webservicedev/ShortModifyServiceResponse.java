@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.webservice;
+package com.chongdao.client.service.insurance.webservicedev;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,12 +8,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>insureServiceResponse complex type?? Java ??
+ * <p>shortModifyServiceResponse complex type?? Java ??
  * 
  * <p>????????????????????????????????
  * 
  * <pre>
- * &lt;complexType name="insureServiceResponse">
+ * &lt;complexType name="shortModifyServiceResponse">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "insureServiceResponse", propOrder = {
+@XmlType(name = "shortModifyServiceResponse", propOrder = {
     "_return"
 })
-public class InsureServiceResponse {
+public class ShortModifyServiceResponse {
 
     @XmlElement(name = "return")
     protected String _return;

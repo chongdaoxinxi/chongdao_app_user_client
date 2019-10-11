@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.webservice;
+package com.chongdao.client.service.insurance.webservicedev;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -35,13 +35,13 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "shortInsureService", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.ShortInsureService")
     @ResponseWrapper(localName = "shortInsureServiceResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.ShortInsureServiceResponse")
     public String shortInsureService(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
     /**
-     * 
+     *
      * @param interfaceNo
      * @param datas
      * @return
@@ -52,13 +52,13 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "shortModifyService", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.ShortModifyService")
     @ResponseWrapper(localName = "shortModifyServiceResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.ShortModifyServiceResponse")
     public String shortModifyService(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
     /**
-     * 
+     *
      * @param interfaceNo
      * @param datas
      * @return
@@ -69,13 +69,13 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "transitService", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.TransitService")
     @ResponseWrapper(localName = "transitServiceResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.TransitServiceResponse")
     public String transitService(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
     /**
-     * 
+     *
      * @param interfaceNo
      * @param datas
      * @return
@@ -86,13 +86,13 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "insureServiceLianGongBao", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.InsureServiceLianGongBao")
     @ResponseWrapper(localName = "insureServiceLianGongBaoResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.InsureServiceLianGongBaoResponse")
     public String insureServiceLianGongBao(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
     /**
-     * 
+     *
      * @param interfaceNo
      * @param datas
      * @return
@@ -103,13 +103,13 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "insureService", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.InsureService")
     @ResponseWrapper(localName = "insureServiceResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.InsureServiceResponse")
     public String insureService(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
     /**
-     * 
+     *
      * @param interfaceNo
      * @param datas
      * @return
@@ -120,13 +120,13 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "printProofService", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.PrintProofService")
     @ResponseWrapper(localName = "printProofServiceResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.PrintProofServiceResponse")
     public String printProofService(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
     /**
-     * 
+     *
      * @param interfaceNo
      * @param datas
      * @return
@@ -137,9 +137,9 @@ public interface EcooperationWebService {
     @RequestWrapper(localName = "modifyService", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.ModifyService")
     @ResponseWrapper(localName = "modifyServiceResponse", targetNamespace = "http://webservice.ecooperation.epicc.com.cn/", className = "com.chongdao.client.service.insurance.webservice.ModifyServiceResponse")
     public String modifyService(
-        @WebParam(name = "interfaceNo", targetNamespace = "")
-        String interfaceNo,
-        @WebParam(name = "datas", targetNamespace = "")
-        String datas);
+            @WebParam(name = "interfaceNo", targetNamespace = "")
+                    String interfaceNo,
+            @WebParam(name = "datas", targetNamespace = "")
+                    String datas);
 
 }

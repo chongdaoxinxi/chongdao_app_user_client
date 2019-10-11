@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.webservice;
+package com.chongdao.client.service.insurance.webservicedev;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>insureServiceLianGongBao complex type?? Java ??
+ * <p>shortModifyService complex type?? Java ??
  * 
  * <p>????????????????????????????????
  * 
  * <pre>
- * &lt;complexType name="insureServiceLianGongBao">
+ * &lt;complexType name="shortModifyService">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "insureServiceLianGongBao", propOrder = {
+@XmlType(name = "shortModifyService", propOrder = {
     "interfaceNo",
     "datas"
 })
-public class InsureServiceLianGongBao {
+public class ShortModifyService {
 
     protected String interfaceNo;
     protected String datas;

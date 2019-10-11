@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.webservice;
+package com.chongdao.client.service.insurance.webservicedev;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>modifyService complex type?? Java ??
+ * <p>printProofService complex type?? Java ??
  * 
  * <p>????????????????????????????????
  * 
  * <pre>
- * &lt;complexType name="modifyService">
+ * &lt;complexType name="printProofService">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "modifyService", propOrder = {
+@XmlType(name = "printProofService", propOrder = {
     "interfaceNo",
     "datas"
 })
-public class ModifyService {
+public class PrintProofService {
 
     protected String interfaceNo;
     protected String datas;
