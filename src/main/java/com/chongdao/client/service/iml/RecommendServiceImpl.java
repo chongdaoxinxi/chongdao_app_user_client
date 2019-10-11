@@ -10,6 +10,7 @@ import com.chongdao.client.repository.*;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.utils.ShareCodeUtil;
+import com.chongdao.client.vo.RecommendInfoVO;
 import com.chongdao.client.vo.RecommendRecordVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserRecommendVO;
@@ -128,8 +129,8 @@ public class RecommendServiceImpl implements RecommendService {
      * @param recommendInfo
      * @return
      */
-    private RecommendRecordVO generateRecommendInfoVO(RecommendInfo recommendInfo) {
-        RecommendRecordVO vo = new RecommendRecordVO();
+    private RecommendInfoVO generateRecommendInfoVO(RecommendInfo recommendInfo) {
+        RecommendInfoVO vo = new RecommendInfoVO();
         BeanUtils.copyProperties(recommendInfo, vo);
         Integer recommenderId = recommendInfo.getRecommenderId();
         User user = userRepository.findById(recommenderId).orElse(null);
