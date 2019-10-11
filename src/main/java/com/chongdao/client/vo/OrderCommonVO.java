@@ -39,4 +39,5 @@ public class OrderCommonVO {
 
     private String deliverTime;
 
+    private Integer isByInsurance;//是否购买运输险, -1:否, 1:是
 }

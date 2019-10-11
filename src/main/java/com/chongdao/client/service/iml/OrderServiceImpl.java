@@ -175,9 +175,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //实际付款（包含配送费）
         orderVo.setPayment(cartTotalPrice.add(orderVo.getServicePrice()));
 
-        //如果是配送订单(非到店自取)且宠物数量大于1, 那么计算运输险费用并更新OrderVo实体
+        //如果是配送订单(非到店自取)且宠物数量大于1且用户选择购买了运输险, 那么计算运输险费用并更新OrderVo实体
         Integer serviceType = orderCommonVO.getServiceType();
-        if(serviceType != null && serviceType == 3 && petCount != null && petCount > 1) {
+        Integer isByInsurance = orderCommonVO.getIsByInsurance();
+        if(isByInsurance != null && isByInsurance == 1 && serviceType != null && serviceType == 3 && petCount != null && petCount > 1) {
             setInsurancePrice(orderVo);
         }
 
