@@ -112,31 +112,15 @@ public class RecommendServiceImpl implements RecommendService {
         if(infos == null || infos.size() == 0) {
             //还未生成推广信息
             RecommendInfo recommendInfo = generateRecommendInfo(type, tokenVo.getUserId());
-            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), generateRecommendInfoVO(recommendInfo));
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), recommendInfo);
         } else {
             if (infos.size() == 1) {
-                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), generateRecommendInfoVO(infos.get(0)));
+                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), infos.get(0));
             } else if (infos.size() > 1) {
-                return ResultResponse.createByErrorMessage("查询到该账号下存在多条推广人数据, 请联系管理员确认修改!");
+                ResultResponse.createByErrorMessage("查询到该账号下存在多条推广人数据, 请联系管理员确认修改!");
             }
         }
         return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
-    }
-
-    /**
-     * 生成返回给前天的推广信息实体
-     * @param recommendInfo
-     * @return
-     */
-    private RecommendRecordVO generateRecommendInfoVO(RecommendInfo recommendInfo) {
-        RecommendRecordVO vo = new RecommendRecordVO();
-        BeanUtils.copyProperties(recommendInfo, vo);
-        Integer recommenderId = recommendInfo.getRecommenderId();
-        User user = userRepository.findById(recommenderId).orElse(null);
-        if(user != null) {
-            vo.setIcon(user.getIcon());
-        }
-        return vo;
     }
 
     @Override
