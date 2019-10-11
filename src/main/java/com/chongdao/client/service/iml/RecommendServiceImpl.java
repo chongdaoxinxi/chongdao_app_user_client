@@ -9,6 +9,7 @@ import com.chongdao.client.mapper.RecommendMapper;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.utils.QrCodeUtils;
 import com.chongdao.client.utils.ShareCodeUtil;
 import com.chongdao.client.vo.RecommendInfoVO;
 import com.chongdao.client.vo.RecommendRecordVO;
@@ -57,7 +58,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Transactional
     @Override
-    public ResultResponse initRecommendUrl(String role, Integer id) {
+    public ResultResponse initRecommendUrl(String role, Integer id) throws Exception {
         // 推广员类型, 推广员id
         Integer type = getRecommendType(role);
         if (type == null) {
@@ -90,20 +91,23 @@ public class RecommendServiceImpl implements RecommendService {
      * @param id
      * @return
      */
-    private RecommendInfo generateRecommendInfo(Integer type, Integer id) {
+    private RecommendInfo generateRecommendInfo(Integer type, Integer id) throws Exception {
         String url = RECOMMEND_URL + "?type=" + type + "&recommendId=" + id;
         RecommendInfo ri = new RecommendInfo();
         ri.setRecommendCode(ShareCodeUtil.genShareCode(id, type));
         ri.setRecommenderId(id);
         ri.setType(type);
         ri.setRecommendUrl(url);
+        String qrCodeUrl = QrCodeUtils.encode(url, "http://47.100.63.167/images/logo.jpg", "/static/images/", true);
+        System.out.println("qrCodeUrl:" + qrCodeUrl);
+        ri.setQrCodeUrl("http://47.100.63.167/images/" + qrCodeUrl);
         ri.setCreateTime(new Date());
         return recommendInfoRepository.saveAndFlush(ri);
     }
 
     @Transactional
     @Override
-    public ResultResponse getMyShareInfo(String token) {
+    public ResultResponse getMyShareInfo(String token) throws Exception {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         Integer type = getRecommendType(tokenVo.getRole());
         if (type == null) {
@@ -125,7 +129,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     /**
-     * 生成返回给前天的推广信息实体
+     * 生成返回给前台的推广信息实体
      * @param recommendInfo
      * @return
      */

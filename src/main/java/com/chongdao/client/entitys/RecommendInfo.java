@@ -31,5 +31,6 @@ public class RecommendInfo implements Serializable {
     private Integer recommenderId;//用户/配送员/商家id
     private Integer type;//1:用户推广;2:配送员推广;3:商家推广;
     private String recommendUrl;//推广注册链接
+    private String qrCodeUrl;//推广二维码
     private Date createTime;
 }

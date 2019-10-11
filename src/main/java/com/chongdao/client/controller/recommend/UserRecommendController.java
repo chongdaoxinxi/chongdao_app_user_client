@@ -27,7 +27,7 @@ public class UserRecommendController {
      * @return
      */
     @PostMapping("initRecommendUrl")
-    public ResultResponse initRecommendUrl(String token) {
+    public ResultResponse initRecommendUrl(String token) throws Exception {
         // 推广员类型, 推广员id
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return recommendService.initRecommendUrl(tokenVo.getRole(), tokenVo.getUserId());
@@ -39,7 +39,7 @@ public class UserRecommendController {
      * @return
      */
     @PostMapping("getMyShareInfo")
-    public ResultResponse getMyShareInfo(String token) {
+    public ResultResponse getMyShareInfo(String token) throws Exception {
         return recommendService.getMyShareInfo(token);
     }
 

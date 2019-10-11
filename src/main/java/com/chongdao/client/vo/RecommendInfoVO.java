@@ -18,5 +18,6 @@ import lombok.Setter;
 public class RecommendInfoVO {
     private String recommendCode;//推广码
     private String recommendUrl;//推广注册链接
+    private String qrCodeUrl;//二维码链接
     private String icon;
 }
