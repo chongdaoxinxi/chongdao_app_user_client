@@ -43,6 +43,7 @@ public enum OrderStatusEnum {
     CART_EMPTY(106, "购物车为空"),
 
     ORDER_VALID(107, "请重新添加商品"),
+    PET_CARD_EMPTY(108, "选择或添加宠物卡片后方可下单"),
 
     ;
 

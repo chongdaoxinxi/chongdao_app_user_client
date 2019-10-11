@@ -99,7 +99,7 @@ public class OrderInfo {
                      BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
                      Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
                      BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
-                     Date updateTime, Integer enabledSpell,String petId, Integer petCount) {
+                     Date updateTime, Integer enabledSpell, String petId, Integer petCount,BigDecimal insurancePrice) {
         this.id = id;
         this.serviceType = serviceType;
         this.orderNo = orderNo;
@@ -132,9 +132,9 @@ public class OrderInfo {
         this.updateTime = updateTime;
         this.areaCode = areaCode;
         this.enabledSpell = enabledSpell;
+        this.insurancePrice = insurancePrice;
         this.petId = petId;
         this.petCount = petCount;
-        this.insurancePrice = insurancePrice;
     }
 
 
