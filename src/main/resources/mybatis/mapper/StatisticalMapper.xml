@@ -53,7 +53,7 @@
                               and usv2.create_time &lt; #{endDate}
                               and usv2.is_old = false) C on 1 = 1
                  left join (select sum(case
-                                           when odi.order_status in (2, 7, 10, 11, 12, 13, 3, 6, 8, 9, 4, 5) then 1
+                                           when odi.order_status in (2, 7, 10, 11, 12, 13, 3, 6, 8, 9, 4, 5, 14, 15) then 1
                                            else 0 end)                                                  as acceptedOrderCount,
                                    sum(case when odi.order_status in (8, 0, 4, 5, 9) then 1 else 0 end) as refundOrderCount
                             from order_info odi
@@ -78,7 +78,7 @@
                               and usv2.create_time &lt; #{endDate}
                               and usv2.is_old = false) C on 1 = 1
                  left join (select sum(case
-                                           when odi.order_status in (2, 7, 10, 11, 12, 13, 3, 6, 8, 9, 4, 5) then 1
+                                           when odi.order_status in (2, 7, 10, 11, 12, 13, 3, 6, 8, 9, 4, 5, 14, 15) then 1
                                            else 0 end)                                                  as acceptedOrderCount,
                                    sum(case when odi.order_status in (8, 0, 4, 5, 9) then 1 else 0 end) as refundOrderCount
                             from order_info odi
@@ -154,7 +154,7 @@
                  left join goods_type gt on g.goods_type_id = gt.id
                  left join category c on gt.category_id = c.id
         where odi.shop_id = #{shopId}
-          and odi.order_status in (2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13)
+          and odi.order_status in (2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
           and odi.create_time &gt; #{startDate}
           and odi.create_time &lt; #{endDate}
     </select>
@@ -169,7 +169,7 @@
                  left join good g on odt.good_id = g.id
                  left join goods_type gt on g.goods_type_id = gt.id
                  left join category c on gt.category_id = c.id
-        where odi.order_status in (2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13)
+        where odi.order_status in (2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
           and odi.create_time &gt; #{startDate}
           and odi.create_time &lt; #{endDate}
     </select>
