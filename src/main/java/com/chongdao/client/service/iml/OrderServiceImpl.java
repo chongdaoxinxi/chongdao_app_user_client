@@ -107,10 +107,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             petCount = petCount + cart.getPetCount();
             petIds = Joiner.on(",").skipNulls().join(cart.getPetId(),petIds);
         }
-        orderVo.setPetIds(petIds.substring(0,petIds.length() - 1));
+        if (StringUtils.isNotBlank(petIds)) {
+            orderVo.setPetIds(petIds.substring(0, petIds.length() - 1));
+        }
         orderVo.setPetCount(petCount);
-        //订单类型非"到店自取"时，需要判断当前用户是否选择宠物卡片，否则提示用户去选择宠物卡片
-        if (orderCommonVO.getServiceType() != 3 && StringUtils.isBlank(petIds) && petCount < 1) {
+        //订单类型非"到店自取"时(商品除外)，需要判断当前用户是否选择宠物卡片，否则提示用户去选择宠物卡片
+        if (orderCommonVO.getServiceType() != 3 && orderCommonVO.getIsService() == 1 && StringUtils.isBlank(petIds) && petCount < 1) {
             return ResultResponse.createByErrorCodeMessage(OrderStatusEnum.PET_CARD_EMPTY.getStatus(), OrderStatusEnum.PET_CARD_EMPTY.getMessage());
         }
         //查询商品
@@ -299,7 +301,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         } else if (type.equals("-1")){ //待支付
             type = "-1";
         }else{  //已完成
-            type = "-3,-2,-1,0,3,4,5,6,8,9,10,13";
+            type = "-3,-2,0,3,4,5,6,8,9,10,13";
         }
         List<OrderInfo> orderInfoList = orderInfoMapper.selectByUserIdList(userId, type);
         List<OrderVo> orderVoList = this.assembleOrderVoList(orderInfoList, userId);
