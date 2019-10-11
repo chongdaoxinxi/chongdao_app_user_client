@@ -180,6 +180,11 @@ public class InsuranceController {
         return shopChipService.confirmShopChipVerify(insuranceShopChipId);
     }
 
+    /**
+     * 获取保险相关待办
+     * @param token
+     * @return
+     */
     @PostMapping("getInsuranceUserTodo")
     public ResultResponse getInsuranceUserTodo(String token) {
         return null;

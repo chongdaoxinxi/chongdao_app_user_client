@@ -492,7 +492,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             if ("SUCCESS".equals(ret.getResult_code())) {
                 //再次签名
                 Map<String, String> finalpackage = new TreeMap<>();
-                String timestamp = (System.currentTimeMillis() / 1000) + "";
+                String timestamp = (System.currentTimeMillis()) + "";
                 if (payType == 1) {
                     //app支付
                     finalpackage.put("appid", BasicInfo.APP_AppID);
@@ -615,6 +615,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
      */
     private void unifiedOrderCallback(String orderNo) {
         OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+        if(order == null) {
+            System.out.println("无效的订单号(orderNo)");
+            return;
+        }
         OrderLog orderLog = OrderLogDTO.addOrderLog(order);
         orderLog.setNote("微信预下单成功");
         orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
