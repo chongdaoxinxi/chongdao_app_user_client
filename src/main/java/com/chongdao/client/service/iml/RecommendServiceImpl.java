@@ -9,7 +9,9 @@ import com.chongdao.client.mapper.RecommendMapper;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.utils.QrCodeUtils;
 import com.chongdao.client.utils.ShareCodeUtil;
+import com.chongdao.client.vo.RecommendInfoVO;
 import com.chongdao.client.vo.RecommendRecordVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserRecommendVO;
@@ -56,7 +58,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Transactional
     @Override
-    public ResultResponse initRecommendUrl(String role, Integer id) {
+    public ResultResponse initRecommendUrl(String role, Integer id) throws Exception {
         // 推广员类型, 推广员id
         Integer type = getRecommendType(role);
         if (type == null) {
@@ -89,20 +91,23 @@ public class RecommendServiceImpl implements RecommendService {
      * @param id
      * @return
      */
-    private RecommendInfo generateRecommendInfo(Integer type, Integer id) {
+    private RecommendInfo generateRecommendInfo(Integer type, Integer id) throws Exception {
         String url = RECOMMEND_URL + "?type=" + type + "&recommendId=" + id;
         RecommendInfo ri = new RecommendInfo();
         ri.setRecommendCode(ShareCodeUtil.genShareCode(id, type));
         ri.setRecommenderId(id);
         ri.setType(type);
         ri.setRecommendUrl(url);
+        String qrCodeUrl = QrCodeUtils.encode(url, "http://47.100.63.167/images/logo.jpg", "/static/images/", true);
+        System.out.println("qrCodeUrl:" + qrCodeUrl);
+        ri.setQrCodeUrl("http://47.100.63.167/images/" + qrCodeUrl);
         ri.setCreateTime(new Date());
         return recommendInfoRepository.saveAndFlush(ri);
     }
 
     @Transactional
     @Override
-    public ResultResponse getMyShareInfo(String token) {
+    public ResultResponse getMyShareInfo(String token) throws Exception {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         Integer type = getRecommendType(tokenVo.getRole());
         if (type == null) {
@@ -112,15 +117,31 @@ public class RecommendServiceImpl implements RecommendService {
         if(infos == null || infos.size() == 0) {
             //还未生成推广信息
             RecommendInfo recommendInfo = generateRecommendInfo(type, tokenVo.getUserId());
-            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), recommendInfo);
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), generateRecommendInfoVO(recommendInfo));
         } else {
             if (infos.size() == 1) {
-                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), infos.get(0));
+                return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), generateRecommendInfoVO(infos.get(0)));
             } else if (infos.size() > 1) {
-                ResultResponse.createByErrorMessage("查询到该账号下存在多条推广人数据, 请联系管理员确认修改!");
+                return ResultResponse.createByErrorMessage("查询到该账号下存在多条推广人数据, 请联系管理员确认修改!");
             }
         }
         return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
+    }
+
+    /**
+     * 生成返回给前台的推广信息实体
+     * @param recommendInfo
+     * @return
+     */
+    private RecommendInfoVO generateRecommendInfoVO(RecommendInfo recommendInfo) {
+        RecommendInfoVO vo = new RecommendInfoVO();
+        BeanUtils.copyProperties(recommendInfo, vo);
+        Integer recommenderId = recommendInfo.getRecommenderId();
+        User user = userRepository.findById(recommenderId).orElse(null);
+        if(user != null) {
+            vo.setIcon(user.getIcon());
+        }
+        return vo;
     }
 
     @Override

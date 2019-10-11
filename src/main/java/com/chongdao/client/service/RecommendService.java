@@ -9,14 +9,14 @@ public interface RecommendService {
      * @param id
      * @return
      */
-    ResultResponse initRecommendUrl(String role, Integer id);
+    ResultResponse initRecommendUrl(String role, Integer id) throws Exception;
 
     /**
      * 获取我的推广信息
      * @param token
      * @return
      */
-    ResultResponse getMyShareInfo(String token);
+    ResultResponse getMyShareInfo(String token) throws Exception;
 
     /**
      * 校验订单是否满足返现要求

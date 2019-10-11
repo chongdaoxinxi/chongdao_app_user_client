@@ -12,8 +12,8 @@ import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.InsuranceUUIDUtil;
 import com.chongdao.client.utils.LoginUserUtil;
-import com.chongdao.client.vo.InsuranceTodoVO;
 import com.chongdao.client.vo.ResultTokenVo;
+import com.chongdao.client.vo.UserInsuranceTodoVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -27,9 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -291,37 +292,47 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResultResponse getInsuranceUserTodo(String token) {
-        //理赔金额待办
-
-        //宠物芯片核销待办
-
-        //医疗费用待办
-
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        Integer userId = tokenVo.getUserId();
+        if(userId != null) {
+            Map resp = new HashMap<>();
+            List<UserInsuranceTodoVO> claimsTodo = getClaimsTodo(userId);
+            List<UserInsuranceTodoVO> chipTodo = getChipTodo(userId);
+            List<UserInsuranceTodoVO> insuraneFeeTodo = getInsuraneFeeTodo(userId);
+            if(claimsTodo != null && claimsTodo.size() == 0 && chipTodo != null && chipTodo.size() == 0 && insuraneFeeTodo != null && insuraneFeeTodo.size() == 0) {
+                return ResultResponse.createBySuccessMessage("没有待办!");
+            }
+            //理赔金额待办
+            resp.put("claims", getClaimsTodo(userId));
+            //宠物芯片核销待办
+            resp.put("chip", getChipTodo(userId));
+            //医疗费用待办
+            resp.put("feeRecord", getInsuraneFeeTodo(userId));
+            return ResultResponse.createBySuccess(resp);
+        } else {
+            return ResultResponse.createByErrorMessage("无效的token");
+        }
     }
 
     /**
      * 理赔金额待办
      */
-    private void getClaimsTodo(Integer userId) {
-        List<InsuranceClaims> list = insuranceClaimsMapper.getUserTodoList(userId);
-        List<InsuranceTodoVO> resp = new ArrayList<>();
-        for (InsuranceClaims ic : list) {
-        }
+    private List<UserInsuranceTodoVO>  getClaimsTodo(Integer userId) {
+        return insuranceClaimsMapper.getUserTodoList(userId);
     }
 
     /**
      * 宠物芯片核销待办
      */
-    private void getChipTodo(Integer userId) {
-        List<InsuranceShopChip> list = insuranceShopChipMapper.getUserTodoList(userId);
+    private List<UserInsuranceTodoVO> getChipTodo(Integer userId) {
+        return insuranceShopChipMapper.getUserTodoList(userId);
     }
 
     /**
      * 医疗费用待办
      */
-    private void getInsuraneFeeTodo(Integer userId) {
-        List<InsuranceFeeRecord> list = insuranceFeeRecordMapper.getUserTodoList(userId);
+    private List<UserInsuranceTodoVO> getInsuraneFeeTodo(Integer userId) {
+        return insuranceFeeRecordMapper.getUserTodoList(userId);
     }
 
     private void updateInsuranceOrderStatus(String token, Integer insuranceOrderId, Integer targetStatus, String note) {

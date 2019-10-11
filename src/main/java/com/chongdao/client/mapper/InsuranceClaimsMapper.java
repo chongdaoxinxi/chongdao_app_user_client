@@ -1,6 +1,7 @@
 package com.chongdao.client.mapper;
 
 import com.chongdao.client.entitys.InsuranceClaims;
+import com.chongdao.client.vo.UserInsuranceTodoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,5 +14,5 @@ public interface InsuranceClaimsMapper {
 
     InsuranceClaims getClaimsByInsuranceOrderId(@Param("insuranceOrderId") Integer insuranceOrderId);
 
-    List<InsuranceClaims> getUserTodoList(@Param("userId") Integer userId);
+    List<UserInsuranceTodoVO> getUserTodoList(@Param("userId") Integer userId);
 }

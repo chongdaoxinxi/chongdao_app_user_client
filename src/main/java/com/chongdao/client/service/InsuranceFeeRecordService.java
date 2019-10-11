@@ -51,4 +51,6 @@ public interface InsuranceFeeRecordService {
      * @return
      */
     ResultResponse payInsuranceFee(HttpServletRequest req, String insuranceFeeRecordNo, Integer totalFee, String goodStr, String openId, Integer payType);
+
+    ResultResponse confirmMyTodoFeeRecord(Integer insuranceFeeRecordId);
 }
