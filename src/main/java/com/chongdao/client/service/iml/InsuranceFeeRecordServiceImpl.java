@@ -66,4 +66,9 @@ public class InsuranceFeeRecordServiceImpl implements InsuranceFeeRecordService 
         //TODO 支付宝以及微信支付 需要将方法抽取出来 方便各种方式的支付
         return null;
     }
+
+    @Override
+    public ResultResponse confirmMyTodoFeeRecord(Integer insuranceFeeRecordId) {
+        return null;
+    }
 }

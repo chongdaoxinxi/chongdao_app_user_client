@@ -110,7 +110,7 @@ public class InsuranceController {
     @PostMapping("getUserInsuranceFeeRecordList")
     public ResultResponse getUserInsuranceFeeRecordList(String token, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return insuranceFeeRecordService.getUserFeeRecordList(token, status, startDate, endDate, pageNum, pageSize);
-    };
+    }
 
     /**
      * 下载电子保单
@@ -187,7 +187,7 @@ public class InsuranceController {
      */
     @PostMapping("getInsuranceUserTodo")
     public ResultResponse getInsuranceUserTodo(String token) {
-        return null;
+        return insuranceService.getInsuranceUserTodo(token);
     }
 
     /////////////////////PC端审核///////////////////////////////

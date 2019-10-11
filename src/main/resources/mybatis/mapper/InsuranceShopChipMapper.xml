@@ -22,6 +22,13 @@
             <arg column="left_chip_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
         </constructor>
     </resultMap>
+    <resultMap id="UserInsuranceTodoVO" type="com.chongdao.client.vo.UserInsuranceTodoVO">
+        <constructor>
+            <arg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="core" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
     <sql id="Base_Column_List">
         isc.id, isc.shop_id, isc.core, isc.status, isc.selected_time, isc.used_time, isc.create_time, isc.update_time
     </sql>
@@ -49,7 +56,19 @@
         order by isc.create_time desc
     </select>
 
-    <select id="getUserTodoList" resultMap="BaseResultMap" parameterType="map">
+    <select id="getUserTodoList" resultMap="UserInsuranceTodoVO" parameterType="map">
+      SELECT C.id, 0 as money, C.core FROM(
+        SELECT * FROM (
+          SELECT io.medical_insurance_shop_chip_id
+            FROM insurance_order io
+            WHERE io.user_id = #{userId} AND io.medical_insurance_shop_chip_id IS NOT NULL
+          ) A
+          LEFT JOIN (
+            SELECT isc.id, isc.core, isc.status
+              FROM insurance_shop_chip isc
+              WHERE isc.status = 2
+          ) B ON A.medical_insurance_shop_chip_id = B.id
+      ) C WHERE C.status = 2
     </select>
 
     <select id="getNeedNoticeShopList" resultMap="ShopChipNotice" parameterType="map">
