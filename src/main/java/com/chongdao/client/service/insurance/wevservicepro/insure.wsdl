@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='utf-8'?><wsdl:definitions name="EcooperationWebServiceService" targetNamespace="http://webservice.ecooperation.epicc.com.cn/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.ecooperation.epicc.com.cn/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.ecooperation.epicc.com.cn/" xmlns:tns="http://webservice.ecooperation.epicc.com.cn/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="transitService" type="tns:transitService"></xsd:element>
+  <xsd:complexType name="transitService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="transitServiceResponse" type="tns:transitServiceResponse"></xsd:element>
+  <xsd:complexType name="transitServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="insureServiceLianGongBao" type="tns:insureServiceLianGongBao"></xsd:element>
+  <xsd:complexType name="insureServiceLianGongBao">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="insureServiceLianGongBaoResponse" type="tns:insureServiceLianGongBaoResponse"></xsd:element>
+  <xsd:complexType name="insureServiceLianGongBaoResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="shortInsureService" type="tns:shortInsureService"></xsd:element>
+  <xsd:complexType name="shortInsureService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="shortInsureServiceResponse" type="tns:shortInsureServiceResponse"></xsd:element>
+  <xsd:complexType name="shortInsureServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="insureService" type="tns:insureService"></xsd:element>
+  <xsd:complexType name="insureService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="insureServiceResponse" type="tns:insureServiceResponse"></xsd:element>
+  <xsd:complexType name="insureServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="modifyService" type="tns:modifyService"></xsd:element>
+  <xsd:complexType name="modifyService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="modifyServiceResponse" type="tns:modifyServiceResponse"></xsd:element>
+  <xsd:complexType name="modifyServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="printProofService" type="tns:printProofService"></xsd:element>
+  <xsd:complexType name="printProofService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="printProofServiceResponse" type="tns:printProofServiceResponse"></xsd:element>
+  <xsd:complexType name="printProofServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="shortModifyService" type="tns:shortModifyService"></xsd:element>
+  <xsd:complexType name="shortModifyService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="shortModifyServiceResponse" type="tns:shortModifyServiceResponse"></xsd:element>
+  <xsd:complexType name="shortModifyServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="newInsureService" type="tns:newInsureService"></xsd:element>
+  <xsd:complexType name="newInsureService">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="interfaceNo" type="xsd:string"></xsd:element>
+      <xsd:element minOccurs="0" name="datas" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="newInsureServiceResponse" type="tns:newInsureServiceResponse"></xsd:element>
+  <xsd:complexType name="newInsureServiceResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="xsd:string"></xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>  </wsdl:types>
+  <wsdl:message name="insureServiceLianGongBao">
+    <wsdl:part element="tns:insureServiceLianGongBao" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="shortInsureServiceResponse">
+    <wsdl:part element="tns:shortInsureServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="printProofService">
+    <wsdl:part element="tns:printProofService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="newInsureService">
+    <wsdl:part element="tns:newInsureService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="insureService">
+    <wsdl:part element="tns:insureService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="printProofServiceResponse">
+    <wsdl:part element="tns:printProofServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="modifyService">
+    <wsdl:part element="tns:modifyService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="newInsureServiceResponse">
+    <wsdl:part element="tns:newInsureServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="shortModifyServiceResponse">
+    <wsdl:part element="tns:shortModifyServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="shortModifyService">
+    <wsdl:part element="tns:shortModifyService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="transitService">
+    <wsdl:part element="tns:transitService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="shortInsureService">
+    <wsdl:part element="tns:shortInsureService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="insureServiceResponse">
+    <wsdl:part element="tns:insureServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="transitServiceResponse">
+    <wsdl:part element="tns:transitServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="modifyServiceResponse">
+    <wsdl:part element="tns:modifyServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="insureServiceLianGongBaoResponse">
+    <wsdl:part element="tns:insureServiceLianGongBaoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="EcooperationWebService">
+    <wsdl:operation name="transitService">
+      <wsdl:input message="tns:transitService" name="transitService">
+    </wsdl:input>
+      <wsdl:output message="tns:transitServiceResponse" name="transitServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="insureServiceLianGongBao">
+      <wsdl:input message="tns:insureServiceLianGongBao" name="insureServiceLianGongBao">
+    </wsdl:input>
+      <wsdl:output message="tns:insureServiceLianGongBaoResponse" name="insureServiceLianGongBaoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="shortInsureService">
+      <wsdl:input message="tns:shortInsureService" name="shortInsureService">
+    </wsdl:input>
+      <wsdl:output message="tns:shortInsureServiceResponse" name="shortInsureServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="insureService">
+      <wsdl:input message="tns:insureService" name="insureService">
+    </wsdl:input>
+      <wsdl:output message="tns:insureServiceResponse" name="insureServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="modifyService">
+      <wsdl:input message="tns:modifyService" name="modifyService">
+    </wsdl:input>
+      <wsdl:output message="tns:modifyServiceResponse" name="modifyServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="printProofService">
+      <wsdl:input message="tns:printProofService" name="printProofService">
+    </wsdl:input>
+      <wsdl:output message="tns:printProofServiceResponse" name="printProofServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="shortModifyService">
+      <wsdl:input message="tns:shortModifyService" name="shortModifyService">
+    </wsdl:input>
+      <wsdl:output message="tns:shortModifyServiceResponse" name="shortModifyServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="newInsureService">
+      <wsdl:input message="tns:newInsureService" name="newInsureService">
+    </wsdl:input>
+      <wsdl:output message="tns:newInsureServiceResponse" name="newInsureServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="EcooperationWebServiceServiceSoapBinding" type="tns:EcooperationWebService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="transitService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="transitService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="transitServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="insureServiceLianGongBao">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="insureServiceLianGongBao">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="insureServiceLianGongBaoResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="shortInsureService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="shortInsureService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="shortInsureServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="insureService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="insureService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="insureServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="modifyService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="modifyService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="modifyServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="printProofService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="printProofService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="printProofServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="newInsureService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="newInsureService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="newInsureServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="shortModifyService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="shortModifyService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="shortModifyServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="EcooperationWebServiceService">
+    <wsdl:port binding="tns:EcooperationWebServiceServiceSoapBinding" name="EcooperationWebServicePort">
+      <soap:address location="http://www.epicc.com.cn:80/ecooperation/webservice/insure"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
