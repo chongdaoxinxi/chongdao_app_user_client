@@ -36,6 +36,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -323,7 +324,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
 
     /**
-     * 支付宝异步回调
+     * 支付宝普通订单异步回调
      *
      * @param params
      * @return
@@ -399,15 +400,17 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());
                 //销量更新
                 List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
-                orderDetailList.stream().forEach(orderDetail -> {
-                    goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
-                });
+                if (!CollectionUtils.isEmpty(orderDetailList)) {
+                    orderDetailList.stream().forEach(orderDetail -> {
+                        goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
+                    });
+                }
                 orderInfoMapper.updateByPrimaryKeySelective(order);
                 //判断是否自动接单
                 Shop shop = shopRepository.findById(order.getShopId()).get();
                 if (shop.getIsAutoAccept() != null && shop.getIsAutoAccept() == 1) {
                     //推送短信到商家
-                    smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
+                    this.sendSmsShop(shop,orderDetailList,orderNo);
                     //推送短信到用户
                     if (order.getReceiveAddressId() != null) {
                         UserAddress address = userAddressRepository.findById(order.getReceiveAddressId()).get();
@@ -420,6 +423,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                             smsService.sendExpressNewOrder(orderNo, express.getPhone());
                         });
                     }
+
+
                 }
             }
             //生成支付信息
@@ -767,6 +772,36 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         }
         return r;
     }
+
+
+    /**
+     * 根据条件推送短信到店铺
+     * @param shop
+     * @param orderDetailList
+     * @param orderNo
+     */
+    private void sendSmsShop(Shop shop, List<OrderDetail> orderDetailList,String orderNo){
+        //推送短信到商家（如果shopId等于1代表是官方店铺上传的商品，需要派单给5公里内的商家（商家需包含该商品））
+        if (shop.getId() == 1 && !CollectionUtils.isEmpty(orderDetailList)) {
+            orderDetailList.stream().forEach(orderDetail -> {
+                Good good = goodsRepository.findById(orderDetail.getGoodId()).orElse(null);
+                if (good != null) {
+                    List<Shop> shopList = shopMapper.findShopList(shop.getLng(), shop.getLat(), shop.getAreaCode(), good.getShopIds());
+                    if (!CollectionUtils.isEmpty(shopList)) {
+                        shopList.stream().forEach(s -> {
+                            if (s.getId() != 1) {
+                                smsService.sendOrderAutoAcceptShop(orderNo, s.getPhone());
+                            }
+                        });
+                    }
+                }
+            });
+        }else {
+            smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
+        }
+    }
+
+
 
     /**
      * 清空购物车

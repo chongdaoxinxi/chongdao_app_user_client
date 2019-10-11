@@ -547,6 +547,11 @@
         order by dis
     </select>
 
+    <select id="findShopList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from shop  where round(getDistance(lat,lng,#{lat},#{lng})) = 5000 and area_code = #{areaCode} and shop_ids in (${shopIds})
+    </select>
+
     <!-- 查询收藏店铺-->
     <select id="selectConcernShop" resultMap="BaseResultMap">
         select

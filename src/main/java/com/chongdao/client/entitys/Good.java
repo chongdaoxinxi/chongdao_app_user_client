@@ -91,6 +91,9 @@ public class Good {
 
 	private String qrCode;
 
+	//该字段是官方店铺上传的商品，供普通商家勾选使用
+	private String shopIds;
+
 
 	@Transient
 	private String categoryName;
@@ -108,7 +111,7 @@ public class Good {
 				String unit, String unitName, String des, Integer goodsTypeId, Integer shopId,
 				Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime,
 				Byte status, Integer moduleId, Integer categoryId, Integer sales, String typeName, Integer brandId,
-				Integer scopeId, Integer petCategoryId, String bathingServiceId,Integer sort,String areaCode,String qrCode) {
+				Integer scopeId, Integer petCategoryId, String bathingServiceId,Integer sort,String areaCode,String qrCode,String shopIds) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
@@ -137,6 +140,7 @@ public class Good {
 		this.sort = sort;
 		this.areaCode = areaCode;
 		this.qrCode = qrCode;
+		this.shopIds = shopIds;
 	}
 
 
