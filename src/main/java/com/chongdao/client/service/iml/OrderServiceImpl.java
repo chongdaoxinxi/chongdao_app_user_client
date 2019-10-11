@@ -1296,6 +1296,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "订单号为空");
         }
         OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        if (orderInfo == null) {
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "订单不存在");
+        }
         orderInfo.setOrderStatus(USER_APPLY_REFUND.getStatus());
         orderInfo.setUpdateTime(new Date());
         orderInfoRepository.save(orderInfo);
