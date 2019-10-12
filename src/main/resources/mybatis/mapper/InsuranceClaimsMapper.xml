@@ -31,6 +31,8 @@
             <arg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="core" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -61,7 +63,7 @@
     </select>
 
     <select id="getUserTodoList" resultMap="UserInsuranceTodoVO" parameterType="map">
-        SELECT ic.id, ic.money, null as core
+        SELECT ic.id, ic.money, null as core, null as shop_name, null as order_no
         FROM insurance_claims ic
         LEFT JOIN insurance_order io on ic.medical_insurance_order_id = io.id
         WHERE ic.audit_status = 3

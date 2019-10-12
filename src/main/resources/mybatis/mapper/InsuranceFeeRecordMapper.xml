@@ -25,6 +25,8 @@
             <arg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="core" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -90,6 +92,9 @@
     </select>
 
     <select id="getUserTodoList" resultMap="UserInsuranceTodoVO" parameterType="map">
-        select ifr.id, ifr.money, null as core from insurance_fee_record  ifr where ifr.user_id = #{userId} and ifr.status = -1
+        select ifr.id, ifr.money, null as core, s.shop_name, ifr.order_no
+        from insurance_fee_record  ifr
+        left join shop s on ifr.shop_id = s.id
+        where ifr.user_id = #{userId} and ifr.status = -1
     </select>
 </mapper>

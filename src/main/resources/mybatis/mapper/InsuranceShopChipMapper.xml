@@ -27,6 +27,8 @@
             <arg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="core" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -57,15 +59,16 @@
     </select>
 
     <select id="getUserTodoList" resultMap="UserInsuranceTodoVO" parameterType="map">
-      SELECT C.id, 0 as money, C.core FROM(
+      SELECT C.id, 0 as money, C.core, C.shop_name, null as order_no  FROM(
         SELECT * FROM (
           SELECT io.medical_insurance_shop_chip_id
             FROM insurance_order io
             WHERE io.user_id = #{userId} AND io.medical_insurance_shop_chip_id IS NOT NULL
           ) A
           LEFT JOIN (
-            SELECT isc.id, isc.core, isc.status
+            SELECT isc.id, isc.core, isc.status, s.shop_name
               FROM insurance_shop_chip isc
+              left join shop s on isc.shop_id = s.id
               WHERE isc.status = 2
           ) B ON A.medical_insurance_shop_chip_id = B.id
       ) C WHERE C.status = 2

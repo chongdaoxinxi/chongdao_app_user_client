@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -326,7 +327,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     public ResultResponse aliPayInsurance(Integer orderId, Integer userId) {
         InsuranceFeeRecord insuranceFeeRecord = insuranceFeeRecordRepository.findById(orderId).orElse(null);
         if(insuranceFeeRecord == null) {
-            return ResultResponse.createByErrorMessage("无效的医疗费用订单ID");
+            return ResultResponse.createByErrorMessage("无效的保险医疗订单ID");
         }
         if(insuranceFeeRecord.getStatus() > -1) {
             return ResultResponse.createByErrorMessage("该订单已支付，请勿重复支付");
@@ -364,23 +365,23 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             orderStr = response.getBody();
             if (StringUtils.isBlank(orderStr)) {
                 OrderLog orderLog = OrderLogDTO.addOrderLogInsurance(insuranceFeeRecord);
-                orderLog.setNote("支付宝预下单失败");
+                orderLog.setNote("支付宝保险医疗预下单失败");
                 logRepository.save(orderLog);
-                return ResultResponse.createBySuccessMessage("支付宝预下单失败!!!");
+                return ResultResponse.createBySuccessMessage("支付宝保险医疗预下单失败!!!");
             }
             String orderStrResult = orderStr;
             resultMap.put("orderStr", orderStrResult);//就是orderString 可以直接给客户端请求，无需再做处理。
             resultMap.put("status", "200");
-            resultMap.put("message", "支付宝预下单成功");
+            resultMap.put("message", "支付宝保险医疗预下单成功");
             OrderLog orderLog = OrderLogDTO.addOrderLogInsurance(insuranceFeeRecord);
-            orderLog.setNote("支付宝预下单成功");
+            orderLog.setNote("支付宝保险医疗预下单成功");
             orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
             logRepository.save(orderLog);
-            log.info("支付宝App支付:支付订单创建成功out_trade_no---- {}", insuranceFeeRecord.getOrderNo());
+            log.info("支付宝App支付:保险医疗支付订单创建成功out_trade_no---- {}", insuranceFeeRecord.getOrderNo());
         } catch (Exception e) {
             resultMap.put("status", "500");
-            resultMap.put("message", "支付宝预下单失败!!!");
-            log.error("支付宝App支付：支付订单生成失败out_trade_no---- {}", insuranceFeeRecord.getOrderNo());
+            resultMap.put("message", "保险医疗支付宝预下单失败!!!");
+            log.error("支付宝App支付：保险医疗支付订单生成失败out_trade_no---- {}", insuranceFeeRecord.getOrderNo());
         }
         return ResultResponse.createBySuccess(resultMap);
     }
@@ -574,6 +575,17 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         model.setBody(BasicInfo.APP_NAME + "-" + goodStr);
         //支付订单号
         model.setOut_trade_no(orderNo);
+
+        //如果为保险医疗费用订单查出该订单需支付的费用, 并转换成分
+        if(totalFee == null) {
+            if(orderNo.indexOf("IFR") != -1) {
+                List<InsuranceFeeRecord> list = insuranceFeeRecordRepository.findByOrderNo(orderNo);
+                if(list != null && list.size() > 0) {
+                    InsuranceFeeRecord insuranceFeeRecord = list.get(0);
+                    totalFee = insuranceFeeRecord.getMoney().multiply(new BigDecimal(100)).intValue();
+                }
+            }
+        }
         //支付金额
         model.setTotal_fee(totalFee);
         //我们服务器的IP
@@ -721,15 +733,29 @@ public class PayServiceImpl extends CommonRepository implements PayService {
      * 统一下单成功后处理逻辑
      */
     private void unifiedOrderCallback(String orderNo) {
-        OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
-        if(order == null) {
-            System.out.println("无效的订单号(orderNo)");
-            return;
+        if(orderNo.indexOf("IFR") != -1) {
+            //医疗费用
+            List<InsuranceFeeRecord> list = insuranceFeeRecordRepository.findByOrderNo(orderNo);
+            if(list == null || list.size() == 0) {
+                System.out.println("无效的保险医疗订单号(orderNo)");
+                return;
+            }
+            InsuranceFeeRecord ifr = list.get(0);
+            OrderLog orderLog = OrderLogDTO.addOrderLogInsurance(ifr);
+            orderLog.setNote("微信保险医疗预下单成功");
+            orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+            logRepository.save(orderLog);
+        } else {
+            OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
+            if(order == null) {
+                System.out.println("无效的订单号(orderNo)");
+                return;
+            }
+            OrderLog orderLog = OrderLogDTO.addOrderLog(order);
+            orderLog.setNote("微信保险医疗预下单成功");
+            orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
+            logRepository.save(orderLog);
         }
-        OrderLog orderLog = OrderLogDTO.addOrderLog(order);
-        orderLog.setNote("微信预下单成功");
-        orderLog.setOrderStatus(OrderStatusEnum.ORDER_PRE.getStatus());
-        logRepository.save(orderLog);
     }
 
     /**
@@ -879,7 +905,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         return r;
     }
 
-
     /**
      * 根据条件推送短信到店铺
      * @param shop
@@ -906,8 +931,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             smsService.sendOrderAutoAcceptShop(orderNo, shop.getPhone());
         }
     }
-
-
 
     /**
      * 清空购物车

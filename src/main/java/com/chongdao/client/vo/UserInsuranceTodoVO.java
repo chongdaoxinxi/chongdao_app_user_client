@@ -21,4 +21,6 @@ public class UserInsuranceTodoVO {
     private Integer id;
     private BigDecimal money;
     private String core;
+    private String shopName;
+    private String orderNo;
 }
