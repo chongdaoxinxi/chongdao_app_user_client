@@ -71,4 +71,9 @@ public class InsuranceFeeRecordServiceImpl implements InsuranceFeeRecordService 
     public ResultResponse confirmMyTodoFeeRecord(Integer insuranceFeeRecordId) {
         return null;
     }
+
+    @Override
+    public ResultResponse getInsuranceFeeRecordDetail(Integer insuranceFeeRecordId) {
+        return ResultResponse.createBySuccess(insuranceFeeRecordMapper.getInsuranceFeeRecordById(insuranceFeeRecordId));
+    }
 }

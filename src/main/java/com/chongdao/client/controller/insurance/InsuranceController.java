@@ -113,6 +113,16 @@ public class InsuranceController {
     }
 
     /**
+     * 获取医疗费用详情
+     * @param insuranceFeeRecordId
+     * @return
+     */
+    @PostMapping("getInsuranceFeeRecordDetail")
+    public ResultResponse getInsuranceFeeRecordDetail(Integer insuranceFeeRecordId) {
+        return insuranceFeeRecordService.getInsuranceFeeRecordDetail(insuranceFeeRecordId);
+    }
+
+    /**
      * 下载电子保单
      *
      * @param insuranceOrderId

@@ -15,4 +15,6 @@ public interface InsuranceFeeRecordMapper {
     List<InsuranceFeeRecord> getUserInsuranceFeeRecordList(@Param("userId") Integer userId, @Param("status") Integer status, @Param("startDate")Date startDate, @Param("endDate")Date endDate);
 
     List<UserInsuranceTodoVO>  getUserTodoList(@Param("userId") Integer userId);
+
+    InsuranceFeeRecord getInsuranceFeeRecordById(@Param("id") Integer id);
 }

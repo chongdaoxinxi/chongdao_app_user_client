@@ -11,6 +11,7 @@
             <arg column="comment" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="payment_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
@@ -27,7 +28,7 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        ifr.id, ifr.order_no, ifr.user_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.status, ifr.create_time, ifr.payment_time, ifr.payment_type
+        ifr.id, ifr.order_no, ifr.user_id, ifr.shop_id, ifr.insurance_id, ifr.comment, ifr.money, ifr.photo, ifr.type, ifr.status, ifr.create_time, ifr.payment_time, ifr.payment_type
     </sql>
     <select id="getInsuranceFeeRecordData" resultMap="BaseResultMap" parameterType="map">
         select
@@ -77,6 +78,15 @@
             and ifr.create_date &lt; #{endDate}
         </if>
         order by ifr.create_time desc
+    </select>
+
+    <select id="getInsuranceFeeRecordById" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>, u.name as user_name, s.shop_name as shop_name
+        from insurance_fee_record ifr
+        left join user u on ifr.user_id = u.id
+        left join shop s on ifr.shop_id = s.id
+        where ifr.id = #{id}
     </select>
 
     <select id="getUserTodoList" resultMap="UserInsuranceTodoVO" parameterType="map">

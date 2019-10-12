@@ -40,9 +40,12 @@ public class InsuranceClaims implements Serializable {
     private String bankCardNo;//银行卡号
     private Integer auditStatus;//审核状态; -2: 拒绝;-1:已保存;0:待审核;1;平台审核通过;2:保险公司审核通过;3:等待用户确认理赔金额;4:用户确认理赔金额;5:理赔完成;
     private BigDecimal money;//理赔金额
+    private BigDecimal insuranceTotalFee;//医疗费用
     private Date createTime;
     private Date updateTime;
 
+    @Transient
+    private String insuranceOrderNo;//保险订单号
     @Transient
     private String petName;//宠物姓名
     @Transient
