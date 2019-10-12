@@ -45,6 +45,15 @@ public class DateTimeUtil {
      * @return
      */
     public static Date strToDate(String dateTimeStr){
+        if(dateTimeStr.indexOf("-") == -1) {
+            StringBuilder sb = new StringBuilder(dateTimeStr);
+            sb.insert(4, "-");
+            sb.insert(7, "-");
+            sb.insert(10, " ");
+            sb.insert(13, ":");
+            sb.insert(16, ":");
+            dateTimeStr = sb.toString();
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(STANDARD_FORMAT);
         DateTime dateTime = dateTimeFormatter.parseDateTime(dateTimeStr);
         return dateTime.toDate();

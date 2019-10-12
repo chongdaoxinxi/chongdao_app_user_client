@@ -393,6 +393,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         String tradeStatus = params.get("trade_status");
         List<InsuranceFeeRecord> list = insuranceFeeRecordRepository.findByOrderNo(orderNo);
         InsuranceFeeRecord ifr = list.get(0);
+        System.out.println("orderNo:" + orderNo);
+        System.out.println("tradeNo:" + tradeNo);
         // 医疗费用订单
         if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
             List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
