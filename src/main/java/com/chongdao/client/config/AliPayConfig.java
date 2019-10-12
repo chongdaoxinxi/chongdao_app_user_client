@@ -13,6 +13,8 @@ public class AliPayConfig {
     public static final String NOTIFY_URL = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallback";
 
     public static final String NOTIFY_URL_HT = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallbackHt";
+    //保险医疗费用支付宝支付回调
+    public static final String NOTIFY_URL_INSURANCE = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallbackInsurance";
      // 支付完成跳转页面
     public static final String RETURN_URL = "";
     // 请求网关地址（）

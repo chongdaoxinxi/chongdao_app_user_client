@@ -1,9 +1,6 @@
 package com.chongdao.client.dto;
 
-import com.chongdao.client.entitys.HtOrderInfo;
-import com.chongdao.client.entitys.OrderInfo;
-import com.chongdao.client.entitys.OrderInfoRe;
-import com.chongdao.client.entitys.OrderLog;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.PayPlatformEnum;
 
@@ -32,6 +29,15 @@ public class OrderLogDTO {
         orderLog.setOrderId(htOrderInfo.getId());
         orderLog.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         orderLog.setOrderNo(htOrderInfo.getHtOrderNo());
+        orderLog.setOrderType(PayPlatformEnum.ALI_PAY.getCode());
+        return orderLog;
+    }
+
+    public static OrderLog addOrderLogInsurance(InsuranceFeeRecord insuranceFeeRecord){
+        OrderLog orderLog = new OrderLog();
+        orderLog.setOrderId(insuranceFeeRecord.getId());
+        orderLog.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
+        orderLog.setOrderNo(insuranceFeeRecord.getOrderNo());
         orderLog.setOrderType(PayPlatformEnum.ALI_PAY.getCode());
         return orderLog;
     }

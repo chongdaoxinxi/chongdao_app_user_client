@@ -24,8 +24,24 @@ public interface PayService {
      */
     ResultResponse aliCallback(Map<String,String> params);
 
+    /**
+     * 微信支付
+     * @param req
+     * @param orderNo
+     * @param totalFee
+     * @param goodStr
+     * @param payType
+     * @return
+     */
     ResultResponse wxPay(HttpServletRequest req, String orderNo, Integer totalFee, String goodStr, Integer payType);
 
+    /**
+     * 微信支付回调
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     ResultResponse wxPayCallback(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     ResultResponse aliPayRe(String reOrderNo, Integer userId);
@@ -33,4 +49,19 @@ public interface PayService {
     ResultResponse payHT(String htOrderNo, Integer userId);
 
     ResultResponse aliPayCallbackHT(Map<String, String> params);
+
+    /**
+     * 保险医疗费用支付(支付宝)
+     * @param orderId
+     * @param userId
+     * @return
+     */
+    ResultResponse aliPayInsurance(Integer orderId, Integer userId);
+
+    /**
+     * 保险医疗费用支付回调(支付宝)
+     * @param params
+     * @return
+     */
+    ResultResponse aliPayCallbackInsurance(Map<String, String> params);
 }
