@@ -4,8 +4,8 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
-import com.chongdao.client.service.insurance.webservicedev.EcooperationWebService;
-import com.chongdao.client.service.insurance.webservicedev.EcooperationWebServiceService;
+import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebService;
+import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebServiceService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.DocxUtil;
 import com.chongdao.client.utils.Md5;
@@ -36,6 +36,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 
+//import com.chongdao.client.service.insurance.webservicedev.EcooperationWebService;
+//import com.chongdao.client.service.insurance.webservicedev.EcooperationWebServiceService;
+
 /**
  * @Description TODO
  * @Author onlineS
@@ -58,13 +61,13 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     @Value("${insurance.invoiceUrl}")
     private String INVOICE_URL;//请求电子发票接口
     @Value("${insurance.invoiceTitle}")
-    private String INVOICE_TITLE= "XXX";//电子发票抬头
+    private String INVOICE_TITLE;//电子发票抬头
     @Value("${insurance.plateFormCode}")
     private String PLATE_FORM_CODE;//平台代码(保险公司提供)
     @Value("${insurance.secretKey}")
     private String SECRET_KEY;//秘钥(保险公司提供)
     @Value("${insurance.insuranceServiceNo}")
-    private String INSURANCE_SERVICE_NO = "001001"; // wsdl接口代码
+    private String INSURANCE_SERVICE_NO; // wsdl接口代码
     @Value("${insurance.zfoRiskCode}")
     private String ZFO_RISK_CODE = "ZFO";
     @Value("${insurance.zcgRiskCode}")
@@ -72,9 +75,9 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     @Value("${insurance.i9qRiskCode}")
     private String I9Q_RISK_CODE = "I9Q";
     @Value("${insurance.policyFolderPrefix}")
-    private String POLICY_FOLDER_PREFIX = "../../policy/";//电子单证本地保存地址
+    private String POLICY_FOLDER_PREFIX;//电子单证本地保存地址
     @Value("${insurance.invoiceFolderPrefix}")
-    private String INVOICE_FOLDER_PREFIX = "../../invoice/";//电子发票本地保存地址
+    private String INVOICE_FOLDER_PREFIX;//电子发票本地保存地址
     @Value("${insurance.zcgName}")
     private String zcgName;//运输险固定投保人/被保人姓名
     @Value("${insurance.zcgCardNo}")

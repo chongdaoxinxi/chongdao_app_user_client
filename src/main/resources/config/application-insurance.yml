@@ -10,11 +10,11 @@ insurance:
    zcgSumAmount: 10000.0 # 运输险保额
    zcgSumPremium: 1.0 # 运输险保费
    zcgSustainTime: 12 # 运输险自动往后顺延12小时
-#   invoiceUrl: http://www.epicc.com.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   正式环境 请求发票地址
-#   insuranceUrl: http://www.epicc.com.cn/ecooperation/webservice/insure?wsdl #   正式环境 投保地址
+   invoiceUrl: http://www.epicc.com.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   正式环境 请求发票地址
+   insuranceUrl: http://www.epicc.com.cn/ecooperation/webservice/insure?wsdl #   正式环境 投保地址
    invoiceTitle: 上海宠道信息科技 #   发票抬头
    plateFormCode: CPI000865 #   投保平台代码
-#   secretKey: Picc89MK8yjq6h7j #   正式环境 秘钥
+   secretKey: Picc89MK8yjq6h7j #   正式环境 秘钥
    insuranceServiceNo: 001001 #   wsdl接口代码
    zfoRiskCode: ZFO #   家责险标识
    zcgRiskCode: ZCG #   运输险标识
@@ -25,8 +25,8 @@ insurance:
    invoiceRealpath: /home/invoice/ #   电子发票预览地址
 
 #   测试环境相关参数
-   secretKey: Picc37mu63ht38mw #   测试环境, 秘钥
-   invoiceUrl: http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   测试环境 请求发票地址
-   insuranceUrl: http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl #   测试环境 投保地址
+#   secretKey: Picc37mu63ht38mw #   测试环境, 秘钥
+#   invoiceUrl: http://partnertest.mypicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   测试环境 请求发票地址
+#   insuranceUrl: http://partnertest.mypicc.com.cn/ecooperation/webservice/insure?wsdl #   测试环境 投保地址
 
 
