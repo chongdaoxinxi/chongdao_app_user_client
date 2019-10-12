@@ -107,4 +107,9 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
     public ResultResponse getAppiontInsuranceOrderClaims(Integer insuranceOrderId) {
         return ResultResponse.createBySuccess(insuranceClaimsMapper.getClaimsByInsuranceOrderId(insuranceOrderId));
     }
+
+    @Override
+    public ResultResponse getClaimsDetail(Integer claimsId) {
+        return ResultResponse.createBySuccess(insuranceClaimsRepository.findById(claimsId).orElse(null));
+    }
 }

@@ -162,6 +162,16 @@ public class InsuranceController {
     }
 
     /**
+     * 获取理赔详情
+     * @param claimsId
+     * @return
+     */
+    @PostMapping("getClaimsDetail")
+    public ResultResponse getClaimsDetail(Integer claimsId) {
+        return insuranceClaimsService.getClaimsDetail(claimsId);
+    }
+
+    /**
      * 获取指定保险订单的理赔记录
      * @param insuranceOrderId
      * @return

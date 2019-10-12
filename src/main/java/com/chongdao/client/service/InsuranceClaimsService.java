@@ -39,4 +39,6 @@ public interface InsuranceClaimsService {
     ResultResponse getMyClaimsList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
     ResultResponse getAppiontInsuranceOrderClaims(Integer insuranceOrderId);
+
+    ResultResponse getClaimsDetail(Integer claimsId);
 }
