@@ -5,6 +5,7 @@ import com.chongdao.client.vo.UserInsuranceTodoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -17,4 +18,11 @@ public interface InsuranceFeeRecordMapper {
     List<UserInsuranceTodoVO>  getUserTodoList(@Param("userId") Integer userId);
 
     InsuranceFeeRecord getInsuranceFeeRecordById(@Param("id") Integer id);
+
+    /**
+     * 获取申请理赔用户近15天内的有效医疗费用记录
+     * @param userId
+     * @return
+     */
+    BigDecimal getClaimsTotalFeeLimit15Days(@Param("userId") Integer userId);
 }

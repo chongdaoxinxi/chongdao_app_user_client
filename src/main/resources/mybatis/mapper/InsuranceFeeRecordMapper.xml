@@ -97,4 +97,9 @@
         left join shop s on ifr.shop_id = s.id
         where ifr.user_id = #{userId} and ifr.status = -1
     </select>
+
+    <select id="getClaimsTotalFeeLimit15Days" resultType="java.math.BigDecimal" parameterType="map">
+        SELECT SUM(ifr.money) AS total_fee FROM insurance_fee_record ifr WHERE ifr.user_id = 6589 AND DATE_SUB(CURDATE(), INTERVAL 15 DAY) <= date(ifr.create_time)
+        AND ifr.status = 1 GROUP BY ifr.user_id
+    </select>
 </mapper>
