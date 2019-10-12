@@ -10,7 +10,7 @@ insurance:
    zcgSumAmount: 10000.0 # 运输险保额
    zcgSumPremium: 1.0 # 运输险保费
    zcgSustainTime: 12 # 运输险自动往后顺延12小时
-   invoiceUrl: http://www.epicc.com.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   正式环境 请求发票地址
+   invoiceUrl: http://www.epicc.com.cn/ecooperation/InvoiceConfigController/StartInvoiceConfig.do #   正式环境 请求发票地址
    insuranceUrl: http://www.epicc.com.cn/ecooperation/webservice/insure?wsdl #   正式环境 投保地址
    invoiceTitle: 上海宠道信息科技 #   发票抬头
    plateFormCode: CPI000865 #   投保平台代码

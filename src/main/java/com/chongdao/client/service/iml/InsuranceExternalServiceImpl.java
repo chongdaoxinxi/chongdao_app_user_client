@@ -66,8 +66,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private String PLATE_FORM_CODE;//平台代码(保险公司提供)
     @Value("${insurance.secretKey}")
     private String SECRET_KEY;//秘钥(保险公司提供)
-    @Value("${insurance.insuranceServiceNo}")
-    private String INSURANCE_SERVICE_NO; // wsdl接口代码
+//    @Value("${insurance.insuranceServiceNo}")
+    private String INSURANCE_SERVICE_NO = "001001"; // wsdl接口代码
     @Value("${insurance.zfoRiskCode}")
     private String ZFO_RISK_CODE = "ZFO";
     @Value("${insurance.zcgRiskCode}")
@@ -305,6 +305,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         System.out.println("报文数据:" + datas);
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
+        System.out.println("INSURANCE_SERVICE_NO:     " + INSURANCE_SERVICE_NO);
         String resp = service.insureService(INSURANCE_SERVICE_NO, datas);
         System.out.println("返回数据:" + resp);
 
@@ -445,7 +446,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Element invoiceInfo = applyInfo.addElement("InvoiceInfo");
         invoiceInfo.addElement("Policyno").setText(insuranceOrder.getPolicyNo());//投保单号
         invoiceInfo.addElement("RequestTime").setText(DateTimeUtil.dateToStr(new Date()));
-        invoiceInfo.addElement("InvoiceTitle").setText(INVOICE_TITLE);//发票抬头
+        Integer insuranceType = insuranceOrder.getInsuranceType();
+        String title = INVOICE_TITLE;
+        if(insuranceType != null && insuranceType != 3) {
+            title = insuranceOrder.getName();
+        }
+        invoiceInfo.addElement("InvoiceTitle").setText(title);//发票抬头
         invoiceInfo.addElement("Phone").setText(insuranceOrder.getPhone());
         String address = insuranceOrder.getAddress();
         if(address == null) {
@@ -469,6 +475,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         System.out.println("请求报文:" + text);
         try {
             //Http协议调用接口，其中serviceBusURI是要调用地址
+            System.out.println("INVOICE_URL:    " + INVOICE_URL);
             URL url = new URL(INVOICE_URL);
             URLConnection con = url.openConnection();
             con.setDoOutput(true);
@@ -526,6 +533,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 
 //                保存文件名
                 insuranceOrder.setInvoiceImage(insuranceOrder.getPolicyNo() + ".pdf");
+                insuranceOrderRepository.save(insuranceOrder);
                 return null;
             });
         }
