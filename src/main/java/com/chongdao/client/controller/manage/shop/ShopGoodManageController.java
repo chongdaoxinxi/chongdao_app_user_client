@@ -3,12 +3,18 @@ package com.chongdao.client.controller.manage.shop;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.Good;
+import com.chongdao.client.mapper.GoodMapper;
+import com.chongdao.client.repository.GoodsRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.service.UnitService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.PetCategoryAndScopeVO;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +33,10 @@ public class ShopGoodManageController {
     private UnitService unitService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private GoodsRepository goodsRepository;
+    @Autowired
+    private GoodMapper goodMapper;
 
     /**
      * 获取商品类别
@@ -242,4 +252,44 @@ public class ShopGoodManageController {
     public ResultResponse getUnitList(Integer moduleId, Integer categoryId) {
         return unitService.getUnitList(moduleId, categoryId);
     }
+
+
+    /**
+     * 获取官方店铺商品列表
+     * @return
+     */
+    @GetMapping("getOfficialGoodsList")
+    public ResultResponse getOfficialGoodsList() {
+        List<Good> goodList = goodsRepository.findByShopIdAndStatus(1,1);
+        return ResultResponse.createBySuccess(goodList);
+    }
+
+
+    @PostMapping("updateOfficialGoodsToShop")
+    public ResultResponse updateOfficialGoodsToShop(@RequestParam String goodsId, @RequestParam Integer shopId){
+        List<Good> goodsList = goodMapper.findOfficialShopGoodsList(goodsId, shopId);
+        String shopIds = "";
+        if (!CollectionUtils.isEmpty(goodsList)) {
+            for (Good good : goodsList) {
+                if (StringUtils.isNotBlank(good.getShopIds())) {
+                    //如果该该店铺包含该商品，则进行删除，否则为添加
+                    if (good.getShopIds().contains(String.valueOf(shopId))) {
+                        List<String> stringList = Splitter.on(",").splitToList(good.getShopIds());
+                        for (String s : stringList) {
+                            if (!s.equals(shopId)){
+                                shopIds = Joiner.on(",").skipNulls().join(s,shopIds);
+                            }
+                        }
+                    }else {
+                        shopIds = Joiner.on(",").skipNulls().join(shopIds,shopId);
+                    }
+                    good.setShopIds(shopIds.substring(0,shopIds.length() - 1));
+                }
+            }
+        }
+
+        return ResultResponse.createBySuccess(goodsList);
+    }
+
+
 }

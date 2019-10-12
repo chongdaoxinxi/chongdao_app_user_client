@@ -46,4 +46,5 @@ public interface ShopMapper {
 
     List<Shop> findShopList(@Param("lng") Double lng,@Param("lat")Double lat,@Param("areaCode") String areaCode,@Param("shopIds") String shopIds);
 
+
 }

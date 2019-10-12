@@ -10,9 +10,9 @@ public class AliPayConfig {
     // app支付应用公钥
     public static final String ALI_PAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyHeq/rHzbic/+hkaeLGfU4iMRTL9u3R1NVQImv/OTzNAnMH/RnwhmPjCgt+FxZDuxl9zrh2aSmAtQwM9tSmQmkwyRUFMRO7RUVG1mzx3Ol0yfjYOeb6UgroPrWB72Y5ElURqRkvC23ZicXd4rPfHIJ2XzVlQ05kKsGBISbt7XwzWPO0QKDqOzN3uJPbyQkbJnKJDvT+2CmAO6D/dBvkHb4WN0sS+ykTJk/J+JFDZ3n322TREMMn44AJWtMiP+5HQM7mzP8ktVpAiSULLX2nQlWfGT1IOMivMGfPbdNAKSYSci5gIaM0ucEKOFpwQjsM0+N3Vk+YlfPvInhQlazfznwIDAQAB"; // 支付宝公钥
     //回调
-    public static final String NOTIFY_URL = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallback";
+    public static final String NOTIFY_URL = "https://47.100.63.167/app_client/api/pay/aliPayCallback";
 
-    public static final String NOTIFY_URL_HT = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallbackHt";
+    public static final String NOTIFY_URL_HT = "https://47.100.63.167/app_client/api/pay/aliPayCallbackHt";
     //保险医疗费用支付宝支付回调
     public static final String NOTIFY_URL_INSURANCE = "https://dev.chongdaopet.com/app_client/api/pay/aliPayCallbackInsurance";
      // 支付完成跳转页面

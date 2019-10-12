@@ -492,6 +492,12 @@
           where g.shop_id = #{shopId} and g.status=0
     </select>
 
+    <select id="findOfficialShopGoodsList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+          from good
+          where id in (${goodsId}) and shop_id = 1 and status = 1
+    </select>
+
     <update id="updateDiscount">
         update good
         <set>
