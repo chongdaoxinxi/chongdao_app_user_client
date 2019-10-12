@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceClaims;
 import com.chongdao.client.entitys.InsuranceOrder;
 import com.chongdao.client.mapper.InsuranceClaimsMapper;
+import com.chongdao.client.mapper.InsuranceFeeRecordMapper;
 import com.chongdao.client.repository.InsuranceClaimsRepository;
 import com.chongdao.client.repository.InsuranceOrderRepository;
 import com.chongdao.client.service.InsuranceClaimsService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
     private InsuranceClaimsMapper insuranceClaimsMapper;
     @Autowired
     private InsuranceOrderRepository insuranceOrderRepository;
+    @Autowired
+    private InsuranceFeeRecordMapper insuranceFeeRecordMapper;
 
     @Transactional
     @Override
@@ -49,12 +53,14 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
         if (id != null) {
             //编辑
             insuranceClaims.setUpdateTime(new Date());
+            insuranceClaims.setInsuranceTotalFee(getInsuranceTotalFee(insuranceOrder));//统计近15日的有效医疗记录
             insuranceClaimsRepository.save(insuranceClaims);
         } else {
             //新建
             InsuranceClaims add = new InsuranceClaims();
             BeanUtils.copyProperties(insuranceClaims, add);
             add.setCreateTime(new Date());
+            add.setInsuranceTotalFee(getInsuranceTotalFee(insuranceOrder));//统计近15日的有效医疗记录
 //            //冗余部分保险订单数据
 //            if (StringUtils.isNotBlank(insuranceOrder.getPetName()))
 //                add.setPetName(insuranceOrder.getPetName());
@@ -71,6 +77,16 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
             insuranceOrderRepository.save(insuranceOrder);
         }
         return ResultResponse.createBySuccess();
+    }
+
+    private BigDecimal getInsuranceTotalFee(InsuranceOrder insuranceOrder) {
+        if(insuranceOrder != null) {
+            Integer userId = insuranceOrder.getUserId();
+            BigDecimal totalFee = insuranceFeeRecordMapper.getClaimsTotalFeeLimit15Days(userId);
+            return totalFee;
+        } else {
+            return new BigDecimal(0);
+        }
     }
 
     @Transactional
