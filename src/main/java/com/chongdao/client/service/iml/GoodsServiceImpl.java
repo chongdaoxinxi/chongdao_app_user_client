@@ -114,13 +114,6 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (good.getReDiscount() > 0.0D && good.getReDiscount() != null){
             goodsDetailVo.setReDiscountDesc("第2件" + good.getReDiscount() + "折");
         }
-        //查询优惠券（属于该商品可以使用或者领取的）
-        //获取满减
-        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnStateAndCpnType(good.getShopId(), 1,4);
-        goodsDetailVo.setCouponInfoFullList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
-        //优惠券
-        List<CouponInfo> couponInfos = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(good.getShopId(), 1, 4);
-        goodsDetailVo.setCouponInfoList(couponInfos);
         //查询店铺信息
         Shop shop = shopMapper.selectByPrimaryKey(good.getShopId());
         if (shop == null){
@@ -131,6 +124,22 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsDetailVo.setShopName(shop.getShopName());
         goodsDetailVo.setStartBusinessHours(shop.getStartBusinessHours());
         goodsDetailVo.setEndBusinessHours(shop.getEndBusinessHours());
+        //查询优惠券（属于该商品可以使用或者领取的）
+        //获取满减
+        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnStateAndCpnType(good.getShopId(), 1,4);
+        goodsDetailVo.setCouponInfoFullList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
+        //优惠券
+        List<CouponInfo> couponInfos = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(good.getShopId(), 1, 4);
+        if (!CollectionUtils.isEmpty(couponInfos)) {
+            couponInfos.stream().forEach(couponInfo -> {
+                CpnUser cpnUser = cpnUserRepository.findByUserIdAndCpnIdAndShopId(userId, couponInfo.getId(), String.valueOf(shop.getId()));
+                if (cpnUser != null) {
+                    //已领取
+                    couponInfo.setReceive(1);
+                }
+            });
+        }
+        goodsDetailVo.setCouponInfoList(couponInfos);
         //查询该商品是否被当前用户收藏
         int count = favouriteGoodsRepository.countByUserIdAndGoodIdAndStatus(userId, goodsId, 1);
         goodsDetailVo.setConcernStatus(count);
