@@ -80,9 +80,12 @@ public class ShopController {
     @GetMapping("search")
     public ResultResponse pageQuery(String keyword,
                                     @RequestParam String areaCode,
-                                    @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                                    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-        return ResultResponse.createBySuccess(shopService.pageQuery(keyword,areaCode,pageNum,pageSize));
+                                    @RequestParam(value = "categoryId",required = false) String categoryId,
+                                    @RequestParam(value = "userId",required = false) Integer userId,
+                                    @RequestParam(value = "proActivities",required = false) String  proActivities,
+                                    @RequestParam(value = "orderBy",defaultValue = "arrangement",required = false) String orderBy,
+                                    @RequestParam(value = "lng") Double lng, @RequestParam("lat") Double lat){
+        return ResultResponse.createBySuccess(shopService.pageQuery(keyword,areaCode,categoryId,userId,proActivities,orderBy,lng,lat));
 
     }
 

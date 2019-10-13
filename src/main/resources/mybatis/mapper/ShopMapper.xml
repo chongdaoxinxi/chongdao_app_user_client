@@ -576,4 +576,35 @@
         select <include refid="Base_Column_List"/>
         from shop where id in (${shopIds})
     </select>
+
+
+
+    <select id="findShopByConditional" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Lists"/>,
+        round(getDistance(s.lat,s.lng,#{lat},#{lng})) dis,
+        if(round(getDistance(s.lat,s.lng,#{lat},#{lng}))&lt;=
+        1000,CONCAT(round(getDistance(s.lat,s.lng,#{lat},#{lng})),'m'),
+        CONCAT(format(round(getDistance(s.lat,s.lng,#{lat},#{lng}))*0.001,1),'km')) distance,
+        (select ifnull(max(discount),0) from good where shop_id=s.id and discount > 0 order by discount) discount,
+        (select ifnull(max(re_discount),0) from good where shop_id=s.id and re_discount > 0 order by re_discount)
+        re_discount,
+        (select ifnull(sum(sales),0) from good where shop_id=s.id) sales
+        from shop s
+        where s.status in (0,1) and s.area_code = #{areaCode}
+        <if test="keyword != null">
+            and s.shop_name like  CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="categoryId != null">
+            and (select category_id from good g where g.shop_id=s.id) in (#{categoryId})
+        </if>
+        <if test="discount &gt;0 ">
+            and (select min(discount) from good g where g.shop_id=s.id and discount &gt; 0) &gt; 0
+        </if>
+        <if test="proActivities != null">
+            and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp
+            where cp.shop_id=s.id) in (#{proActivities})
+        </if>
+        order by ${orderBy}
+    </select>
 </mapper>

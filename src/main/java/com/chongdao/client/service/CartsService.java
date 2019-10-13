@@ -36,7 +36,7 @@ public interface CartsService {
      * @param goodsIds
      * @return
      */
-    ResultResponse<CartVo> deleteGoods(Integer userId, Integer goodsIds,Integer shopId);
+    ResultResponse<CartVo> deleteGoods(Integer userId, Integer goodsIds,Integer shopId,Integer petId);
 
     /**
      * 清空购物车

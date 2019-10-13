@@ -53,9 +53,10 @@ public class CartsController {
      * @return
      */
     @PostMapping("delete")
-    public ResultResponse<CartVo> deleteGoods(@RequestParam String token,@RequestParam Integer goodsIds,@RequestParam Integer shopId){
+    public ResultResponse<CartVo> deleteGoods(@RequestParam String token,@RequestParam Integer goodsIds,
+                                              @RequestParam Integer shopId,Integer petId){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds,shopId);
+        return cartsService.deleteGoods(tokenVo.getUserId(),goodsIds,shopId,petId);
     }
 
 

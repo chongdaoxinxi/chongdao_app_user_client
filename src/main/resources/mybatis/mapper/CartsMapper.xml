@@ -156,9 +156,20 @@
     select
     <include refid="Base_Column_List"/>
     from cart
-    where  user_id = #{userId}
-    and goods_id = #{goodsId}
-    and shop_id = #{shopId}
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+      <if test="goodsId != null">
+        and goods_id = #{goodsId}
+      </if>
+      <if test="shopId != null">
+        and shop_id = #{shopId}
+      </if>
+      <if test="petId != null">
+        and pet_id = #{petId}
+      </if>
+    </where>
   </select>
 
   <select id="selectCartByUserId" resultMap="BaseResultMap" parameterType="int">
@@ -172,9 +183,21 @@
   <update id="updateCartByUserIdAndGoodsId" parameterType="com.chongdao.client.entitys.Carts" >
     update cart
     set quantity = quantity-1
-    where user_id = #{userId} and
-      goods_id = #{goodsId} and
-      shop_id = #{shopId}
+    where
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+      <if test="goodsId != null">
+        and goods_id = #{goodsId}
+      </if>
+      <if test="shopId != null">
+        and shop_id = #{shopId}
+      </if>
+      <if test="petId != null">
+        and pet_id = #{petId}
+      </if>
+    </where>
   </update>
   <select id="selectCartProductCheckedStatusByUserId" parameterType="int" resultType="int">
     select count(1) from cart where checked = 0 and user_id = #{userId}
@@ -186,8 +209,21 @@
   </delete>
 
   <delete id="deleteByUserIdAndProductIds" parameterType="map">
-    delete from cart where user_id = #{userId} and shop_id = #{shopId}
-      and goods_id = #{goodsId}
+    delete from cart
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+      <if test="goodsId != null">
+        and goods_id = #{goodsId}
+      </if>
+      <if test="shopId != null">
+        and shop_id = #{shopId}
+      </if>
+      <if test="petId != null">
+        and pet_id = #{petId}
+      </if>
+    </where>
   </delete>
 
   <select id="selectCheckedCartByUserId" resultMap="BaseResultMap" parameterType="int">

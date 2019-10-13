@@ -20,19 +20,19 @@ public interface CartsMapper {
 
     int updateByPrimaryKey(Carts record);
 
-    Carts selectCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId,@Param("shopId")Integer shopId);
+    Carts selectCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId,@Param("shopId")Integer shopId,@Param("petId")Integer petId);
 
     List<Carts> selectCartByUserId(@Param("userId") Integer userId,@Param("shopId") Integer shopId);
 
     int selectCartProductCheckedStatusByUserId(Integer userId);
-    void updateCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId,@Param("shopId")Integer shopId);
+    void updateCartByUserIdAndGoodsId(@Param("userId") Integer userId, @Param("goodsId") Integer goodsId,@Param("shopId")Integer shopId,@Param("petId")Integer petId);
 
     /**
      * 删除购物车的商品
      * @param userId
      * @param goodsId
      */
-    void deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("shopId") Integer shopId,@Param("goodsId") Integer goodsId);
+    void deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("shopId") Integer shopId,@Param("goodsId") Integer goodsId,@Param("petId")Integer petId);
 
     void clearCart(@Param("userId") Integer userId, @Param("shopId") Integer shopId);
 

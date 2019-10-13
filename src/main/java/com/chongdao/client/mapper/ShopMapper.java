@@ -46,5 +46,9 @@ public interface ShopMapper {
 
     List<Shop> findShopList(@Param("lng") Double lng,@Param("lat")Double lat,@Param("areaCode") String areaCode,@Param("shopIds") String shopIds);
 
+    List<Shop> findShopByConditional(@Param("keyword") String keyword,@Param("orderBy") String orderBy,
+                            @Param("lng") Double lng,@Param("lat")Double lat,
+                            @Param("categoryId") String categoryId,
+                            @Param("discount") Integer discount,@Param("proActivities") String proActivities,@Param("areaCode") String areaCode);
 
 }

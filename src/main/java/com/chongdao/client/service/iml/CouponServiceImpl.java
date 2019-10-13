@@ -40,7 +40,6 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
     public ResultResponse getCouponListByShopIdAndType(Integer userId, String shopId, String categoryId,
                                                        BigDecimal totalPrice, Integer type,
                                                        Integer serviceType) {
-        List<CpnUser> cpnUsers = Lists.newArrayList();
         //商品以及服务优惠券 类型为 1现金券（红包）3折扣券
         if (type.equals(CouponStatusEnum.COUPON_GOODS.getStatus())) {
             //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
@@ -60,8 +59,6 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                     couponInfoList.add(couponInfo);
                 }
             });
-
-
             return ResultResponse.createBySuccess(couponInfoList);
         }
         //配送优惠券(双程)
@@ -144,7 +141,11 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         cpnUser.setUserId(userId);
         cpnUser.setShopId(String.valueOf(couponInfo.getShopId()));
         cpnUserRepository.save(cpnUser);
-        return ResultResponse.createBySuccess();
+        //代表已领取
+        cpnUser.setReceive(1);
+        List<CpnUser> cpnUsers = Lists.newArrayList();
+        cpnUsers.add(cpnUser);
+        return ResultResponse.createBySuccess(cpnUsers);
     }
 
     /**

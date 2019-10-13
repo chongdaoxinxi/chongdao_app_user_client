@@ -1,8 +1,6 @@
 package com.chongdao.client.repository;
 
 import com.chongdao.client.entitys.Shop;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -19,9 +17,9 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     Optional<List<Shop>> findByAccountNameAndPassword(String accountName, String password);
 
-    Page<Shop> findAllByStatusNotAndAreaCode(Integer status,String areaCode,Pageable pageable);
+    List<Shop> findAllByStatusNotAndAreaCode(Integer status,String areaCode);
 
-    Page<Shop> findByShopNameLikeAndStatusNotAndAreaCode(String shopName,Integer status,String areaCode,Pageable pageable);
+    List<Shop> findByShopNameLikeAndStatusNotAndAreaCode(String shopName,Integer status,String areaCode);
 
     Optional<List<Shop>> findAllByIdIn(List<Integer> shopIds);
 }

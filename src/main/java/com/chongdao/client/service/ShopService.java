@@ -2,10 +2,11 @@ package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.vo.ShopVO;
 import com.github.pagehelper.PageInfo;
-import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface ShopService {
     /**
@@ -68,13 +69,11 @@ public interface ShopService {
 
     /**
      * 搜索店铺
-     *
      * @param keyword
-     * @param pageNum
-     * @param pageSize
      * @return
      */
-    Page<Shop> pageQuery(String keyword, String areaCode, int pageNum, int pageSize);
+    ResultResponse<List<ShopVO>> pageQuery(String keyword, String areaCode,String categoryId,Integer userId,
+                                           String  proActivities,String orderBy,Double lng,Double lat);
 
     /**
      * 关注店铺

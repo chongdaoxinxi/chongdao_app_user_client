@@ -64,7 +64,7 @@ public class CartsServiceImpl implements CartsService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
         //查询当前用户的购物车是否存在该商品
-        Carts cart = cartsMapper.selectCartByUserIdAndGoodsId(userId,goodsId,shopId);
+        Carts cart = cartsMapper.selectCartByUserIdAndGoodsId(userId,goodsId,shopId,petId);
         if (cart == null){
             //这个产品不在这个购物车里,需要新增一个这个产品的记录
             Carts cartItem = new Carts();
@@ -148,17 +148,17 @@ public class CartsServiceImpl implements CartsService {
      */
     @Transactional
     @Override
-    public ResultResponse<CartVo> deleteGoods(Integer userId, Integer goodsIds,Integer shopId) {
+    public ResultResponse<CartVo> deleteGoods(Integer userId, Integer goodsIds,Integer shopId,Integer petId) {
         if (userId == null || goodsIds == null || shopId == null) {
             return ResultResponse.createByErrorCodeMessage(400, "goodsIds或shopId不能为空");
         }
-        Carts carts = cartsMapper.selectCartByUserIdAndGoodsId(userId, Integer.valueOf(goodsIds), shopId);
+        Carts carts = cartsMapper.selectCartByUserIdAndGoodsId(userId, Integer.valueOf(goodsIds), shopId,petId);
         if (carts.getQuantity() > 1) {
             //更新数量
-            cartsMapper.updateCartByUserIdAndGoodsId(userId,goodsIds,shopId);
+            cartsMapper.updateCartByUserIdAndGoodsId(userId,goodsIds,shopId,petId);
         }else {
             //删除
-            cartsMapper.deleteByUserIdAndProductIds(userId, shopId, goodsIds);
+            cartsMapper.deleteByUserIdAndProductIds(userId, shopId, goodsIds,petId);
         }
         return this.list(userId,shopId);
     }

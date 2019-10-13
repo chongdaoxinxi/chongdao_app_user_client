@@ -4,6 +4,7 @@ import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.ShopRepository;
@@ -19,9 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -141,6 +139,12 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             long result = DateTimeUtil.costTime(DateTimeUtil.dateToStr(e.getValidityEndDate()),
                     DateTimeUtil.dateToStr(new Date()));
             if (result > 0){
+                //需判断当前用户是否已领取该优惠券
+                CpnUser cpnUser = cpnUserRepository.findByUserIdAndCpnIdAndShopId(userId, e.getId(), String.valueOf(shopId));
+                if (cpnUser != null) {
+                    //已领取
+                    e.setReceive(1);
+                }
                 couponInfoList.add(e);
             }
         });
@@ -342,15 +346,49 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
      * @return
      */
     @Override
-    public Page<Shop> pageQuery(String keyword, String areaCode,int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum-1,pageSize);
+    public ResultResponse<List<ShopVO>> pageQuery(String keyword, String areaCode,String categoryId,Integer userId,
+                                                  String  proActivities,String orderBy,Double lng,Double lat) {
         //keyword为空查询所有店铺
         if (StringUtils.isBlank(keyword)){
-            Page<Shop> shopPage = shopRepository.findAllByStatusNotAndAreaCode(-1,areaCode,pageable);
-            return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
+            return ResultResponse.createByErrorMessage("请输入要搜锁的店铺名称");
         }
-        Page<Shop> shopPage = shopRepository.findByShopNameLikeAndStatusNotAndAreaCode("%" + keyword + "%", -1, areaCode,pageable);
-        return new PageImpl<Shop>(this.shopList(shopPage),pageable,shopPage.getTotalElements());
+        if (StringUtils.isNotBlank(orderBy)){
+            String[] orderByArray = orderBy.split("_");
+            if (SALES_ASC_DESC.contains(orderBy)){
+                //销量排序
+                if (orderByArray[1].equals(ASC)){
+                    orderBy = SALES_ORDER_BY_ASC_AND_DISTANCE_3KM;
+                }else {
+                    orderBy = SALES_ORDER_BY_DESC_AND_DISTANCE_3KM;
+                }
+
+            }else if (FAVORABLE.contains(orderBy)){
+                //好评率排序
+                orderBy =  FAVORABLE_DESC;
+            }else if (ARRANGEMENT_KEY.contains(orderBy)){
+                //综合排序
+                orderBy =  ARRANGEMENT_VALUE_SHOP;
+            }else if (DISTANCE.equals(orderBy)){
+                orderBy = DISTANCE;
+            } else {
+                return null;
+            }
+        }
+        //初始化折扣筛选条件，方便sql拼接
+        Integer discount = 0;
+        if (StringUtils.isNotBlank(proActivities)){
+            //传入的参数内容包含1表示为店铺打折
+            String[] strings = proActivities.split(",");
+            for (String s : strings) {
+                if (DISCOUNT.contains(s)) {
+                    discount = 1;
+                }
+            }
+        }
+        List<Shop> shopList = shopMapper.findShopByConditional(keyword,
+                orderBy, lng, lat, StringUtils.isBlank(categoryId) ? null : categoryId,
+                discount, StringUtils.isBlank(proActivities) ? null : proActivities,areaCode);
+        return ResultResponse.createBySuccess(this.shopListVOList(shopList,null));
     }
 
     /**
@@ -452,8 +490,10 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
     }
 
 
-    private List<Shop> shopList(Page<Shop> shopPage){
-        return shopPage.getContent();
+    private List<ShopVO> shopList(Page<Shop> shopPage){
+        List<Shop> shopList = shopPage.getContent();
+        List<ShopVO> shopVOList = this.shopListVOList(shopList, null);
+        return shopVOList;
     }
 
     /**

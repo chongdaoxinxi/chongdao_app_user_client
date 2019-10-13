@@ -104,8 +104,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setGoodsId(cart.getGoodsId());
             orderGoodsVo.setQuantity(cart.getQuantity());
             orderGoodsVoList.add(orderGoodsVo);
-            petCount = petCount + cart.getPetCount();
             petIds = Joiner.on(",").skipNulls().join(cart.getPetId(),petIds);
+            //需要排除一个宠物卡片选择不同类型的服务
+            if (petIds.length() == 2) { //长度为2代表购物车遍历的是第一个商品（2, 这种）
+                petCount = cart.getPetCount();
+            }
+            if (!petIds.contains(String.valueOf(cart.getPetId()))) {
+                petCount = petCount + cart.getPetCount();
+            }
         }
         if (StringUtils.isNotBlank(petIds)) {
             orderVo.setPetIds(petIds.substring(0, petIds.length() - 1));
