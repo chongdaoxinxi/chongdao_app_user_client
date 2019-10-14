@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
@@ -225,6 +226,16 @@ public class ShopPcController {
     @PostMapping("getMoneyRecommendList")
     public ResultResponse getMoneyRecommendList(String token, String userName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return null;
+    }
+
+    /**
+     * 下载模版
+     * @param request
+     * @param response
+     */
+    @GetMapping("downloadTemplate")
+    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
+        shopChipService.downloadTemplate(request, response);
     }
 
     /**
