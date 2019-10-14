@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @Description 商家端订单管理
@@ -66,9 +67,9 @@ public class ShopOrderManageController {
      * @return
      */
     @GetMapping("getOrderListPc")
-    public ResultResponse getOrderListPc(String token, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) throws Exception {
+    public ResultResponse getOrderListPc(String token, String orderNo, String username, String phone, String orderStatus, Date startDate, Date endDate, Integer pageNum, Integer pageSize) throws Exception {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return orderService.getShopOrderTypeListPc(tokenVo.getRole(), tokenVo.getUserId(), orderNo, username, phone, orderStatus, pageNum, pageSize);
+        return orderService.getShopOrderTypeListPc(tokenVo.getRole(), tokenVo.getUserId(), orderNo, username, phone, orderStatus, startDate, endDate, pageNum, pageSize);
     }
 
     /**

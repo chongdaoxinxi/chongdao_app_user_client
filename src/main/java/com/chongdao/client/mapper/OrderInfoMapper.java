@@ -30,7 +30,7 @@ public interface OrderInfoMapper {
 
     List<OrderInfo> selectByShopIdList(@Param("shopId") Integer userId, @Param("type")String type);
 
-    List<OrderInfo> selectByShopIdListPc(@Param("shopId") Integer userId, @Param("orderNo")String orderNo, @Param("username")String username, @Param("phone")String phone, @Param("orderStatus")String orderStatus);
+    List<OrderInfo> selectByShopIdListPc(@Param("shopId") Integer userId, @Param("orderNo")String orderNo, @Param("username")String username, @Param("phone")String phone, @Param("orderStatus")String orderStatus, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     List<OrderInfo> getOrderListPc(@Param("areaCode") String areaCode, @Param("orderNo")String orderNo, @Param("username")String username, @Param("phone")String phone, @Param("orderStatus")String orderStatus);
 

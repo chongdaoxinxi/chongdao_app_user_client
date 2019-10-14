@@ -928,7 +928,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     }
 
     @Override
-    public ResultResponse<PageInfo> getShopOrderTypeListPc(String role, Integer shopId, String orderNo, String username, String phone, String orderStatus, Integer pageNum, Integer pageSize) {
+    public ResultResponse<PageInfo> getShopOrderTypeListPc(String role, Integer shopId, String orderNo, String username, String phone, String orderStatus, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         if(StringUtils.isNotBlank(role)) {
             //管理员
             if(role.equals("ADMIN_PC")) {
@@ -936,7 +936,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             }
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdListPc(shopId, orderNo, username, phone, orderStatus);
+        List<OrderInfo> orderInfoList = orderInfoMapper.selectByShopIdListPc(shopId, orderNo, username, phone, orderStatus, startDate, endDate);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfoList, null);
         PageInfo pageResult = new PageInfo(orderInfoList);
         pageResult.setList(orderVoList);
