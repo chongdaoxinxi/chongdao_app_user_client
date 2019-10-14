@@ -50,6 +50,9 @@ public class Const {
         String SALES_ORDER_BY_DESC_AND_DISTANCE_3KM= LIMIT_3KM_SALES + DESC + "," + DISTANCE;
         String SALES_ORDER_BY_ASC_AND_DISTANCE_3KM=  LIMIT_3KM_SALES+ ASC + "," + DISTANCE;
 
+        String SALES_ORDER_BY_DESC_AND_SEARCH= "sales" + " "+ DESC + "," + DISTANCE;
+        String SALES_ORDER_BY_ASC_AND_SEARCH=  "sales" + " " + ASC + "," + DISTANCE;
+
         //价格排序
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
         //销量排序（商品）
