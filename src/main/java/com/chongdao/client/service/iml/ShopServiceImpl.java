@@ -357,9 +357,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             if (SALES_ASC_DESC.contains(orderBy)){
                 //销量排序
                 if (orderByArray[1].equals(ASC)){
-                    orderBy = SALES_ORDER_BY_ASC_AND_DISTANCE_3KM;
+                    orderBy = SALES_ORDER_BY_ASC_AND_SEARCH;
                 }else {
-                    orderBy = SALES_ORDER_BY_DESC_AND_DISTANCE_3KM;
+                    orderBy = SALES_ORDER_BY_DESC_AND_SEARCH;
                 }
 
             }else if (FAVORABLE.contains(orderBy)){

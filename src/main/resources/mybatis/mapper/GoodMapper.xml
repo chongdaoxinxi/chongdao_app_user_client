@@ -441,9 +441,8 @@
 
     <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
         select
-        <include refid="Base_Column_Lists"/>,
-        p.id coupon_id,p.cpn_name coupon_name,p.cpn_type type
-        from  good g left join cpn_info p on g.shop_id = p.shop_id
+        <include refid="Base_Column_Lists"/>
+        from  good g
         where g.status = 1 and g.area_code = #{areaCode}
         <if test="goodsName != null">
             and g.name like #{goodsName}
@@ -495,7 +494,7 @@
     <select id="findOfficialShopGoodsList" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" />
           from good
-          where id in (${goodsId}) and shop_id = 1 and status = 1
+          where id in (${goodsId}) and shop_id = 1 and statatus = 1
     </select>
 
     <update id="updateDiscount">
