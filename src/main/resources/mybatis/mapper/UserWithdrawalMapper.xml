@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chongdao.client.mapper.UserWithdrawalMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.entitys.UserWithdrawal">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="real_money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="apply_note" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="check_note" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        uw.id, uw.user_id, uw.name, uw.money, uw.real_money, uw.apply_note, uw.check_note, uw.status, uw.create_time, uw.update_time
+    </sql>
+    <select id="getUserWithdrawalList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from user_withdrawal uw
+        where 1 = 1
+        <if test="userId != null">
+            and uw.user_id = #{userId}
+        </if>
+        <if test="name != null and name != ''">
+            and uw.name like concat('%', #{name}, '%')
+        </if>
+        <if test="status != null">
+            and uw.status = #{status}
+        </if>
+        <if test="startDate != null">
+            and uw.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and uw.create_time &lt; #{endDate}
+        </if>
+        order by uw.create_time desc
+    </select>
+</mapper>

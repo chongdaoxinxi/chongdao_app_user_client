@@ -2,14 +2,16 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAccount;
+import com.chongdao.client.entitys.UserWithdrawal;
 import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.service.UserTransService;
+import com.chongdao.client.service.UserWithdrawalService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * @Description 用户账户信息
@@ -24,6 +26,8 @@ public class UserAccountController {
     private UserAccountService userAccountService;
     @Autowired
     private UserTransService userTransService;
+    @Autowired
+    private UserWithdrawalService userWithdrawalService;
 
     /**
      *
@@ -60,4 +64,26 @@ public class UserAccountController {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userTransService.getUserTrans(tokenVo.getUserId(), type, pageNum, pageSize);
     }
+
+    /**
+     * 申请提现
+     * @param userWithdrawal
+     * @return
+     */
+    @PostMapping("addUserWithdrawal")
+    public ResultResponse addUserWithdrawal(@RequestBody UserWithdrawal userWithdrawal) {
+        return userWithdrawalService.addUserWithdrawal(userWithdrawal);
+    }
+
+    /**
+     * 获取我的提现记录
+     * @param token
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getUserWithdrawalList")
+    public ResultResponse getUserWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) { return userWithdrawalService.getUserWithdrawalList(token, null, startDate, endDate, pageNum, pageSize);}
 }
