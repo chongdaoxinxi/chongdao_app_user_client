@@ -554,6 +554,13 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         return ResultResponse.createBySuccess(scopeVO);
     }
 
+    @Override
+    public ResultResponse getPetCategory() {
+        //获取狗粮适用类型(和适用期绑定)
+        List<PetCategory> petCategoryList = petCategoryRepository.findAll();
+        return ResultResponse.createBySuccess(petCategoryList);
+    }
+
     /**
      * 商品收藏/取消
      * @param userId

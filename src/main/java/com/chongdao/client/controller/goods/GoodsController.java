@@ -144,6 +144,15 @@ public class GoodsController {
     }
 
     /**
+     * 获取狗粮适用类型
+     * @return
+     */
+    @GetMapping("getPetCategory")
+    public ResultResponse getPetCategory(){
+        return goodsService.getPetCategory();
+    }
+
+    /**
      * 商品收藏/取消
      * @param goodsId
      * @param token

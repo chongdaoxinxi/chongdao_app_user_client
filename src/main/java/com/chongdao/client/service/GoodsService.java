@@ -139,6 +139,12 @@ public interface GoodsService {
     ResultResponse getScopeType(Integer goodsTypeId, Integer brandId);
 
     /**
+     * 获取适用类型
+     * @return
+     */
+    ResultResponse getPetCategory();
+
+    /**
      * 商品收藏/取消
      * @param userId
      * @param goodsId
