@@ -183,7 +183,6 @@
   <update id="updateCartByUserIdAndGoodsId" parameterType="com.chongdao.client.entitys.Carts" >
     update cart
     set quantity = quantity-1
-    where
     <where>
       <if test="userId != null">
         and user_id = #{userId}

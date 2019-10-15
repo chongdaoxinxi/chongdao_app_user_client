@@ -443,7 +443,7 @@
         select
         <include refid="Base_Column_Lists"/>
         from  good g
-        where g.status = 1 and g.area_code = #{areaCode}
+        where g.status = 1 and g.area_code = #{areaCode} and g.category_id = 3
         <if test="goodsName != null">
             and g.name like #{goodsName}
         </if>
@@ -454,7 +454,7 @@
             and g.goods_type_id = #{goodsTypeId}
         </if>
         <if test="scopeId != null">
-            and g.scope_id = #{scopeId}
+            and g.scope_id in (${scopeIds})
         </if>
         <if test="petCategoryId != null">
             and g.pet_category_id = #{petCategoryId}

@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static com.chongdao.client.common.Const.IP;
 import static com.chongdao.client.common.Const.OrderBy.*;
 import static com.chongdao.client.common.Const.goodsListProActivities.DISCOUNT;
 
@@ -125,6 +126,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
         ShopVO shopVO = new ShopVO();
         BeanUtils.copyProperties(shop,shopVO);
+        if (!shop.getLogo().contains("http")) {
+            shopVO.setLogo(IP + shop.getLogo());
+        }
         //获取店铺销量
         Integer salesSum = goodsRepository.findBySalesSum(shopId);
         if (salesSum == null){
@@ -200,6 +204,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         for (Good good : goodList) {
                 GoodsListVO goodsListVO = new GoodsListVO();
                 BeanUtils.copyProperties(good,goodsListVO);
+                if (!good.getIcon().contains("http")) {
+                    goodsListVO.setIcon(IP + good.getIcon());
+                }
                 if (good.getUnitName() != null){
                     goodsListVO.setName(good.getName() + good.getUnitName());
                 }
@@ -304,6 +311,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             User user = userRepository.findById(e.getUserId()).get();
             orderEvalVO.setUserName(user.getName());
             orderEvalVO.setLogo(user.getIcon());
+            if (!user.getIcon().contains("http")) {
+                orderEvalVO.setLogo(IP + user.getIcon());
+            }
             //获取购买商品
             List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(e.getOrderNo());
             if (!CollectionUtils.isEmpty(orderDetailList)){
@@ -506,6 +516,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         shopList.forEach(shop -> {
             ShopVO shopVO = new ShopVO();
             BeanUtils.copyProperties(shop,shopVO);
+            if (!shop.getLogo().contains("http")) {
+                shopVO.setLogo(IP + shop.getLogo());
+            }
             int count = 0;
             //查询用户购物车数目
             if (userId != null){

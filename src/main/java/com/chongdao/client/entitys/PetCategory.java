@@ -11,6 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
+/**
+ * 使用种类
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,7 +27,9 @@ public class PetCategory {
 
     private String name;
 
-    private Integer goodsTypeId;
+    private Integer scopeId;
+
+    //private Integer brandId;
 
     private Date createTime;
 
