@@ -42,6 +42,7 @@ import java.util.Optional;
 
 import static com.chongdao.client.common.Const.IP;
 import static com.chongdao.client.enums.OrderStatusEnum.USER_APPLY_REFUND;
+import static com.chongdao.client.utils.DateTimeUtil.STANDARD_FORMAT;
 
 @Slf4j
 @Service
@@ -135,6 +136,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
         if (shop != null) {
             orderVo.setShopName(shop.getShopName());
+            orderVo.setShopLogo(shop.getLogo());
+            if (!shop.getLogo().contains("http")){
+                orderVo.setShopLogo(IP + shop.getLogo());
+            }
             orderVo.setOrderGoodsVoList(orderGoodsDTO.getOrderGoodsVoList());
             orderVo.setUserId(userId);
             orderVo.setAreaCode(shop.getAreaCode());
@@ -832,10 +837,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         order.setSingleServiceType(orderCommonVO.getSingleServiceType());
         order.setOrderNo(orderNo);
         order.setReceiveAddressId(orderCommonVO.getReceiveAddressId());
-        order.setReceiveTime(DateTimeUtil.strToDate(orderCommonVO.getReceiveTime()));
+        order.setReceiveTime(DateTimeUtil.strToDate(orderCommonVO.getReceiveTime(),STANDARD_FORMAT));
         //双程
         if (orderCommonVO.getServiceType() == 1) {
-            order.setDeliverTime(DateTimeUtil.strToDate(orderCommonVO.getDeliverTime()));
+            order.setDeliverTime(DateTimeUtil.strToDate(orderCommonVO.getDeliverTime(),STANDARD_FORMAT));
             order.setDeliverAddressId(orderCommonVO.getDeliverAddressId());
         }
         order.setCreateTime(new Date());
@@ -858,27 +863,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         return order;
     }
-
-
-
-
-
-
-    /**
-     * 计算配送费
-     *
-     * @param cardId
-     * @return
-     */
-    private BigDecimal computerServiceFee(Integer cardId) {
-        BigDecimal servicePrice = BigDecimal.ZERO;
-        if (cardId != null) {
-            Card card = cardRepository.findById(cardId).get();
-            servicePrice = card.getDecreasePrice();
-        }
-        return servicePrice;
-    }
-
 
 
 
