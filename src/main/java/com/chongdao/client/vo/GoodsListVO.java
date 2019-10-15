@@ -93,7 +93,7 @@ public class GoodsListVO {
 
     private String token;
 
-
+    private Byte status;
 
 
 

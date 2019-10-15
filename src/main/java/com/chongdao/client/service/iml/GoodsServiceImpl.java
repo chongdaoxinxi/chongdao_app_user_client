@@ -291,7 +291,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (shopId == null ){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "shopId不能为空");
         }
-        List<Good> goodList = goodMapper.getGoodList(shopId,goodsTypeId, goodName);
+        List<GoodsPcVO> goodList = goodMapper.getGoodList(shopId,goodsTypeId, goodName);
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         goodList.stream().forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();

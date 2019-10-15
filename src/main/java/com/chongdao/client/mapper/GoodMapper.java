@@ -1,6 +1,7 @@
 package com.chongdao.client.mapper;
 
 import com.chongdao.client.entitys.Good;
+import com.chongdao.client.vo.GoodsPcVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -42,7 +43,7 @@ public interface GoodMapper {
 
 
     //----------------------------------商户端------------------------------------------//
-    List<Good> getGoodList(@Param("shopId")Integer shopId, @Param("goodsTypeId") Integer goodsTypeId, @Param("goodName") String goodName);
+    List<GoodsPcVO> getGoodList(@Param("shopId")Integer shopId, @Param("goodsTypeId") Integer goodsTypeId, @Param("goodName") String goodName);
 
 
     void updateGoodsStatus(@Param("goodId") Integer goodId, @Param("status") Integer status);
