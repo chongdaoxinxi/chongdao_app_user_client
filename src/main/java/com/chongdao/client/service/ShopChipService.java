@@ -4,6 +4,8 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceShopChip;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
@@ -62,4 +64,11 @@ public interface ShopChipService {
      * @return
      */
     ResultResponse confirmShopChipVerify(Integer insuranceShopChipId);
+
+    /**
+     * 下载模版
+     * @param request
+     * @param response
+     */
+    void downloadTemplate(HttpServletRequest request, HttpServletResponse response);
 }

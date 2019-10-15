@@ -40,6 +40,13 @@ public interface SmsService {
     void customOrderMsgSenderSimple(String msg, String shopName, String orderNo, String phone);
 
     /**
+     * 通用短信通知(个人)(单纯通知信息)
+     * @param msg
+     * @param phone
+     */
+    void customMsgSenderSimple(String msg, String phone);
+
+    /**
      * 通用短信通知(单个人, 只有订单号)
      * @param msg
      * @param orderNo
@@ -105,6 +112,18 @@ public interface SmsService {
      * @return
      */
     List<String> getAdminPhoneListByOrderId(Integer orderId);
+
+    /**
+     * 获取地区管理员联系电话
+     * @return
+     */
+    String getAdminPhoneByAreaCode(String areaCode);
+
+    /**
+     * 获取超级管理员联系电话
+     * @return
+     */
+    String getSuperAdminPhone();
 
     /**
      * 获取商家联系号码

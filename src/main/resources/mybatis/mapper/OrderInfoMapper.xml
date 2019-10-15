@@ -507,6 +507,12 @@
         <if test="orderStatus != null and orderStatus != ''">
             and o.order_status in (${orderStatus})
         </if>
+        <if test="startDate != null">
+            and o.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and o.create_time &lt; #{endDate}
+        </if>
         group by o.id
         order by o.create_time desc
     </select>

@@ -8,9 +8,9 @@ import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.service.UserTransService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.nio.file.OpenOption;
 import java.util.Optional;
 
 /**
@@ -70,5 +70,15 @@ public class UserAccountServiceImpl implements UserAccountService {
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
+    }
+
+    @Transactional
+    @Override
+    public ResultResponse updateAccountMoney(Integer userId, BigDecimal money) {
+        UserAccount userAccount = userAccountRepository.findByUserId(userId);
+        BigDecimal old = userAccount.getMoney();
+        userAccount.setMoney(old.add(money));
+        userAccountRepository.save(userAccount);
+        return ResultResponse.createBySuccess();
     }
 }

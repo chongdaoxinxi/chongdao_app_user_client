@@ -50,6 +50,8 @@ public class AdminPcController {
     private  ExpressService expressService;
     @Autowired
     private BannerService bannerService;
+    @Autowired
+    private UserWithdrawalService userWithdrawalService;
 
     /**
      * 确认退款完成
@@ -322,7 +324,7 @@ public class AdminPcController {
     }
 
     /**
-     * 获取使用过优惠券的订单
+     * 获取使用过优惠券的订单运输险投保疲累
      * @param token
      * @param shopName
      * @param orderNo
@@ -445,4 +447,27 @@ public class AdminPcController {
     public ResultResponse deleteBanner(Integer id) {
         return bannerService.deleteBanner(id);
     }
+
+    /**
+     * 获取用户提现记录列表
+     * @param name
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getUserWithdrawalList")
+    public ResultResponse getUserWithdrawalList(String name, Date startDate, Date endDate, Integer pageNum, Integer pageSize){ return userWithdrawalService.getUserWithdrawalList(null, name, startDate, endDate, pageNum, pageSize);}
+
+    /**
+     * 审核用户提现
+     * @param userWithdrawalId
+     * @param note
+     * @param realMoney
+     * @param targetStatus
+     * @return
+     */
+    @PostMapping("checkUserWithdrawal")
+    public ResultResponse checkUserWithdrawal(Integer userWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {return userWithdrawalService.checkUserWithdrawal(userWithdrawalId, note, realMoney, targetStatus);}
 }

@@ -1,6 +1,6 @@
-#创蓝短信服务
 sms:
   url: http://smssh1.253.com/msg/variable/json
+  #创蓝短信服务
   account: N2434702
   password: Ryh6TxCW0Ycbc3
   phone: 17821753286
@@ -63,6 +63,9 @@ sms:
 ## 充值
   UserTopUpUser: 【养宠有道】您的充值已处理, 订单号：{$var}, 充值金额：{$var}, 余额：{$var}
   UserTopUpAdmin:  【养宠有道】订单号：{$var}, 用户ID：{$var}, 用户姓名：{$var}, 充值金额：{$var}, 余额：{$var}
+  UserWithdrawalUser: 【养宠有道】您的提现已处理
+  UserWithdrawalSuccessUser: 【养宠有道】您的提现已审核通过, 请耐心等待平台打款
+  UserWithdrawalAdmin: 【养宠有道】有新的用户提现
 
   ShopNewAdtOrder: 【养宠有道】追加订单已下单成功, 订单号：{$var}, 追加订单号：{$var}
   UserNewAdtOrder: 【养宠有道】您的订单追加订单已下单成功，订单号：{$var}, 追加订单号：{$var}

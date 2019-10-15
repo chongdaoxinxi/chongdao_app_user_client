@@ -16,12 +16,17 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
@@ -117,10 +122,10 @@ public class ShopChipServiceImpl implements ShopChipService {
 
     @Transactional
     @Override
-    public ResultResponse addShopChip(InsuranceShopChip insuranceShopChip) {
+    public ResultResponse addShopChip(@RequestBody InsuranceShopChip insuranceShopChip) {
         Integer id = insuranceShopChip.getId();
         String core = insuranceShopChip.getCore();
-        if(StringUtils.isNotBlank(core)) {
+        if(StringUtils.isBlank(core)) {
             return ResultResponse.createByErrorMessage("芯片代码不能为空!");
         }
         //校验芯片码是否已经存在
@@ -139,6 +144,7 @@ public class ShopChipServiceImpl implements ShopChipService {
             BeanUtils.copyProperties(insuranceShopChip, add);
             add.setStatus(1);
             add.setCreateTime(new Date());
+            insuranceShopChipRepository.save(add);
             return ResultResponse.createBySuccess();
         }
     }
@@ -167,6 +173,30 @@ public class ShopChipServiceImpl implements ShopChipService {
             return updateShopChipStatus(insuranceShopChip, 2);
         } else {
             return ResultResponse.createByErrorMessage("无效的宠物芯片ID!");
+        }
+    }
+
+    @Override
+    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            //读到流中
+//            InputStream inStream = this.getClass().getResourceAsStream("/template/chip_template.xlsx");
+            InputStream inStream = new ClassPathResource("/template/chip_template.xlsx").getInputStream();
+            // 设置输出的格式
+            response.reset();
+            response.setContentType("multipart/form-data");
+            response.addHeader("Content-Disposition",
+                    "attachment;filename=" + URLEncoder.encode("chip_template.xlsx", "UTF-8"));
+            // 循环取出流中的数据
+            byte[] b = new byte[200];
+            int len;
+
+            while ((len = inStream.read(b)) > 0){
+                response.getOutputStream().write(b, 0, len);
+            }
+            inStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
