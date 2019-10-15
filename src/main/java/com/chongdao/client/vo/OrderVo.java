@@ -151,4 +151,8 @@ public class OrderVo {
     private String petIds;
 
     private BigDecimal insurancePrice;
+
+
+    //该字段用于区分优惠券使用场景
+    private String categoryId;
 }

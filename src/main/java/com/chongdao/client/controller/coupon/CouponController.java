@@ -23,6 +23,7 @@ public class CouponController {
      * @param shopId 商品id
      * @param type 优惠券类型(0：商品以及服务优惠券 1: 配送券)
      * @param serviceType 服务类型 1.双程 2.单程 3.到店自取
+     * @param categoryId 检验商品类型（主要是针对服务和商品的优惠券使用场景）
      * @return
      */
     @PostMapping("getCouponListByShopId/{shopId}/{type}")
@@ -33,7 +34,7 @@ public class CouponController {
                                                 Integer serviceType,
                                                 String token){
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return couponService.getCouponListByShopIdAndType(tokenVo.getUserId(),shopId,categoryId, totalPrice,type,serviceType);
+        return couponService.getCouponListByShopIdAndType(tokenVo.getUserId(),shopId,categoryId,totalPrice,type,serviceType);
     }
 
 

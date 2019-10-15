@@ -1495,6 +1495,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                                 orderGoodsVo.setReDiscount(good.getReDiscount());
                             }
                         }
+                        //分装categoryId,用于区分优惠券使用场景
+                        String result = Joiner.on(",").join(categoryIds);
+                        orderVo.setCategoryId(result);
                         //小记
                         orderVo.setTotalDiscount(this.orderDiscountAndFee(orderGoodsVo, orderGoodsVo.getQuantity()).getTotalDiscount());
                         //折扣计算包含二次打折
