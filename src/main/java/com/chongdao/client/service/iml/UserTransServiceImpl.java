@@ -5,12 +5,14 @@ import com.chongdao.client.entitys.UserAccount;
 import com.chongdao.client.entitys.UserTrans;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.UserTransRepository;
+import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.service.UserTransService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,12 +27,30 @@ import java.util.Date;
 public class UserTransServiceImpl implements UserTransService {
     @Autowired
     private UserTransRepository userTransRepository;
+    @Autowired
+    private UserAccountService userAccountService;
 
+    @Transactional
     @Override
     public void saveUserTarns(UserTrans ut) {
         userTransRepository.saveAndFlush(ut);
     }
 
+    @Transactional
+    @Override
+    public void addUserTrans(Integer userId, BigDecimal money, String comment, Integer type) {
+        UserTrans ut = new UserTrans();
+        ut.setUserId(userId);
+        ut.setMoney(money);
+        ut.setComment(comment);
+        ut.setType(7);
+        ut.setCreateTime(new Date());
+        userTransRepository.save(ut);
+        //更新用户账户金额
+        userAccountService.updateAccountMoney(userId, money);
+    }
+
+    @Transactional
     @Override
     public void saveUserTransByRecharge(UserAccount ua, BigDecimal money) {
         UserTrans ut = new UserTrans();

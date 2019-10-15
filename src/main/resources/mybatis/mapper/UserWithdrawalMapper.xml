@@ -12,11 +12,12 @@
             <arg column="check_note" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="check_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        uw.id, uw.user_id, uw.name, uw.money, uw.real_money, uw.apply_note, uw.check_note, uw.status, uw.create_time, uw.update_time
+        uw.id, uw.user_id, uw.name, uw.money, uw.real_money, uw.apply_note, uw.check_note, uw.status, uw.create_time, uw.check_time, uw.update_time
     </sql>
     <select id="getUserWithdrawalList" resultMap="BaseResultMap" parameterType="map">
         select

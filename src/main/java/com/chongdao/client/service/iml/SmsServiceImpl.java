@@ -3,6 +3,7 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Express;
+import com.chongdao.client.entitys.Management;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.*;
@@ -42,6 +43,8 @@ public class SmsServiceImpl implements SmsService {
     private DicInfoRepository dicInfoRepository;
     @Autowired
     private OrderAddressRepository orderAddressRepository;
+    @Autowired
+    private ManagementRepository managementRepository;
 
     /**
      * 发送验证码到指定手机 并 缓存验证码 10分钟 及 请求间隔时间1分钟
@@ -132,6 +135,13 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public void customOrderMsgSenderSimple(String msg, String shopName, String orderNo, String phone) {
         String params = phone + "," + orderNo + "," + shopName;
+        String report = "true";
+        customMsgSender(msg, params, report);
+    }
+
+    @Override
+    public void customMsgSenderSimple(String msg, String phone) {
+        String params = phone;
         String report = "true";
         customMsgSender(msg, params, report);
     }
@@ -306,6 +316,18 @@ public class SmsServiceImpl implements SmsService {
                     return resp;
                 })
                 .orElse(resp);
+    }
+
+    @Override
+    public String getAdminPhoneByAreaCode(String areaCode) {
+        List<Management> list = managementRepository.findByAreaCodeAndStatus(areaCode, 1);
+        return list.get(0).getPhone();
+    }
+
+    @Override
+    public String getSuperAdminPhone() {
+        List<Management> list = managementRepository.findByLevel(99);
+        return list.get(0).getPhone();
     }
 
     /**

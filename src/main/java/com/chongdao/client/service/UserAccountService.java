@@ -21,4 +21,12 @@ public interface UserAccountService {
      * @return
      */
     ResultResponse rechargeAccount(Integer userId,BigDecimal money);
+
+    /**
+     * 更新用户账户金额
+     * @param userId
+     * @param money
+     * @return
+     */
+    ResultResponse updateAccountMoney(Integer userId, BigDecimal money);
 }

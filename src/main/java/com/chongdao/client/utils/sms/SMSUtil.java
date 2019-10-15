@@ -52,6 +52,9 @@ public class SMSUtil {
 	private String OrderExpressCancelCustom;
 	private String UserTopUpUser;
 	private String UserTopUpAdmin;
+	private String UserWithdrawalUser;
+	private String UserWithdrawalSuccessUser;
+	private String UserWithdrawalAdmin;
 	private String SingleTripGoodServiceStartUser;
 	private String SingleTripPetServiceStartUser;
 

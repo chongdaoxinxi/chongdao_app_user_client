@@ -36,9 +36,9 @@ public class UserWithdrawal implements Serializable {
     private BigDecimal money;
     private BigDecimal realMoney;
     private String applyNote;//申请备注
-    private Date checkTime;//审核时间
     private String checkNote;//审核备注
-    private Integer status;
+    private Integer status;//-1:拒绝;0:审核中;1:审核通过
+    private Date checkTime;//审核时间
     private Date createTime;
     private Date updateTime;
 }
