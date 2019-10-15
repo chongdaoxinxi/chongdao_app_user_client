@@ -5,7 +5,9 @@ import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.Good;
 import com.chongdao.client.mapper.GoodMapper;
 import com.chongdao.client.repository.GoodsRepository;
+import com.chongdao.client.service.CategoryService;
 import com.chongdao.client.service.GoodsService;
+import com.chongdao.client.service.GoodsTypeService;
 import com.chongdao.client.service.UnitService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.GoodsListVO;
@@ -37,6 +39,37 @@ public class ShopGoodManageController {
     private GoodsRepository goodsRepository;
     @Autowired
     private GoodMapper goodMapper;
+    @Autowired
+    private GoodsTypeService goodsTypeService;
+    @Autowired
+    private CategoryService categoryService;
+
+    /**
+     * 获取一级分类
+     * @return
+     */
+    @GetMapping("getParentCategoryList")
+    public ResultResponse getParentCategoryList() {
+        return categoryService.getCategoryData();
+    }
+
+    /**
+     * 二级类别
+     * @return
+     */
+    @GetMapping("getFirstLevelTypeList")
+    public ResultResponse getFirstLevelTypeList(Integer categoryId) {
+        return goodsTypeService.getGoodsTypeListByCategoryId(categoryId);
+    }
+
+    /**
+     * 三级类别
+     * @return
+     */
+    @GetMapping("getSecondLevelTypeList")
+    public ResultResponse getSecondLevelTypeList(Integer parentId) {
+        return goodsTypeService.getGoodsTypeListByParentId(parentId);
+    }
 
     /**
      * 获取商品类别

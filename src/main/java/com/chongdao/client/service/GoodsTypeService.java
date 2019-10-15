@@ -7,4 +7,18 @@ public interface GoodsTypeService {
     ResultResponse addGoodsType(GoodsType goodsType);
 
     ResultResponse getSelectGoodsTypeSpecialConfig(Integer moduleId, Integer categoryId, Integer goodsTypeId);
+
+    /**
+     * 二级类别
+     * @param categoryId
+     * @return
+     */
+    ResultResponse getGoodsTypeListByCategoryId(Integer categoryId);
+
+    /**
+     * 三级类别
+     * @param parentId
+     * @return
+     */
+    ResultResponse getGoodsTypeListByParentId(Integer parentId);
 }

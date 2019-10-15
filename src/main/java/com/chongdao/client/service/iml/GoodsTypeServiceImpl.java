@@ -6,6 +6,7 @@ import com.chongdao.client.entitys.Module;
 import com.chongdao.client.entitys.Unit;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.GoodsTypeMapper;
+import com.chongdao.client.repository.GoodsTypeRepository;
 import com.chongdao.client.repository.ModuleRepository;
 import com.chongdao.client.repository.UnitRepository;
 import com.chongdao.client.service.GoodsTypeService;
@@ -29,6 +30,8 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
     private GoodsTypeMapper goodsTypeMapper;
     @Autowired
     private ModuleRepository moduleRepository;
+    @Autowired
+    private GoodsTypeRepository goodsTypeRepository;
     @Autowired
     private UnitRepository unitRepository;
     public static final Integer CatFoodGoodsTypeId = 1;
@@ -87,5 +90,15 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
             }
         }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), resp);
+    }
+
+    @Override
+    public ResultResponse getGoodsTypeListByCategoryId(Integer categoryId) {
+        return ResultResponse.createBySuccess(goodsTypeRepository.findByCategoryIdAndStatusAndParentId(categoryId, 1, 0));
+    }
+
+    @Override
+    public ResultResponse getGoodsTypeListByParentId(Integer parentId) {
+        return ResultResponse.createBySuccess(goodsTypeRepository.findByParentIdAndStatus(parentId, 1));
     }
 }
