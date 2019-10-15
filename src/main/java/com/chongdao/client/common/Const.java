@@ -17,6 +17,9 @@ public class Const {
     public static final Integer SIGNLE = 1;
 
 
+    public static final String IP = "http://47.100.63.167/static/";
+
+
 
 
     /**

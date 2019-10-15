@@ -29,7 +29,7 @@ public interface GoodMapper {
     List<Good> selectList();
 
     List<Good> selectByName(@Param("goodsName") String goodsName, @Param("brandId")Integer brandId,@Param("goodsTypeId")Integer goodsTypeId,
-                            @Param("scopeId")Integer scopeId,@Param("petCategoryId")Integer petCategoryId,
+                            @Param("scopeIds")String scopeIds,@Param("petCategoryId")Integer petCategoryId,
                             @Param("areaCode")  String areaCode,
                             @Param("orderBy") String orderBy);
 

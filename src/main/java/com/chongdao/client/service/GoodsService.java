@@ -6,7 +6,6 @@ import com.chongdao.client.entitys.Good;
 import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
-import com.chongdao.client.vo.PetCategoryAndScopeVO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -119,10 +118,10 @@ public interface GoodsService {
 
     /**
      * 获取宠物试用期以及使用范围分类
-     * @param petCategoryId
+     * @param scopeId
      * @return
      */
-    ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer petCategoryId);
+//    ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer categoryId,Integer scopeId);
 
 
     /**

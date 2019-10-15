@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.chongdao.client.common.Const.IP;
 import static com.chongdao.client.enums.OrderStatusEnum.USER_APPLY_REFUND;
 
 @Slf4j
@@ -104,7 +105,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setGoodsId(cart.getGoodsId());
             orderGoodsVo.setQuantity(cart.getQuantity());
             orderGoodsVoList.add(orderGoodsVo);
-            petIds = Joiner.on(",").skipNulls().join(cart.getPetId(),petIds);
+            //只有服务才会存在宠物卡片
+            if (orderCommonVO.getIsService() == 1) {
+                petIds = Joiner.on(",").skipNulls().join(cart.getPetId(), petIds);
+            }
             //需要排除一个宠物卡片选择不同类型的服务
             if (petIds.length() == 2) { //长度为2代表购物车遍历的是第一个商品（2, 这种）
                 petCount = cart.getPetCount();
@@ -353,6 +357,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         orderVo.setShopPhone(shop.getPhone());
+        if (!shop.getLogo().contains("http")) {
+            orderVo.setShopLogo(IP + shop.getLogo());
+        }
         orderVo.setShopLng(shop.getLng());
         orderVo.setShopLat(shop.getLat());
         orderVo.setShopReceiveTime(orderInfo.getShopReceiveTime());
@@ -368,6 +375,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
             //获取商品折扣
             Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), (byte) 1);
+            orderDetailVO.setGoodsIcon(good.getIcon());
+            if (!good.getIcon().contains("http")) {
+                orderDetailVO.setGoodsIcon(IP + good.getIcon());
+            }
             if (good != null) {
                 if ((good.getDiscount() != null && good.getDiscount() > 0)) {
                     orderVo.setDiscount(good.getDiscount());
@@ -597,6 +608,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 orderEvalVO.setShopName(shop.getShopName());
                 orderEvalVO.setShopId(shop.getId());
                 orderEvalVO.setLogo(shop.getLogo());
+                if (!shop.getLogo().contains("http")) {
+                    orderEvalVO.setLogo(IP + shop.getLogo());
+                }
                 orderEvalVO.setExpressName(express.getName());
                 orderEvalVO.setExpressId(express.getId());
             }
@@ -684,6 +698,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if(shop != null) {
             orderVo.setShopName(shop.getShopName());
             orderVo.setShopLogo(shop.getLogo());
+            if (!shop.getLogo().contains("http")) {
+                orderVo.setShopLogo(IP + shop.getLogo());
+            }
             orderVo.setShopPhone(shop.getPhone());
         }
         //接宠地址
@@ -771,6 +788,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderDetail.setGoodId(good.getId());
             orderDetail.setName(good.getName());
             orderDetail.setIcon(good.getIcon());
+            if (!good.getIcon().contains("http")) {
+                orderDetail.setIcon(IP + good.getIcon());
+            }
             orderDetail.setPrice(good.getPrice());
             orderDetail.setCount(cartItem.getQuantity());
             //计算折扣是否为0
@@ -1464,6 +1484,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                                 }
                                 if (good.getReDiscount() > 0) {
                                     orderVo.setReDiscount(good.getReDiscount());
+                                }
+                                if (StringUtils.isNotBlank(good.getIcon())) {
+                                    orderGoodsVo.setGoodsIcon(good.getIcon());
+                                    if (!good.getIcon().contains("http")){
+                                        orderGoodsVo.setGoodsIcon(good.getIcon());
+                                    }
                                 }
                                 orderGoodsVo.setDiscount(good.getDiscount());
                                 orderGoodsVo.setReDiscount(good.getReDiscount());

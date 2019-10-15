@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static com.chongdao.client.common.Const.IP;
 import static com.chongdao.client.common.Const.OrderBy.*;
 import static com.chongdao.client.service.iml.CouponServiceImpl.computerTime;
 
@@ -57,9 +58,17 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 orderBy = ARRANGEMENT_VALUE_GOODS;
             }
         }
+        //出现品牌和适用期为条件筛选时需要过滤 "全期" 参数
+        String scopeIds = "";
+        if (scopeId == 1) {
+            scopeIds = "1,2,3,4,5,6";
+        }
+        if (scopeId == 7) {
+            scopeIds = "7,8,9,10,11";
+        }
         //查询所有上架商品(综合排序)
         List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
-                brandId,goodsTypeId,scopeId,petCategoryId,areaCode,
+                brandId,goodsTypeId,scopeIds,petCategoryId,areaCode,
                 orderBy);
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setList(this.goodsListVOList(goodList));
@@ -87,6 +96,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
         goodsDetailVo.setGoodsId(goodsId);
         goodsDetailVo.setImg(good.getIcon());
+        if (!good.getIcon().contains("http")) {
+            goodsDetailVo.setImg(IP + good.getIcon());
+        }
         //产品重量
         goodsDetailVo.setUnit(good.getUnit());
         goodsDetailVo.setUnitName(good.getUnitName());
@@ -120,6 +132,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             throw new PetException(ResultEnum.PARAM_ERROR);
         }
         goodsDetailVo.setShopLogo(shop.getLogo());
+        if (!shop.getLogo().contains("http")) {
+            goodsDetailVo.setShopLogo(IP + shop.getLogo());
+        }
         goodsDetailVo.setShopGrade(shop.getGrade());
         goodsDetailVo.setShopName(shop.getShopName());
         goodsDetailVo.setStartBusinessHours(shop.getStartBusinessHours());
@@ -159,6 +174,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodList.forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();
             BeanUtils.copyProperties(good,goodsListVO);
+            if (!good.getIcon().contains("http")) {
+                goodsListVO.setIcon(IP + good.getIcon());
+            }
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
@@ -490,34 +508,6 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         return ResultResponse.createBySuccess(brandList);
     }
 
-    /**
-     * 获取宠物试用期以及使用范围分类
-     * @param petCategoryId
-     * @return
-     */
-    @Override
-    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(Integer goodsTypeId,Integer petCategoryId) {
-        List<PetCategory> categoryList = petCategoryRepository.findByGoodsTypeId(goodsTypeId);
-        List<PetCategoryAndScopeVO> petCategoryAndScopeVOList = Lists.newArrayList();
-        categoryList.forEach(e->{
-            //填充宠物分类
-            PetCategoryAndScopeVO petCategoryAndScopeVO = new PetCategoryAndScopeVO();
-            petCategoryAndScopeVO.setId(e.getId());
-            petCategoryAndScopeVO.setPetCategoryName(e.getName());
-            if (petCategoryId != null){
-                //填充适应期分类
-                List<ScopeApplication> scopeApplicationList = applicationRepository.findByPetCategoryId(petCategoryId);
-                for (ScopeApplication scopeApplication : scopeApplicationList) {
-                    if (scopeApplication.getPetCategoryId() == e.getId()) {
-                        petCategoryAndScopeVO.setScopeId(scopeApplication.getId());
-                        petCategoryAndScopeVO.setScopeName(scopeApplication.getName());
-                    }
-                }
-            }
-            petCategoryAndScopeVOList.add(petCategoryAndScopeVO);
-        });
-        return ResultResponse.createBySuccess(petCategoryAndScopeVOList);
-    }
 
     /**
      * 获取洗澡服务内容
@@ -532,33 +522,34 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     /**
      * 获取适用期和适用类型
      * @param goodsTypeId
-     * @param brandId
+     * @param brandId (废弃) 为了不让前端修改接口，该参数不删除了
      * @return
      */
     @Override
     public ResultResponse getScopeType(Integer goodsTypeId, Integer brandId) {
-        if (goodsTypeId == null && brandId == null){
+        if (goodsTypeId == null){
             return ResultResponse.createBySuccess();
         }
 
+        //适用期（根据猫粮和狗粮的goodsTypeId判断适用期有哪些）
         List<ScopeApplication> scopeApplicationList = null;
+        //适用类型
         List<PetCategory> petCategoryList = null;
-        //狗粮
         if (goodsTypeId == 1) {
-            //获取狗粮适用类型
-            petCategoryList = petCategoryRepository.findByGoodsTypeId(2);
             //获取狗粮适用期
-            scopeApplicationList = scopeApplicationRepository.findAll();
-//            scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,2);
-        }
-        //猫粮
-        else if (goodsTypeId == 2) {
-            //猫粮没有适用范围
+            scopeApplicationList = scopeApplicationRepository.findByGoodsTypeId(goodsTypeId);
+            //获取狗粮适用类型(和适用期绑定)
+            petCategoryList = petCategoryRepository.findAll();
+            for (ScopeApplication scopeApplication : scopeApplicationList) {
+                scopeApplication.setPetCategoryList(petCategoryList);
+            }
+
+        }else {
+            //猫粮没有适用类型
             //获取猫粮适用期
-            scopeApplicationList = scopeApplicationRepository.findByBrandIdAndType(brandId,1);
+            scopeApplicationList = scopeApplicationRepository.findByGoodsTypeId(goodsTypeId);
         }
         ScopeVO scopeVO = new ScopeVO();
-        scopeVO.setPetCategoryList(petCategoryList);
         scopeVO.setScopeApplicationList(scopeApplicationList);
         return ResultResponse.createBySuccess(scopeVO);
     }
@@ -614,6 +605,14 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             });
         }
         List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
+        if (!CollectionUtils.isEmpty(goodList)){
+            goodList.stream().forEach(good -> {
+                if (!good.getIcon().contains("http")) {
+                    good.setIcon(IP + good.getIcon());
+                }
+            });
+        }
+
         return ResultResponse.createBySuccess(this.goodsListVOList(goodList));
     }
 

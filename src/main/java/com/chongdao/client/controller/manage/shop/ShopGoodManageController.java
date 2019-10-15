@@ -222,13 +222,11 @@ public class ShopGoodManageController {
 
     /**
      * 获取宠物试用期以及使用范围分类
-     *
-     * @param petCategoryId
      * @return
      */
-    @GetMapping("getPetCategory/{goodsTypeId}/{petCategoryId}")
-    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(@PathVariable Integer goodsTypeId, @PathVariable Integer petCategoryId) {
-        return goodsService.getPetCategory(goodsTypeId, petCategoryId);
+    @GetMapping("getPetCategory/{goodsTypeId}")
+    public ResultResponse<List<PetCategoryAndScopeVO>> getPetCategory(@PathVariable Integer goodsTypeId) {
+        return goodsService.getScopeType(goodsTypeId,null);
     }
 
     /**

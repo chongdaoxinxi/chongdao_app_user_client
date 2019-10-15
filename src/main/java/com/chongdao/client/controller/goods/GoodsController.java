@@ -75,15 +75,15 @@ public class GoodsController {
      */
     @GetMapping("getGoodsDetail/{goodsId}")
     public ResultResponse<GoodsDetailVo>  getGoodsDetail(@PathVariable Integer goodsId, Integer userId){
-        ResultResponse<GoodsDetailVo> goodsServiceGoodsDetail = (ResultResponse<GoodsDetailVo>) GuavaCache.getKey("getGoodsDetail_" + goodsId);
-        Integer cacheGoodsId = (Integer) GuavaCache.getKey("goodsId");
-        if (goodsServiceGoodsDetail != null && goodsId.equals(cacheGoodsId)){
-            return goodsServiceGoodsDetail;
-        }
-        goodsServiceGoodsDetail = goodsService.getGoodsDetail(goodsId, userId);
-        GuavaCache.setKey("getGoodsDetail_" + goodsId ,goodsServiceGoodsDetail);
-        GuavaCache.setKey("goodsId",goodsId);
-        return goodsServiceGoodsDetail;
+//        ResultResponse<GoodsDetailVo> goodsServiceGoodsDetail = (ResultResponse<GoodsDetailVo>) GuavaCache.getKey("getGoodsDetail_" + goodsId);
+//        Integer cacheGoodsId = (Integer) GuavaCache.getKey("goodsId");
+//        if (goodsServiceGoodsDetail != null && goodsId.equals(cacheGoodsId)){
+//            return goodsServiceGoodsDetail;
+//        }
+//        goodsServiceGoodsDetail = goodsService.getGoodsDetail(goodsId, userId);
+//        GuavaCache.setKey("getGoodsDetail_" + goodsId ,goodsServiceGoodsDetail);
+//        GuavaCache.setKey("goodsId",goodsId);
+        return goodsService.getGoodsDetail(goodsId, userId);
     }
 
 

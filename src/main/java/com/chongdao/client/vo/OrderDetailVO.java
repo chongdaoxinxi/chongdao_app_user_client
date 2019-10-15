@@ -20,5 +20,6 @@ public class OrderDetailVO {
     private BigDecimal originPrice;
 
     private BigDecimal totalPrice;
+    private String goodsIcon;
 
 }

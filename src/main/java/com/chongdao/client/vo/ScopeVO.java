@@ -1,6 +1,5 @@
 package com.chongdao.client.vo;
 
-import com.chongdao.client.entitys.PetCategory;
 import com.chongdao.client.entitys.ScopeApplication;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ScopeVO {
-
-    private List<PetCategory> petCategoryList;
 
     private List<ScopeApplication> scopeApplicationList;
 }
