@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -106,6 +107,9 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     @Override
     public ResultResponse getShopApplyList(Integer shopId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        return ResultResponse.createBySuccess(new PageInfo(shopApplyMapper.getShopApplyListPc(shopId, shopName, startDate, endDate)));
+        List<ShopApply> list = shopApplyMapper.getShopApplyListPc(shopId, shopName, startDate, endDate);
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setList(list);
+        return ResultResponse.createBySuccess(pageInfo);
     }
 }
