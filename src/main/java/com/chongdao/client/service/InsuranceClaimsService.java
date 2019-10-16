@@ -3,6 +3,7 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceClaims;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public interface InsuranceClaimsService {
@@ -41,4 +42,10 @@ public interface InsuranceClaimsService {
     ResultResponse getAppiontInsuranceOrderClaims(Integer insuranceOrderId);
 
     ResultResponse getClaimsDetail(Integer claimsId);
+
+    ResultResponse getInsuranceClaimsDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize);
+
+    ResultResponse confirmRemitSuccess(Integer insuranceClaimsId);
+
+    ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money);
 }

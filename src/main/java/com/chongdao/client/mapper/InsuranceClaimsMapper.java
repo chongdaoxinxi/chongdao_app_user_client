@@ -12,6 +12,8 @@ import java.util.List;
 public interface InsuranceClaimsMapper {
     List<InsuranceClaims> getMyClaimsList(@Param("userId") Integer userId, @Param("startDate")Date startDate, @Param("endDate")Date endDate);
 
+    List<InsuranceClaims> getInsuranceClaimsDataList(@Param("insuranceType") Integer insuranceType, @Param("userName") String userName, @Param("phone") String phone, @Param("insuranceOrderNo") String insuranceOrderNo, @Param("start") Date start, @Param("end") Date end, @Param("status") Integer status);
+
     InsuranceClaims getClaimsByInsuranceOrderId(@Param("insuranceOrderId") Integer insuranceOrderId);
 
     List<UserInsuranceTodoVO> getUserTodoList(@Param("userId") Integer userId);

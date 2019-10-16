@@ -26,6 +26,31 @@
             <arg column="pet_age" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
         </constructor>
     </resultMap>
+    <resultMap id="InsuranceClaimsAuditVO" type="com.chongdao.client.vo.InsuranceClaimsAuditVO">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="medical_insurance_order_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="diagnostic_proof" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="cost_list" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pay_credentials" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="other_materials" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pet_photo_flank" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pet_photo_front" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="pet_photo_reverse" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="bank_card_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="bank_card_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="audit_status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="insurance_total_fee" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="insurance_order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="sum_amount" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="sum_premium" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
     <resultMap id="UserInsuranceTodoVO" type="com.chongdao.client.vo.UserInsuranceTodoVO">
         <constructor>
             <arg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
@@ -49,6 +74,36 @@
         </if>
         <if test="endDate != null">
             and ic.create_time &lt; #{endDate}
+        </if>
+        order by ic.create_time desc
+    </select>
+
+    <select id="getInsuranceClaimsDataList" resultMap="InsuranceClaimsAuditVO" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>, io.insurance_order_no, io.sum_amount, io.sum_premium, io.name, io.phone
+        from insurance_claims ic
+        left join insurance_order io on ic.medical_insurance_order_id = io.id
+        where 1 = 1
+        <if test="insuranceType != null">
+           and io.insurance_type = #{insuranceType}
+        </if>
+        <if test="userName != null and userName != ''">
+           and io.name like concat('%', #{userName}, '%')
+        </if>
+        <if test="phone != null and phone != ''">
+           and io.phone like concat('%', #{phone}, '%')
+        </if>
+        <if test="insuranceOrderNo != null and insuranceOrderNo != ''">
+            and io.insurance_order_no like concat('%', #{insuranceOrderNo}, '%')
+        </if>
+        <if test="status != null">
+            and ic.audit_status = #{status}
+        </if>
+        <if test="start != null">
+            and ic.create_time &gt; #{start}
+        </if>
+        <if test="end != null">
+            and ic.create_time &lt; #{end}
         </if>
         order by ic.create_time desc
     </select>

@@ -242,6 +242,9 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
+        if(status != null && status == 99) {
+            status = null;
+        }
         PageHelper.startPage(pageNum, pageSize);
         //根据token, 加入地区areaCode限制
 

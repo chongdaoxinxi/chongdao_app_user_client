@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -230,6 +231,23 @@ public class InsuranceController {
     }
 
     /**
+     * 获取保单分页数据
+     *
+     * @param token
+     * @param userName
+     * @param insuranceOrderNo
+     * @param start
+     * @param end
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getInsuranceClaimsDataList")
+    public ResultResponse getInsuranceClaimsDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
+        return insuranceClaimsService.getInsuranceClaimsDataList(token, insuranceType, userName, phone, insuranceOrderNo, start, end, status, pageNum, pageSize);
+    }
+
+    /**
      * 一级/二级审核保单
      *
      * @param insuranceOrderId
@@ -260,7 +278,17 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("auditInsuranceClaims")
-    public ResultResponse auditInsuranceClaims() {
-        return null;
+    public ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money) {
+        return insuranceClaimsService.auditInsuranceClaims(claimsId, targetStatus, money);
+    }
+
+    /**
+     * 确认理赔金额打款完成
+     * @param insuranceClaimsId
+     * @return
+     */
+    @PostMapping("confirmRemitSuccess")
+    public ResultResponse confirmRemitSuccess(Integer insuranceClaimsId) {
+            return insuranceClaimsService.confirmRemitSuccess(insuranceClaimsId);
     }
 }

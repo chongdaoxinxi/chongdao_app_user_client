@@ -128,4 +128,47 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
     public ResultResponse getClaimsDetail(Integer claimsId) {
         return ResultResponse.createBySuccess(insuranceClaimsRepository.findById(claimsId).orElse(null));
     }
+
+    @Override
+    public ResultResponse getInsuranceClaimsDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
+        if(status != null && status == 99) {
+            status = null;
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        //根据token, 加入地区areaCode限制
+
+        List<InsuranceClaims> list = insuranceClaimsMapper.getInsuranceClaimsDataList(insuranceType, userName, phone, insuranceOrderNo, start, end, status);
+        PageInfo pageResult = new PageInfo(list);
+        pageResult.setList(list);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ResultResponse confirmRemitSuccess(Integer insuranceClaimsId) {
+        InsuranceClaims insuranceClaims = insuranceClaimsRepository.findById(insuranceClaimsId).orElse(null);
+        if(insuranceClaims != null) {
+            insuranceClaims.setAuditStatus(5);
+            insuranceClaims.setUpdateTime(new Date());
+            insuranceClaimsRepository.save(insuranceClaims);
+            return ResultResponse.createBySuccess();
+        } else {
+            return ResultResponse.createByErrorMessage("无效的理赔订单ID");
+        }
+    }
+
+    @Override
+    public ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money) {
+        InsuranceClaims insuranceClaims = insuranceClaimsRepository.findById(claimsId).orElse(null);
+        if(insuranceClaims != null) {
+            insuranceClaims.setAuditStatus(targetStatus);
+            if(money != null) {
+                insuranceClaims.setMoney(money);
+            }
+            insuranceClaims.setUpdateTime(new Date());
+            insuranceClaimsRepository.save(insuranceClaims);
+            return ResultResponse.createBySuccess();
+        } else {
+            return ResultResponse.createByErrorMessage("无效的理赔订单ID");
+        }
+    }
 }

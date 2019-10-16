@@ -74,6 +74,7 @@ io.policy_image, io.policy_cdxx_download_url, io.policy_cdxx_image, io.invoice_d
         left join insurance_shop_chip isc on io.medical_insurance_shop_chip_id = isc.id
         left join shop s on isc.shop_id = s.id
         where 1 = 1
+        and io.status != -1 and io.status != 0
         <if test="insuranceType != null">
             and io.insurance_type = #{insuranceType}
         </if>
