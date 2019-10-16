@@ -175,10 +175,11 @@ public interface GoodsService {
     ResultResponse goodsDownList(Integer shopId);
 
     /**
-     * 查询父分类
+     * 查询父分类(包含商品)
      * @param parentId
      * @return
      */
     List<GoodsType> findByParentIdAndStatus(Integer parentId);
+
 
 }

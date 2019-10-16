@@ -60,15 +60,17 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         }
         //出现品牌和适用期为条件筛选时需要过滤 "全期" 参数
         String scopeIds = "";
-        if (scopeId == 1) {
-            scopeIds = "1,2,3,4,5,6";
-        }
-        if (scopeId == 7) {
-            scopeIds = "7,8,9,10,11";
+        if (scopeId != null) {
+            if (scopeId == 1) {
+                scopeIds = "1,2,3,4,5,6";
+            }
+            if (scopeId == 7) {
+                scopeIds = "7,8,9,10,11";
+            }
         }
         //查询所有上架商品(综合排序)
         List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
-                brandId,goodsTypeId,scopeIds,petCategoryId,areaCode,
+                brandId,goodsTypeId,StringUtils.isBlank(scopeIds) ? null: scopeIds,petCategoryId,areaCode,
                 orderBy);
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setList(this.goodsListVOList(goodList));
@@ -177,6 +179,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             if (!good.getIcon().contains("http")) {
                 goodsListVO.setIcon(IP + good.getIcon());
             }
+            //折扣设置为原价（前端要求）
+            goodsListVO.setDiscountPrice(good.getPrice());
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
@@ -650,7 +654,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     }
 
     /**
-     * 查询父分类
+     * 查询父分类（包含商品）
      * @param parentId
      * @return
      */
@@ -659,6 +663,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(parentId, 1);
         return goodsTypeList;
     }
+
 
     /**
      * 去除父分类

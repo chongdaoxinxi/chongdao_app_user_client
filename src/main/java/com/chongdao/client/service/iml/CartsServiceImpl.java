@@ -191,6 +191,8 @@ public class CartsServiceImpl implements CartsService {
         List<CartGoodsVo> cartGoodsVoList = Lists.newArrayList();
         //购物车总价
         BigDecimal cartTotalPrice = new BigDecimal(BigInteger.ZERO);
+        //购物车总数量
+        Integer cartsGoodsCount = 0;
         if (!CollectionUtils.isEmpty(cartList)){
             for (Carts cart : cartList) {
                 CartGoodsVo cartGoodsVo = new CartGoodsVo();
@@ -210,6 +212,8 @@ public class CartsServiceImpl implements CartsService {
                     cartGoodsVo.setGoodsChecked(cart.getChecked());
                     //计算总价
                     cartGoodsVo.setGoodsTotalPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), cart.getQuantity().doubleValue()));
+                    //折扣设置为原价（前端要求）
+                    cartGoodsVo.setDiscountPrice(good.getPrice());
                     //折扣价
                     if (good.getDiscount() != null && good.getDiscount() > 0.0d) {
                         cartGoodsVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
@@ -222,12 +226,13 @@ public class CartsServiceImpl implements CartsService {
                     cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartGoodsVo.getGoodsTotalPrice().doubleValue());
                 }
                 cartGoodsVoList.add(cartGoodsVo);
+                cartsGoodsCount = cart.getQuantity() + cartsGoodsCount;
             }
 
         }
         cartVo.setCartTotalPrice(cartTotalPrice);
         cartVo.setCartGoodsVoList(cartGoodsVoList);
-        cartVo.setCount(cartGoodsVoList.size());
+        cartVo.setCount(cartsGoodsCount);
         cartVo.setAllChecked(this.getAllCheckedStatus(userId));
         return cartVo;
     }

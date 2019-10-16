@@ -475,6 +475,7 @@
         from order_info
         where user_id = #{userId}
         and order_status in (${type})
+         order by create_time desc
     </select>
 
     <select id="selectByShopIdList" parameterType="map" resultMap="BaseResultMap">

@@ -99,5 +99,8 @@ public class CouponInfo {
     @Transient
     private Integer receive = 0; //是否领取 0否 1是
 
+    @Transient
+    private String shopName;
+
 
 }

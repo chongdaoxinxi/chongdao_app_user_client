@@ -736,7 +736,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderGoodsVo.setGoodsId(orderDetail.getId());
             orderGoodsVo.setCreateTime(DateTimeUtil.dateToStr(orderDetail.getCreateTime()));
             orderGoodsVo.setGoodsName(orderDetail.getName());
-            orderGoodsVo.setGoodsIcon(orderDetail.getIcon());
+            orderGoodsVo.setGoodsIcon(IP + orderDetail.getIcon());
+            if (!orderGoodsVo.getGoodsIcon().contains("http")) {
+                orderGoodsVo.setGoodsIcon(IP + orderDetail.getIcon());
+            }
             orderGoodsVo.setCurrentPrice(orderDetail.getCurrentPrice());
             orderGoodsVo.setGoodsPrice(orderDetail.getPrice());
             orderGoodsVo.setQuantity(orderDetail.getCount());
