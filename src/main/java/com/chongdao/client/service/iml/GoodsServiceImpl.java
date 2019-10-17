@@ -66,9 +66,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (scopeId != null) {
             if (scopeId == 1) {
                 scopeIds = "1,2,3,4,5,6";
-            }
-            if (scopeId == 7) {
+            }else if (scopeId == 7) {
                 scopeIds = "7,8,9,10,11";
+            }else {
+                scopeIds = String.valueOf(scopeId);
             }
         }
         //查询所有上架商品(综合排序)
