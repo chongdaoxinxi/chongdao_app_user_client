@@ -33,4 +33,6 @@ public interface InsuranceService {
     ResultResponse pollingCheckOrderStatus(Integer insuranceOrderId);
 
     ResultResponse getInsuranceUserTodo(String token);
+
+    ResultResponse getEffectedInsuranceOrderByUserId(Integer userId);
 }
