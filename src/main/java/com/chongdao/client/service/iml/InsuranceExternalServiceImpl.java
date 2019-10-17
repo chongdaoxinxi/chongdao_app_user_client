@@ -4,8 +4,8 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
-import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebService;
-import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebServiceService;
+import com.chongdao.client.service.insurance.webservicedev.EcooperationWebService;
+import com.chongdao.client.service.insurance.webservicedev.EcooperationWebServiceService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.DocxUtil;
 import com.chongdao.client.utils.Md5;
@@ -36,8 +36,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 
-//import com.chongdao.client.service.insurance.webservicedev.EcooperationWebService;
-//import com.chongdao.client.service.insurance.webservicedev.EcooperationWebServiceService;
+//import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebService;
+//import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebServiceService;
 
 /**
  * @Description TODO
