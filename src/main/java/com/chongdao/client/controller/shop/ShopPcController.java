@@ -7,6 +7,7 @@ import com.chongdao.client.entitys.InsuranceShopChip;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.AddShopChipVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -258,6 +259,16 @@ public class ShopPcController {
     @PostMapping("addShopChip")
     public ResultResponse addShopChip(@RequestBody InsuranceShopChip insuranceShopChip) {
         return shopChipService.addShopChip(insuranceShopChip);
+    }
+
+    /**
+     * 批量添加宠物芯片
+     * @param addShopChipVO
+     * @return
+     */
+    @PostMapping("batchAddShopChop")
+    public ResultResponse batchAddShopChop(@RequestBody AddShopChipVO addShopChipVO) {
+        return shopChipService.batchAddShopChip(addShopChipVO.getCores(), addShopChipVO.getShopId());
     }
 
     /**

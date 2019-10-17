@@ -121,7 +121,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateShopBill(id, shopId, outMoney, "订单退款", 2);
         }
         //从地区账户资金扣除, 并生成流水记录
-        List<AreaBill> abList = areaBillRepository.findByOrderIdAndPriceGreateThan(id, new BigDecimal(0));//查询出入账记录
+        List<AreaBill> abList = areaBillRepository.findByOrderIdAndType(id, 1);//查询出入账记录
         if(abList.size() > 0) {
             AreaBill inAreaBill = abList.get(0);
             BigDecimal outMoney = inAreaBill.getPrice().multiply(new BigDecimal(-1));
@@ -131,7 +131,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateAreaBill(id, inAreaBill.getShopId(), areaCode, outMoney, "订单退款", 2);
         }
         //从超级账户资金扣除, 并生成流水记录
-        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndPriceGreaterThan(id, new BigDecimal(0));
+        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndType(id, 1);
         if(sabList.size() > 0) {
             SuperAdminBill inSuperAdminBill = new SuperAdminBill();
             BigDecimal outMoney = inSuperAdminBill.getPrice().multiply(new BigDecimal(-1));

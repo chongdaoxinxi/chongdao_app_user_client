@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -118,6 +119,35 @@ public class ShopChipServiceImpl implements ShopChipService {
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    @Transactional
+    public ResultResponse batchAddShopChip(String[] cores, Integer shopId) {
+        Boolean isUnique = false;
+        List<InsuranceShopChip> list = new ArrayList<>();
+        for(int i=0; i < cores.length; i++) {
+            InsuranceShopChip insuranceShopChip = new InsuranceShopChip();
+            String core = cores[i];
+            if(StringUtils.isNotBlank(core)) {
+                //校验芯片码是否已经存在
+                Boolean flag = checkChipCodeUnique(null, core);
+                if(flag) {
+                    isUnique = true;
+                    break;
+                }
+                insuranceShopChip.setCore(core);
+                insuranceShopChip.setStatus(1);
+                insuranceShopChip.setShopId(shopId);
+                insuranceShopChip.setCreateTime(new Date());
+                list.add(insuranceShopChip);
+            }
+        }
+        if(isUnique) {
+            return ResultResponse.createByErrorMessage("新增/添加的芯片代码部分已经存在, 请检查!");
+        }
+        insuranceShopChipRepository.saveAll(list);
+        return ResultResponse.createBySuccess();
     }
 
     @Transactional

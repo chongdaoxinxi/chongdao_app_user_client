@@ -44,6 +44,8 @@ public interface ShopChipService {
      */
     ResultResponse addShopChip(InsuranceShopChip insuranceShopChip);
 
+    ResultResponse batchAddShopChip(String[] cores, Integer shopId);
+
     /**
      * 删除
      * @param insuranceShopChipId
