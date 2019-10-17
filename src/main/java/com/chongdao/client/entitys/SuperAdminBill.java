@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,16 +14,16 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @Description 地区管理员账户流水
  * @Author onlineS
- * @Date 2019/6/26
- * @Version 1.0
- **/
-@Getter
+ * @Description 主账户资金流水记录(超级管理员)
+ * @Date 9:20 2019/4/19
+ */
 @Setter
+@Getter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class AreaBill implements Serializable {
+public class SuperAdminBill implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
