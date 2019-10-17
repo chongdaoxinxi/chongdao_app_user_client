@@ -42,6 +42,13 @@ public interface GoodsService {
     ResultResponse getGoodCategoryList(Integer param);
 
     /**
+     * 获取商家店铺商品分类（二级分类）
+     * @param param
+     * @return
+     */
+    ResultResponse getShopGoodsCategory(Integer param);
+
+    /**
      * 获取商品列表
      * @param goodsTypeId
      * @param goodName

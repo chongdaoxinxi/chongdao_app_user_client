@@ -283,6 +283,22 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         return ResultResponse.createBySuccess(goodsTypeList);
     }
 
+    /**
+     * 获取商家店铺商品分类（二级分类）不包含子类
+     * @param param
+     * @return
+     */
+    @Override
+    public ResultResponse getShopGoodsCategory(Integer param) {
+        List<GoodsType> goodsTypeList = Lists.newArrayList();
+        if (0 == param) {
+            goodsTypeList = goodsTypeRepository.findByCategoryIdAndStatusAndParentId(3, 1,0);
+        }else {
+            goodsTypeList = goodsTypeRepository.findByCategoryIdNotAndParentIdAndStatus(3, 0,1);
+        }
+        return ResultResponse.createBySuccess(goodsTypeList);
+    }
+
 
     /**
      * 获取商品列表
@@ -584,7 +600,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         //取消收藏
         if (good != null){
             //取消关注
-            if (good.getStatus() == 0) {
+            if (good.getStatus() == 1) {
                 good.setStatus(0);
             }else {
                 good.setStatus(1);

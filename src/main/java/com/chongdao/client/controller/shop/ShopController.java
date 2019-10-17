@@ -110,7 +110,7 @@ public class ShopController {
      */
     @GetMapping("getCategoryList/{categoryId}")
     public ResultResponse getGoodCategoryList(@PathVariable Integer categoryId) {
-        return goodsService.getGoodCategoryList(categoryId);
+        return goodsService.getShopGoodsCategory(categoryId);
     }
 
 
