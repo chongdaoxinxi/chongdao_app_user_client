@@ -72,9 +72,19 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 scopeIds = String.valueOf(scopeId);
             }
         }
+        String petCategoryIds = "";
+        if (petCategoryId != null) {
+            if (petCategoryId == 1) {
+                petCategoryIds = "1,2,3,4";
+            }else {
+                petCategoryIds = String.valueOf(petCategoryId);
+            }
+        }
+
         //查询所有上架商品(综合排序)
         List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
-                brandId,goodsTypeId,StringUtils.isBlank(scopeIds) ? null: scopeIds,petCategoryId,areaCode,
+                brandId,goodsTypeId,StringUtils.isBlank(scopeIds) ? null: scopeIds,
+                StringUtils.isBlank(petCategoryIds) ? null: petCategoryIds,areaCode,
                 orderBy);
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setList(this.goodsListVOList(goodList));

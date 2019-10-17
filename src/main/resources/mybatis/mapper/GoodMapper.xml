@@ -499,8 +499,8 @@
         <if test="scopeIds != null">
             and g.scope_id in (${scopeIds})
         </if>
-        <if test="petCategoryId != null">
-            and g.pet_category_id = #{petCategoryId}
+        <if test="petCategoryIds != null">
+            and g.pet_category_id in (${petCategoryIds})
         </if>
 
         order by ${orderBy}
