@@ -221,6 +221,11 @@ public class UserServiceImpl implements UserService {
         return checkCodeValid(phone, code);
     }
 
+    @Override
+    public ResultResponse getUserByPhone(String phone) {
+        return ResultResponse.createBySuccess(userRepository.findByPhoneLike("%" + phone + "%"));
+    }
+
     private void initNewUserCommonFields(User u) {
         u.setCreateTime(new Date());
         u.setMoney(new BigDecimal(0));

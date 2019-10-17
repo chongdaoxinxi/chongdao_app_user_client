@@ -24,4 +24,6 @@ public interface UserService {
     ResultResponse saveUserRecommendData(String phone, Integer type, Integer recommendId, String code);
 
     ResultResponse checkSmsCode(String phone, String code);
+
+    ResultResponse getUserByPhone(String phone);
 }

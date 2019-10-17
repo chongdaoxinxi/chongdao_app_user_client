@@ -6,6 +6,7 @@ import com.chongdao.client.entitys.InsuranceFeeRecord;
 import com.chongdao.client.entitys.InsuranceShopChip;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.*;
+import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.AddShopChipVO;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -49,6 +50,10 @@ public class ShopPcController {
     private ShopChipService shopChipService;
     @Autowired
     private GoodTasteService goodTasteService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private InsuranceService insuranceService;
 
     @GetMapping("getMyDetailInfo")
     public ResultResponse getMyDetailInfo(String token) {
@@ -205,12 +210,32 @@ public class ShopPcController {
     }
 
     /**
+     * 根据手机号获取用户
+     * @param phone
+     * @return
+     */
+    @PostMapping("getUserByPhone")
+    public ResultResponse getUserByPhone(String phone) {
+        return userService.getUserByPhone(phone);
+    }
+
+    /**
+     * 根据用户ID获取该用户已经付款的保单
+     * @param userId
+     * @return
+     */
+    @PostMapping("getEffectedInsuranceOrderByUserId")
+    public ResultResponse getEffectedInsuranceOrderByUserId(Integer userId) {
+        return insuranceService.getEffectedInsuranceOrderByUserId(userId);
+    }
+
+    /**
      * 添加保险医疗费用记录
      * @return
      */
     @PostMapping("addInsuranceFeeRecord")
     public ResultResponse addInsuranceFeeRecord(@RequestBody InsuranceFeeRecord insuranceFeeRecord) {
-        return null;
+        return insuranceFeeRecordService.addInsuranceFeeRecord(insuranceFeeRecord);
     }
 
     /**

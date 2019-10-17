@@ -317,6 +317,11 @@ public class InsuranceServiceImpl implements InsuranceService {
         }
     }
 
+    @Override
+    public ResultResponse getEffectedInsuranceOrderByUserId(Integer userId) {
+        return ResultResponse.createBySuccess(insuranceOrderRepository.findByUserIdAndStatusGreaterThan(userId, 1));
+    }
+
     /**
      * 理赔金额待办
      */
