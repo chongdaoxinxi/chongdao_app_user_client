@@ -488,7 +488,7 @@
         from  good g
         where g.status = 1 and g.area_code = #{areaCode} and g.category_id = 3
         <if test="goodsName != null">
-            and g.name like #{goodsName}
+            and g.name like CONCAT('%',#{goodsName},'%')
         </if>
         <if test="brandId != null">
             and g.brand_id = #{brandId}

@@ -204,7 +204,19 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
         //获取当前类别的商品
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         //查询上架商品
-        List<Good> goodList = goodsRepository.findByShopIdAndGoodsTypeIdAndStatus(shopId, goodsTypeId, (byte) 1);
+        //先判断该分类是否有子级
+        List<Good> goodList = Lists.newArrayList();
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(goodsTypeId, 1);
+        List<Integer> goodsTypeIds = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(goodsTypeList)) {
+            goodsTypeList.stream().forEach(goodsType -> {
+                goodsTypeIds.add(goodsType.getId());
+            });
+            goodList = goodsRepository.findByShopIdAndGoodsTypeIdInAndStatus(shopId,goodsTypeIds,(byte)1);
+
+        }else {
+            goodList = goodsRepository.findByShopIdAndGoodsTypeIdAndStatus(shopId, goodsTypeId, (byte) 1);
+        }
         for (Good good : goodList) {
                 GoodsListVO goodsListVO = new GoodsListVO();
                 BeanUtils.copyProperties(good,goodsListVO);
