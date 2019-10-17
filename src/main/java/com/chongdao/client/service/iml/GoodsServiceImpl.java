@@ -179,8 +179,6 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             if (!good.getIcon().contains("http")) {
                 goodsListVO.setIcon(IP + good.getIcon());
             }
-            //折扣设置为原价（前端要求）
-            goodsListVO.setDiscountPrice(good.getPrice());
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));

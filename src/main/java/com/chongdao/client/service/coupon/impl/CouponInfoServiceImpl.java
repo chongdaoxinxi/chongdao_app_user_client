@@ -120,7 +120,10 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
                 List<CouponScopeRule> couponScopeRuleList = scopeRuleRepository.findByCategoryId(goodsTypeId);
                 if (!CollectionUtils.isEmpty(couponScopeRuleList)) {
                     for (CouponScopeRule couponScopeRule : couponScopeRuleList) {
-                       couponInfoList = couponInfoRepository.findByIdAndShopIdAndCpnStateAndCpnTypeNot(couponScopeRule.getCpnId(), shopId, state, cpnType);
+                       CouponInfo couponInfo = couponInfoRepository.findByShopIdAndIdAndCpnStateAndCpnTypeNot(shopId,couponScopeRule.getCpnId(),  state, cpnType);
+                       if (couponInfo != null) {
+                           couponInfoList.add(couponInfo);
+                       }
                     }
                 }
                 return ResultResponse.createBySuccess(couponInfoList);

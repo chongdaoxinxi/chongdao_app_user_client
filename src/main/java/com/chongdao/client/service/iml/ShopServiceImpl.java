@@ -247,6 +247,7 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                         BigDecimal max = unit.getMax();
                         if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                             if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+                                petCard.setId(petCard.getId());
                                 petCard.setGoodsId(good.getId());
                                 petCard.setGoodsName(good.getName() + unit.getLabel());
                                 petCard.setGoodsPrice(good.getPrice());

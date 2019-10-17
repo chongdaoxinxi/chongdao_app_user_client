@@ -153,6 +153,9 @@ public class CartsServiceImpl implements CartsService {
             return ResultResponse.createByErrorCodeMessage(400, "goodsIds或shopId不能为空");
         }
         Carts carts = cartsMapper.selectCartByUserIdAndGoodsId(userId, Integer.valueOf(goodsIds), shopId,petId);
+        if (carts == null) {
+            return ResultResponse.createByErrorMessage("无法删除，该服务不存在");
+        }
         if (carts.getQuantity() > 1) {
             //更新数量
             cartsMapper.updateCartByUserIdAndGoodsId(userId,goodsIds,shopId,petId);

@@ -41,7 +41,7 @@ public class CouponInfo {
 
     private Integer cpnType; //优惠券类型 1现金券 2满减券 3折扣券 4 店铺满减 5 公益券
 
-    private Integer cpnState = 0; //状态  -1 已作废 0待发布 1已发布 2已下架
+    private Integer cpnState = 1; //状态  -1 已作废 0待发布 1已发布 2已下架
 
     private Integer cpnStock; //库存（张数）
 
