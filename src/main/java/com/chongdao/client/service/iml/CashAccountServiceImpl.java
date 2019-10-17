@@ -39,58 +39,48 @@ public class CashAccountServiceImpl implements CashAccountService {
         BigDecimal goodsPrice = conversionNullBigDecimal(orderInfo.getGoodsPrice());
         BigDecimal insurancePrice = conversionNullBigDecimal(orderInfo.getInsurancePrice());
         BigDecimal totalDiscount = conversionNullBigDecimal(orderInfo.getTotalDiscount());
+        BigDecimal subtract = servicePrice.add(goodsPrice).add(insurancePrice).subtract(totalDiscount);
         //商家的钱入商家, 并生成流水记录
 
         //商家的钱+系统的钱 入地区账户
         String areaCode = orderInfo.getAreaCode();
-        BigDecimal subtract = servicePrice.add(goodsPrice).add(insurancePrice).subtract(totalDiscount);
         Management areaAdmin = getAreaAdmin(areaCode);
-        BigDecimal areaMoney = conversionNullBigDecimal(areaAdmin.getMoney());
-        areaAdmin.setMoney(areaMoney.add(subtract));
-        managementRepository.save(areaAdmin);
+        managementMoneyDeal(areaAdmin, subtract);
         //生成流水记录
-        genarateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, subtract, "客户订单", 1);
+        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, subtract, "客户订单", 1);
 
         //商家的钱+系统的钱 入超级账户
         Management superAdmin = getSuperAdmin();
-        BigDecimal money = conversionNullBigDecimal(superAdmin.getMoney());
-        superAdmin.setMoney(money.add(subtract));
-        managementRepository.save(superAdmin);
+        managementMoneyDeal(superAdmin, subtract);
         //生成流水记录
-        genarateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), subtract, "客户订单", 1);
+        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), subtract, "客户订单", 1);
         return ResultResponse.createBySuccess();
     }
 
     @Override
     public ResultResponse insuranceFeeCashIn(InsuranceFeeRecord insuranceFeeRecord) {
         BigDecimal money = insuranceFeeRecord.getMoney();
+        BigDecimal toShopMoney = money;
         Integer type = insuranceFeeRecord.getType();//是否保险类
         Integer shopId = insuranceFeeRecord.getShopId();
         Shop shop = shopRepository.findById(shopId).orElse(null);
-        BigDecimal shopMoney = conversionNullBigDecimal(shop.getMoney());
-        BigDecimal insuranceMoney = conversionNullBigDecimal(shop.getInsuranceMoney());
         //钱入商家(医院), 并生成流水记录
         if(type == 1) {
             //保险类
             //存入时扣除费用
-            money = money.multiply(new BigDecimal((100 - DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode()) / 100));
+            toShopMoney = money.multiply(new BigDecimal((100 - DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode()) / 100));
         }
-        shop.setMoney(shopMoney.add(money));
-        shop.setInsuranceMoney(insuranceMoney.add(money));
-        shopRepository.save(shop);
-        ShopBill sb = new ShopBill();
-        sb.setShopId(shopId);
-        sb.setNote("医疗费用订单");
-        sb.setPrice(money);
-        sb.setType(4);
-        sb.setCreateTime(new Date());
-        shopBillRepository.save(sb);
-
+        shopMoneyDeal(shop, toShopMoney, null, null, null, money, null);
+        generateShopBill(null, shopId, money, "医疗费用订单", 4);
         //钱入地区账户, 并生成流水记录
-
+        generateAreaBill(null, shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
+        Management areaAdmin = getAreaAdmin(shop.getAreaCode());
+        managementMoneyDeal(areaAdmin, money);
         //钱入超级账户, 并生成流水记录
-
-        return null;
+        generateSuperAdminBill(null, shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
+        Management superAdmin = getSuperAdmin();
+        managementMoneyDeal(superAdmin, money);
+        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -105,7 +95,51 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     public ResultResponse customOrderCashRefund(OrderInfo orderInfo) {
-        return null;
+        Integer id = orderInfo.getId();
+        //当产生退款时, 根据各账户的流水入账记录进行资金扣除
+        //商家账户资金扣除, 并生成流水记录
+        List<ShopBill> sbList = shopBillRepository.findByOrderIdAndPriceGreaterThan(id, new BigDecimal(0));//查询出入账记录
+        if(sbList.size() > 0) {
+            ShopBill inShopBill = sbList.get(0);
+            Integer shopId = inShopBill.getShopId();
+            Shop shop = shopRepository.findById(shopId).orElse(null);
+            Integer isService = orderInfo.getIsService();
+            Integer serviceType = orderInfo.getServiceType();
+            BigDecimal outMoney = inShopBill.getPrice().multiply(new BigDecimal(-1));
+            if(serviceType == 3) {
+                //到店
+                shopMoneyDeal(shop, outMoney, null, null, outMoney, null, null);
+            } else{
+                if(isService == 1) {
+                    //服务类
+                    shopMoneyDeal(shop, outMoney, null, outMoney, null, null, null);
+                } else {
+                    //商品类
+                    shopMoneyDeal(shop, outMoney, outMoney, null, null, null, null);
+                }
+            }
+            generateShopBill(id, shopId, outMoney, "订单退款", 2);
+        }
+        //从地区账户资金扣除, 并生成流水记录
+        List<AreaBill> abList = areaBillRepository.findByOrderIdAndPriceGreateThan(id, new BigDecimal(0));//查询出入账记录
+        if(abList.size() > 0) {
+            AreaBill inAreaBill = abList.get(0);
+            BigDecimal outMoney = inAreaBill.getPrice().multiply(new BigDecimal(-1));
+            String areaCode = inAreaBill.getAreaCode();
+            Management areaAdmin = getAreaAdmin(areaCode);
+            managementMoneyDeal(areaAdmin, outMoney);
+            generateAreaBill(id, inAreaBill.getShopId(), areaCode, outMoney, "订单退款", 2);
+        }
+        //从超级账户资金扣除, 并生成流水记录
+        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndPriceGreaterThan(id, new BigDecimal(0));
+        if(sabList.size() > 0) {
+            SuperAdminBill inSuperAdminBill = new SuperAdminBill();
+            BigDecimal outMoney = inSuperAdminBill.getPrice().multiply(new BigDecimal(-1));
+            Management superAdmin = getSuperAdmin();
+            managementMoneyDeal(superAdmin, outMoney);
+            generateSuperAdminBill(id, inSuperAdminBill.getShopId(), inSuperAdminBill.getAreaCode(), outMoney, "订单退款", 2);
+        }
+        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -143,7 +177,75 @@ public class CashAccountServiceImpl implements CashAccountService {
         return null;
     }
 
-    private void genarateAreaBill(Integer orderId, Integer shopId, String areaCode, BigDecimal price, String note, Integer type) {
+    /**
+     * 商家资金出入账
+     */
+    private void shopMoneyDeal(Shop s, BigDecimal money, BigDecimal customGoodOrderMoney, BigDecimal customServiceOrderMoney, BigDecimal arriveShopOrderMoney, BigDecimal insuranceMoney, BigDecimal recommendMoney) {
+        BigDecimal oldMoney = conversionNullBigDecimal(s.getMoney());
+        s.setMoney(oldMoney.add(money));
+        if(customGoodOrderMoney != null) {
+            s.setCustomGoodOrderMoney(s.getCustomGoodOrderMoney().add(customGoodOrderMoney));
+        }
+        if(customServiceOrderMoney != null) {
+            s.setCustomServiceOrderMoney(s.getCustomServiceOrderMoney().add(customServiceOrderMoney));
+        }
+        if(arriveShopOrderMoney != null) {
+            s.setArriveShopOrderMoney(s.getArriveShopOrderMoney().add(arriveShopOrderMoney));
+        }
+        if(insuranceMoney != null) {
+            s.setInsuranceMoney(s.getInsuranceMoney().add(insuranceMoney));
+        }
+        if(recommendMoney != null) {
+            s.setRecommendMoney(s.getRecommendMoney().add(recommendMoney));
+        }
+        shopRepository.save(s);
+    }
+
+    /**
+     * 获取商家实际应该的该入账资金
+     * @return
+     */
+    private BigDecimal getShopRealInMoney() {
+        return null;
+    }
+
+    /**
+     * 区域账户资金出入账/超级管理员资金出入账
+     */
+    private void managementMoneyDeal(Management m, BigDecimal money) {
+        BigDecimal oldMoney = conversionNullBigDecimal(m.getMoney());
+        m.setMoney(oldMoney.add(money));
+        managementRepository.save(m);
+    }
+
+    /**
+     * 生成商家流水日志
+     * @param orderId
+     * @param shopId
+     * @param price
+     * @param note
+     * @param type
+     */
+    private void generateShopBill(Integer orderId, Integer shopId, BigDecimal price, String note, Integer type) {
+        ShopBill sb = new ShopBill();
+        sb.setOrderId(orderId);
+        sb.setShopId(shopId);
+        sb.setPrice(price);
+        sb.setNote(note);
+        sb.setType(type);
+        shopBillRepository.save(sb);
+    }
+
+    /**
+     * 生成区域账户流水日志
+     * @param orderId
+     * @param shopId
+     * @param areaCode
+     * @param price
+     * @param note
+     * @param type
+     */
+    private void generateAreaBill(Integer orderId, Integer shopId, String areaCode, BigDecimal price, String note, Integer type) {
         //生成流水记录
         AreaBill ab = new AreaBill();
         ab.setOrderId(orderId);
@@ -156,7 +258,16 @@ public class CashAccountServiceImpl implements CashAccountService {
         areaBillRepository.save(ab);
     }
 
-    private void genarateSuperAdminBill(Integer orderId, Integer shopId, String areaCode, BigDecimal price, String note, Integer type) {
+    /**
+     * 生成超级管理账户流水日志
+     * @param orderId
+     * @param shopId
+     * @param areaCode
+     * @param price
+     * @param note
+     * @param type
+     */
+    private void generateSuperAdminBill(Integer orderId, Integer shopId, String areaCode, BigDecimal price, String note, Integer type) {
         //生成流水记录
         SuperAdminBill sab = new SuperAdminBill();
         sab.setOrderId(orderId);
