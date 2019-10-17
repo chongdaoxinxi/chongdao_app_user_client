@@ -9,7 +9,10 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.service.GoodsService;
-import com.chongdao.client.vo.*;
+import com.chongdao.client.vo.GoodsDetailVo;
+import com.chongdao.client.vo.GoodsListVO;
+import com.chongdao.client.vo.GoodsPcVO;
+import com.chongdao.client.vo.ScopeVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Splitter;
@@ -154,6 +157,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                     //已领取
                     couponInfo.setReceive(1);
                 }
+                //设置优惠券限制范围名称
+                CouponServiceImpl.setCouponScope(couponInfo);
             });
         }
         goodsDetailVo.setCouponInfoList(couponInfos);

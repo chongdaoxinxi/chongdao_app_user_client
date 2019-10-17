@@ -1,6 +1,7 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.common.CouponScopeCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
@@ -148,6 +149,9 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
                 if (cpnUser != null) {
                     //已领取
                     e.setReceive(1);
+                }
+                if (e.getScopeType() != null) {
+                    e.setScopeName(CouponScopeCommon.cpnScope(e.getScopeType(),e).getScopeName());
                 }
                 couponInfoList.add(e);
             }

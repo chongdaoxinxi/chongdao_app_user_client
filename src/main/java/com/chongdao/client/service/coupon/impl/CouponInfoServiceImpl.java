@@ -1,6 +1,7 @@
 package com.chongdao.client.service.coupon.impl;
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.common.CouponScopeCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.entitys.coupon.CouponInfo;
@@ -9,6 +10,7 @@ import com.chongdao.client.entitys.coupon.CpnSuperpositionRule;
 import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.coupon.CouponInfoService;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +111,7 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
-        List<CouponInfo> couponInfoList = null;
+        List<CouponInfo> couponInfoList = Lists.newArrayList();
         if (cpnType == 1) {
             //满减
             couponInfoList = couponInfoRepository.findAllByShopIdAndCpnStateAndCpnType(shopId, state, 4);
@@ -126,10 +128,16 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
                        }
                     }
                 }
-                return ResultResponse.createBySuccess(couponInfoList);
+            }else {
+                couponInfoList = couponInfoRepository.findAllByShopIdAndCpnStateAndCpnTypeNot(shopId, state, 4);
             }
-            couponInfoList = couponInfoRepository.findAllByShopIdAndCpnStateAndCpnTypeNot(shopId, state, 4);
-            return ResultResponse.createBySuccess(couponInfoList);
+        }
+        if (!CollectionUtils.isEmpty(couponInfoList)) {
+            couponInfoList.stream().forEach(couponInfo -> {
+                if (couponInfo.getScopeType() != null) {
+                    couponInfo.setScopeName(CouponScopeCommon.cpnScope(couponInfo.getScopeType(),couponInfo).getScopeName());
+                }
+            });
         }
         return ResultResponse.createBySuccess(couponInfoList);
     }
