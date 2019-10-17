@@ -53,7 +53,8 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 if (result > 0) {
                     //逻辑处理
                     this.getCpnUser(cpnUser, totalPrice, categoryId);
-                    couponInfoList.add(this.assembelCpnInfoEnabled(cpnUser));
+                    CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
+                    couponInfoList.add(couponInfo);
                 }
             });
             return ResultResponse.createBySuccess(couponInfoList);
@@ -306,7 +307,6 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      * @return
      */
     protected Integer getCpnUserCount(CpnUser cpnUser, BigDecimal totalPrice, List<Integer> categoryId){
-        System.err.println(!categoryId.contains(3));
         //获取使用范围
         Integer cpnScopeType = cpnUser.getCpnScopeType();
         //获取门槛规则，当前需要满足的条件
@@ -359,6 +359,12 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         CouponInfo couponInfo = couponInfoRepository.findById(cpnUser.getCpnId()).orElse(null);
         if (couponInfo != null && cpnUser.getEnabled() == 1) {//优惠券可用
             couponInfo.setEnabled(1);
+        }
+        if (couponInfo.getShopId() != null) {
+            Shop shop = shopRepository.findById(couponInfo.getShopId()).orElse(null);
+            if (shop != null) {
+                couponInfo.setShopName(shop.getShopName());
+            }
         }
         return couponInfo;
     }

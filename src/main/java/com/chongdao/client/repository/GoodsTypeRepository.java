@@ -14,11 +14,11 @@ public interface GoodsTypeRepository extends JpaRepository<GoodsType,Integer> {
 
     /**
      * 获取非商品类别
-     * @param categoryIds
+     * @param categoryId
      * @param status
      * @return
      */
-    List<GoodsType> findByCategoryIdNotInAndStatus(List<Integer> categoryIds,Integer status);
+    List<GoodsType> findByCategoryIdNotAndStatus(Integer categoryId,Integer status);
 
     List<GoodsType> findByStatusAndCategoryId(Integer status,Integer categoryId);
 
@@ -30,4 +30,8 @@ public interface GoodsTypeRepository extends JpaRepository<GoodsType,Integer> {
     List<GoodsType> findByStatusAndParentIdNot(Integer status, Integer parentId);
 
     List<GoodsType> findByCategoryIdAndStatusAndParentId(Integer categoryId, Integer status, Integer parentId);
+
+    List<GoodsType> findByParentIdAndStatusAndCategoryId(Integer parentId, Integer status,Integer categoryId);
+
+
 }

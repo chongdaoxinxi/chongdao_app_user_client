@@ -33,5 +33,5 @@ public interface CouponInfoService {
      * @param shopId
      * @return
      */
-    ResultResponse list(Integer shopId);
+    ResultResponse list(Integer shopId,Integer state,Integer cpnType,Integer goodsTypeId);
 }

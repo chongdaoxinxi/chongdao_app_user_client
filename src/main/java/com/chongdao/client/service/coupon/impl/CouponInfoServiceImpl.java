@@ -2,7 +2,7 @@ package com.chongdao.client.service.coupon.impl;
 
 import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Category;
+import com.chongdao.client.entitys.GoodsType;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CouponScopeRule;
 import com.chongdao.client.entitys.coupon.CpnSuperpositionRule;
@@ -12,12 +12,12 @@ import com.chongdao.client.service.coupon.CouponInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
 
-import static com.chongdao.client.common.CouponConst.LIMITED_GOODS;
-import static com.chongdao.client.common.CouponConst.THRESHOLD;
+import static com.chongdao.client.common.CouponConst.*;
 
 /**
  * @author fenglong
@@ -52,18 +52,23 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
 
     /**
      * 获取分类
-     * @param categoryId 3限商品 4限服务
+     * @param categoryId 3限商品 4限服务 5 全部
      * @return
      */
     @Override
     public ResultResponse getCategory(Integer categoryId) {
         //限制商品类，查询该分类下的所有商品
         if (categoryId != null && categoryId == LIMITED_GOODS){
-            List<Category> categoryList = categoryRepository.findAllByTypeAndStatus(2, 1);
-            return ResultResponse.createBySuccess(categoryList);
+            List<GoodsType> goodsTypeList = goodsTypeRepository.findAllByCategoryIdAndStatus(3, 1);
+            return ResultResponse.createBySuccess(goodsTypeList);
+        }else if (categoryId != null && categoryId == LIMITED_SERVICE) {
+            //服务
+            return ResultResponse.createBySuccess(goodsTypeRepository.findByCategoryIdNotAndStatus(3, 1));
+        }else {
+            //全部
+            return ResultResponse.createBySuccess(goodsTypeRepository.findAll());
         }
-        //服务
-        return ResultResponse.createBySuccess(categoryRepository.findAllByTypeAndStatus(1, 1));
+
     }
 
 
@@ -100,11 +105,29 @@ public class CouponInfoServiceImpl extends CommonRepository implements CouponInf
      * @return
      */
     @Override
-    public ResultResponse list(Integer shopId) {
+    public ResultResponse list(Integer shopId,Integer state,Integer cpnType,Integer goodsTypeId) {
         if (shopId == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
-        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByShopId(shopId);
+        List<CouponInfo> couponInfoList = null;
+        if (cpnType == 1) {
+            //满减
+            couponInfoList = couponInfoRepository.findAllByShopIdAndCpnStateAndCpnType(shopId, state, 4);
+        }else {
+            //优惠券
+            if (goodsTypeId != null) {
+                //根据条件筛选相应的优惠券
+                List<CouponScopeRule> couponScopeRuleList = scopeRuleRepository.findByCategoryId(goodsTypeId);
+                if (!CollectionUtils.isEmpty(couponScopeRuleList)) {
+                    for (CouponScopeRule couponScopeRule : couponScopeRuleList) {
+                       couponInfoList = couponInfoRepository.findByIdAndShopIdAndCpnStateAndCpnTypeNot(couponScopeRule.getCpnId(), shopId, state, cpnType);
+                    }
+                }
+                return ResultResponse.createBySuccess(couponInfoList);
+            }
+            couponInfoList = couponInfoRepository.findAllByShopIdAndCpnStateAndCpnTypeNot(shopId, state, 4);
+            return ResultResponse.createBySuccess(couponInfoList);
+        }
         return ResultResponse.createBySuccess(couponInfoList);
     }
 

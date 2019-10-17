@@ -1,11 +1,16 @@
 package com.chongdao.client.controller.manage.coupon;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.CpnParam;
 import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.repository.coupon.CpnParamRepository;
 import com.chongdao.client.service.coupon.CouponInfoService;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.CpnParamVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author fenglong
@@ -19,6 +24,9 @@ public class CouponManagerController {
 
     @Autowired
     private CouponInfoService couponInfoService;
+
+    @Autowired
+    private CpnParamRepository cpnParamRepository;
 
     /**
      * 添加优惠券
@@ -38,8 +46,8 @@ public class CouponManagerController {
      * @param token
      * @return
      */
-    @PutMapping("updateState/{cpnId}/{state}")
-    public ResultResponse updateState(@PathVariable Integer cpnId,@PathVariable Integer state,String token){
+    @PostMapping("updateState/{cpnId}/{state}")
+    public ResultResponse updateState(@PathVariable Integer cpnId,@PathVariable Integer state,@RequestParam String token){
         LoginUserUtil.resultTokenVo(token);
         return couponInfoService.updateState(cpnId,state);
     }
@@ -50,10 +58,14 @@ public class CouponManagerController {
      * @param token
      * @return
      */
-    @GetMapping("list/{shopId}")
-    public ResultResponse list(@PathVariable Integer shopId,String token){
+    @GetMapping("list/{shopId}/{state}/{cpnType}")
+    public ResultResponse list(@PathVariable Integer shopId,
+                               @PathVariable Integer state,
+                               @PathVariable Integer cpnType,
+                               @RequestParam String token,
+                               Integer goodsTypeId){
         LoginUserUtil.resultTokenVo(token);
-        return couponInfoService.list(shopId);
+        return couponInfoService.list(shopId,state,cpnType,goodsTypeId);
     }
 
 
@@ -65,5 +77,31 @@ public class CouponManagerController {
     @GetMapping("getCategory/{categoryId}")
     public ResultResponse getCategory(@PathVariable Integer categoryId){
         return couponInfoService.getCategory(categoryId);
+    }
+
+    /**
+     * 获取优惠券参数列表
+     * @param token
+     * @param paramType  区分商家可使用的类型：0 商家 1管理员
+     * @return
+     */
+    @GetMapping("getCpnParam")
+    public ResultResponse getCpnParam(@RequestParam String token,@RequestParam Integer paramType){
+        LoginUserUtil.resultTokenVo(token);
+        //适用范围
+        List<CpnParam> cpnScopeList = null;
+        //优惠类型
+        List<CpnParam> cpnTypeList = null;
+        if (1 == paramType) {
+            cpnScopeList = cpnParamRepository.findByScopeTypeNotNull();
+            cpnTypeList = cpnParamRepository.findByCpnTypeNotNull();
+        }else {
+            cpnScopeList = cpnParamRepository.findByScopeTypeNotNullAndParamType(paramType);
+            cpnTypeList = cpnParamRepository.findByCpnTypeNotNullAndParamType(paramType);
+        }
+        CpnParamVo cpnParamVo = new CpnParamVo();
+        cpnParamVo.setCpnScopeList(cpnScopeList);
+        cpnParamVo.setCpnTypeList(cpnTypeList);
+        return ResultResponse.createBySuccess(cpnParamVo);
     }
 }

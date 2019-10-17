@@ -14,7 +14,7 @@ public interface CouponInfoRepository extends JpaRepository<CouponInfo,Integer> 
 
     @Transactional
     @Modifying
-    @Query(value = "update cpn_info set cpn_state = ?2 where cpn_id = ?1",nativeQuery = true)
+    @Query(value = "update cpn_info set cpn_state = ?2 where id = ?1",nativeQuery = true)
     void updateState(Integer cpnId, Integer state);
 
 
@@ -30,6 +30,8 @@ public interface CouponInfoRepository extends JpaRepository<CouponInfo,Integer> 
 
     List<CouponInfo> findByShopIdAndCpnStateAndCpnTypeNot(Integer shopId, Integer cpnState, Integer cpnType);
 
+    List<CouponInfo> findByIdAndShopIdAndCpnStateAndCpnTypeNot(Integer cpnId,Integer shopId, Integer cpnState, Integer cpnType);
+
     List<CouponInfo> findByShopIdAndCpnStateAndCpnTypeIn(Integer shopId, Integer cpnState, List<Integer> cpnType);
 
     /**
@@ -41,7 +43,9 @@ public interface CouponInfoRepository extends JpaRepository<CouponInfo,Integer> 
     @Modifying
     void updateReceiveCountByCouponId(@Param("couponId") Integer couponId, @Param("shopId") String shopId);
 
-    List<CouponInfo> findAllByShopId(Integer shopId);
+    List<CouponInfo> findAllByShopIdAndCpnStateAndCpnType(Integer shopId,Integer state,Integer cpnType);
+
+    List<CouponInfo> findAllByShopIdAndCpnStateAndCpnTypeNot(Integer shopId,Integer state,Integer cpnType);
 
     List<CouponInfo> findAllByIdIn(List<Integer> ids);
 

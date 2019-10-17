@@ -98,17 +98,15 @@ public class GoodsController {
             return ResultResponse.createBySuccess(brandGoodsTypeVOList);
         }
         brandGoodsTypeVOList = Lists.newArrayList();
-        //获取所有类别
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(0,1);
-        List<Integer> goodsTypeIdList = Lists.newArrayList();
+        //获取所有类别(只包含商品)
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatusAndCategoryId(0,1,3);
         for (GoodsType goodsType : goodsTypeList) {
-            goodsTypeIdList.add(goodsType.getId());
             BrandGoodsTypeVO  brandGoodsTypeVO = new BrandGoodsTypeVO();
             //根据类别获取所属品牌
             List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(new ArrayList<>());
             //填充信息
             brandGoodsTypeVO.setGoodsTypeId(goodsType.getId());
-            //父分类
+            //父分类 只包含商品
             List<GoodsType> goodsTypes = goodsService.findByParentIdAndStatus(goodsType.getId());
             brandGoodsTypeVO.setGoodsTypeList(goodsTypes);
             brandGoodsTypeVO.setGoodsTypeName(goodsType.getName());

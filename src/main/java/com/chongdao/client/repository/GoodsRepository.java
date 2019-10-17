@@ -76,4 +76,6 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
 
     List<Good> findByShopIdAndStatus(Integer shopId, Integer status);
 
+
+
 }
