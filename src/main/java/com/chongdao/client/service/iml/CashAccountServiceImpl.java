@@ -31,6 +31,10 @@ public class CashAccountServiceImpl implements CashAccountService {
     private ShopRepository shopRepository;
     @Autowired
     private ShopBillRepository shopBillRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserTransRepository userTransRepository;
 
     @Override
     @Transactional
@@ -70,7 +74,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             //存入时扣除费用
             toShopMoney = money.multiply(new BigDecimal((100 - DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode()) / 100));
         }
-        shopMoneyDeal(shop, toShopMoney, null, null, null, money, null);
+        shopMoneyDeal(shop, toShopMoney);
         generateShopBill(null, shopId, money, "医疗费用订单", 4);
         //钱入地区账户, 并生成流水记录
         generateAreaBill(null, shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
@@ -103,21 +107,8 @@ public class CashAccountServiceImpl implements CashAccountService {
             ShopBill inShopBill = sbList.get(0);
             Integer shopId = inShopBill.getShopId();
             Shop shop = shopRepository.findById(shopId).orElse(null);
-            Integer isService = orderInfo.getIsService();
-            Integer serviceType = orderInfo.getServiceType();
             BigDecimal outMoney = inShopBill.getPrice().multiply(new BigDecimal(-1));
-            if(serviceType == 3) {
-                //到店
-                shopMoneyDeal(shop, outMoney, null, null, outMoney, null, null);
-            } else{
-                if(isService == 1) {
-                    //服务类
-                    shopMoneyDeal(shop, outMoney, null, outMoney, null, null, null);
-                } else {
-                    //商品类
-                    shopMoneyDeal(shop, outMoney, outMoney, null, null, null, null);
-                }
-            }
+            shopMoneyDeal(shop, outMoney);
             generateShopBill(id, shopId, outMoney, "订单退款", 2);
         }
         //从地区账户资金扣除, 并生成流水记录
@@ -159,12 +150,24 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     public ResultResponse userWithdrawal(UserWithdrawal userWithdrawal) {
-        return null;
+        BigDecimal money = conversionNullBigDecimal(userWithdrawal.getMoney());
+        Integer userId = userWithdrawal.getUserId();
+        BigDecimal realMoney = conversionNullBigDecimal(userWithdrawal.getRealMoney());
+        User user = userRepository.findById(userId).orElse(null);
+        userMoneyDeal(user, money);
+        generateUserTrans(null, userId, "用户提现", realMoney, 7);
+        return ResultResponse.createBySuccess();
     }
 
     @Override
     public ResultResponse shopWithdrawal(ShopApply shopApply) {
-        return null;
+        BigDecimal applyMoney = conversionNullBigDecimal(shopApply.getApplyMoney());
+        BigDecimal realMoney = conversionNullBigDecimal(shopApply.getRealMoney());
+        Integer shopId = shopApply.getShopId();
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        shopMoneyDeal(shop, applyMoney);
+        generateShopBill(null, shopId, realMoney, "店铺提现", 3);
+        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -177,27 +180,24 @@ public class CashAccountServiceImpl implements CashAccountService {
         return null;
     }
 
+
+    /**
+     * 用户资金出入账
+     * @param u
+     * @param money
+     */
+    private void userMoneyDeal(User u, BigDecimal money) {
+        BigDecimal oldMoney = conversionNullBigDecimal(u.getMoney());
+        u.setMoney(oldMoney.add(money));
+        userRepository.save(u);
+    }
+
     /**
      * 商家资金出入账
      */
-    private void shopMoneyDeal(Shop s, BigDecimal money, BigDecimal customGoodOrderMoney, BigDecimal customServiceOrderMoney, BigDecimal arriveShopOrderMoney, BigDecimal insuranceMoney, BigDecimal recommendMoney) {
+    private void shopMoneyDeal(Shop s, BigDecimal money) {
         BigDecimal oldMoney = conversionNullBigDecimal(s.getMoney());
         s.setMoney(oldMoney.add(money));
-        if(customGoodOrderMoney != null) {
-            s.setCustomGoodOrderMoney(s.getCustomGoodOrderMoney().add(customGoodOrderMoney));
-        }
-        if(customServiceOrderMoney != null) {
-            s.setCustomServiceOrderMoney(s.getCustomServiceOrderMoney().add(customServiceOrderMoney));
-        }
-        if(arriveShopOrderMoney != null) {
-            s.setArriveShopOrderMoney(s.getArriveShopOrderMoney().add(arriveShopOrderMoney));
-        }
-        if(insuranceMoney != null) {
-            s.setInsuranceMoney(s.getInsuranceMoney().add(insuranceMoney));
-        }
-        if(recommendMoney != null) {
-            s.setRecommendMoney(s.getRecommendMoney().add(recommendMoney));
-        }
         shopRepository.save(s);
     }
 
@@ -216,6 +216,24 @@ public class CashAccountServiceImpl implements CashAccountService {
         BigDecimal oldMoney = conversionNullBigDecimal(m.getMoney());
         m.setMoney(oldMoney.add(money));
         managementRepository.save(m);
+    }
+
+    /**
+     * 生成用户资金流水日志
+     * @param orderId
+     * @param userId
+     * @param comment
+     * @param money
+     * @param type
+     */
+    private void generateUserTrans(Integer orderId, Integer userId, String comment, BigDecimal money, Integer type) {
+        UserTrans ut = new UserTrans();
+        ut.setOrderId(orderId);
+        ut.setUserId(userId);
+        ut.setComment(comment);
+        ut.setMoney(money);
+        ut.setType(type);
+        userTransRepository.save(ut);
     }
 
     /**

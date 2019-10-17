@@ -323,4 +323,9 @@ public class ShopPcController {
     public ResultResponse startChipVerify(Integer shopChipId) {
         return shopChipService.startShopChipVerify(shopChipId);
     }
+
+    @PostMapping("getShopBillList")
+    public ResultResponse getShopBillList(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return shopBillService.getShopBillByShopId(shopId, startDate, endDate, pageNum, pageSize);
+    }
 }
