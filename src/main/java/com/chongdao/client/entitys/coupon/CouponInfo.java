@@ -102,5 +102,8 @@ public class CouponInfo {
     @Transient
     private String shopName;
 
+    @Transient
+    private String scopeName;
+
 
 }

@@ -2,6 +2,7 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.CouponConst;
+import com.chongdao.client.common.CouponScopeCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.coupon.CouponInfo;
@@ -54,6 +55,8 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                     //逻辑处理
                     this.getCpnUser(cpnUser, totalPrice, categoryId);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
+                    //设置优惠券限制范围名称
+                    this.setCouponScope(couponInfo);
                     couponInfoList.add(couponInfo);
                 }
             });
@@ -67,7 +70,10 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
                 if (result > 0) {
-                    couponInfoList.add(this.assembelCpnInfoEnabled(cpnUser));
+                    CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
+                    //设置优惠券限制范围名称
+                    this.setCouponScope(couponInfo);
+                    couponInfoList.add(couponInfo);
                 }
             });
             return ResultResponse.createBySuccess(couponInfoList);
@@ -78,7 +84,10 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
                 if (result > 0) {
-                    couponInfoList.add(this.assembelCpnInfoEnabled(cpnUser));
+                    CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
+                    //设置优惠券限制范围名称
+                    this.setCouponScope(couponInfo);
+                    couponInfoList.add(couponInfo);
                 }
             });
             return ResultResponse.createBySuccess(couponInfoList);
@@ -365,6 +374,15 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             if (shop != null) {
                 couponInfo.setShopName(shop.getShopName());
             }
+        }
+        return couponInfo;
+    }
+
+
+    public static CouponInfo setCouponScope(CouponInfo couponInfo) {
+        //设置限制范围名称
+        if (couponInfo.getScopeType() != null) {
+            couponInfo.setScopeName(CouponScopeCommon.cpnScope(couponInfo.getScopeType(),couponInfo).getScopeName());
         }
         return couponInfo;
     }
