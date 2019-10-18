@@ -83,4 +83,9 @@ public class ShopManageController {
     public ResultResponse getShopOrderStatistics(String token) {
         return null;
     }
+
+    @PostMapping("saveShopConfig")
+    public ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone) {
+        return shopManageService.saveShopConfig(shopId, isAutoAccept, isInService, phone);
+    }
 }

@@ -96,4 +96,14 @@ public class ShopManageServiceImpl implements ShopManageService {
                 })
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
+
+    @Override
+    public ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone) {
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        shop.setIsAutoAccept(isAutoAccept);
+        shop.setStatus(isInService);
+        shop.setPhone(phone);
+        shop.setUpdateTime(new Date());
+        return ResultResponse.createBySuccess(shopRepository.save(shop));
+    }
 }

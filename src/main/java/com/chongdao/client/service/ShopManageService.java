@@ -18,4 +18,6 @@ public interface ShopManageService {
     ResultResponse<ShopManageVO> getShopInfo(Integer shopId);
 
     ResultResponse saveShopInfo(Shop s);
+
+    ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone);
 }
