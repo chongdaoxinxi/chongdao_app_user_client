@@ -44,16 +44,10 @@ public interface CashAccountService {
     ResultResponse insuranceFeeCashRefund(InsuranceFeeRecord insuranceFeeRecord);
 
     /**
-     * 新用户下单返利
+     * 返利
      * @return
      */
-    ResultResponse newUserReward(RecommendRecord recommendRecord);
-
-    /**
-     * 保险订单推广返利
-     * @return
-     */
-    ResultResponse insuranceOrderRecommendReward(RecommendRecord recommendRecord);
+    ResultResponse recommendCashIn(RecommendRecord recommendRecord);
 
     /**
      * 用户提现

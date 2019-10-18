@@ -3,6 +3,7 @@ package com.chongdao.client.service.iml;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.DeductPercentEnum;
+import com.chongdao.client.enums.RecommendTypeEnum;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.CashAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         Integer shopId = insuranceFeeRecord.getShopId();
         Shop shop = shopRepository.findById(shopId).orElse(null);
         //钱入商家(医院), 并生成流水记录
-        if(type == 1) {
+        if (type == 1) {
             //保险类
             //存入时扣除费用
             toShopMoney = getDeductedPrice(money, DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode());
@@ -111,7 +112,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         //当产生退款时, 根据各账户的流水入账记录进行资金扣除
         //商家账户资金扣除, 并生成流水记录
         List<ShopBill> sbList = shopBillRepository.findByOrderIdAndPriceGreaterThan(id, new BigDecimal(0));//查询出入账记录
-        if(sbList.size() > 0) {
+        if (sbList.size() > 0) {
             ShopBill inShopBill = sbList.get(0);
             Integer shopId = inShopBill.getShopId();
             Shop shop = shopRepository.findById(shopId).orElse(null);
@@ -121,7 +122,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         }
         //从地区账户资金扣除, 并生成流水记录
         List<AreaBill> abList = areaBillRepository.findByOrderIdAndType(id, 1);//查询出入账记录
-        if(abList.size() > 0) {
+        if (abList.size() > 0) {
             AreaBill inAreaBill = abList.get(0);
             BigDecimal outMoney = inAreaBill.getPrice().multiply(new BigDecimal(-1));
             String areaCode = inAreaBill.getAreaCode();
@@ -131,7 +132,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         }
         //从超级账户资金扣除, 并生成流水记录
         List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndType(id, 1);
-        if(sabList.size() > 0) {
+        if (sabList.size() > 0) {
             SuperAdminBill inSuperAdminBill = new SuperAdminBill();
             BigDecimal outMoney = inSuperAdminBill.getPrice().multiply(new BigDecimal(-1));
             Management superAdmin = getSuperAdmin();
@@ -149,16 +150,23 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     @Transactional
-    public ResultResponse newUserReward(RecommendRecord recommendRecord) {
-
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public ResultResponse insuranceOrderRecommendReward(RecommendRecord recommendRecord) {
-
-        return null;
+    public ResultResponse recommendCashIn(RecommendRecord recommendRecord) {
+        Integer userId = recommendRecord.getUserId();
+        BigDecimal rewardMoney = recommendRecord.getRewardMoney();
+        User user = userRepository.findById(userId).orElse(null);
+        userMoneyDeal(user, rewardMoney);
+        Integer consumeType = recommendRecord.getConsumeType();
+        if (consumeType == 1) {
+            //医疗险
+            generateUserTrans(null, userId, RecommendTypeEnum.MEDICAL_INSURANCE.getName(), rewardMoney, RecommendTypeEnum.MEDICAL_INSURANCE.getCode() + 3);
+        } else if (consumeType == 2) {
+            //家责险
+            generateUserTrans(null, userId, RecommendTypeEnum.FAMILY_INSURANCE.getName(), rewardMoney, RecommendTypeEnum.FAMILY_INSURANCE.getCode() + 3);
+        } else if (consumeType == 3) {
+            //新用户首单
+            generateUserTrans(null, userId, RecommendTypeEnum.ORDER.getName(), rewardMoney, RecommendTypeEnum.ORDER.getCode() + 3);
+        }
+        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -205,16 +213,18 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     /**
      * 获取扣费过的资金
+     *
      * @param old
      * @param deductPercent
      * @return
      */
     private BigDecimal getDeductedPrice(BigDecimal old, Integer deductPercent) {
-        return old.multiply(new BigDecimal((100 - deductPercent)/100));
+        return old.multiply(new BigDecimal((100 - deductPercent) / 100));
     }
 
     /**
      * 用户资金出入账
+     *
      * @param u
      * @param money
      */
@@ -244,6 +254,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     /**
      * 生成用户资金流水日志
+     *
      * @param orderId
      * @param userId
      * @param comment
@@ -262,6 +273,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     /**
      * 生成商家流水日志
+     *
      * @param orderId
      * @param shopId
      * @param price
@@ -280,6 +292,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     /**
      * 生成区域账户流水日志
+     *
      * @param orderId
      * @param shopId
      * @param areaCode
@@ -302,6 +315,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     /**
      * 生成超级管理账户流水日志
+     *
      * @param orderId
      * @param shopId
      * @param areaCode

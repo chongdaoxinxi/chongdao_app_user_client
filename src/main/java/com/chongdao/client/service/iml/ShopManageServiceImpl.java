@@ -100,9 +100,15 @@ public class ShopManageServiceImpl implements ShopManageService {
     @Override
     public ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone) {
         Shop shop = shopRepository.findById(shopId).orElse(null);
-        shop.setIsAutoAccept(isAutoAccept);
-        shop.setStatus(isInService);
-        shop.setPhone(phone);
+        if(isAutoAccept != null) {
+            shop.setIsAutoAccept(isAutoAccept);
+        }
+        if(isInService != null) {
+            shop.setStatus(isInService);
+        }
+        if(StringUtils.isNotBlank(phone)) {
+            shop.setPhone(phone);
+        }
         shop.setUpdateTime(new Date());
         return ResultResponse.createBySuccess(shopRepository.save(shop));
     }
