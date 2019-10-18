@@ -2,10 +2,8 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
-import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.enums.DeductPercentEnum;
 import com.chongdao.client.repository.*;
-import com.chongdao.client.repository.coupon.CpnThresholdRuleRepository;
 import com.chongdao.client.service.CashAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,8 +35,6 @@ public class CashAccountServiceImpl implements CashAccountService {
     private UserRepository userRepository;
     @Autowired
     private UserTransRepository userTransRepository;
-    @Autowired
-    private CpnThresholdRuleRepository thresholdRuleRepository;
 
     @Override
     @Transactional
@@ -46,26 +42,31 @@ public class CashAccountServiceImpl implements CashAccountService {
         BigDecimal servicePrice = conversionNullBigDecimal(orderInfo.getServicePrice());
         BigDecimal goodsPrice = conversionNullBigDecimal(orderInfo.getGoodsPrice());
         BigDecimal insurancePrice = conversionNullBigDecimal(orderInfo.getInsurancePrice());
-        BigDecimal totalDiscount = conversionNullBigDecimal(orderInfo.getTotalDiscount());
-        BigDecimal subtract = servicePrice.add(goodsPrice).add(insurancePrice).subtract(totalDiscount);
+        BigDecimal total = servicePrice.add(goodsPrice).add(insurancePrice);
+        Integer shopId = orderInfo.getShopId();
+        Shop shop = shopRepository.findById(shopId).orElse(null);
         //商家的钱入商家, 并生成流水记录
+        BigDecimal toShopRealMoney = getDeductedPrice(goodsPrice, DeductPercentEnum.CUSTOM_ORDER_DEDUCT.getCode());//扣除手续费
+        shopMoneyDeal(shop, toShopRealMoney);
+        generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "客户订单", 1);
 
         //商家的钱+系统的钱 入地区账户
         String areaCode = orderInfo.getAreaCode();
         Management areaAdmin = getAreaAdmin(areaCode);
-        managementMoneyDeal(areaAdmin, subtract);
+        managementMoneyDeal(areaAdmin, total);
         //生成流水记录
-        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, subtract, "客户订单", 1);
+        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, total, "客户订单", 1);
 
         //商家的钱+系统的钱 入超级账户
         Management superAdmin = getSuperAdmin();
-        managementMoneyDeal(superAdmin, subtract);
+        managementMoneyDeal(superAdmin, total);
         //生成流水记录
-        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), subtract, "客户订单", 1);
+        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), total, "客户订单", 1);
         return ResultResponse.createBySuccess();
     }
 
     @Override
+    @Transactional
     public ResultResponse insuranceFeeCashIn(InsuranceFeeRecord insuranceFeeRecord) {
         BigDecimal money = insuranceFeeRecord.getMoney();
         BigDecimal toShopMoney = money;
@@ -76,7 +77,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         if(type == 1) {
             //保险类
             //存入时扣除费用
-            toShopMoney = money.multiply(new BigDecimal((100 - DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode()) / 100));
+            toShopMoney = getDeductedPrice(money, DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode());
         }
         shopMoneyDeal(shop, toShopMoney);
         generateShopBill(null, shopId, money, "医疗费用订单", 4);
@@ -92,16 +93,19 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
+    @Transactional
     public ResultResponse petPickupOrderCashIn(OrderInfo orderInfo) {
         return null;
     }
 
     @Override
+    @Transactional
     public ResultResponse couponCashIn(Coupon coupon) {
         return null;
     }
 
     @Override
+    @Transactional
     public ResultResponse customOrderCashRefund(OrderInfo orderInfo) {
         Integer id = orderInfo.getId();
         //当产生退款时, 根据各账户的流水入账记录进行资金扣除
@@ -138,23 +142,27 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
+    @Transactional
     public ResultResponse insuranceFeeCashRefund(InsuranceFeeRecord insuranceFeeRecord) {
         return null;
     }
 
     @Override
+    @Transactional
     public ResultResponse newUserReward(RecommendRecord recommendRecord) {
 
         return null;
     }
 
     @Override
+    @Transactional
     public ResultResponse insuranceOrderRecommendReward(RecommendRecord recommendRecord) {
 
         return null;
     }
 
     @Override
+    @Transactional
     public ResultResponse userWithdrawal(UserWithdrawal userWithdrawal) {
         BigDecimal money = conversionNullBigDecimal(userWithdrawal.getMoney());
         Integer userId = userWithdrawal.getUserId();
@@ -166,6 +174,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
+    @Transactional
     public ResultResponse shopWithdrawal(ShopApply shopApply) {
         BigDecimal applyMoney = conversionNullBigDecimal(shopApply.getApplyMoney());
         BigDecimal realMoney = conversionNullBigDecimal(shopApply.getRealMoney());
@@ -177,6 +186,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
+    @Transactional
     public ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply) {
         BigDecimal applyMoney = conversionNullBigDecimal(areaWithdrawalApply.getApplyMoney());
         BigDecimal realMoney = conversionNullBigDecimal(areaWithdrawalApply.getRealMoney());
@@ -188,10 +198,20 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
+    @Transactional
     public ResultResponse insuranceAdminWithdrawal() {
         return null;
     }
 
+    /**
+     * 获取扣费过的资金
+     * @param old
+     * @param deductPercent
+     * @return
+     */
+    private BigDecimal getDeductedPrice(BigDecimal old, Integer deductPercent) {
+        return old.multiply(new BigDecimal((100 - deductPercent)/100));
+    }
 
     /**
      * 用户资金出入账
@@ -211,31 +231,6 @@ public class CashAccountServiceImpl implements CashAccountService {
         BigDecimal oldMoney = conversionNullBigDecimal(s.getMoney());
         s.setMoney(oldMoney.add(money));
         shopRepository.save(s);
-    }
-
-    /**
-     * 获取商家实际应该的该入账资金
-     * @return
-     */
-    private BigDecimal getShopRealInMoney(OrderInfo orderInfo) {
-        Integer cardId = orderInfo.getCardId();
-        Integer couponId = orderInfo.getCouponId();
-        if (couponId != null && couponId > 0) {
-            //计算使用商品优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(couponId).get();
-            if (cpnThresholdRule != null){
-                //优惠总计
-                BigDecimal minPrice = cpnThresholdRule.getMinPrice();
-            }
-        }
-        if (cardId != null && cardId > 0){
-            //计算使用配送优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(cardId).get();
-            if (cpnThresholdRule != null){
-                BigDecimal minPrice = cpnThresholdRule.getMinPrice();
-            }
-        }
-        return null;
     }
 
     /**
