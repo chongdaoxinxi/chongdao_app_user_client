@@ -213,8 +213,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             }
         }
         return ResultResponse.createBySuccess(orderVo);
-
-
     }
 
     /**
@@ -453,20 +451,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     public ResultResponse getOrderDetailByOrderId(Integer orderId) {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         String orderNo = orderInfo.getOrderNo();
-        OrderVo orderVo = new OrderVo();
+        OrderShopVO orderVo = new OrderShopVO();
         orderVo.setOrderNo(orderNo);
-        if (orderInfo.getExpressId() != null){
-            Express express = expressRepository.findById(orderInfo.getExpressId()).orElse(null);
-            //填充配送员信息
-            if (express != null) {
-                orderVo.setExpressId(orderInfo.getExpressId());
-                orderVo.setExpressName(express.getName());
-                orderVo.setExpressPhone(express.getPhone());
-                orderVo.setExpressLng(express.getLastLng());
-                orderVo.setExpressLat(express.getLastLat());
-            }
-        }
-
         //配送费
         orderVo.setServicePrice(orderInfo.getServicePrice());
         //获取店铺名称以及填充订单详情
@@ -482,6 +468,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setShopLat(shop.getLat());
         orderVo.setShopReceiveTime(orderInfo.getShopReceiveTime());
         orderVo.setShopFinishTime(orderInfo.getShopFinishTime());
+
         //获取商品详情
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
         List<OrderDetailVO> orderDetailVOS = Lists.newArrayList();
@@ -508,7 +495,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                 }
             }
             orderDetailVOS.add(orderDetailVO);
+            orderVo.setDiscountTotalPrice(orderVo.getDiscountTotalPrice().add(orderDetail.getPrice().subtract(orderDetail.getCurrentPrice()).multiply(new BigDecimal(orderDetail.getCount()))));
         });
+
         //优惠券
         if (orderInfo.getCouponId() != null && orderInfo.getCouponId() > 0){
             CouponInfo couponInfo = couponInfoRepository.findById(orderInfo.getCouponId()).orElse(null);
@@ -560,6 +549,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setId(orderInfo.getId());
         orderVo.setServiceType(orderInfo.getServiceType());
         orderVo.setRemark(orderInfo.getRemark());
+
+
         return ResultResponse.createBySuccess(orderVo);
     }
 
