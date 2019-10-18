@@ -171,37 +171,64 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     @Transactional
-    public ResultResponse userWithdrawal(UserWithdrawal userWithdrawal) {
+    public ResultResponse userWithdrawal(UserWithdrawal userWithdrawal, Boolean isFail) {
         BigDecimal money = conversionNullBigDecimal(userWithdrawal.getMoney());
         Integer userId = userWithdrawal.getUserId();
         BigDecimal realMoney = conversionNullBigDecimal(userWithdrawal.getRealMoney());
         User user = userRepository.findById(userId).orElse(null);
-        userMoneyDeal(user, money);
-        generateUserTrans(null, userId, "用户提现", realMoney, 7);
+        if(!isFail) {
+            //如果是提现, 金额设为负数
+            //如果是提现审核失败, 再将金额退还给用户账户
+            money = money.multiply(new BigDecimal(-1));
+            realMoney = realMoney.multiply(new BigDecimal(-1));
+            userMoneyDeal(user, money);
+            generateUserTrans(null, userId, "用户提现", realMoney, 7);
+        } else {
+            userMoneyDeal(user, money);
+            generateUserTrans(null, userId, "用户提现失败退还", realMoney, 7);
+        }
         return ResultResponse.createBySuccess();
     }
 
     @Override
     @Transactional
-    public ResultResponse shopWithdrawal(ShopApply shopApply) {
+    public ResultResponse shopWithdrawal(ShopApply shopApply, Boolean isFail) {
         BigDecimal applyMoney = conversionNullBigDecimal(shopApply.getApplyMoney());
         BigDecimal realMoney = conversionNullBigDecimal(shopApply.getRealMoney());
         Integer shopId = shopApply.getShopId();
         Shop shop = shopRepository.findById(shopId).orElse(null);
-        shopMoneyDeal(shop, applyMoney);
-        generateShopBill(null, shopId, realMoney, "店铺提现", 3);
+        if(!isFail) {
+            //如果是提现, 金额设为负数
+            //如果是提现审核失败, 再将金额退还给商家账户
+            applyMoney = applyMoney.multiply(new BigDecimal(-1));
+            realMoney = realMoney.multiply(new BigDecimal(-1));
+            shopMoneyDeal(shop, applyMoney);
+            generateShopBill(null, shopId, realMoney, "店铺提现", 3);
+        } else {
+            shopMoneyDeal(shop, applyMoney);
+            generateShopBill(null, shopId, realMoney, "店铺提现失败退还", 3);
+        }
         return ResultResponse.createBySuccess();
     }
 
     @Override
     @Transactional
-    public ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply) {
+    public ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply, Boolean isFail) {
         BigDecimal applyMoney = conversionNullBigDecimal(areaWithdrawalApply.getApplyMoney());
         BigDecimal realMoney = conversionNullBigDecimal(areaWithdrawalApply.getRealMoney());
         Integer managementId = areaWithdrawalApply.getManagementId();
         Management management = managementRepository.findById(managementId).orElse(null);
-        managementMoneyDeal(management, applyMoney);
-        generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现", null);
+        if(!isFail) {
+            //如果是提现, 金额设为负数
+            //如果是提现审核失败, 再将金额退还给地区账户
+            applyMoney = applyMoney.multiply(new BigDecimal(-1));
+            realMoney = realMoney.multiply(new BigDecimal(-1));
+            managementMoneyDeal(management, applyMoney);
+            generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现", 3);
+        } else {
+            managementMoneyDeal(management, applyMoney);
+            generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现退还", 3);
+        }
         return ResultResponse.createBySuccess();
     }
 

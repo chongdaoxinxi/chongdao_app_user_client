@@ -53,19 +53,19 @@ public interface CashAccountService {
      * 用户提现
      * @return
      */
-    ResultResponse userWithdrawal(UserWithdrawal userWithdrawal);
+    ResultResponse userWithdrawal(UserWithdrawal userWithdrawal, Boolean isFail);
 
     /**
      * 商家提现
      * @return
      */
-    ResultResponse shopWithdrawal(ShopApply shopApply);
+    ResultResponse shopWithdrawal(ShopApply shopApply, Boolean isFail);
 
     /**
      * 地区账户提现
      * @return
      */
-    ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply);
+    ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply, Boolean isFail);
 
     /**
      * 保险账户提现
