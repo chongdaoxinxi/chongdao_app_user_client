@@ -28,6 +28,8 @@ public class OrderShopVO {
     private Integer ShopId;
     private BigDecimal goodsPrice = BigDecimal.ZERO;
     private BigDecimal servicePrice = BigDecimal.ZERO;
+    private BigDecimal originGoodsPrice = BigDecimal.ZERO;
+    private BigDecimal originServicePrice = BigDecimal.ZERO;
     private BigDecimal totalDiscount = BigDecimal.ZERO;
     private BigDecimal totalPrice = BigDecimal.ZERO;
     private BigDecimal payment = BigDecimal.ZERO;
@@ -100,4 +102,7 @@ public class OrderShopVO {
     private BigDecimal insurancePrice;
     //该字段用于区分优惠券使用场景
     private String categoryId;
+
+    private BigDecimal deduct;
+    private BigDecimal realInMoney;
 }

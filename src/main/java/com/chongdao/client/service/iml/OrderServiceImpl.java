@@ -453,10 +453,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     }
 
     @Override
-    public ResultResponse getOrderDetailByOrderId(Integer orderId) {
+    public OrderShopVO getOrderDetailByOrderId(Integer orderId) {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         String orderNo = orderInfo.getOrderNo();
         OrderShopVO orderVo = new OrderShopVO();
+        BeanUtils.copyProperties(orderInfo, orderVo);
         orderVo.setOrderNo(orderNo);
         //配送费
         orderVo.setServicePrice(orderInfo.getServicePrice());
@@ -556,7 +557,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setRemark(orderInfo.getRemark());
 
 
-        return ResultResponse.createBySuccess(orderVo);
+        return orderVo;
     }
 
     /**

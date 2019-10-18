@@ -11,4 +11,6 @@ public interface ShopBillService {
     ResultResponse getShopBillByShopId(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
     ResultResponse getShopBillByAreaCode(Integer managementId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+
+    ResultResponse getShopBillOrderDetailById(Integer shopBillId);
 }

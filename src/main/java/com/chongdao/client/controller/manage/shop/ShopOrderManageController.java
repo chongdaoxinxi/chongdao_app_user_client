@@ -3,6 +3,7 @@ package com.chongdao.client.controller.manage.shop;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ShopApplyService;
+import com.chongdao.client.service.ShopBillService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class ShopOrderManageController {
     private OrderService orderService;
     @Autowired
     private ShopApplyService shopApplyService;
+    @Autowired
+    private ShopBillService shopBillService;
 
     /**
      * 获取订单列表
@@ -59,7 +62,19 @@ public class ShopOrderManageController {
      * @return
      */
     @PostMapping("getShopOrderDetail")
-    public ResultResponse getOrderDetailShopPc(Integer orderId) {return orderService.getOrderDetailByOrderId(orderId);}
+    public ResultResponse getOrderDetailShopPc(Integer orderId) {
+        return ResultResponse.createBySuccess(orderService.getOrderDetailByOrderId(orderId));
+    }
+
+    /**
+     * 根据流水id获取订单详情
+     * @param shopBillId
+     * @return
+     */
+    @PostMapping("getShopBillDetail")
+    public ResultResponse getShopBillDetail(Integer shopBillId) {
+        return shopBillService.getShopBillOrderDetailById(shopBillId);
+    }
 
     /**
      * 获取订单列表Pc

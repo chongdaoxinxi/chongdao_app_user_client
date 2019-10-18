@@ -3,6 +3,7 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderEvalVO;
+import com.chongdao.client.vo.OrderShopVO;
 import com.chongdao.client.vo.OrderVo;
 import com.github.pagehelper.PageInfo;
 
@@ -38,7 +39,7 @@ public interface OrderService {
      */
     ResultResponse orderDetail(Integer userId, String orderNo);
 
-    ResultResponse getOrderDetailByOrderId(Integer orderId);
+    OrderShopVO getOrderDetailByOrderId(Integer orderId);
 
     // ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO);
 
