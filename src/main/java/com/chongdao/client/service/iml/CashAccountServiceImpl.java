@@ -2,8 +2,10 @@ package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
+import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.enums.DeductPercentEnum;
 import com.chongdao.client.repository.*;
+import com.chongdao.client.repository.coupon.CpnThresholdRuleRepository;
 import com.chongdao.client.service.CashAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class CashAccountServiceImpl implements CashAccountService {
     private UserRepository userRepository;
     @Autowired
     private UserTransRepository userTransRepository;
+    @Autowired
+    private CpnThresholdRuleRepository thresholdRuleRepository;
 
     @Override
     @Transactional
@@ -139,12 +143,14 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
-    public ResultResponse newUserReward(OrderInfo orderInfo) {
+    public ResultResponse newUserReward(RecommendRecord recommendRecord) {
+
         return null;
     }
 
     @Override
-    public ResultResponse insuranceOrderRecommendReward(InsuranceOrder insuranceOrder) {
+    public ResultResponse insuranceOrderRecommendReward(RecommendRecord recommendRecord) {
+
         return null;
     }
 
@@ -211,7 +217,24 @@ public class CashAccountServiceImpl implements CashAccountService {
      * 获取商家实际应该的该入账资金
      * @return
      */
-    private BigDecimal getShopRealInMoney() {
+    private BigDecimal getShopRealInMoney(OrderInfo orderInfo) {
+        Integer cardId = orderInfo.getCardId();
+        Integer couponId = orderInfo.getCouponId();
+        if (couponId != null && couponId > 0) {
+            //计算使用商品优惠券后的价格
+            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(couponId).get();
+            if (cpnThresholdRule != null){
+                //优惠总计
+                BigDecimal minPrice = cpnThresholdRule.getMinPrice();
+            }
+        }
+        if (cardId != null && cardId > 0){
+            //计算使用配送优惠券后的价格
+            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(cardId).get();
+            if (cpnThresholdRule != null){
+                BigDecimal minPrice = cpnThresholdRule.getMinPrice();
+            }
+        }
         return null;
     }
 

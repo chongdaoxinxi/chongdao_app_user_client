@@ -47,13 +47,13 @@ public interface CashAccountService {
      * 新用户下单返利
      * @return
      */
-    ResultResponse newUserReward(OrderInfo orderInfo);
+    ResultResponse newUserReward(RecommendRecord recommendRecord);
 
     /**
      * 保险订单推广返利
      * @return
      */
-    ResultResponse insuranceOrderRecommendReward(InsuranceOrder insuranceOrder);
+    ResultResponse insuranceOrderRecommendReward(RecommendRecord recommendRecord);
 
     /**
      * 用户提现
