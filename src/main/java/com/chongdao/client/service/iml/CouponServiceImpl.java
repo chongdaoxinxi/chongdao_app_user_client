@@ -301,8 +301,10 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      * @return
      */
     private CpnUser compare(CpnUser cpnUser,BigDecimal totalPrice,BigDecimal conditionPrice){
-        if (totalPrice.compareTo(conditionPrice) == 0 || totalPrice.compareTo(conditionPrice) == 1){
-            cpnUser.setEnabled(1);
+        if (conditionPrice != null) {
+            if (totalPrice.compareTo(conditionPrice) == 0 || totalPrice.compareTo(conditionPrice) == 1) {
+                cpnUser.setEnabled(1);
+            }
         }
         return cpnUser;
     }
@@ -349,9 +351,11 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 count.add(cpnUser);
             }else {//有门槛
                 //满减判断
-                CpnUser compare = this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
-                if (compare.getEnabled() == 1){
-                    count.add(compare);
+                if (cpnRule != null) {
+                    CpnUser compare = this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
+                    if (compare.getEnabled() == 1) {
+                        count.add(compare);
+                    }
                 }
             }
         }
