@@ -7,13 +7,16 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.ShopBillMapper;
 import com.chongdao.client.repository.ManagementRepository;
 import com.chongdao.client.repository.ShopBillRepository;
+import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ShopBillService;
+import com.chongdao.client.vo.OrderShopVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -31,12 +34,14 @@ public class ShopBillServiceImpl implements ShopBillService {
     private ShopBillMapper shopBillMapper;
     @Autowired
     private ManagementRepository managementRepository;
+    @Autowired
+    private OrderService orderService;
 
     @Override
-    public ResultResponse addShopBillRecord(Integer orderId, Integer shopId, Integer type, String note,  BigDecimal realMoney) {
+    public ResultResponse addShopBillRecord(Integer orderId, Integer shopId, Integer type, String note, BigDecimal realMoney) {
         ShopBill sb = new ShopBill();
         sb.setShopId(shopId);
-        if(orderId != null) {
+        if (orderId != null) {
             sb.setOrderId(orderId);
         } else {
             sb.setOrderId(0);
@@ -50,6 +55,7 @@ public class ShopBillServiceImpl implements ShopBillService {
 
     /**
      * 获取指定区域的流水记录
+     *
      * @param managementId
      * @param shopName
      * @param startDate
@@ -68,8 +74,21 @@ public class ShopBillServiceImpl implements ShopBillService {
         return ResultResponse.createBySuccess(pageResult);
     }
 
+    @Override
+    public ResultResponse getShopBillOrderDetailById(Integer shopBillId) {
+        ShopBill shopBill = shopBillRepository.findById(shopBillId).orElse(null);
+        OrderShopVO orderVo = orderService.getOrderDetailByOrderId(shopBill.getOrderId());
+        BigDecimal price = shopBill.getPrice();
+        orderVo.setRealInMoney(price);//实际收款
+        BigDecimal deductPrice = orderVo.getGoodsPrice().subtract(price);
+        BigDecimal deduct = deductPrice.divide(orderVo.getGoodsPrice(), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+        orderVo.setDeduct(deduct);//扣费比例
+        return ResultResponse.createBySuccess(orderVo);
+    }
+
     /**
      * 获取指定商家的流水记录
+     *
      * @param shopId
      * @param startDate
      * @param endDate
