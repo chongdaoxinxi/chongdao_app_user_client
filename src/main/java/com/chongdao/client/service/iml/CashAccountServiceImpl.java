@@ -218,24 +218,22 @@ public class CashAccountServiceImpl implements CashAccountService {
      * @return
      */
     private BigDecimal getShopRealInMoney(OrderInfo orderInfo) {
-        Integer cardId = orderInfo.getCardId();
-        Integer couponId = orderInfo.getCouponId();
-        if (couponId != null && couponId > 0) {
-            //计算使用商品优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(couponId).get();
-            if (cpnThresholdRule != null){
-                //优惠总计
-                BigDecimal minPrice = cpnThresholdRule.getMinPrice();
+        BigDecimal totalDiscount = orderInfo.getTotalDiscount();
+        BigDecimal goodsPrice = orderInfo.getGoodsPrice();
+        if(totalDiscount != null && totalDiscount.compareTo(new BigDecimal(0)) > 1) {
+            Integer cardId = orderInfo.getCardId();
+            Integer couponId = orderInfo.getCouponId();
+            if (couponId != null && couponId > 0) {
+                //计算使用商品优惠券后的价格
+                CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(couponId).get();
+                if (cpnThresholdRule != null){
+                    //优惠总计
+                    BigDecimal minPrice = cpnThresholdRule.getMinPrice();
+                    return goodsPrice.subtract(minPrice);
+                }
             }
         }
-        if (cardId != null && cardId > 0){
-            //计算使用配送优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(cardId).get();
-            if (cpnThresholdRule != null){
-                BigDecimal minPrice = cpnThresholdRule.getMinPrice();
-            }
-        }
-        return null;
+        return goodsPrice;
     }
 
     /**
