@@ -24,7 +24,7 @@ public class ShopBillVO {
     private Integer orderId;
     private BigDecimal price;
     private String note;
-    private Integer type;//1:客户订单, 2:订单退款, 3:店铺提现, 4:医疗费用订单
+    private Integer type;//1:订单消费, 2:订单退款, 3:店铺提现, 4:医疗费用订单
     private Date createTime;
     private String userName;
 }

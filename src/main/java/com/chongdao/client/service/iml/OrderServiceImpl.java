@@ -14,6 +14,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.service.CartsService;
+import com.chongdao.client.service.CashAccountService;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -50,13 +51,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
 
     @Autowired
     private CouponServiceImpl couponService;
-
     @Autowired
     private CartsService cartsService;
-
     @Autowired
     private FreightComputer freightComputer;
-
+    @Autowired
+    private CashAccountService cashAccountService;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -1087,17 +1087,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         //更新状态
         o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
         OrderInfo orderInfo = orderInfoRepository.saveAndFlush(o);
-        //计算将要转入商家账户的资金(扣除满减, 折扣, 商家的优惠券)
-        BigDecimal realPrice = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
-        //将钱转入商家账户, 生成流水记录(shopBill)
-        shopService.updateShopMoney(orderInfo.getShopId(), realPrice);
-        shopBillService.addShopBillRecord(orderInfo.getShopId(), orderInfo.getId(), 1, "客户订单", realPrice);
-        //生成订单资金交易记录(order_tran)
-        OrderTran ot = new OrderTran();
-        ot.setOrderId(orderInfo.getId());
-        ot.setComment("用户消费:" + orderInfo.getPayment() + ", 订单号:" + o.getOrderNo());
-        ot.setCreateTime(new Date());
-        orderTranRepository.save(ot);
+        //接单资金处理
+        cashAccountService.customOrderCashIn(orderInfo);
         //发送短信
         acceptOrderSmsSender(orderInfo);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
@@ -1166,18 +1157,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderInfoRepository.saveAndFlush(orderInfo);
         //添加退款记录
         orderRefundService.addOrderRefundRecord(orderInfo, 4, OrderStatusEnum.REFUND_COMPLETE.getMessage());
-        //从商家余额扣款
-        Integer shopId = orderInfo.getShopId();
-        BigDecimal realMoney = new BigDecimal(0);//TODO 此金额具体数值是多少待订单流程确认后才能确认, 暂不设置
-        shopService.updateShopMoney(shopId, realMoney.multiply(new BigDecimal(-1)));
-        //并添加流水记录
-        shopBillService.addShopBillRecord(orderInfo.getShopId(), orderInfo.getId(), 2, "订单退款", realMoney.multiply(new BigDecimal(-1)));
-        //生成订单资金交易记录
-        OrderTran ot = new OrderTran();
-        ot.setOrderId(orderInfo.getId());
-        ot.setComment("订单退款" + orderInfo.getPayment() + "," + "订单号:" + orderInfo.getOrderNo());
-        ot.setCreateTime(new Date());
-        orderTranRepository.saveAndFlush(ot);
+        //退款资金处理
+        cashAccountService.customOrderCashRefund(orderInfo);
         //短信通知
         adminConfirmRefundSms(orderInfo);
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
