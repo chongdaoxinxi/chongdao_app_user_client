@@ -171,11 +171,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         //配送费(到店自取无配送费) 有优惠需减去优惠
         if (orderCommonVO.getServiceType() != 3) {
-            orderVo.setServicePrice(freightComputer.computerFee(
+            BigDecimal originServicePrice = freightComputer.computerFee(
                     orderCommonVO.getServiceType(), orderCommonVO.getIsService(),
                     orderCommonVO.getReceiveAddressId(), orderCommonVO.getDeliverAddressId(),
-                    orderVo.getShopId(), userId
-            ).subtract(orderVo.getServiceCouponPrice()));
+                    orderVo.getShopId(), userId);
+            //原价
+            orderVo.setOriginServicePrice(originServicePrice);
+            //优惠后的价格
+            orderVo.setServicePrice(originServicePrice.subtract(orderVo.getServiceCouponPrice()));
         }
         //店铺满减
         orderVo.setCouponInfoList(this.getCouponInfoList(orderVo.getShopId()));
@@ -947,6 +950,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         if (orderVo.getFollow() != null) {
             order.setFollow(Integer.valueOf(orderVo.getFollow()));
         }
+        order.setOriginGoodsPrice(order.getOriginGoodsPrice());
+        order.setOriginServicePrice(order.getOriginServicePrice());
         order.setPetId(orderVo.getPetIds());
         order.setPetCount(orderVo.getPetCount());
         order.setShopId(orderCommonVO.getShopId());
@@ -1572,6 +1577,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         OrderGoodsDTO  orderGoodsDTO = new OrderGoodsDTO();
         List<Good> goodList = goodsRepository.findAllByIdIn(goodsIds).orElse(null);
         List<OrderGoodsVo> orderGoodsVos = Lists.newArrayList();
+        BigDecimal originGoodsPrice = BigDecimal.ZERO;
+        BigDecimal totalDiscount = BigDecimal.ZERO;
+        BigDecimal totalGoodsPrice = BigDecimal.ZERO;
         if (!CollectionUtils.isEmpty(goodList)) {
                 if (!CollectionUtils.isEmpty(orderGoodsVoList)) {
                     for (OrderGoodsVo orderGoodsVo : orderGoodsVoList) {
@@ -1594,17 +1602,23 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
                                 }
                                 orderGoodsVo.setDiscount(good.getDiscount());
                                 orderGoodsVo.setReDiscount(good.getReDiscount());
+                                //原价
+                                originGoodsPrice = originGoodsPrice.add(good.getPrice().multiply(new BigDecimal(orderGoodsVo.getQuantity())));
                             }
                         }
+                        orderVo.setOriginGoodsPrice(originGoodsPrice);
                         //分装categoryId,用于区分优惠券使用场景
                         String result = Joiner.on(",").join(categoryIds);
                         orderVo.setCategoryId(result);
                         //小记
-                        orderVo.setTotalDiscount(this.orderDiscountAndFee(orderGoodsVo, orderGoodsVo.getQuantity()).getTotalDiscount());
+                        totalDiscount = totalDiscount.add(this.orderDiscountAndFee(orderGoodsVo, orderGoodsVo.getQuantity()).getTotalDiscount());
+                        orderVo.setTotalDiscount(totalDiscount);
                         //折扣计算包含二次打折
-                        orderVo.setGoodsTotalPrice(this.orderDiscountAndFee(orderGoodsVo, orderGoodsVo.getQuantity()).getGoodsTotalPrice());
+                        totalGoodsPrice = totalGoodsPrice.add(this.orderDiscountAndFee(orderGoodsVo, orderGoodsVo.getQuantity()).getGoodsTotalPrice());
+                        orderVo.setGoodsTotalPrice(totalGoodsPrice);
+                        orderVo.setGoodsPrice(orderVo.getGoodsTotalPrice());
                         //商品总价（不包含配送费以及优惠券）
-                        cartTotalPrice = orderVo.getGoodsTotalPrice().add(cartTotalPrice);
+                        cartTotalPrice = orderVo.getGoodsTotalPrice();
                         orderGoodsVos.add(orderGoodsVo);
                         orderGoodsDTO.setOrderGoodsVoList(orderGoodsVos);
                     }

@@ -29,7 +29,11 @@ public class OrderInfo {
 
     private BigDecimal goodsPrice;
 
+    private BigDecimal originGoodsPrice;
+
     private BigDecimal servicePrice;
+
+    private BigDecimal originServicePrice;
 
     private BigDecimal totalDiscount  = BigDecimal.ZERO;
 
@@ -95,8 +99,8 @@ public class OrderInfo {
 
 
 
-    public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,
-                     BigDecimal servicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
+    public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,BigDecimal originGoodsPrice,
+                     BigDecimal servicePrice, BigDecimal originServicePrice,BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
                      Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
                      BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
                      Date updateTime, Integer enabledSpell, String petId, Integer petCount,BigDecimal insurancePrice) {
@@ -107,7 +111,9 @@ public class OrderInfo {
         this.shopId = shopId;
         this.orderStatus = orderStatus;
         this.goodsPrice = goodsPrice;
+        this.originGoodsPrice = originGoodsPrice;
         this.servicePrice = servicePrice;
+        this.originServicePrice = originServicePrice;
         this.totalDiscount = totalDiscount;
         this.isService = isService;
         this.payment = payment;
