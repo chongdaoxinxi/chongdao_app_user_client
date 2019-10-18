@@ -38,6 +38,6 @@ public class FastDFSController {
     }
 
 
-    @PostMapping("downloadFile")
+    @GetMapping("downloadFile")
     public ResultResponse downloadFile(String url, HttpServletResponse response) throws UnsupportedEncodingException {return uploadService.downloadFile(url, response);}
 }

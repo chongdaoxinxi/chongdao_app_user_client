@@ -79,21 +79,13 @@ public class UploadServiceImpl implements UploadService {
         DownloadByteArray downloadByteArray = new DownloadByteArray();
         byte[] bytes = this.storageClient.downloadFile(group, path, downloadByteArray);
         //设置响应头
-        response.setContentType("application/force-download");// 设置强制下载不打开
-        response.addHeader("Content-Disposition", "attachment;fileName=" + path);// 设置文件名
-        response.setHeader("Context-Type", "application/xmsdownload");
-
         response.reset();
         response.setContentType("multipart/form-data");
         response.addHeader("Content-Disposition",
-                "attachment;filename=" + URLEncoder.encode(path, "UTF-8"));
-
-
+                "attachment;filename=" + URLEncoder.encode("店铺二维码", "UTF-8"));
         try {
             OutputStream os = response.getOutputStream();
-            for(int i=0; i<bytes.length;i++) {
-                os.write(bytes[i]);
-            }
+            os.write(bytes);
             os.flush();
             os.close();
             log.info("下载成功");
