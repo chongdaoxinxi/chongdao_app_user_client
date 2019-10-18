@@ -161,7 +161,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         }
         if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0){
             //计算使用配送优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCouponId()).get();
+            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCardId()).get();
             if (cpnThresholdRule != null){
                 orderVo.setServiceCouponPrice(cpnThresholdRule.getMinPrice());
                 //优惠总计
