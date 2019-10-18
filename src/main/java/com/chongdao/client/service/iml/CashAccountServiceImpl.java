@@ -172,7 +172,13 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     public ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply) {
-        return null;
+        BigDecimal applyMoney = conversionNullBigDecimal(areaWithdrawalApply.getApplyMoney());
+        BigDecimal realMoney = conversionNullBigDecimal(areaWithdrawalApply.getRealMoney());
+        Integer managementId = areaWithdrawalApply.getManagementId();
+        Management management = managementRepository.findById(managementId).orElse(null);
+        managementMoneyDeal(management, applyMoney);
+        generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现", null);
+        return ResultResponse.createBySuccess();
     }
 
     @Override

@@ -449,6 +449,120 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         return ResultResponse.createBySuccess(orderVo);
     }
 
+    @Override
+    public ResultResponse getOrderDetailByOrderId(Integer orderId) {
+        OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
+        String orderNo = orderInfo.getOrderNo();
+        OrderVo orderVo = new OrderVo();
+        orderVo.setOrderNo(orderNo);
+        if (orderInfo.getExpressId() != null){
+            Express express = expressRepository.findById(orderInfo.getExpressId()).orElse(null);
+            //填充配送员信息
+            if (express != null) {
+                orderVo.setExpressId(orderInfo.getExpressId());
+                orderVo.setExpressName(express.getName());
+                orderVo.setExpressPhone(express.getPhone());
+                orderVo.setExpressLng(express.getLastLng());
+                orderVo.setExpressLat(express.getLastLat());
+            }
+        }
+
+        //配送费
+        orderVo.setServicePrice(orderInfo.getServicePrice());
+        //获取店铺名称以及填充订单详情
+        Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+        orderVo.setShopId(shop.getId());
+        orderVo.setShopName(shop.getShopName());
+        orderVo.setShopLogo(shop.getLogo());
+        orderVo.setShopPhone(shop.getPhone());
+        if (!shop.getLogo().contains("http")) {
+            orderVo.setShopLogo(IP + shop.getLogo());
+        }
+        orderVo.setShopLng(shop.getLng());
+        orderVo.setShopLat(shop.getLat());
+        orderVo.setShopReceiveTime(orderInfo.getShopReceiveTime());
+        orderVo.setShopFinishTime(orderInfo.getShopFinishTime());
+        //获取商品详情
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderNo(orderNo);
+        List<OrderDetailVO> orderDetailVOS = Lists.newArrayList();
+        orderDetailList.stream().forEach(orderDetail -> {
+            OrderDetailVO orderDetailVO = new OrderDetailVO();
+            orderDetailVO.setGoodsName(orderDetail.getName());
+            orderDetailVO.setQuantity(orderDetail.getCount());
+            orderDetailVO.setCurrentPrice(orderDetail.getCurrentPrice());
+            orderDetailVO.setTotalPrice(orderDetail.getCurrentPrice().multiply(new BigDecimal(orderDetail.getCount())));
+            //获取商品折扣
+            Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), (byte) 1);
+            orderDetailVO.setGoodsIcon(good.getIcon());
+            if (!good.getIcon().contains("http")) {
+                orderDetailVO.setGoodsIcon(IP + good.getIcon());
+            }
+            if (good != null) {
+                if ((good.getDiscount() != null && good.getDiscount() > 0)) {
+                    orderVo.setDiscount(good.getDiscount());
+                    orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10).setScale(1, BigDecimal.ROUND_HALF_UP)));
+                }
+                if ((good.getReDiscount() != null && good.getReDiscount() > 0)) {
+                    orderVo.setDiscount(good.getReDiscount());
+                    orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10).setScale(1, BigDecimal.ROUND_HALF_UP)));
+                }
+            }
+            orderDetailVOS.add(orderDetailVO);
+        });
+        //优惠券
+        if (orderInfo.getCouponId() != null && orderInfo.getCouponId() > 0){
+            CouponInfo couponInfo = couponInfoRepository.findById(orderInfo.getCouponId()).orElse(null);
+            if (couponInfo != null) {
+                //满减
+                if (couponInfo.getCpnType() == 4){
+                    orderVo.setFullCouponName(couponInfo.getCpnName());
+                    orderVo.setFullCouponPrice(couponInfo.getCpnValue());
+                }else{ //红包
+                    orderVo.setCouponName(couponInfo.getCpnName());
+                    orderVo.setCouponPrice(couponInfo.getCpnValue());
+                }
+            }
+        }
+        orderVo.setOrderStatus(orderInfo.getOrderStatus());
+        orderVo.setOrderDetailVOList(orderDetailVOS);
+        orderVo.setPayment(orderInfo.getGoodsPrice());
+        orderVo.setExpressReceiveTime(orderInfo.getExpressReceiveTime());
+        orderVo.setExpressFinishTime(orderInfo.getExpressFinishTime());
+        orderVo.setReceiveTime(orderInfo.getReceiveTime());
+        orderVo.setDeliverTime(orderInfo.getDeliverTime());
+        orderVo.setCreateTime(orderInfo.getCreateTime());
+        //接宠地址
+        if (orderInfo.getReceiveAddressId() != null) {
+            UserAddress receiveAddress = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), orderInfo.getUserId());
+            if (receiveAddress != null) {
+                orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
+                orderVo.setUserLng(receiveAddress.getLng());
+                orderVo.setUserLat(receiveAddress.getLat());
+            }
+
+        }
+        //送宠地址
+        if (orderInfo.getDeliverAddressId() != null ) {
+            UserAddress deliverAddress = userAddressRepository.findByIdAndUserId(orderInfo.getDeliverAddressId(), orderInfo.getUserId());
+            if (deliverAddress != null) {
+                orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+            }
+        }
+        Integer userId = orderInfo.getUserId();
+        if (userId != null) {
+            User user = userRepository.findById(orderInfo.getUserId()).orElse(null);
+            if (user != null) {
+                orderVo.setUsername(user.getName());
+                orderVo.setPhone(user.getPhone());
+                orderVo.setUserId(userId);
+            }
+        }
+        orderVo.setId(orderInfo.getId());
+        orderVo.setServiceType(orderInfo.getServiceType());
+        orderVo.setRemark(orderInfo.getRemark());
+        return ResultResponse.createBySuccess(orderVo);
+    }
+
     /**
      * 小程序订单详情
      * @param userId

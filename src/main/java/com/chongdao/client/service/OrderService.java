@@ -38,6 +38,8 @@ public interface OrderService {
      */
     ResultResponse orderDetail(Integer userId, String orderNo);
 
+    ResultResponse getOrderDetailByOrderId(Integer orderId);
+
     // ResultResponse<OrderVo> createOrder(OrderVo orderVo,OrderCommonVO orderCommonVO);
 
     ResultResponse<PageInfo> getShopOrderTypeList(Integer shopId, String type, Integer pageNum, Integer pageSize);
