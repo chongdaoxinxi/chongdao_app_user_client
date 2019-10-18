@@ -12,13 +12,27 @@
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
     </resultMap>
+    <resultMap id="ShopBillVO" type="com.chongdao.client.vo.ShopBillVO">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="shop_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="order_id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+            <arg column="note" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="type" jdbcType="TINYINT" javaType="java.lang.Integer"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
     <sql id="Base_Column_List">
         sb.id, sb.shop_id, sb.order_id, sb.price, sb.note, sb.type, sb.create_time
     </sql>
-    <select id="getShopBillByShopId" resultMap="BaseResultMap" parameterType="map">
+    <select id="getShopBillByShopId" resultMap="ShopBillVO" parameterType="map">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List"/>, u.name as user_name
         from shop_bill sb
+        left join  order_info odi on sb.order_id = odi.id
+        left join user u on odi.user_id = u.id
         where sb.shop_id = #{shopId}
         <if test="startDate != null">
             and sb.create_time &gt; #{startDate}
