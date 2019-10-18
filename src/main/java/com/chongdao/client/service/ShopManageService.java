@@ -20,4 +20,6 @@ public interface ShopManageService {
     ResultResponse saveShopInfo(Shop s);
 
     ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone);
+
+    ResultResponse downloadQrCodeImg(Integer shopId);
 }

@@ -112,4 +112,13 @@ public class ShopManageServiceImpl implements ShopManageService {
         shop.setUpdateTime(new Date());
         return ResultResponse.createBySuccess(shopRepository.save(shop));
     }
+
+    @Override
+    public ResultResponse downloadQrCodeImg(Integer shopId) {
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        if(shop != null) {
+
+        }
+        return null;
+    }
 }

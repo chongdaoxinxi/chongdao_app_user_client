@@ -88,4 +88,9 @@ public class ShopManageController {
     public ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone) {
         return shopManageService.saveShopConfig(shopId, isAutoAccept, isInService, phone);
     }
+
+    @PostMapping("downloadQrCodeImg")
+    public ResponseStatus downloadQrCodeImg(Integer shopId) {
+        return null;
+    }
 }

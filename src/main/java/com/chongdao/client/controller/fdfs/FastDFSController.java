@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/")
 @CrossOrigin
@@ -35,4 +37,6 @@ public class FastDFSController {
     }
 
 
+    @PostMapping("downloadFile")
+    public ResultResponse downloadFile(String url, HttpServletResponse response) {return uploadService.downloadFile(url, response);}
 }
