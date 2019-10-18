@@ -14,7 +14,7 @@ public class ExpressLoginVO {
     private Integer expressId;
     private String username;
     private String token;
-
+    private Integer type;//2是管理员
     @JsonIgnore
     private String password;
     /**

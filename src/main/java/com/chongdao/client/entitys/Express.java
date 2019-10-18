@@ -32,7 +32,7 @@ public class Express extends PageParams implements Serializable {
 	private String nativePassword;//未加密过的密码, 便于PC端编辑
 	private String name;//姓名
 	private String phone;
-	private Integer type;//1||2
+	private Integer type;//1||2, 2是管理员
 	private Integer status;//-1||1
 	private String description;
 	private String areaCode;//区域码

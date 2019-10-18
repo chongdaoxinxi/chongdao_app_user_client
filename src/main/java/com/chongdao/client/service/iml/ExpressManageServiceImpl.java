@@ -63,6 +63,7 @@ public class ExpressManageServiceImpl implements ExpressManageService {
             eVo.setExpressId(id);
             eVo.setUsername(username);
             eVo.setPassword(password);
+            eVo.setType(express.getType());
             Date date = new Date();
             eVo.setLastLoginTime(date);
             eVo.setToken(TokenUtil.generateToken(id, username, date, RoleEnum.EXPRESS.getCode()));
