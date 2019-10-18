@@ -4,6 +4,7 @@ import com.chongdao.client.common.ResultResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 public interface UploadService {
 
@@ -11,5 +12,5 @@ public interface UploadService {
 
     ResultResponse deleteFile(String storagePath);
 
-    ResultResponse downloadFile(String url, HttpServletResponse response);
+    ResultResponse downloadFile(String url, HttpServletResponse response) throws UnsupportedEncodingException;
 }

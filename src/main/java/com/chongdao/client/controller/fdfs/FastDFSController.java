@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/api/")
@@ -38,5 +39,5 @@ public class FastDFSController {
 
 
     @PostMapping("downloadFile")
-    public ResultResponse downloadFile(String url, HttpServletResponse response) {return uploadService.downloadFile(url, response);}
+    public ResultResponse downloadFile(String url, HttpServletResponse response) throws UnsupportedEncodingException {return uploadService.downloadFile(url, response);}
 }

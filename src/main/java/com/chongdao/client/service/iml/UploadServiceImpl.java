@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 @Service
 @Slf4j
@@ -68,7 +70,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public ResultResponse downloadFile(String url, HttpServletResponse response) {
+    public ResultResponse downloadFile(String url, HttpServletResponse response) throws UnsupportedEncodingException {
         if(url.indexOf("group") != -1) {
             url = url.substring(url.indexOf("group"));
         }
@@ -80,6 +82,13 @@ public class UploadServiceImpl implements UploadService {
         response.setContentType("application/force-download");// 设置强制下载不打开
         response.addHeader("Content-Disposition", "attachment;fileName=" + path);// 设置文件名
         response.setHeader("Context-Type", "application/xmsdownload");
+
+        response.reset();
+        response.setContentType("multipart/form-data");
+        response.addHeader("Content-Disposition",
+                "attachment;filename=" + URLEncoder.encode(path, "UTF-8"));
+
+
         try {
             OutputStream os = response.getOutputStream();
             for(int i=0; i<bytes.length;i++) {
