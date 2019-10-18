@@ -287,7 +287,9 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 cpnUser.setEnabled(1);
             }else {//有门槛
                 //满减判断
-                this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
+                if (cpnRule != null) {
+                    this.compare(cpnUser, totalPrice, cpnRule.getMinPrice());
+                }
             }
         }
         return cpnUser;
