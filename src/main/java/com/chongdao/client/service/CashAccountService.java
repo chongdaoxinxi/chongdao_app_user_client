@@ -8,13 +8,13 @@ import com.chongdao.client.entitys.*;
  */
 public interface CashAccountService {
     /**
-     * 常规订单入账
+     * 常规订单入账(常规订单商家接单后调用)
      * @return
      */
     ResultResponse customOrderCashIn(OrderInfo orderInfo);
 
     /**
-     * 医疗费用订单入账
+     * 医疗费用订单入账(用户付款医疗费用订单回调里调用)
      * @return
      */
     ResultResponse insuranceFeeCashIn(InsuranceFeeRecord insuranceFeeRecord);
@@ -26,13 +26,13 @@ public interface CashAccountService {
     ResultResponse petPickupOrderCashIn(OrderInfo orderInfo);
 
     /**
-     * 礼包类入账
+     * 礼包类入账)
      * @return
      */
     ResultResponse couponCashIn(Coupon coupon);
 
     /**
-     * 常规订单退款
+     * 常规订单退款(在管理点击退款完成时调用)
      * @return
      */
     ResultResponse customOrderCashRefund(OrderInfo orderInfo);
@@ -44,25 +44,25 @@ public interface CashAccountService {
     ResultResponse insuranceFeeCashRefund(InsuranceFeeRecord insuranceFeeRecord);
 
     /**
-     * 返利
+     * 返利(在返利接口逻辑最后时调用)
      * @return
      */
     ResultResponse recommendCashIn(RecommendRecord recommendRecord);
 
     /**
-     * 用户提现
+     * 用户提现(在用户账户申请提现时调用, 以及拒绝这个申请时调用)
      * @return
      */
     ResultResponse userWithdrawal(UserWithdrawal userWithdrawal, Boolean isFail);
 
     /**
-     * 商家提现
+     * 商家提现(在商家账户申请提现时调用, 以及拒绝这个申请时调用)
      * @return
      */
     ResultResponse shopWithdrawal(ShopApply shopApply, Boolean isFail);
 
     /**
-     * 地区账户提现
+     * 地区账户提现(在地区账户申请提现时调用, 以及拒绝这个申请时调用)
      * @return
      */
     ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply, Boolean isFail);
