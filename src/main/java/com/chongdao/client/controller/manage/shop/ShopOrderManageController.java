@@ -6,10 +6,7 @@ import com.chongdao.client.service.ShopApplyService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -55,6 +52,15 @@ public class ShopOrderManageController {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return orderService.getShopOrderDetail(tokenVo.getUserId(), orderNo);
     }
+
+    /**
+     * 获取订单详情
+     * @param orderId
+     * @return
+     */
+    @PostMapping("getShopOrderDetail")
+    public ResultResponse getOrderDetailShopPc(Integer orderId) {return orderService.getOrderDetailByOrderId(orderId);}
+
     /**
      * 获取订单列表Pc
      * @param token
