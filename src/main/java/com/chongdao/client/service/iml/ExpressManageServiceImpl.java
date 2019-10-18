@@ -7,6 +7,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.ExpressRepository;
 import com.chongdao.client.service.ExpressManageService;
+import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.ExpressLoginVO;
 import org.apache.commons.lang3.StringUtils;
@@ -34,9 +35,14 @@ public class ExpressManageServiceImpl implements ExpressManageService {
             return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getStatus(), ManageStatusEnum.SHOP_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         //正确性校验
-        Optional<Express> expressOp = expressRepository.findByUsernameAndPassword(username, password);
+        Optional<Express> expressOp = expressRepository.findByUsername(username);
         if(expressOp.isPresent()) {
             Express express = expressOp.get();
+            String pwd = express.getPassword();
+            String md5Pwd = MD5Util.MD5(password);
+            if(!pwd.equals(md5Pwd)) {
+                return ResultResponse.createByErrorMessage("密码不正确!");
+            }
             Integer status = express.getStatus();
             if(status == 1) {
                 return assembleExpressLogin(express);

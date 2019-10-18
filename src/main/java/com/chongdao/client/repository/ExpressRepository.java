@@ -14,6 +14,8 @@ public interface ExpressRepository extends JpaRepository<Express, Integer> {
 
     Optional<Express> findByUsernameAndPassword(String username, String password);
 
+    Optional<Express> findByUsername(String username);
+
     @Query(value = "select * from express exp where exp.area_code = ?1 and (exp.name like concat('%',?2,'%') or (?2 is null) or (?2 = '')) limit ?3, ?4", nativeQuery = true)
     List<Express> getExpressListByAreaCodeAndExpressName(String areaCode, String expressName, Integer pageNum, Integer pageSize);
 
