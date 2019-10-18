@@ -5,6 +5,7 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -21,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 二维码工具类
  */
-public class QrCodeUtils {
+public class QrCodeUtils<i> {
     private static final String CHARSET = "utf-8";
     private static final String FORMAT = "JPG";
     // 二维码尺寸
@@ -282,20 +283,49 @@ public class QrCodeUtils {
         list.add("a");
         list.add("b");
         list.add("c");
-        list.add("d");
+        list.add("a");
         //注意 坑
-        //int length = list.size();
+        int length = list.size();
         //for(int i=0 ;i<length;i++)
-//        for(int i=0;i<list.size();i++){
+//        for(int i=0;i< length;i++){
 //            if(list.get(i)==("c")){
 //                list.remove(i);
 //            }
 //        }
-        for (String s : list) {
-            if (s.equals("c")) {
-                list.remove(s);
-            }
-        }
+//        for (String s : list) {
+//            if (s.equals("c")) {
+//                list.remove(s);
+//            }
+//        }
+
+
+
     }
+
+
+    @Test
+    public  void main(){
+        Person person = new Person("张三" , 18);
+        Person call = call(person);
+        System.out.println(call);
+    }
+    public Person call(Person temp){
+        temp = null;
+        return temp;
+    }
+
+    public  class Person {
+        private String name;
+        private Integer age;
+
+        public Person(String name, Integer age) {
+            this.name = name;
+            this.age = age;
+        }
+
+
+    }
+
+
 
 }

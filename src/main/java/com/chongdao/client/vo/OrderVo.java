@@ -30,6 +30,11 @@ public class OrderVo {
 
     private BigDecimal payment = BigDecimal.ZERO;
 
+    //商品原价
+    private BigDecimal originGoodsPrice = BigDecimal.ZERO;
+    //配送费原价
+    private BigDecimal originServicePrice = BigDecimal.ZERO;
+
     private Byte follow ;
 
     private Integer serviceType;

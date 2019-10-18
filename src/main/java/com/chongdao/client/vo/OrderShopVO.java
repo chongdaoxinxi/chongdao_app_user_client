@@ -28,6 +28,8 @@ public class OrderShopVO {
     private Integer ShopId;
     private BigDecimal goodsPrice = BigDecimal.ZERO;
     private BigDecimal servicePrice = BigDecimal.ZERO;
+    private BigDecimal originGoodsPrice = BigDecimal.ZERO;
+    private BigDecimal originServicePrice = BigDecimal.ZERO;
     private BigDecimal totalDiscount = BigDecimal.ZERO;
     private BigDecimal totalPrice = BigDecimal.ZERO;
     private BigDecimal payment = BigDecimal.ZERO;
