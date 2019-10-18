@@ -180,6 +180,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             //优惠后的价格
             orderVo.setServicePrice(originServicePrice.subtract(orderVo.getServiceCouponPrice()));
         }
+        //测试配送费置为0
+        orderVo.setServicePrice(BigDecimal.ZERO);
         //店铺满减
         orderVo.setCouponInfoList(this.getCouponInfoList(orderVo.getShopId()));
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
