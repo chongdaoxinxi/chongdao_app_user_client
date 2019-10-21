@@ -29,7 +29,6 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/api/shop_good_manage/")
-
 public class ShopGoodManageController {
     @Autowired
     private UnitService unitService;
@@ -164,6 +163,7 @@ public class ShopGoodManageController {
     @GetMapping("goodsTypeList")
     public ResultResponse goodsTypeList(String token) {
         LoginUserUtil.resultTokenVo(token);
+
         return goodsService.goodsTypeList();
     }
 

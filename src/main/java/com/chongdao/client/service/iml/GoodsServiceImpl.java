@@ -387,7 +387,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      */
     @Override
     public ResultResponse goodsTypeList() {
-        List<GoodsType> goodsTypeList = goodsTypeRepository.findByStatusAndParentIdNot(1,0);
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatus(0,1);
         return ResultResponse.createBySuccess(goodsTypeList);
     }
 
@@ -564,7 +564,6 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (goodsTypeId == null){
             return ResultResponse.createBySuccess();
         }
-
         //适用期（根据猫粮和狗粮的goodsTypeId判断适用期有哪些）
         List<ScopeApplication> scopeApplicationList = null;
         //适用类型
@@ -577,7 +576,6 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             for (ScopeApplication scopeApplication : scopeApplicationList) {
                 scopeApplication.setPetCategoryList(petCategoryList);
             }
-
         }else {
             //猫粮没有适用类型
             //获取猫粮适用期

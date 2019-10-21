@@ -98,8 +98,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             model.setOutTradeNo(orderNo);//商户订单号
             model.setTimeoutExpress("120m"); //交易超时时间
             model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额
-            model.setProductCode("FAST_INSTANT_TRADE_PAY"); //销售产品码
-            //            model.setSellerId(UID);                        //商家id
             ali_request.setBizModel(model);
             ali_request.setNotifyUrl(AliPayConfig.NOTIFY_URL); //App支付异步回调地址
             ali_request.setReturnUrl(AliPayConfig.RETURN_URL); //付款完成跳转页面

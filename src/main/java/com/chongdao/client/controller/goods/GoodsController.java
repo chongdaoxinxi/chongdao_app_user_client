@@ -189,8 +189,8 @@ public class GoodsController {
             }
             String qrCodeUri = "http://47.100.63.167?goodsId=" + goodsId;
             List<String> stringList = Splitter.on(",").splitToList(good.getIcon());
-            String url = QrCodeUtils.encode(qrCodeUri, stringList.get(0), "/static/images/", true);
-            good.setQrCode("http://47.100.63.167/images/" + url);
+            String url = QrCodeUtils.encode(qrCodeUri, stringList.get(0), "/static/", true);
+            good.setQrCode("http://47.100.63.167/static/" + url);
             goodsRepository.save(good);
             return ResultResponse.createBySuccess(good.getQrCode());
         }

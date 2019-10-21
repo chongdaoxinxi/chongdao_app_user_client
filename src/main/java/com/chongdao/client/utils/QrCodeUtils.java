@@ -76,14 +76,14 @@ public class QrCodeUtils<i> {
         String url = "";
         String newFileName = "";
         if (fileName.indexOf("group1") == -1) {
-            url = "/static/images";
+            url = "/static";
             newFileName = fileName.substring(fileName.lastIndexOf("/") + 1);
         } else {
             String str = fileName.substring(fileName.indexOf("group1") + 6, fileName.lastIndexOf("/"));
             url = "/home/fastdfs/fasdfs_storage_data/data" + str;
             newFileName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
             if (!containsGoodsId) {
-                url = "/static/images";
+                url = "/static";
                 newFileName = fileName;
             }
         }
