@@ -97,14 +97,14 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
             AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 //                model.setBody(orderMap.get("body"));                      //商品信息
-            List<OrderDetail> orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(), order.getUserId());
-            model.setSubject(orderItemList.get(0).getName());//商品名称
+
+            model.setSubject("养宠有道订单-" +orderNo);//商品名称
             model.setOutTradeNo(orderNo);//商户订单号
-            model.setTimeoutExpress("120m"); //交易超时时间
+            model.setTimeoutExpress("30m"); //交易超时时间
             model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额
             ali_request.setBizModel(model);
             ali_request.setNotifyUrl(AliPayConfig.NOTIFY_URL); //App支付异步回调地址
-            ali_request.setReturnUrl(AliPayConfig.RETURN_URL); //付款完成跳转页面
+            //ali_request.setReturnUrl(AliPayConfig.RETURN_URL); //付款完成跳转页面
             AlipayTradeAppPayResponse response = client.sdkExecute(ali_request);
             orderStr = response.getBody();
             if (StringUtils.isBlank(orderStr)) {
@@ -167,7 +167,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
             AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 //                model.setBody(orderMap.get("body"));                      //商品信息
-            model.setSubject("追加商品");//商品名称
+            model.setSubject("养宠有道追加订单");//商品名称
             model.setOutTradeNo(reOrderNo);//商户订单号
             model.setTimeoutExpress("120m"); //交易超时时间
             model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额
@@ -236,7 +236,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
             AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 //                model.setBody(orderMap.get("body"));                      //商品信息
-            model.setSubject("活体商品");//商品名称
+            model.setSubject("养宠有道活体商品");//商品名称
             model.setOutTradeNo(htOrderNo);//商户订单号
             model.setTimeoutExpress("120m"); //交易超时时间
             model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额

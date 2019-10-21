@@ -459,6 +459,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             Brand brand = brandRepository.findById(good.getBrandId()).get();
             goodsListVO.setBrandName(brand.getName());
         }
+        if (good.getDiscount() != null && good.getDiscount() > 0) {
+            goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10).setScale(2,BigDecimal.ROUND_HALF_UP)));
+        }
         //如果无洗澡服务内容则展示所有
         //如果存在已经选中的需要展示其他未选中的
         List<BathingService> bathingServiceList = bathingServiceRepository.findAll();

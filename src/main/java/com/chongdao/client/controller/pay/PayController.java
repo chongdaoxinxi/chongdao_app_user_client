@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -81,37 +82,35 @@ public class PayController {
      * @return
      */
     @RequestMapping("aliPayCallback")
-    public Object aliPayCallback(HttpServletRequest request) {
-        Map<String, String> params = Maps.newHashMap();
+    public Object aliPayCallback(HttpServletRequest request){
+        Map<String,String> params = new HashMap<String,String>();
         Map requestParams = request.getParameterMap();
-        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
             String[] values = (String[]) requestParams.get(name);
             String valueStr = "";
             for (int i = 0; i < values.length; i++) {
-
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
             }
+            //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
             params.put(name, valueStr);
         }
-        log.info("支付宝回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
-
-        //非常重要,验证回调的正确性,是不是支付宝发的.并且呢还要避免重复通知.
-
+        //根据官方文档要求，此参数必须删除方可通过验签
         params.remove("sign_type");
+        log.info("支付宝回调,trade_status:{},参数:{}", params.get("trade_status"), params.toString());
         try {
-            boolean aliPayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, AliPayConfig.ALI_PAY_PUBLIC_KEY, "utf-8", AliPayConfig.SIGN_TYPE);
-            System.err.println(aliPayRSACheckedV2);
-//            if (!aliPayRSACheckedV2) {
-//                log.error("【支付宝回调】非法请求,验证不通过 params = {}", params);
-//                return ResultResponse.createByErrorMessage("非法请求,验证不通过");
-//            }
+            boolean aliPayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, AliPayConfig.ALI_PAY_PUBLIC_KEY, CHARSET, AliPayConfig.SIGN_TYPE);
+            log.info("【验签结果:】aliPayRSACheckedV2={}",aliPayRSACheckedV2);
+            if (!aliPayRSACheckedV2) {
+                log.error("【支付宝回调】非法请求,验证不通过 params = {}", params);
+                return ResultResponse.createByErrorMessage("非法请求,验证不通过");
+            }
         } catch (AlipayApiException e) {
             log.error("支付宝验证回调异常", e);
         }
 
         ResultResponse response = payService.aliCallback(params);
-        System.err.println(response.isSuccess());
         if (response.isSuccess()) {
             return Const.AliPayCallback.RESPONSE_SUCCESS;
         }
@@ -127,23 +126,24 @@ public class PayController {
      */
     @RequestMapping("aliPayCallbackHT")
     public Object aliPayCallbackHT(HttpServletRequest request) {
-        Map<String, String> params = Maps.newHashMap();
+        //获取支付宝POST过来反馈信息
+        Map<String,String> params = new HashMap<String,String>();
         Map requestParams = request.getParameterMap();
-        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
             String[] values = (String[]) requestParams.get(name);
             String valueStr = "";
             for (int i = 0; i < values.length; i++) {
-
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
             }
+            //乱码解决，这段代码在出现乱码时使用。
+            //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
             params.put(name, valueStr);
         }
-        log.info("活体支付回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
-
-        //非常重要,验证回调的正确性,是不是支付宝发的.并且呢还要避免重复通知.
-
+        //根据官方文档要求，此参数必须删除方可通过验签
         params.remove("sign_type");
+        log.info("活体支付回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
         try {
             boolean aliPayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, AliPayConfig.ALI_PAY_PUBLIC_KEY, CHARSET, AliPayConfig.SIGN_TYPE);
 
@@ -182,11 +182,9 @@ public class PayController {
             }
             params.put(name, valueStr);
         }
-        log.info("保险医疗支付回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
-
-        //非常重要,验证回调的正确性,是不是支付宝发的.并且呢还要避免重复通知.
-
+        //根据官方文档要求，此参数必须删除方可通过验签
         params.remove("sign_type");
+        log.info("保险医疗支付回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
         try {
             boolean aliPayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, AliPayConfig.ALI_PAY_PUBLIC_KEY, CHARSET, AliPayConfig.SIGN_TYPE);
 
