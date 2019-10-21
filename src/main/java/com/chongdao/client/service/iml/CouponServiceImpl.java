@@ -210,7 +210,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 cpnIds.add(e.getCpnId());
             }
         });
-        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByIdIn(cpnIds);
+        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByIdIn(CollectionUtils.isEmpty(cpnIds) ? null: cpnIds);
         if (!CollectionUtils.isEmpty(couponInfoList)) {
             couponInfoList.stream().forEach(couponInfo -> {
                 StringBuilder sb = new StringBuilder();
