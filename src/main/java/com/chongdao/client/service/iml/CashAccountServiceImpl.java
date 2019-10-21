@@ -38,20 +38,16 @@ public class CashAccountServiceImpl implements CashAccountService {
     private UserTransRepository userTransRepository;
     @Autowired
     private OrderTranRepository orderTranRepository;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
     @Override
     @Transactional
-    public ResultResponse customOrderCashIn(OrderInfo orderInfo) {
+    public ResultResponse customOrderPayedCashIn(OrderInfo orderInfo) {
         BigDecimal servicePrice = conversionNullBigDecimal(orderInfo.getServicePrice());
         BigDecimal goodsPrice = conversionNullBigDecimal(orderInfo.getGoodsPrice());
         BigDecimal insurancePrice = conversionNullBigDecimal(orderInfo.getInsurancePrice());
         BigDecimal total = servicePrice.add(goodsPrice).add(insurancePrice);
-        Integer shopId = orderInfo.getShopId();
-        Shop shop = shopRepository.findById(shopId).orElse(null);
-        //商家的钱入商家, 并生成流水记录
-        BigDecimal toShopRealMoney = getDeductedPrice(goodsPrice, DeductPercentEnum.CUSTOM_ORDER_DEDUCT.getCode());//扣除手续费
-        shopMoneyDeal(shop, toShopRealMoney);
-        generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "订单消费", 1);
         //商家的钱+系统的钱 入地区账户
         String areaCode = orderInfo.getAreaCode();
         Management areaAdmin = getAreaAdmin(areaCode);
@@ -66,6 +62,49 @@ public class CashAccountServiceImpl implements CashAccountService {
         //生成订单资金交易记录
         generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), "订单消费");
         return ResultResponse.createBySuccess();
+    }
+
+    @Override
+    @Transactional
+    public ResultResponse customOrderCashIn(OrderInfo orderInfo) {
+        BigDecimal servicePrice = conversionNullBigDecimal(orderInfo.getServicePrice());
+        BigDecimal goodsPrice = conversionNullBigDecimal(orderInfo.getGoodsPrice());
+        BigDecimal insurancePrice = conversionNullBigDecimal(orderInfo.getInsurancePrice());
+        BigDecimal total = servicePrice.add(goodsPrice).add(insurancePrice);
+        Integer shopId = orderInfo.getShopId();
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        //商家的钱入商家, 并生成流水记录
+        BigDecimal toShopRealMoney = getDeductedPrice(goodsPrice, DeductPercentEnum.CUSTOM_ORDER_DEDUCT.getCode());//扣除手续费
+        shopMoneyDeal(shop, toShopRealMoney);
+        generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "订单消费", 1);
+//        //商家的钱+系统的钱 入地区账户
+//        String areaCode = orderInfo.getAreaCode();
+//        Management areaAdmin = getAreaAdmin(areaCode);
+//        managementMoneyDeal(areaAdmin, total);
+//        //生成流水记录
+//        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, total, "订单消费", 1);
+//        //商家的钱+系统的钱 入超级账户
+//        Management superAdmin = getSuperAdmin();
+//        managementMoneyDeal(superAdmin, total);
+//        //生成流水记录
+//        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), total, "订单消费", 1);
+//        //生成订单资金交易记录
+//        generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), "订单消费");
+        return ResultResponse.createBySuccess();
+    }
+
+    @Override
+    public ResultResponse customReOrderCashIn(OrderInfoRe orderInfoRe) {
+        BigDecimal payment = orderInfoRe.getPayment();
+        Integer shopId = orderInfoRe.getShopId();
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        BigDecimal toShopRealMoney = getDeductedPrice(payment, DeductPercentEnum.CUSTOM_ORDER_DEDUCT.getCode());
+        String orderNo = orderInfoRe.getOrderNo();
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        //商家的钱入商家, 并生成流水记录
+        shopMoneyDeal(shop, toShopRealMoney);
+        generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "订单消费", 1);
+        return null;
     }
 
     @Override
@@ -111,9 +150,9 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Transactional
     public ResultResponse customOrderCashRefund(OrderInfo orderInfo) {
         Integer id = orderInfo.getId();
-        //当产生退款时, 根据各账户的流水入账记录进行资金扣除
+        //当产生退款时, 根据各账户的流水入账记录进行资金扣除, 如果没有入账记录, 那么无需扣除
         //商家账户资金扣除, 并生成流水记录
-        List<ShopBill> sbList = shopBillRepository.findByOrderIdAndPriceGreaterThan(id, new BigDecimal(0));//查询出入账记录
+        List<ShopBill> sbList = shopBillRepository.findByOrderIdAndTypeAndPriceGreaterThan(id, 1, new BigDecimal(0));//查询出入账记录
         if (sbList.size() > 0) {
             ShopBill inShopBill = sbList.get(0);
             Integer shopId = inShopBill.getShopId();
@@ -123,7 +162,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateShopBill(id, shopId, outMoney, "订单退款", 2);
         }
         //从地区账户资金扣除, 并生成流水记录
-        List<AreaBill> abList = areaBillRepository.findByOrderIdAndType(id, 1);//查询出入账记录
+        List<AreaBill> abList = areaBillRepository.findByOrderIdAndTypeAndPriceGreaterThan(id, 1, new BigDecimal(0));//查询出入账记录
         if (abList.size() > 0) {
             AreaBill inAreaBill = abList.get(0);
             BigDecimal outMoney = inAreaBill.getPrice().multiply(new BigDecimal(-1));
@@ -133,7 +172,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateAreaBill(id, inAreaBill.getShopId(), areaCode, outMoney, "订单退款", 2);
         }
         //从超级账户资金扣除, 并生成流水记录
-        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndType(id, 1);
+        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndTypeAndPriceGreaterThan(id, 1, new BigDecimal(0));
         if (sabList.size() > 0) {
             SuperAdminBill inSuperAdminBill = new SuperAdminBill();
             BigDecimal outMoney = inSuperAdminBill.getPrice().multiply(new BigDecimal(-1));
@@ -176,6 +215,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     @Transactional
     public ResultResponse userWithdrawal(UserWithdrawal userWithdrawal, Boolean isFail) {
+        // 申请提现时就扣除资金, 如果审核失败再将资金退回
         BigDecimal money = conversionNullBigDecimal(userWithdrawal.getMoney());
         Integer userId = userWithdrawal.getUserId();
         BigDecimal realMoney = conversionNullBigDecimal(userWithdrawal.getRealMoney());
@@ -189,7 +229,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateUserTrans(null, userId, "用户提现", realMoney, 7);
         } else {
             userMoneyDeal(user, money);
-            generateUserTrans(null, userId, "用户提现失败退还", realMoney, 7);
+            generateUserTrans(null, userId, "用户提现失败退还", realMoney.multiply(new BigDecimal(-1)), 7);
         }
         return ResultResponse.createBySuccess();
     }
@@ -197,6 +237,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     @Transactional
     public ResultResponse shopWithdrawal(ShopApply shopApply, Boolean isFail) {
+        // 申请提现时就扣除资金, 如果审核失败再将资金退回
         BigDecimal applyMoney = conversionNullBigDecimal(shopApply.getApplyMoney());
         BigDecimal realMoney = conversionNullBigDecimal(shopApply.getRealMoney());
         Integer shopId = shopApply.getShopId();
@@ -210,7 +251,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateShopBill(null, shopId, realMoney, "店铺提现", 3);
         } else {
             shopMoneyDeal(shop, applyMoney);
-            generateShopBill(null, shopId, realMoney, "店铺提现失败退还", 3);
+            generateShopBill(null, shopId, realMoney.multiply(new BigDecimal(-1)), "店铺提现失败退还", 3);
         }
         return ResultResponse.createBySuccess();
     }
@@ -218,6 +259,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     @Transactional
     public ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply, Boolean isFail) {
+        // 申请提现时就扣除资金, 如果审核失败再将资金退回
         BigDecimal applyMoney = conversionNullBigDecimal(areaWithdrawalApply.getApplyMoney());
         BigDecimal realMoney = conversionNullBigDecimal(areaWithdrawalApply.getRealMoney());
         Integer managementId = areaWithdrawalApply.getManagementId();
@@ -231,7 +273,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现", 3);
         } else {
             managementMoneyDeal(management, applyMoney);
-            generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现退还", 3);
+            generateAreaBill(null, null, management.getAreaCode(), realMoney.multiply(new BigDecimal(-1)), "地区账户提现退还", 3);
         }
         return ResultResponse.createBySuccess();
     }

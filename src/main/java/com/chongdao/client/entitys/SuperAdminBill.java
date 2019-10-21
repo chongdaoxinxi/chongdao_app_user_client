@@ -33,7 +33,7 @@ public class SuperAdminBill implements Serializable {
     private Integer orderId;
     private BigDecimal price;
     private String note;
-    private Integer type;//1:订单消费, 2:订单退款, 3:我的提现
+    private Integer type;//1:订单消费, 2:订单退款, 3:地区提现, 4:医疗费用订单, 5: 追加订单
     private String areaCode;
     private Date createTime;
 }
