@@ -19,6 +19,8 @@ import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.repository.HtOrderInfoRepository;
 import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.repository.PayInfoRepository;
+import com.chongdao.client.service.CashAccountService;
+import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.PayService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
@@ -55,10 +57,12 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     private PayInfoRepository payInfoRepository;
     @Autowired
     private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
-
     @Autowired
     private HtOrderInfoRepository htOrderInfoRepository;
-
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private CashAccountService cashAccountService;
 
     /**
      * 支付宝对接
@@ -302,6 +306,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     smsService.sendExpressNewOrder(htOrderNo, express.getPhone());
                 });
             }
+            //调用活体支付资金流转逻辑
+            //TODO
         }
         //生成支付信息
         try {
@@ -406,6 +412,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", "", "", PayPlatformEnum.ALI_PAY.getCode());
                 //发送短消息
                 successCallBackMsgInsuranceOrderOperate(save);
+                //调用医疗订单资金流转逻辑
+                cashAccountService.insuranceFeeCashIn(insuranceFeeRecord);
             }
         }
         //生成支付信息
@@ -469,22 +477,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     log.error(e.getMessage());
                     log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
                 }
-            }
-        } else if (orderNo.indexOf("IFR") != -1) {
-            // 医疗费用订单
-            if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-                List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
-                if (ifrs.size() > 0) {
-                    InsuranceFeeRecord insuranceFeeRecord = ifrs.get(0);
-                    insuranceFeeRecord.setStatus(1);
-                    insuranceFeeRecord.setPaymentTime(new Date());
-                    insuranceFeeRecord.setPaymentType(PayPlatformEnum.WX_APP_PAY.getCode());
-                    InsuranceFeeRecord save = insuranceFeeRecordRepository.save(insuranceFeeRecord);
-                    //生成支付信息
-                    successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", "", "", PayPlatformEnum.ALI_PAY.getCode());
-                    //发送短消息
-                    successCallBackMsgInsuranceOrderOperate(save);
-                }
+                //调用追加订单资金流转程序
+                //TODO
             }
         } else {
             //正常订单
@@ -526,9 +520,14 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                             smsService.sendExpressNewOrder(orderNo, express.getPhone());
                         });
                     }
-
-
+                    //调用商家接单方法
+                    orderService.shopAcceptOrder(order.getId());
+                } else {
+                    //通知商家接单
+                    //TODO
                 }
+                //调用用户支付后的资金流转逻辑
+                cashAccountService.customOrderCashIn(order);
             }
             //生成支付信息
             try {
@@ -781,6 +780,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), save.getReOrderNo(), transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
             //发送短消息
             successCallBackMsgReOrderOperate(save);
+            //调用追加订单资金流转逻辑
+            //TODO
         } else if (orderNo.indexOf("IFR") != -1) {
             List<InsuranceFeeRecord> ifrs = insuranceFeeRecordRepository.findByOrderNo(orderNo);
             if (ifrs.size() > 0) {
@@ -793,6 +794,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 successCallBackPayInfoOperate(save.getUserId(), save.getOrderNo(), "", transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
                 //发送短消息
                 successCallBackMsgInsuranceOrderOperate(save);
+                //调用医疗订单资金流转逻辑
+                cashAccountService.insuranceFeeCashIn(insuranceFeeRecord);
             }
         } else {
             OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);
@@ -809,6 +812,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             orderInfoMapper.updateByPrimaryKeySelective(order);
             //发送短信息
             successCallBackMsgoOrderOperate(order);
+            //调用用户支付后的资金流转逻辑
+            cashAccountService.customOrderCashIn(order);
         }
     }
 
@@ -874,6 +879,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             expressList.stream().forEach(express -> {
                 smsService.sendExpressNewOrder(order.getOrderNo(), express.getPhone());
             });
+            //调用商家接单逻辑
+            orderService.shopAcceptOrder(order.getId());
+        } else {
+            //通知商家接单
         }
     }
 

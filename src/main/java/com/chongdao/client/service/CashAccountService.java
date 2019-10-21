@@ -8,10 +8,24 @@ import com.chongdao.client.entitys.*;
  */
 public interface CashAccountService {
     /**
-     * 常规订单入账(常规订单商家接单后调用)
+     * 常规订单付款后入账(常规订单付款后调用),  用户付款后先将资金转入地区账户和超级账户
+     * @param orderInfo
+     * @return
+     */
+    ResultResponse customOrderPayedCashIn(OrderInfo orderInfo);
+
+    /**
+     * 常规订单入账(常规订单商家接单后调用), 商家接单后再将商家应得的资金转入商家账户
      * @return
      */
     ResultResponse customOrderCashIn(OrderInfo orderInfo);
+
+    /**
+     * 追加订单入账(追加订单支付后调用), 资金直接转入商家、地区账户及超级账户
+     * @param orderInfoRe
+     * @return
+     */
+    ResultResponse customReOrderCashIn(OrderInfoRe orderInfoRe);
 
     /**
      * 医疗费用订单入账(用户付款医疗费用订单回调里调用)
