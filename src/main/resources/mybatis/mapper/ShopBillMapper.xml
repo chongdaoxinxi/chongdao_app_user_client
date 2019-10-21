@@ -55,4 +55,11 @@
         </if>
         order by sb.create_time desc
     </select>
+    <select id="getInBillByOrderId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from shop_bill sb
+        where sb.price &gt; 0 and sb.type = 1 or sb.type = 5 and sb.order_id = #{orderId}
+        order by sb.create_time desc
+    </select>
 </mapper>

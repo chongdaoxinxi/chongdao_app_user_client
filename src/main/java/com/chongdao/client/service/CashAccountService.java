@@ -40,7 +40,7 @@ public interface CashAccountService {
     ResultResponse petPickupOrderCashIn(OrderInfo orderInfo);
 
     /**
-     * 礼包类入账)
+     * 礼包类入账
      * @return
      */
     ResultResponse couponCashIn(Coupon coupon);
