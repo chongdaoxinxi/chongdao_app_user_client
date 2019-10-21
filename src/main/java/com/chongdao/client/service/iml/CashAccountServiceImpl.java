@@ -152,12 +152,6 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     @Transactional
-    public ResultResponse petPickupOrderCashIn(OrderInfo orderInfo) {
-        return null;
-    }
-
-    @Override
-    @Transactional
     public ResultResponse couponCashIn(Coupon coupon) {
         return null;
     }
@@ -310,12 +304,6 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateAreaBill(null, null, management.getAreaCode(), realMoney.multiply(new BigDecimal(-1)), "地区账户提现退还", 3);
         }
         return ResultResponse.createBySuccess();
-    }
-
-    @Override
-    @Transactional
-    public ResultResponse insuranceAdminWithdrawal() {
-        return null;
     }
 
     /**
