@@ -251,7 +251,7 @@ public class AdminPcController {
     }
 
     /**
-     * 添加山沟
+     * 添加商店
      *
      * @param shop
      * @return
@@ -496,6 +496,18 @@ public class AdminPcController {
     }
 
     /**
+     * 地区账户申请提现
+     * @param token
+     * @param applyMoney
+     * @param applyNote
+     * @return
+     */
+    @PostMapping("applyAreaWithdrawal")
+    public ResultResponse applyAreaWithdrawal(String token, BigDecimal applyMoney, String applyNote) {
+        return areaWithdrawalApplyService.applyAreaWithdrawal(token, applyMoney, applyNote);
+    }
+
+    /**
      * 审核用户提现
      *
      * @param userWithdrawalId
@@ -519,6 +531,6 @@ public class AdminPcController {
      */
     @PostMapping("checkAreaWithdrawal")
     public ResultResponse checkAreaWithdrawal(Integer areaWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {
-        return  null;
+        return  areaWithdrawalApplyService.checkAreaWithdrawal(areaWithdrawalId, note, realMoney, targetStatus);
     }
 }

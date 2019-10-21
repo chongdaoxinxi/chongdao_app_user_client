@@ -65,6 +65,7 @@ sms:
   UserTopUpAdmin:  【养宠有道】订单号：{$var}, 用户ID：{$var}, 用户姓名：{$var}, 充值金额：{$var}, 余额：{$var}
   UserWithdrawalUser: 【养宠有道】您的提现已处理
   UserWithdrawalSuccessUser: 【养宠有道】您的提现已审核通过, 请耐心等待平台打款
+  UserWithdrawalFailUser: 【养宠有道】您的提现已审核通过, 您可以选择重新申请
   UserWithdrawalAdmin: 【养宠有道】有新的用户提现
 
   ShopNewAdtOrder: 【养宠有道】追加订单已下单成功, 订单号：{$var}, 追加订单号：{$var}

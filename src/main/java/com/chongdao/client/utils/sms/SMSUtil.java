@@ -54,6 +54,7 @@ public class SMSUtil {
 	private String UserTopUpAdmin;
 	private String UserWithdrawalUser;
 	private String UserWithdrawalSuccessUser;
+	private String UserWithdrawalFailUser;
 	private String UserWithdrawalAdmin;
 	private String SingleTripGoodServiceStartUser;
 	private String SingleTripPetServiceStartUser;

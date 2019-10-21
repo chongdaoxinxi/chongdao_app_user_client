@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum DeductPercentEnum {
     INSURANCE_FEE_DEDUCT(10, "医疗费用扣费比例"),
     CUSTOM_ORDER_DEDUCT(5, "常规订单扣费比例"),
+    AREA_WITHDRAWAL_DEDUCT(5,"地区账户提现比例"),
     ;
 
     private Integer code;

@@ -6,8 +6,8 @@ import com.chongdao.client.entitys.UserWithdrawal;
 import com.chongdao.client.mapper.UserWithdrawalMapper;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.repository.UserWithdrawalRepository;
+import com.chongdao.client.service.CashAccountService;
 import com.chongdao.client.service.SmsService;
-import com.chongdao.client.service.UserTransService;
 import com.chongdao.client.service.UserWithdrawalService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.utils.sms.SMSUtil;
@@ -41,11 +41,11 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserTransService userTransService;
-    @Autowired
     private SmsService smsService;
     @Autowired
     protected SMSUtil smsUtil;
+    @Autowired
+    private CashAccountService cashAccountService;
 
     @Transactional
     @Override
@@ -67,19 +67,21 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
             add.setCreateTime(new Date());
             add.setStatus(0);
             userWithdrawalRepository.save(add);
-            try {
-                //短信通知管理员处理提现
-                String superAdminPhone = smsService.getSuperAdminPhone();
-                smsService.customMsgSenderSimple(smsUtil.getUserWithdrawalAdmin(), superAdminPhone);
-            } catch (Exception e) {
-                log.error("用户申请提现短信通知管理员失败!");
-            }
-            return ResultResponse.createBySuccess();
+
         } else {
             userWithdrawal.setUpdateTime(new Date());
             userWithdrawalRepository.save(userWithdrawal);
-            return ResultResponse.createBySuccess();
         }
+        //完成资金处理逻辑
+        cashAccountService.userWithdrawal(userWithdrawal, false);
+        try {
+            //短信通知管理员处理提现
+            String superAdminPhone = smsService.getSuperAdminPhone();
+            smsService.customMsgSenderSimple(smsUtil.getUserWithdrawalAdmin(), superAdminPhone);
+        } catch (Exception e) {
+            log.error("用户申请提现短信通知管理员失败!");
+        }
+        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -108,16 +110,18 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
         userWithdrawal.setCheckNote(note);
         userWithdrawal.setRealMoney(realMoney);
         userWithdrawal.setStatus(targetStatus);
-        userWithdrawalRepository.save(userWithdrawal);
 
+        String msg = smsUtil.getUserWithdrawalSuccessUser();
+        if(targetStatus == -1) {
+            //审核被拒绝, 资金退还处理
+            cashAccountService.userWithdrawal(userWithdrawal, true);
+            msg = smsUtil.getUserWithdrawalFailUser();
+        }
         Integer userId = userWithdrawal.getUserId();
-        //添加用户账号金额交易记录
-        //扣除用户余额
-        userTransService.addUserTrans(userId, realMoney.multiply(new BigDecimal(-1)), "用户提现", 7);
         try {
-            //发送短信通知(提现审核通过)
             User user = userRepository.findById(userId).orElse(null);
-            smsService.customMsgSenderSimple(smsUtil.getUserWithdrawalSuccessUser(), user.getPhone());
+            //发送短信通知(提现审核通过/失败)
+            smsService.customMsgSenderSimple(msg, user.getPhone());
         } catch (Exception e) {
             log.error("用户提现成功短信提醒用户失败!");
         }

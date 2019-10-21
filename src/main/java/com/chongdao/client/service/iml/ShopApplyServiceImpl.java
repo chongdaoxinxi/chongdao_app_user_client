@@ -7,6 +7,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.ShopApplyMapper;
 import com.chongdao.client.repository.ShopApplyRepository;
 import com.chongdao.client.repository.ShopRepository;
+import com.chongdao.client.service.CashAccountService;
 import com.chongdao.client.service.ShopApplyService;
 import com.chongdao.client.service.ShopBillService;
 import com.chongdao.client.service.ShopService;
@@ -37,6 +38,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     private ShopBillService shopBillService;
     @Autowired
     private ShopApplyMapper shopApplyMapper;
+    @Autowired
+    private CashAccountService cashAccountService;
 
     /**
      * 添加提现记录
@@ -55,8 +58,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
         sa.setStatus(0);
         sa.setCreateTime(new Date());
         sa.setUpdateTime(new Date());
-        //扣除余额
-        shopService.updateShopMoney(shopId, applyMoney.multiply(new BigDecimal(-1)));
+        //完成资金处理逻辑
+        cashAccountService.shopWithdrawal(sa, false);
         //TODO 短信通知管理员
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopApplyRepository.saveAndFlush(sa));
     }
@@ -76,10 +79,7 @@ public class ShopApplyServiceImpl implements ShopApplyService {
         sa.setRealMoney(realMoney);
         sa.setStatus(1);
         sa.setUpdateTime(new Date());
-        //添加流水记录
-        shopBillService.addShopBillRecord(sa.getShopId(), 0, 3, "店铺提现", sa.getApplyMoney().multiply(new BigDecimal(-1)));
         //TODO 短信通知商铺
-
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopApplyRepository.saveAndFlush(sa));
     }
 
@@ -96,11 +96,9 @@ public class ShopApplyServiceImpl implements ShopApplyService {
         sa.setCheckTime(new Date());
         sa.setUpdateTime(new Date());
         sa.setStatus(-1);
-        //退还余额
-        Integer shopId = sa.getShopId();
-        shopService.updateShopMoney(shopId, sa.getApplyMoney());
+        //完成资金退还
+        cashAccountService.shopWithdrawal(sa, true);
         //TODO 短信通知商铺
-
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopApplyRepository.saveAndFlush(sa));
     }
 
