@@ -23,7 +23,7 @@ public interface UserWithdrawalService {
      * @param pageSize
      * @return
      */
-    ResultResponse getUserWithdrawalList(String token, String name, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+    ResultResponse getUserWithdrawalList(String token, String name, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
     /**
      * 审核用户提现

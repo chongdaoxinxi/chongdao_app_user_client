@@ -30,6 +30,9 @@
         <if test="name != null and name != ''">
             and uw.name like concat('%', #{name}, '%')
         </if>
+        <if test="phone != null and phone !+ ''">
+            ad uw.phone like concat('%', #{phone}, '%')
+        </if>
         <if test="status != null">
             and uw.status = #{status}
         </if>

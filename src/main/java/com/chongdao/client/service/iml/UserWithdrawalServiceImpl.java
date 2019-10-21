@@ -55,10 +55,10 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
         Integer userId = userWithdrawal.getUserId();
         User user = userRepository.findById(userId).orElse(null);
         BigDecimal left = user.getMoney();
-        if(money == null || left == null) {
+        if (money == null || left == null) {
             return ResultResponse.createByErrorMessage("申请提现金额不能为null, 用户余额不能为null!");
         }
-        if(money.compareTo(left) > 1) {
+        if (money.compareTo(left) > 1) {
             return ResultResponse.createByErrorMessage("申请提现金额不能大于用户余额!");
         }
         if (id == null) {
@@ -83,14 +83,14 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
     }
 
     @Override
-    public ResultResponse getUserWithdrawalList(String token, String name, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getUserWithdrawalList(String token, String name, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         Integer userId = null;
         if (StringUtils.isNotBlank(token)) {
             ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
             userId = tokenVo.getUserId();
         }
-        List<UserWithdrawal> list = userWithdrawalMapper.getUserWithdrawalList(userId, name, null, startDate, endDate);
+        List<UserWithdrawal> list = userWithdrawalMapper.getUserWithdrawalList(userId, name, phone, null, startDate, endDate);
         PageInfo pageInfo = new PageInfo();
         pageInfo.setList(list);
         return ResultResponse.createBySuccess(pageInfo);

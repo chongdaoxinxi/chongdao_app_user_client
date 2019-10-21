@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.Banner;
 import com.chongdao.client.entitys.Express;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -47,7 +48,7 @@ public class AdminPcController {
     @Autowired
     private ExpressRuleService expressRuleService;
     @Autowired
-    private  ExpressService expressService;
+    private ExpressService expressService;
     @Autowired
     private BannerService bannerService;
     @Autowired
@@ -64,7 +65,7 @@ public class AdminPcController {
     public ResultResponse confirmRefund(String token, Integer orderId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return orderService.adminConfirmRefund(orderId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -91,6 +92,7 @@ public class AdminPcController {
 
     /**
      * 获取订单评论
+     *
      * @param token
      * @param orderId
      * @return
@@ -106,11 +108,22 @@ public class AdminPcController {
         }
     }
 
+    /**
+     * 获取商家提现记录
+     *
+     * @param token
+     * @param shopName
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @GetMapping("getShopWithdrawalList")
     public ResultResponse getShopWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return shopApplyService.getShopApplyList(null, shopName, startDate, endDate, pageNum, pageSize);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -119,6 +132,7 @@ public class AdminPcController {
 
     /**
      * 获取地区账户提现记录
+     *
      * @param token
      * @param startDate
      * @param endDate
@@ -130,15 +144,21 @@ public class AdminPcController {
     public ResultResponse getAreaWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
-            return areaWithdrawalApplyService.getAreaWithdrawApplyListData(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
-        } else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
+        if (role != null) {
+            if (role.equals(RoleEnum.ADMIN_PC.getCode())) {
+                //地区管理员
+                return areaWithdrawalApplyService.getAreaWithdrawApplyListData(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
+            } else if (role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
+                //超级管理员
+                return areaWithdrawalApplyService.getAreaWithdrawApplyListData(null, startDate, endDate, pageNum, pageSize);
+            }
         }
+        return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
     }
 
     /**
      * 获取管理员信息
+     *
      * @param token
      * @return
      */
@@ -146,7 +166,7 @@ public class AdminPcController {
     public ResultResponse getManagementData(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return managementService.getManagementById(tokenVo.getUserId());
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -154,7 +174,7 @@ public class AdminPcController {
     }
 
     /**
-     * 同意提现
+     * 同意商家提现
      *
      * @param token
      * @param shopApplyId
@@ -166,7 +186,7 @@ public class AdminPcController {
     public ResultResponse acceptWithdrawal(String token, Integer shopApplyId, BigDecimal money, String checkNote) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return shopApplyService.acceptShopApplyRecord(shopApplyId, money, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -174,7 +194,7 @@ public class AdminPcController {
     }
 
     /**
-     * 拒绝提现
+     * 拒绝商家提现
      *
      * @param token
      * @param shopApplyId
@@ -185,7 +205,7 @@ public class AdminPcController {
     public ResultResponse refuseWithdrawal(String token, Integer shopApplyId, String checkNote) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return shopApplyService.refuseShopApplyRecord(shopApplyId, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -203,7 +223,7 @@ public class AdminPcController {
     public ResultResponse getShopInfo(String token, Integer shopId) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return shopManageService.getShopInfo(shopId);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -223,13 +243,19 @@ public class AdminPcController {
     public ResultResponse getShopDataList(String token, String shopName, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals("ADMIN_PC")) {
+        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
             return shopService.getShopDataList(tokenVo.getUserId(), shopName, pageNum, pageSize);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
     }
 
+    /**
+     * 添加山沟
+     *
+     * @param shop
+     * @return
+     */
     @PostMapping("addShop")
     public ResultResponse addShop(Shop shop) {
         return shopService.addShop(shop);
@@ -313,18 +339,13 @@ public class AdminPcController {
      */
     @GetMapping("getAreaBill")
     public ResultResponse getAreaBill(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-//        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-//        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageSize);
-        return null;
-    }
-
-    @GetMapping("getAreaWithdrawApplyListData")
-    public ResultResponse getAreaWithdrawApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return shopBillService.getShopBillByAreaCode(tokenVo.getUserId(), shopName, startDate, endDate, pageNum, pageSize);
     }
 
     /**
      * 获取使用过优惠券的订单运输险投保疲累
+     *
      * @param token
      * @param shopName
      * @param orderNo
@@ -337,12 +358,13 @@ public class AdminPcController {
      * @return
      */
     @GetMapping("getConcessionalOrderListAdmin")
-    public ResultResponse getConcessionalOrderListAdmin(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize){
+    public ResultResponse getConcessionalOrderListAdmin(String token, String shopName, String orderNo, String username, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         return orderService.getConcessionalOrderList(token, shopName, orderNo, username, phone, startDate, endDate, pageNum, pageSize);
     }
 
     /**
      * 获取首页统计数据
+     *
      * @param token
      * @param dateType
      * @return
@@ -354,6 +376,7 @@ public class AdminPcController {
 
     /**
      * 获取配送规则(根据管理员token)
+     *
      * @param token
      * @return
      */
@@ -364,6 +387,7 @@ public class AdminPcController {
 
     /**
      * 新增/保存配送规则
+     *
      * @param token
      * @param startTime
      * @param endTime
@@ -376,6 +400,7 @@ public class AdminPcController {
 
     /**
      * 获取管理员城市信息
+     *
      * @param token
      * @return
      */
@@ -387,6 +412,7 @@ public class AdminPcController {
 
     /**
      * 获取配送员数据
+     *
      * @param token
      * @param pageNum
      * @param pageSize
@@ -399,6 +425,7 @@ public class AdminPcController {
 
     /**
      * 保存配送员信息
+     *
      * @param express
      * @return
      */
@@ -409,6 +436,7 @@ public class AdminPcController {
 
     /**
      * 删除配送员
+     *
      * @param expressId
      * @return
      */
@@ -419,6 +447,7 @@ public class AdminPcController {
 
     /**
      * 获取轮播图数据列表
+     *
      * @param token
      * @param status
      * @return
@@ -430,6 +459,7 @@ public class AdminPcController {
 
     /**
      * 保存轮播图
+     *
      * @param banner
      * @return
      */
@@ -440,6 +470,7 @@ public class AdminPcController {
 
     /**
      * 删除轮播图
+     *
      * @param id
      * @return
      */
@@ -450,7 +481,9 @@ public class AdminPcController {
 
     /**
      * 获取用户提现记录列表
+     * @param token
      * @param name
+     * @param phone
      * @param startDate
      * @param endDate
      * @param pageNum
@@ -458,10 +491,13 @@ public class AdminPcController {
      * @return
      */
     @PostMapping("getUserWithdrawalList")
-    public ResultResponse getUserWithdrawalList(String name, Date startDate, Date endDate, Integer pageNum, Integer pageSize){ return userWithdrawalService.getUserWithdrawalList(null, name, startDate, endDate, pageNum, pageSize);}
+    public ResultResponse getUserWithdrawalList(String token, String name, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return userWithdrawalService.getUserWithdrawalList(null, name, phone, startDate, endDate, pageNum, pageSize);
+    }
 
     /**
      * 审核用户提现
+     *
      * @param userWithdrawalId
      * @param note
      * @param realMoney
@@ -469,5 +505,20 @@ public class AdminPcController {
      * @return
      */
     @PostMapping("checkUserWithdrawal")
-    public ResultResponse checkUserWithdrawal(Integer userWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {return userWithdrawalService.checkUserWithdrawal(userWithdrawalId, note, realMoney, targetStatus);}
+    public ResultResponse checkUserWithdrawal(Integer userWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {
+        return userWithdrawalService.checkUserWithdrawal(userWithdrawalId, note, realMoney, targetStatus);
+    }
+
+    /**
+     * 审核地区账户提现
+     * @param areaWithdrawalId
+     * @param note
+     * @param realMoney
+     * @param targetStatus
+     * @return
+     */
+    @PostMapping("checkAreaWithdrawal")
+    public ResultResponse checkAreaWithdrawal(Integer areaWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {
+        return  null;
+    }
 }
