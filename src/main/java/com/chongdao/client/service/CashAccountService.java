@@ -34,13 +34,7 @@ public interface CashAccountService {
     ResultResponse insuranceFeeCashIn(InsuranceFeeRecord insuranceFeeRecord);
 
     /**
-     * 运输险费用入账
-     * @return
-     */
-    ResultResponse petPickupOrderCashIn(OrderInfo orderInfo);
-
-    /**
-     * 礼包类入账)
+     * 礼包类入账
      * @return
      */
     ResultResponse couponCashIn(Coupon coupon);
@@ -80,10 +74,4 @@ public interface CashAccountService {
      * @return
      */
     ResultResponse areaAdminWithdrawal(AreaWithdrawalApply areaWithdrawalApply, Boolean isFail);
-
-    /**
-     * 保险账户提现
-     * @return
-     */
-    ResultResponse insuranceAdminWithdrawal();
 }

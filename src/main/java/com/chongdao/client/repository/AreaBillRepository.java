@@ -14,5 +14,5 @@ public interface AreaBillRepository extends JpaRepository<AreaBill, Integer> {
      * @param price
      * @return
      */
-    List<AreaBill> findByOrderIdAndTypeAndPriceGreaterThan(Integer orderId, Integer type, BigDecimal price);
+    List<AreaBill> findByOrderIdAndTypeOrTypeAndPriceGreaterThan(Integer orderId, Integer type, Integer type2, BigDecimal price);
 }

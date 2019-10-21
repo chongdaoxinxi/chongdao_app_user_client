@@ -14,5 +14,5 @@ public interface ShopBillRepository extends JpaRepository<ShopBill, Integer> {
      * @param price
      * @return
      */
-    List<ShopBill> findByOrderIdAndTypeAndPriceGreaterThan(Integer orderId, Integer type, BigDecimal price);
+    List<ShopBill> findByOrderIdAndTypeOrTypeAndPriceGreaterThan(Integer orderId, Integer type, Integer type2, BigDecimal price);
 }

@@ -8,4 +8,6 @@ public interface OrderInfoReRepository extends JpaRepository<OrderInfoRe, Intege
     OrderInfoRe findByReOrderNoAndStatusAndUserId(String reOrderNo, Integer status,Integer userId);
 
     OrderInfoRe findByReOrderNo(String reOrderNo);
+
+    OrderInfoRe findByOrderNo(String orderNo);
 }

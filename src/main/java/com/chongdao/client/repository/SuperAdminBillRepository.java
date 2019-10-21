@@ -9,10 +9,11 @@ import java.util.List;
 public interface SuperAdminBillRepository extends JpaRepository<SuperAdminBill, Integer> {
     /**
      * 类型为订单消费的入账记录
+     *
      * @param orderId
      * @param type
      * @param price
      * @return
      */
-    List<SuperAdminBill> findByOrderIdAndTypeAndPriceGreaterThan(Integer orderId, Integer type, BigDecimal price);
+    List<SuperAdminBill> findByOrderIdAndTypeOrTypeAndPriceGreaterThan(Integer orderId, Integer type, Integer type2, BigDecimal price);
 }

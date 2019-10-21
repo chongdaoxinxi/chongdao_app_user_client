@@ -40,6 +40,8 @@ public class CashAccountServiceImpl implements CashAccountService {
     private OrderTranRepository orderTranRepository;
     @Autowired
     private OrderInfoRepository orderInfoRepository;
+    @Autowired
+    private OrderInfoReRepository orderInfoReRepository;
 
     @Override
     @Transactional
@@ -94,6 +96,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
+    @Transactional
     public ResultResponse customReOrderCashIn(OrderInfoRe orderInfoRe) {
         BigDecimal payment = orderInfoRe.getPayment();
         Integer shopId = orderInfoRe.getShopId();
@@ -103,8 +106,21 @@ public class CashAccountServiceImpl implements CashAccountService {
         OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
         //商家的钱入商家, 并生成流水记录
         shopMoneyDeal(shop, toShopRealMoney);
-        generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "订单消费", 1);
-        return null;
+        generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "追加订单", 5);
+        //商家的钱+系统的钱 入地区账户
+        String areaCode = orderInfo.getAreaCode();
+        Management areaAdmin = getAreaAdmin(areaCode);
+        managementMoneyDeal(areaAdmin, payment);
+        //生成流水记录
+        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, payment, "追加订单", 5);
+        //商家的钱+系统的钱 入超级账户
+        Management superAdmin = getSuperAdmin();
+        managementMoneyDeal(superAdmin, payment);
+        //生成流水记录
+        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), payment, "追加订单", 5);
+        //生成订单资金交易记录
+        generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), "追加订单");
+        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -136,12 +152,6 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     @Override
     @Transactional
-    public ResultResponse petPickupOrderCashIn(OrderInfo orderInfo) {
-        return null;
-    }
-
-    @Override
-    @Transactional
     public ResultResponse couponCashIn(Coupon coupon) {
         return null;
     }
@@ -149,39 +159,57 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     @Transactional
     public ResultResponse customOrderCashRefund(OrderInfo orderInfo) {
+        String comment = "订单退款";
         Integer id = orderInfo.getId();
         //当产生退款时, 根据各账户的流水入账记录进行资金扣除, 如果没有入账记录, 那么无需扣除
         //商家账户资金扣除, 并生成流水记录
-        List<ShopBill> sbList = shopBillRepository.findByOrderIdAndTypeAndPriceGreaterThan(id, 1, new BigDecimal(0));//查询出入账记录
+        List<ShopBill> sbList = shopBillRepository.findByOrderIdAndTypeOrTypeAndPriceGreaterThan(id, 1, 5, new BigDecimal(0));//查询出入账记录(正常订单和追加订单)
         if (sbList.size() > 0) {
-            ShopBill inShopBill = sbList.get(0);
-            Integer shopId = inShopBill.getShopId();
-            Shop shop = shopRepository.findById(shopId).orElse(null);
-            BigDecimal outMoney = inShopBill.getPrice().multiply(new BigDecimal(-1));
-            shopMoneyDeal(shop, outMoney);
-            generateShopBill(id, shopId, outMoney, "订单退款", 2);
+            for(ShopBill inShopBill : sbList) {
+                Integer shopId = inShopBill.getShopId();
+                Shop shop = shopRepository.findById(shopId).orElse(null);
+                BigDecimal outMoney = inShopBill.getPrice().multiply(new BigDecimal(-1));
+                shopMoneyDeal(shop, outMoney);
+                if(inShopBill.getType() == 5) {
+                    comment = "订单退款(追加订单部分)";
+                }
+                generateShopBill(id, shopId, outMoney, comment, 2);
+            }
         }
         //从地区账户资金扣除, 并生成流水记录
-        List<AreaBill> abList = areaBillRepository.findByOrderIdAndTypeAndPriceGreaterThan(id, 1, new BigDecimal(0));//查询出入账记录
+        List<AreaBill> abList = areaBillRepository.findByOrderIdAndTypeOrTypeAndPriceGreaterThan(id, 1, 5, new BigDecimal(0));//查询出入账记录(正常订单和追加订单)
         if (abList.size() > 0) {
-            AreaBill inAreaBill = abList.get(0);
-            BigDecimal outMoney = inAreaBill.getPrice().multiply(new BigDecimal(-1));
-            String areaCode = inAreaBill.getAreaCode();
-            Management areaAdmin = getAreaAdmin(areaCode);
-            managementMoneyDeal(areaAdmin, outMoney);
-            generateAreaBill(id, inAreaBill.getShopId(), areaCode, outMoney, "订单退款", 2);
+            for(AreaBill inAreaBill : abList) {
+                BigDecimal outMoney = inAreaBill.getPrice().multiply(new BigDecimal(-1));
+                String areaCode = inAreaBill.getAreaCode();
+                Management areaAdmin = getAreaAdmin(areaCode);
+                managementMoneyDeal(areaAdmin, outMoney);
+                if(areaAdmin.getType() == 5) {
+                    comment = "订单退款(追加订单部分)";
+                }
+                generateAreaBill(id, inAreaBill.getShopId(), areaCode, outMoney, comment, 2);
+            }
         }
         //从超级账户资金扣除, 并生成流水记录
-        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndTypeAndPriceGreaterThan(id, 1, new BigDecimal(0));
+        List<SuperAdminBill> sabList = superAdminBillRepository.findByOrderIdAndTypeOrTypeAndPriceGreaterThan(id, 1, 5, new BigDecimal(0));//查询出入账记录(正常订单和追加订单)
         if (sabList.size() > 0) {
-            SuperAdminBill inSuperAdminBill = new SuperAdminBill();
-            BigDecimal outMoney = inSuperAdminBill.getPrice().multiply(new BigDecimal(-1));
-            Management superAdmin = getSuperAdmin();
-            managementMoneyDeal(superAdmin, outMoney);
-            generateSuperAdminBill(id, inSuperAdminBill.getShopId(), inSuperAdminBill.getAreaCode(), outMoney, "订单退款", 2);
+            for(SuperAdminBill inSuperAdminBill : sabList) {
+                BigDecimal outMoney = inSuperAdminBill.getPrice().multiply(new BigDecimal(-1));
+                Management superAdmin = getSuperAdmin();
+                managementMoneyDeal(superAdmin, outMoney);
+                if(inSuperAdminBill.getType() == 5) {
+                    comment = "订单退款(追加订单部分)";
+                }
+                generateSuperAdminBill(id, inSuperAdminBill.getShopId(), inSuperAdminBill.getAreaCode(), outMoney, comment, 2);
+            }
         }
         ////生成订单资金交易记录
-        generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), "订单退款");
+        generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), comment);
+        OrderInfoRe oiRe = orderInfoReRepository.findByOrderNo(orderInfo.getOrderNo());
+        if(oiRe != null) {
+            //如果该订单有追加订单一并退款
+            generateOrderTrans(orderInfo.getId(), oiRe.getPayment(), orderInfo.getOrderNo(), "订单退款(追加订单部分)");
+        }
         return ResultResponse.createBySuccess();
     }
 
@@ -276,12 +304,6 @@ public class CashAccountServiceImpl implements CashAccountService {
             generateAreaBill(null, null, management.getAreaCode(), realMoney.multiply(new BigDecimal(-1)), "地区账户提现退还", 3);
         }
         return ResultResponse.createBySuccess();
-    }
-
-    @Override
-    @Transactional
-    public ResultResponse insuranceAdminWithdrawal() {
-        return null;
     }
 
     /**

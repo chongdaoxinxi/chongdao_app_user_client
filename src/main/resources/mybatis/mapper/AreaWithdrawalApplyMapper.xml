@@ -24,6 +24,16 @@
         select
         <include refid="Base_Column_List"/>, null as area_name
         from area_withdrawal_apply awa
-        where awa.management_id = #{managementId} and awa.create_time &gt; #{startDate} and awa.create_time &lt; #{endDate}
+        where 1 = 1
+        <if test="managementId != null">
+            and awa.management_id = #{managementId}
+        </if>
+        <if test="startDate != null">
+            and awa.create_time &gt; #{startDate}
+        </if>
+        <if test="endDate != null">
+            and awa.create_time &lt; #{endDate}
+        </if>
+        order by awa.create_time desc
     </select>
 </mapper>
