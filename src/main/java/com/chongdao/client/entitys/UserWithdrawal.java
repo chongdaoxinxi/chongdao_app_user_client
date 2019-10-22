@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -38,7 +35,10 @@ public class UserWithdrawal implements Serializable {
     private String applyNote;//申请备注
     private String checkNote;//审核备注
     private Integer status;//-1:拒绝;0:审核中;1:审核通过
-    private Date checkTime;//审核时间
     private Date createTime;
+    private Date checkTime;//审核时间
     private Date updateTime;
+
+    @Transient
+    private String phone;
 }

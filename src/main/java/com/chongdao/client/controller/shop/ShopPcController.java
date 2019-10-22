@@ -153,7 +153,7 @@ public class ShopPcController {
     @PostMapping("getShopApplyListData")
     public ResultResponse getShopApplyListData(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, startDate, endDate, pageNum, pageSize);
+        return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, null, startDate, endDate, pageNum, pageSize);
     }
 
     /**

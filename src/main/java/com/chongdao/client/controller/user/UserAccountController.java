@@ -85,5 +85,5 @@ public class UserAccountController {
      * @return
      */
     @PostMapping("getUserWithdrawalList")
-    public ResultResponse getUserWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) { return userWithdrawalService.getUserWithdrawalList(token, null, null, startDate, endDate, pageNum, pageSize);}
+    public ResultResponse getUserWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) { return userWithdrawalService.getUserWithdrawalList(token, null, null, null, startDate, endDate, pageNum, pageSize);}
 }

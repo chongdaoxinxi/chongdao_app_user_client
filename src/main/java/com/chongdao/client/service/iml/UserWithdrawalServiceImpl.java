@@ -85,14 +85,17 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
     }
 
     @Override
-    public ResultResponse getUserWithdrawalList(String token, String name, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getUserWithdrawalList(String token, String name, String phone, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         Integer userId = null;
         if (StringUtils.isNotBlank(token)) {
             ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
             userId = tokenVo.getUserId();
         }
-        List<UserWithdrawal> list = userWithdrawalMapper.getUserWithdrawalList(userId, name, phone, null, startDate, endDate);
+        if(status != null && status == 99) {
+            status = null;
+        }
+        List<UserWithdrawal> list = userWithdrawalMapper.getUserWithdrawalList(userId, name, phone, status, startDate, endDate);
         PageInfo pageInfo = new PageInfo();
         pageInfo.setList(list);
         return ResultResponse.createBySuccess(pageInfo);

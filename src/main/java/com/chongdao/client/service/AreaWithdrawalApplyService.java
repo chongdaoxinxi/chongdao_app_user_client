@@ -15,7 +15,7 @@ public interface AreaWithdrawalApplyService {
      */
     ResultResponse applyAreaWithdrawal(String token, BigDecimal applyMoney, String applyNote);
 
-    ResultResponse getAreaWithdrawApplyListData(Integer managementId, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+    ResultResponse getAreaWithdrawApplyListData(Integer managementId, String name, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 
     /**
      * 审核提现

@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 public class AreaWithdrawalApply implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -28,8 +30,8 @@ public class AreaWithdrawalApply implements Serializable {
     private Integer managementId;
     private BigDecimal applyMoney;//申请提现金额
     private String applyNote;//申请备注
-    private Date checkTime;//审核时间
     private String checkNote;//审核备注
+    private Date checkTime;//审核时间
     private BigDecimal realMoney;//实际提现金额
     private Integer status;//-1:拒绝;0:待审核;1:通过;
     private Date createTime;//创建时间

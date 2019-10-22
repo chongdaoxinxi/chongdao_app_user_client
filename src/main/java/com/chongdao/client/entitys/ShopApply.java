@@ -40,4 +40,6 @@ public class ShopApply extends PageParams implements Serializable {
     @Transient
     private String shopName;//商店名称
     private Integer deductRate;//提现扣费比例
+    @Transient
+    private String phone;
 }

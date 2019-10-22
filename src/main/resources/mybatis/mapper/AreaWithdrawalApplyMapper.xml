@@ -13,8 +13,8 @@
             <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="deduct_rate" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="area_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="deduct_rate" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -22,11 +22,15 @@
     </sql>
     <select id="getAreaWithdrawApplyList" resultMap="BaseResultMap" parameterType="map">
         select
-        <include refid="Base_Column_List"/>, null as area_name
+        <include refid="Base_Column_List"/>, m.area_name as area_name
         from area_withdrawal_apply awa
+        left join management m on awa.management_id = m.id
         where 1 = 1
         <if test="managementId != null">
             and awa.management_id = #{managementId}
+        </if>
+        <if test="status != null">
+            and awa.status = #{status}
         </if>
         <if test="startDate != null">
             and awa.create_time &gt; #{startDate}

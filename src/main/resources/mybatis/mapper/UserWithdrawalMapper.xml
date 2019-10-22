@@ -14,6 +14,7 @@
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="check_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
@@ -21,8 +22,9 @@
     </sql>
     <select id="getUserWithdrawalList" resultMap="BaseResultMap" parameterType="map">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List"/>, u.phone as phone
         from user_withdrawal uw
+        left join user u on uw.user_id = u.id
         where 1 = 1
         <if test="userId != null">
             and uw.user_id = #{userId}
@@ -30,8 +32,8 @@
         <if test="name != null and name != ''">
             and uw.name like concat('%', #{name}, '%')
         </if>
-        <if test="phone != null and phone !+ ''">
-            ad uw.phone like concat('%', #{phone}, '%')
+        <if test="phone != null and phone != ''">
+            and u.phone like concat('%', #{phone}, '%')
         </if>
         <if test="status != null">
             and uw.status = #{status}

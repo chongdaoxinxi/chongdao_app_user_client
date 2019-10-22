@@ -51,9 +51,12 @@ public class AreaWithdrawalApplyServiceImpl implements AreaWithdrawalApplyServic
     }
 
     @Override
-    public ResultResponse getAreaWithdrawApplyListData(Integer managementId, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getAreaWithdrawApplyListData(Integer managementId, String name, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        return ResultResponse.createBySuccess(new PageInfo(areaWithdrawalApplyMapper.getAreaWithdrawApplyList(managementId, startDate, endDate)));
+        if(status != null && status == 99) {
+            status = null;
+        }
+        return ResultResponse.createBySuccess(new PageInfo(areaWithdrawalApplyMapper.getAreaWithdrawApplyList(managementId, name, status, startDate, endDate)));
     }
 
     @Override

@@ -119,15 +119,20 @@ public class AdminPcController {
      * @param pageSize
      * @return
      */
-    @GetMapping("getShopWithdrawalList")
-    public ResultResponse getShopWithdrawalList(String token, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    @PostMapping("getShopWithdrawalList")
+    public ResultResponse getShopWithdrawalList(String token, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
-            return shopApplyService.getShopApplyList(null, shopName, startDate, endDate, pageNum, pageSize);
+        if (role != null && role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
+            if(role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
+                return shopApplyService.getShopApplyList(null, shopName, status, startDate, endDate, pageNum, pageSize);
+            } else if(role.equals(RoleEnum.SHOP_PC.getCode()) || role.equals(RoleEnum.SHOP_APP.getCode())){
+                return shopApplyService.getShopApplyList(tokenVo.getUserId(), shopName, status, startDate, endDate, pageNum, pageSize);
+            }
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
         }
+        return ResultResponse.createByErrorMessage("参数错误!");
     }
 
     /**
@@ -140,17 +145,17 @@ public class AdminPcController {
      * @param pageSize
      * @return
      */
-    @GetMapping("getAreaWithdrawalList")
-    public ResultResponse getAreaWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    @PostMapping("getAreaWithdrawalList")
+    public ResultResponse getAreaWithdrawalList(String token, String name, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
         if (role != null) {
             if (role.equals(RoleEnum.ADMIN_PC.getCode())) {
                 //地区管理员
-                return areaWithdrawalApplyService.getAreaWithdrawApplyListData(tokenVo.getUserId(), startDate, endDate, pageNum, pageSize);
+                return areaWithdrawalApplyService.getAreaWithdrawApplyListData(tokenVo.getUserId(), name, status, startDate, endDate, pageNum, pageSize);
             } else if (role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
                 //超级管理员
-                return areaWithdrawalApplyService.getAreaWithdrawApplyListData(null, startDate, endDate, pageNum, pageSize);
+                return areaWithdrawalApplyService.getAreaWithdrawApplyListData(null, name, status, startDate, endDate, pageNum, pageSize);
             }
         }
         return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -182,11 +187,11 @@ public class AdminPcController {
      * @param checkNote
      * @return
      */
-    @GetMapping("acceptWithdrawal")
+    @PostMapping("acceptWithdrawal")
     public ResultResponse acceptWithdrawal(String token, Integer shopApplyId, BigDecimal money, String checkNote) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
+        if (role != null && (role.equals(RoleEnum.SUPER_ADMIN_PC.getCode()) || role.equals(RoleEnum.ADMIN_PC.getCode()))) {
             return shopApplyService.acceptShopApplyRecord(shopApplyId, money, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -201,11 +206,11 @@ public class AdminPcController {
      * @param checkNote
      * @return
      */
-    @GetMapping("refuseWithdrawal")
+    @PostMapping("refuseWithdrawal")
     public ResultResponse refuseWithdrawal(String token, Integer shopApplyId, String checkNote) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals(RoleEnum.ADMIN_PC.getCode())) {
+        if (role != null && (role.equals(RoleEnum.SUPER_ADMIN_PC.getCode()) || role.equals(RoleEnum.ADMIN_PC.getCode()))) {
             return shopApplyService.refuseShopApplyRecord(shopApplyId, checkNote);
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());
@@ -491,8 +496,8 @@ public class AdminPcController {
      * @return
      */
     @PostMapping("getUserWithdrawalList")
-    public ResultResponse getUserWithdrawalList(String token, String name, String phone, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        return userWithdrawalService.getUserWithdrawalList(null, name, phone, startDate, endDate, pageNum, pageSize);
+    public ResultResponse getUserWithdrawalList(String token, String name, String phone, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+        return userWithdrawalService.getUserWithdrawalList(null, name, phone, status, startDate, endDate, pageNum, pageSize);
     }
 
     /**
@@ -517,7 +522,7 @@ public class AdminPcController {
      * @return
      */
     @PostMapping("checkUserWithdrawal")
-    public ResultResponse checkUserWithdrawal(Integer userWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {
+        public ResultResponse checkUserWithdrawal(Integer userWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {
         return userWithdrawalService.checkUserWithdrawal(userWithdrawalId, note, realMoney, targetStatus);
     }
 

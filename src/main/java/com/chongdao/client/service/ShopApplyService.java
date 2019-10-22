@@ -12,5 +12,5 @@ public interface ShopApplyService {
 
     ResultResponse refuseShopApplyRecord(Integer shopApplyId, String checkNote);
 
-    ResultResponse getShopApplyList(Integer shopId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+    ResultResponse getShopApplyList(Integer shopId, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
 }

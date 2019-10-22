@@ -15,13 +15,14 @@
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="shop_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="deduct_rate" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
         sa.id, sa.shop_id, sa.apply_money, sa.apply_note, sa.check_time, sa.check_note, sa.real_money, sa.status, sa.deduct_rate, sa.create_time, sa.update_time
     </sql>
     <select id="getShopApplyListPc" resultMap="BaseResultMap" parameterType="map">
-        select sa.*, s.shop_name, null as deduct_rate
+        select sa.*, s.shop_name, null as deduct_rate, s.phone
         from shop_apply sa
         left join shop s on sa.shop_id = s.id
         where 1 = 1
@@ -30,6 +31,9 @@
         </if>
         <if test="shopId != null">
             and sa.shop_id = #{shopId}
+        </if>
+        <if test="status != null">
+            and sa.status = #{status}
         </if>
         <if test="startDate != null">
             and sa.create_time &gt; #{startDate}
