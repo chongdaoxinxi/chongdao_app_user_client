@@ -123,11 +123,13 @@ public class AdminPcController {
     public ResultResponse getShopWithdrawalList(String token, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         String role = tokenVo.getRole();
-        if (role != null && role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
+        if (role != null) {
             if(role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
-                return shopApplyService.getShopApplyList(null, shopName, status, startDate, endDate, pageNum, pageSize);
+                return shopApplyService.getShopApplyList(null, null, shopName, status, startDate, endDate, pageNum, pageSize);
             } else if(role.equals(RoleEnum.SHOP_PC.getCode()) || role.equals(RoleEnum.SHOP_APP.getCode())){
-                return shopApplyService.getShopApplyList(tokenVo.getUserId(), shopName, status, startDate, endDate, pageNum, pageSize);
+                return shopApplyService.getShopApplyList(tokenVo.getUserId(), null, shopName, status, startDate, endDate, pageNum, pageSize);
+            } else if(role.equals(RoleEnum.ADMIN_PC.getCode())) {
+                return shopApplyService.getShopApplyList(null, tokenVo.getUserId(), shopName, status, startDate, endDate, pageNum, pageSize);
             }
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.ERROR.getStatus(), ResultEnum.ERROR.getMessage());

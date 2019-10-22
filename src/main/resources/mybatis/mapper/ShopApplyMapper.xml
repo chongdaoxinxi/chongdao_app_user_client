@@ -27,10 +27,13 @@
         left join shop s on sa.shop_id = s.id
         where 1 = 1
         <if test="shopName != null and shopName != ''">
-            and s.shop_name = #{shopName}
+            and s.shop_name like concat('%', #{shopName}, '%')
         </if>
         <if test="shopId != null">
             and sa.shop_id = #{shopId}
+        </if>
+        <if test="areaCode != null and areaCode != ''">
+            and s.area_code = #{areaCode}
         </if>
         <if test="status != null">
             and sa.status = #{status}
