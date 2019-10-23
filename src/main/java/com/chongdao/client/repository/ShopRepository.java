@@ -22,4 +22,6 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     List<Shop> findByShopNameLikeAndStatusNotAndAreaCode(String shopName,Integer status,String areaCode);
 
     Optional<List<Shop>> findAllByIdIn(List<Integer> shopIds);
+
+    List<Shop> findByIdIn(String shopIds);
 }

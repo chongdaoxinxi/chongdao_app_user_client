@@ -28,9 +28,11 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
     int countByUserIdAndCpnIdAndShopId(Integer userId, Integer cpnId, String shopId);
 
     //查询当前用户的优惠券列表（限制条件:未使用and未删除）
-    List<CpnUser> findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String shopId, Integer userId,
+    List<CpnUser> findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(Integer userId,
                                                                   Integer cpnState,Integer isDelete,List<Integer> cpnType,List<Integer> scopeTypes);
 
+    List<CpnUser> findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String shopId,Integer userId,
+                                                                                      Integer cpnState,Integer isDelete,List<Integer> cpnType,List<Integer> scopeTypes);
 
     /***
      * 获取优惠券数量
@@ -41,7 +43,7 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
      */
     int countByUserIdAndIsDeleteAndCpnType(Integer userId, Integer delete,Integer cpnType);
 
-    int countByUserIdAndIsDeleteAndCpnTypeIn(Integer userId, Integer delete,List<Integer> cpnTypes);
+    int countByUserIdAndIsDeleteAndCpnScopeTypeIn(Integer userId, Integer delete,List<Integer> cpnScopeTypes);
 
 
     /**

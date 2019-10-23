@@ -13,7 +13,9 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.service.CouponService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.vo.CpnInfoVo;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -65,11 +67,19 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         //配送优惠券(双程)
         if (serviceType == 1 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){
             //6配送双程  8仅限服务（双程）10仅限商品（配送双程）
-            List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
+            //该查询查询所有，不包含限制店铺判断
+            List<CpnUser> cpnUserList = cpnUserRepository.findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
+            //限制店铺使用的查询结果
+            List<CpnUser> cpnLimitUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId,userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
+            if (!CollectionUtils.isEmpty(cpnLimitUserList)){
+                cpnUserList.addAll(cpnLimitUserList);
+            }
             cpnUserList.stream().forEach(cpnUser -> {
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
                 if (result > 0) {
+                    //设置是否可用
+                    this.setServiceCouponEnabled(cpnUser,shopId);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
                     //设置优惠券限制范围名称
                     this.setCouponScope(couponInfo);
@@ -79,11 +89,18 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             return ResultResponse.createBySuccess(couponInfoList);
         }else if (serviceType == 2 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){//单程
             //5配送单程  7仅限服务（单程）9仅限商品（配送单程）
-            List<CpnUser> cpnUserList =cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId, userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(5,7,9));
+            List<CpnUser> cpnUserList =cpnUserRepository.findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(5,7,9));
+            //限制店铺使用的查询结果
+            List<CpnUser> cpnLimitUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId,userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(5,7,9));
+            if (!CollectionUtils.isEmpty(cpnLimitUserList)){
+                cpnUserList.addAll(cpnLimitUserList);
+            }
             cpnUserList.stream().forEach(cpnUser -> {
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
                 if (result > 0) {
+                    //设置是否可用
+                    this.setServiceCouponEnabled(cpnUser,shopId);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
                     //设置优惠券限制范围名称
                     this.setCouponScope(couponInfo);
@@ -180,7 +197,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             long result = this.computerTime(cpnUser.getValidityEndDate());
             //二次校验，过滤过期的优惠券
             if (result > 0){
-                count = this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
+                count = count + this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
             }
         };
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
@@ -210,7 +227,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 cpnIds.add(e.getCpnId());
             }
         });
-        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByIdIn(CollectionUtils.isEmpty(cpnIds) ? null: cpnIds);
+        List<CouponInfo> couponInfoList = couponInfoRepository.findAllByIdIn(cpnIds);
         if (!CollectionUtils.isEmpty(couponInfoList)) {
             couponInfoList.stream().forEach(couponInfo -> {
                 StringBuilder sb = new StringBuilder();
@@ -251,10 +268,10 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      */
     public int getExpressCouponCount(Integer userId,Integer serviceType){
         if (serviceType == 1){ //双程
-            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnTypeIn(userId, 0, Arrays.asList(6, 8, 10));
+            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnScopeTypeIn(userId, 0, Arrays.asList(6, 8, 10));
             return count;
         }else{
-            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnTypeIn(userId, 0, Arrays.asList(5, 7, 9));
+            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnScopeTypeIn(userId, 0, Arrays.asList(5, 7, 9));
             return count;
         }
     }
@@ -372,6 +389,11 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      */
     private CouponInfo assembelCpnInfoEnabled(CpnUser cpnUser){
         CouponInfo couponInfo = couponInfoRepository.findById(cpnUser.getCpnId()).orElse(null);
+        //设置门槛金额（仅针对满减）
+        CpnThresholdRule cpnThresholdRule = cpnThresholdRuleRepository.findByCpnId(couponInfo.getId());
+        if (cpnThresholdRule != null && cpnThresholdRule.getMinPrice() != null) {
+            couponInfo.setMinPrice(cpnThresholdRule.getMinPrice());
+        }
         if (couponInfo != null && cpnUser.getEnabled() == 1) {//优惠券可用
             couponInfo.setEnabled(1);
         }
@@ -379,6 +401,19 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             Shop shop = shopRepository.findById(couponInfo.getShopId()).orElse(null);
             if (shop != null) {
                 couponInfo.setShopName(shop.getShopName());
+            }
+        }
+        //判断是否有特殊优惠券（仅限几家店铺使用的这种）
+        if (StringUtils.isNotBlank(couponInfo.getScopeShopId())) {
+            List<Shop> shopList = shopMapper.selectByShopIds(StringUtils.isBlank(couponInfo.getScopeShopId()) ? null: couponInfo.getScopeShopId());
+            if (!CollectionUtils.isEmpty(shopList)) {
+                String shopName = "";
+                for (Shop shop : shopList) {
+                    shopName = Joiner.on(",").skipNulls().join(shop.getShopName(),shopName);
+                }
+                if (StringUtils.isNotBlank(shopName)) {
+                    couponInfo.setShopName(shopName.substring(0, shopName.length() - 1));
+                }
             }
         }
         return couponInfo;
@@ -391,6 +426,24 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             couponInfo.setScopeName(CouponScopeCommon.cpnScope(couponInfo.getScopeType(),couponInfo).getScopeName());
         }
         return couponInfo;
+    }
+
+
+    /**
+     * 设置配送券可用范围
+     * @param cpnUser
+     * @param shopId
+     * @return
+     */
+    private CpnUser setServiceCouponEnabled(CpnUser cpnUser,String shopId){
+        if (StringUtils.isNotBlank(cpnUser.getShopId()) && StringUtils.contains(cpnUser.getShopId(),shopId)){
+            cpnUser.setEnabled(1);
+        }else if (StringUtils.isBlank(cpnUser.getShopId())){
+            cpnUser.setEnabled(1);
+        }else{
+            cpnUser.setEnabled(0);
+        }
+        return cpnUser;
     }
 
 }

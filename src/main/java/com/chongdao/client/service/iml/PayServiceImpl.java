@@ -492,6 +492,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 return ResultResponse.createBySuccess("支付宝重复调用");
             }
             if (Const.AliPayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+                //如果用户下单使用优惠券，需要将该优惠券删除或数量减少
+                // TODO: 2019-10-22  
                 order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
                 order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
                 order.setPaymentType(PaymentTypeEnum.ALI_PAY.getStatus());

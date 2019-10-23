@@ -51,4 +51,6 @@ public interface ShopMapper {
                             @Param("categoryId") String categoryId,
                             @Param("discount") Integer discount,@Param("proActivities") String proActivities,@Param("areaCode") String areaCode);
 
+
+
 }

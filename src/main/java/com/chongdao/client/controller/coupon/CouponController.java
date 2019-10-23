@@ -56,6 +56,7 @@ public class CouponController {
 
     /**
      * 领取优惠券
+     * 注：此接口领取含特殊优惠券（如：仅限哪几家店铺使用等场景，需要去pc管理后台设置）
      * @return
      */
     @PostMapping("receiveCoupon")
