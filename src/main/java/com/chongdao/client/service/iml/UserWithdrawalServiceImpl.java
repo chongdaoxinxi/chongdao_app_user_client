@@ -96,7 +96,7 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
             status = null;
         }
         List<UserWithdrawal> list = userWithdrawalMapper.getUserWithdrawalList(userId, name, phone, status, startDate, endDate);
-        PageInfo pageInfo = new PageInfo();
+        PageInfo pageInfo = new PageInfo(list);
         pageInfo.setList(list);
         return ResultResponse.createBySuccess(pageInfo);
     }

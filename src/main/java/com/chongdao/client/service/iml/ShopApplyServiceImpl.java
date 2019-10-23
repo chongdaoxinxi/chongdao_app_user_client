@@ -1,10 +1,12 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Management;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.ShopApply;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.ShopApplyMapper;
+import com.chongdao.client.repository.ManagementRepository;
 import com.chongdao.client.repository.ShopApplyRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.CashAccountService;
@@ -40,6 +42,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     private ShopApplyMapper shopApplyMapper;
     @Autowired
     private CashAccountService cashAccountService;
+    @Autowired
+    private ManagementRepository managementRepository;
 
     /**
      * 添加提现记录
@@ -103,14 +107,25 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     }
 
     @Override
-    public ResultResponse getShopApplyList(Integer shopId, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getShopApplyList(Integer shopId, Integer managementId, String shopName, Integer status, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         if(status != null && status == 99) {
             status = null;
         }
-        List<ShopApply> list = shopApplyMapper.getShopApplyListPc(shopId, shopName, status, startDate, endDate);
-        PageInfo pageInfo = new PageInfo();
-        pageInfo.setList(list);
-        return ResultResponse.createBySuccess(pageInfo);
+        if(managementId != null) {
+            Management management = managementRepository.findById(managementId).orElse(null);
+            if(management == null) {
+                return ResultResponse.createByErrorMessage("管理员帐号的区域码信息有误, 无法正确查询出数据!");
+            }
+            List<ShopApply> list = shopApplyMapper.getShopApplyListPc(null, management.getAreaCode(), shopName, status, startDate, endDate);
+            PageInfo pageInfo = new PageInfo(list);
+            pageInfo.setList(list);
+            return ResultResponse.createBySuccess(pageInfo);
+        } else {
+            List<ShopApply> list = shopApplyMapper.getShopApplyListPc(shopId, null, shopName, status, startDate, endDate);
+            PageInfo pageInfo = new PageInfo(list);
+            pageInfo.setList(list);
+            return ResultResponse.createBySuccess(pageInfo);
+        }
     }
 }
