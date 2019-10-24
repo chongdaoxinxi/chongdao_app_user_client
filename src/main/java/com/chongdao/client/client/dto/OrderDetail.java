@@ -38,7 +38,7 @@ public class OrderDetail implements Serializable {
 
     private Integer typeId;
 
-    private String unit;
+    private Integer unit;
     private String orderNoRe;
 
     private Integer status;

@@ -242,6 +242,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                 petCardDogs.stream().forEach(petCard -> {
                     //重量
                     BigDecimal weight = petCard.getWeight();
+
                     for (Unit unit : unitList) {
                         BigDecimal min = unit.getMin();
                         BigDecimal max = unit.getMax();
@@ -259,7 +260,6 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                             }
                         }
                     }
-
                 });
             } else if (good.getName().contains("猫")) {
                 //获取宠物卡片(猫)

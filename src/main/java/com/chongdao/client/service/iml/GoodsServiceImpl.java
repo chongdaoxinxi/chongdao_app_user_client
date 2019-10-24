@@ -433,9 +433,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 good.setAreaCode(shop.getAreaCode());
             }
         }
-        String unit = good.getUnit();
+        Integer unit = good.getUnit();
         if(unit != null) {
-            Unit unit1 = unitRepository.findById(Integer.valueOf(unit)).orElse(null);
+            Unit unit1 = unitRepository.findById(unit).orElse(null);
             if(unit1 != null) {
                 good.setUnitName(unit1.getLabel());
             }

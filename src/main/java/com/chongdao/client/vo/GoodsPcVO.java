@@ -26,7 +26,7 @@ public class GoodsPcVO {
     private Double discount;
     //第二件折扣
     private Double reDiscount;
-    private String unit;
+    private Integer unit;
     private String unitName;
     private String des;
     private Integer goodsTypeId;

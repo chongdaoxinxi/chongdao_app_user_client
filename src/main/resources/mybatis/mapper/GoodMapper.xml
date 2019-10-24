@@ -9,7 +9,7 @@
             <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
             <arg column="discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
             <arg column="re_discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
-            <arg column="unit" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="unit" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="unit_name" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="goods_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
@@ -42,7 +42,7 @@
             <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
             <arg column="discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
             <arg column="re_discount" javaType="java.lang.Double" jdbcType="DOUBLE" />
-            <arg column="unit" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="unit" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="unit_name" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="des" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="goods_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
@@ -105,7 +105,7 @@
                           type_name, brand_id, scope_id,
                           pet_category_id, bathing_service_id,sort,area_code,qr_code,shop_ids)
         values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
-                #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{reDiscount,jdbcType=DOUBLE}, #{unit,jdbcType=VARCHAR},
+                #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DOUBLE}, #{reDiscount,jdbcType=DOUBLE}, #{unit,jdbcType=INTEGER},
                 #{unitName,jdbcType=VARCHAR},#{des,jdbcType=VARCHAR}, #{goodsTypeId,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER},
                 #{ratio,jdbcType=DOUBLE}, #{ratioPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER},
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
@@ -225,7 +225,7 @@
                 #{reDiscount,jdbcType=DOUBLE},
             </if>
             <if test="unit != null">
-                #{unit,jdbcType=VARCHAR},
+                #{unit,jdbcType=INTEGER},
             </if>
             <if test="unitName != null">
                 #{unitName,jdbcType=VARCHAR},
@@ -314,7 +314,7 @@
                 re_discount = #{reDiscount,jdbcType=DOUBLE},
             </if>
             <if test="unit != null">
-                unit = #{unit,jdbcType=VARCHAR},
+                unit = #{unit,jdbcType=INTEGER},
             </if>
             <if test="unitName != null">
                 unit_name = #{unitName,jdbcType=VARCHAR},
@@ -392,7 +392,7 @@
             price = #{price,jdbcType=DECIMAL},
             discount = #{discount,jdbcType=DOUBLE},
             re_discount = #{reDiscount,jdbcType=DOUBLE},
-            unit = #{unit,jdbcType=VARCHAR},
+            unit = #{unit,jdbcType=INTEGER},
             unit_name = #{unitName,jdbcType=VARCHAR},
             des = #{des,jdbcType=VARCHAR},
             goods_type_id = #{goodsTypeId,jdbcType=INTEGER},
