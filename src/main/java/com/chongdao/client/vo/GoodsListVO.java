@@ -95,6 +95,7 @@ public class GoodsListVO {
 
     private Byte status;
 
+    private String des;
 
 
 
