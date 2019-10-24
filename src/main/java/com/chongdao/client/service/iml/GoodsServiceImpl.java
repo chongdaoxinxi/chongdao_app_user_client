@@ -309,7 +309,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     /**
      * 获取商品列表
-     * @param goodsTypeId
+     * @param categoryId
      * @param goodName
      * @param pageNum
      * @param pageSize
@@ -422,6 +422,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     }
 
     @Override
+    @Transactional
     public ResultResponse saveGood(Good good) {
         if(good.getId() == null) {
             good.setCreateTime(new Date());
