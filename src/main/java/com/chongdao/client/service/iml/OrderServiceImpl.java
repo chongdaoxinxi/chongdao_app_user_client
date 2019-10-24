@@ -13,6 +13,7 @@ import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.freight.FreightComputer;
+import com.chongdao.client.mapper.OrderInfoVOMapper;
 import com.chongdao.client.service.CartsService;
 import com.chongdao.client.service.CashAccountService;
 import com.chongdao.client.service.OrderService;
@@ -57,6 +58,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     private FreightComputer freightComputer;
     @Autowired
     private CashAccountService cashAccountService;
+
+    @Autowired
+    private OrderInfoVOMapper orderInfoVOMapper;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -784,101 +788,94 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     private List<OrderVo> assembleOrderVoList(List<OrderInfo> orderList, Integer userId) {
         List<OrderVo> orderVoList = Lists.newArrayList();
         List<OrderDetail> orderItemList = Lists.newArrayList();
+        List<String> orderNos = Lists.newArrayList();
         for (OrderInfo order : orderList) {
-            if (userId == null) {
-                //todo 管理员查询的时候 不需要传userId
-                orderItemList = orderDetailMapper.getByOrderNo(order.getOrderNo());
-            } else {
-                orderItemList = orderDetailMapper.getByOrderNoUserId(order.getOrderNo(), userId);
-            }
-            OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-            orderVoList.add(orderVo);
+            orderNos.add(order.getOrderNo());
         }
-
+        if (userId == null) {
+            //todo 管理员查询的时候 不需要传userId
+            orderItemList = orderDetailMapper.getByOrderNos(CollectionUtils.isEmpty(orderNos) ? null : orderNos);
+        } else {
+            orderItemList = orderDetailMapper.getByOrderNosUserId(CollectionUtils.isEmpty(orderNos) ? null : orderNos, userId);
+        }
+        orderVoList = this.assembleOrderVo(orderNos, orderItemList,userId);
         return orderVoList;
     }
 
 
     /**
-     * 封装订单详情
+     * 封装订单列表
      *
-     * @param order
+     * @param orderNos
      * @param orderItemList
      * @return
      */
-    private OrderVo assembleOrderVo(OrderInfo order, List<OrderDetail> orderItemList) {
-        OrderVo orderVo = new OrderVo();
-        BeanUtils.copyProperties(order, orderVo);
-        //查询店铺
-        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-        if(shop != null) {
-            orderVo.setShopName(shop.getShopName());
-            orderVo.setShopLogo(shop.getLogo());
-            if (!shop.getLogo().contains("http")) {
-                orderVo.setShopLogo(IP + shop.getLogo());
-            }
-            orderVo.setShopPhone(shop.getPhone());
-        }
-        //接宠地址
-        UserAddress receiveAddress = null;
-        if (order.getReceiveAddressId() != null) {
-            receiveAddress = userAddressRepository.findById(order.getReceiveAddressId()).orElse(null);
-            if (receiveAddress != null) {
-                orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
-                orderVo.setPhone(receiveAddress.getPhone());
-            }
-        }
-        //送宠地址
-        UserAddress deliverAddress = null;
-        if (deliverAddress != null) {
-            deliverAddress = userAddressRepository.findById(order.getDeliverAddressId()).orElse(null);
-            if (deliverAddress != null) {
-                orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
-                orderVo.setPhone(deliverAddress.getPhone());
-            }
-        }
+    private List<OrderVo> assembleOrderVo(List<String> orderNos, List<OrderDetail> orderItemList,Integer userId) {
+        List<OrderVo> orderVoList = Lists.newArrayList();
+        List<OrderInfoVO> orderInfoList = orderInfoVOMapper.selectByOrderNos(CollectionUtils.isEmpty(orderNos) ? null : orderNos,userId);
+        orderInfoList.stream().forEach(order -> {
+            OrderVo orderVo = new OrderVo();
+            BeanUtils.copyProperties(order, orderVo);
+            //接宠地址
+            orderVo.setReceiveAddressName(order.getReceiveAddressName());
+            orderVo.setPhone(order.getReceiveUserPhone());
+            orderVo.setUsername(order.getReceiveUserName());
+            //送宠地址
+            orderVo.setDeliverAddressName(order.getDeliverAddressName());
+            orderVo.setDeliverUserPhone(order.getDeliverUserPhone());
+            orderVo.setDeliverUserName(order.getDeliverUserName());
 
-        //订单明细
-        List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
-        //购买商品数目
-        Integer goodsCount = 0;
-        for (OrderDetail orderDetail : orderItemList) {
-            OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
-            orderGoodsVo.setGoodsId(orderDetail.getId());
-            orderGoodsVo.setCreateTime(DateTimeUtil.dateToStr(orderDetail.getCreateTime()));
-            orderGoodsVo.setGoodsName(orderDetail.getName());
-            orderGoodsVo.setGoodsIcon(orderDetail.getIcon());
-            if (!orderGoodsVo.getGoodsIcon().contains("http")) {
-                orderGoodsVo.setGoodsIcon(IP + orderDetail.getIcon());
+            //订单明细
+            List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
+            //购买商品数目
+            Integer goodsCount = 0;
+            for (OrderDetail orderDetail : orderItemList) {
+                if (orderDetail.getOrderNo().equals(order.getOrderNo())) {
+                    OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
+                    orderGoodsVo.setOrderNo(orderDetail.getOrderNo());
+                    orderGoodsVo.setGoodsId(orderDetail.getId());
+                    orderGoodsVo.setCreateTime(DateTimeUtil.dateToStr(orderDetail.getCreateTime()));
+                    orderGoodsVo.setGoodsName(orderDetail.getName());
+                    orderGoodsVo.setGoodsIcon(orderDetail.getIcon());
+                    if (!orderGoodsVo.getGoodsIcon().contains("http")) {
+                        orderGoodsVo.setGoodsIcon(IP + orderDetail.getIcon());
+                    }
+                    orderGoodsVo.setCurrentPrice(orderDetail.getCurrentPrice());
+                    orderGoodsVo.setGoodsPrice(orderDetail.getPrice());
+                    orderGoodsVo.setQuantity(orderDetail.getCount());
+                    orderGoodsVo.setTotalPrice(orderDetail.getTotalPrice());
+                    goodsCount = goodsCount + orderDetail.getCount();
+                    orderGoodsVoList.add(orderGoodsVo);
+                }
             }
-            orderGoodsVo.setCurrentPrice(orderDetail.getCurrentPrice());
-            orderGoodsVo.setGoodsPrice(orderDetail.getPrice());
-            orderGoodsVo.setQuantity(orderDetail.getCount());
-            orderGoodsVo.setTotalPrice(orderDetail.getTotalPrice());
-            goodsCount = goodsCount + orderDetail.getCount();
-            orderGoodsVoList.add(orderGoodsVo);
-        }
-        //设置订单总价
-        BigDecimal goodsPrice = order.getGoodsPrice();
-        BigDecimal servicePrice = order.getServicePrice();
-        if(goodsPrice != null && servicePrice!= null) {
-            orderVo.setTotalPrice(goodsPrice.add(servicePrice));
-        } else {
-            if(goodsPrice != null) {
-                orderVo.setTotalPrice(goodsPrice);
-            } else if(servicePrice != null) {
-                orderVo.setTotalPrice(servicePrice);
+            //设置订单总价
+            BigDecimal goodsPrice = order.getGoodsPrice();
+            BigDecimal servicePrice = order.getServicePrice();
+            if(goodsPrice != null && servicePrice!= null) {
+                orderVo.setTotalPrice(goodsPrice.add(servicePrice));
+            } else {
+                if(goodsPrice != null) {
+                    orderVo.setTotalPrice(goodsPrice);
+                } else if(servicePrice != null) {
+                    orderVo.setTotalPrice(servicePrice);
+                }
             }
-        }
-        //设置用户人姓名
-        User user = userRepository.findById(order.getUserId()).orElse(null);
-        if(user != null) {
-            orderVo.setUsername(user.getName());
-        }
+            orderVo.setGoodsCount(goodsCount);
+            orderVo.setOrderGoodsVoList(orderGoodsVoList);
+            orderVoList.add(orderVo);
+        });
+//        //查询店铺
+//        Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
+//        if(shop != null) {
+//            orderVo.setShopName(shop.getShopName());
+//            orderVo.setShopLogo(shop.getLogo());
+//            if (!shop.getLogo().contains("http")) {
+//                orderVo.setShopLogo(IP + shop.getLogo());
+//            }
+//            orderVo.setShopPhone(shop.getPhone());
+//        }
 
-        orderVo.setGoodsCount(goodsCount);
-        orderVo.setOrderGoodsVoList(orderGoodsVoList);
-        return orderVo;
+        return orderVoList;
     }
 
     /**

@@ -55,4 +55,6 @@ public interface OrderInfoMapper {
     List<OrderInfo> selectExpressAdminOrderList(@Param("type")String type);
 
     List<OrderInfo> getConcessionalOrderList(@Param("areaCode") String areaCode, @Param("shopId") Integer shopId, @Param("shopName") String shopName, @Param("orderNo") String orderNo, @Param("username") String username, @Param("phone") String phone, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+
 }

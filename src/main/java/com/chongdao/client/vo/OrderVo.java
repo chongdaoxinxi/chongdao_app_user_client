@@ -160,4 +160,8 @@ public class OrderVo {
 
     //该字段用于区分优惠券使用场景
     private String categoryId;
+
+    private String deliverUserName;
+
+    private String deliverUserPhone;
 }

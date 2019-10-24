@@ -1,6 +1,7 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.common.CouponCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
@@ -19,6 +20,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,9 @@ import static com.chongdao.client.service.iml.CouponServiceImpl.computerTime;
 
 @Service
 public class GoodsServiceImpl extends CommonRepository implements GoodsService {
+
+    @Autowired
+    private CouponCommon couponCommon;
 
     /**
      * 分页查询商品
@@ -154,25 +159,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsDetailVo.setShopGrade(shop.getGrade());
         goodsDetailVo.setShopName(shop.getShopName());
         goodsDetailVo.setStartBusinessHours(shop.getStartBusinessHours());
-        goodsDetailVo.setEndBusinessHours(shop.getEndBusinessHours());
-        //查询优惠券（属于该商品可以使用或者领取的）
-        //获取满减
-        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnStateAndCpnType(good.getShopId(), 1,4);
-        goodsDetailVo.setCouponInfoFullList(this.assembleCpn(couponInfoList,userId,good.getCategoryId(),good.getShopId()));
-        //优惠券
-        List<CouponInfo> couponInfos = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(good.getShopId(), 1, 4);
-        if (!CollectionUtils.isEmpty(couponInfos)) {
-            couponInfos.stream().forEach(couponInfo -> {
-                CpnUser cpnUser = cpnUserRepository.findByUserIdAndCpnIdAndShopId(userId, couponInfo.getId(), String.valueOf(shop.getId()));
-                if (cpnUser != null) {
-                    //已领取
-                    couponInfo.setReceive(1);
-                }
-                //设置优惠券限制范围名称
-                CouponServiceImpl.setCouponScope(couponInfo);
-            });
-        }
-        goodsDetailVo.setCouponInfoList(couponInfos);
+        //店铺满减
+        goodsDetailVo.setCouponInfoFullList(couponCommon.couponInfoFullList(shop.getId()));
+        //店铺优惠
+        goodsDetailVo.setCouponInfoList(couponCommon.couponInfoList(shop.getId(),userId == null ? 0 :userId));
         //查询该商品是否被当前用户收藏
         int count = favouriteGoodsRepository.countByUserIdAndGoodIdAndStatus(userId, goodsId, 1);
         goodsDetailVo.setConcernStatus(count);

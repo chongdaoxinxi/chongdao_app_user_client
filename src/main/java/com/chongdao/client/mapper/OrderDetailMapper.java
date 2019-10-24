@@ -25,4 +25,9 @@ public interface OrderDetailMapper {
     List<OrderDetail> getByOrderNoUserId(@Param("orderNo") String orderNo, @Param("userId") Integer userId);
 
     List<OrderDetail> getByOrderNo(String orderNo);
+
+
+    List<OrderDetail> getByOrderNos(@Param("orderNos") List<String> orderNos);
+
+    List<OrderDetail> getByOrderNosUserId(@Param("orderNos") List<String> orderNos, @Param("userId") Integer userId);
 }

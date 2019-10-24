@@ -231,4 +231,32 @@
         where order_no = #{orderNo}
     </select>
 
+    <select id="getByOrderNos" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from order_detail
+        <where>
+            <if test="orderNos != null">
+                order_no in
+                <foreach collection="orderNos" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getByOrderNosUserId" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        FROM order_detail
+        where  user_id = #{userId}
+        <if test="orderNos != null">
+        and order_no in
+            <foreach collection="orderNos" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
 </mapper>

@@ -53,7 +53,11 @@ public class ShopVO {
     //待删除
     private List<CouponVO> couponVOList;
 
+    //优惠券
     private List<CouponInfo> couponInfoList;
+
+    //店铺满减
+    private List<CouponInfo> couponInfoFullList;
 
     private Double discount;
 
