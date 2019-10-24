@@ -1,24 +1,17 @@
-package com.chongdao.client.entitys;
+package com.chongdao.client.vo;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
-public class OrderInfo {
+public class OrderInfoVO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String orderNo;
@@ -97,12 +90,31 @@ public class OrderInfo {
 
     private BigDecimal insurancePrice;
 
+    private String shopName;
 
-    public OrderInfo(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice,BigDecimal originGoodsPrice,
-                     BigDecimal servicePrice, BigDecimal originServicePrice,BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
-                     Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
-                     BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
-                     Date updateTime, Integer enabledSpell, String petId, Integer petCount,BigDecimal insurancePrice) {
+    private String shopLogo;
+
+    private String shopPhone;
+
+    private String receiveAddressName;
+
+    private String deliverAddressName;
+
+    private String receiveUserName;
+
+    private String deliverUserName;
+
+    private String receiveUserPhone;
+
+    private String deliverUserPhone;
+
+
+    public OrderInfoVO(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice, BigDecimal originGoodsPrice,
+                       BigDecimal servicePrice, BigDecimal originServicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
+                       Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
+                       BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
+                       Date updateTime, Integer enabledSpell, String petId, Integer petCount, BigDecimal insurancePrice, String shopName, String shopLogo, String shopPhone,
+                       String receiveAddressName,String deliverAddressName,String receiveUserName,String deliverUserName,String receiveUserPhone,String deliverUserPhone) {
         this.id = id;
         this.serviceType = serviceType;
         this.orderNo = orderNo;
@@ -140,6 +152,15 @@ public class OrderInfo {
         this.insurancePrice = insurancePrice;
         this.petId = petId;
         this.petCount = petCount;
+        this.shopName = shopName;
+        this.shopLogo = shopLogo;
+        this.shopPhone = shopPhone;
+        this.receiveAddressName = receiveAddressName;
+        this.deliverAddressName = deliverAddressName;
+        this.receiveUserName = receiveUserName;
+        this.deliverUserName = deliverUserName;
+        this.receiveUserPhone = receiveUserPhone;
+        this.deliverUserPhone = deliverUserPhone;
     }
 
 

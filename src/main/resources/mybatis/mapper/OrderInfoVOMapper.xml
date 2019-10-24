@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chongdao.client.mapper.OrderInfoVOMapper">
+    <resultMap id="BaseResultMap" type="com.chongdao.client.vo.OrderInfoVO">
+        <constructor>
+            <idArg column="id"  javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="service_type"  javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="order_no" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="shop_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="order_status" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="goods_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="origin_goods_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="service_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="origin_service_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="total_discount" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="is_service" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="payment" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="follow" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="card_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="remark" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="area_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="deliver_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="payment_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="payment_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="shop_receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="shop_finish_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="express_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="express_receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="express_finish_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="reward" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="receive_address_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="deliver_address_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="receive_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="coupon_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="single_service_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="enabled_spell" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="pet_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="pet_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="insurance_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
+            <arg column="shop_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="shop_phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="shop_logo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="receive_address_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="deliver_address_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="receive_user_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="deliver_user_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="receive_user_phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="deliver_user_phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        o.id, o.service_type, o.order_no, o.user_id, o.shop_id, o.order_status, o.goods_price, o.origin_goods_price,
+         o.service_price,o.origin_service_price,
+    o.total_discount, o.is_service, o.payment, o.follow, o.card_id, o.remark, o.area_code, o.deliver_time, o.payment_time,
+    o.payment_type, o.shop_receive_time, o.shop_finish_time, o.express_id, o.express_receive_time, o.express_finish_time,
+    o.reward, o.receive_address_id, o.deliver_address_id, o.receive_time, o.coupon_id, o.create_time,
+    o.single_service_type, o.update_time,o.enabled_spell,o.pet_id,o.pet_count,o.insurance_price
+    </sql>
+    <select id="selectByOrderNos" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        s.shop_name,s.phone shop_phone,s.logo shop_logo,r.user_name  receive_user_name, r.phone receive_user_phone,
+        concat(r.location,r.address) receive_address_name,d.user_name  deliver_user_name, d.phone deliver_user_phone,
+        concat(d.location,d.address) deliver_address_name
+        from order_info o inner join shop s on shop_id= s.id inner join user_address r on o.receive_address_id=r.id
+         left join user_address d  on o.deliver_address_id=d.id
+        <where>
+            <if test="userId != null">
+                and o.user_id=#{userId}
+            </if>
+            <if test="orderNos != null">
+                and order_no in
+                <foreach collection="orderNos" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+</mapper>

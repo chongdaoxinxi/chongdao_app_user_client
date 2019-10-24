@@ -1,16 +1,14 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.CommonRepository;
-import com.chongdao.client.common.CouponScopeCommon;
+import com.chongdao.client.common.CouponCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
-import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopService;
-import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.DistanceUtil;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.*;
@@ -34,9 +32,12 @@ import static com.chongdao.client.common.Const.goodsListProActivities.DISCOUNT;
 
 @Service
 @SuppressWarnings("all")
-public class ShopServiceImpl extends CommonRepository implements ShopService {
+public class ShopServiceImpl extends CommonRepository  implements ShopService {
     @Autowired
     private ShopRepository shopRepository;
+
+    @Autowired
+    private CouponCommon couponCommon;
 
 
     /**
@@ -136,30 +137,13 @@ public class ShopServiceImpl extends CommonRepository implements ShopService {
             salesSum = 0;
         }
         shopVO.setSales(salesSum);
-        //封装优惠券(店铺满减除外(cpnType = 4))
-        List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
-        List<CouponInfo> couponInfoList = Lists.newArrayList();
-        couponList.stream().forEach(e ->{
-            //二次校验，过滤失效的优惠券
-            long result = DateTimeUtil.costTime(DateTimeUtil.dateToStr(e.getValidityEndDate()),
-                    DateTimeUtil.dateToStr(new Date()));
-            if (result > 0){
-                //需判断当前用户是否已领取该优惠券
-                CpnUser cpnUser = cpnUserRepository.findByUserIdAndCpnIdAndShopId(userId, e.getId(), String.valueOf(shopId));
-                if (cpnUser != null) {
-                    //已领取
-                    e.setReceive(1);
-                }
-                if (e.getScopeType() != null) {
-                    e.setScopeName(CouponScopeCommon.cpnScope(e.getScopeType(),e).getScopeName());
-                }
-                couponInfoList.add(e);
-            }
-        });
         //查询该店铺是否已收藏
         int count = favouriteShopRepository.countByUserIdAndShopIdAndStatus(userId, shopId, 1);
         shopVO.setConcernStatus(count);
-        shopVO.setCouponInfoList(couponInfoList);
+        //店铺优惠
+        shopVO.setCouponInfoList(couponCommon.couponInfoList(shopId,userId == null ? 0 :userId));
+        //店铺满减
+        shopVO.setCouponInfoFullList(couponCommon.couponInfoFullList(shopId));
         //查询用户到店铺的距离
         double distance = DistanceUtil.getDistance(lat, lng, shop.getLat(), shop.getLng());
         shopVO.setDistance(BigDecimal.valueOf(distance/1000).setScale(1, BigDecimal.ROUND_UP) + "km");
