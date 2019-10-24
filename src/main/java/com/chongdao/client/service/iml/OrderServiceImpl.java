@@ -254,6 +254,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse anotherOrder(Integer userId, String orderNo,Integer shopId) {
         return cartsService.anotherAdd(userId,orderNo,shopId);
     }
@@ -1083,6 +1084,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     private ResultResponse acceptOrderData(OrderInfo o) {
         //更新状态
         o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
+        o.setShopReceiveTime(new Date());//接单时间
         OrderInfo orderInfo = orderInfoRepository.saveAndFlush(o);
         //接单资金处理
         cashAccountService.customOrderCashIn(orderInfo);
@@ -1126,6 +1128,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse shopRefundOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_ACCEPT.getMessage(), false))
@@ -1176,6 +1179,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse shopRefuseOrder(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(orderId))
                 .map(o -> refundOrderData(o, OrderStatusEnum.REFUND_AGREE.getStatus(), OrderStatusEnum.REFUND_PROCESS_REFUSE.getMessage(), true))
@@ -1236,6 +1240,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse shopServiceCompleted(Integer orderId) {
         return Optional.ofNullable(orderId).flatMap(id -> orderInfoRepository.findById(id))
                 .map(o -> shopServiceCompletedData(o))
@@ -1251,7 +1256,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
     private ResultResponse shopServiceCompletedData(OrderInfo orderInfo) {
         //更新状态
         orderInfo.setOrderStatus(OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus());
-        orderInfo.setShopFinishTime(new Date());
+        orderInfo.setShopFinishTime(new Date());//商家服务完成时间
         orderInfoRepository.saveAndFlush(orderInfo);
         //短信通知
         shopServiceCompletedSmsSender(orderInfo);
@@ -1395,6 +1400,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse refund(Integer userId, String orderNo) {
         if (orderNo == null){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "订单号为空");

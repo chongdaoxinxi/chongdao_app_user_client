@@ -35,7 +35,7 @@ sms:
   ## 服务(有狗, 店->家)
   OrderPetArrivedUser: 【养宠有道】您的爱宠已被送回, 欢迎下次惠顾, 订单号：{$var}
   ## 服务(有狗, 家->店)
-  OrderPetsServedUser: 【养宠有道】您的爱宠已安全送达商家, 欢迎下次惠顾, 订单号：{$var}
+  OrderPetsServedUser: 【养宠有道】您的爱宠已安全送达, 欢迎下次惠顾, 订单号：{$var}
   ## 双程
   OrderPetArrivedShop: 【养宠有道】您服务的宠物已到店, 请准备服务, 订单号：{$var}
   ## 商家服务完成(双程)
