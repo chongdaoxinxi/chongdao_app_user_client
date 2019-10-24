@@ -4,14 +4,14 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.*;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
-import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
-import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.DocxUtil;
 import com.chongdao.client.utils.Md5;
 import com.chongdao.client.utils.PdfUtil;
 import com.chongdao.client.vo.InsuranceOrderPdfVO;
 import fr.opensagres.xdocreport.core.XDocReportException;
+import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
+import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
 import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
@@ -35,9 +35,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-
-//import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebService;
-//import com.chongdao.client.service.insurance.wevservicepro.EcooperationWebServiceService;
 
 /**
  * @Description TODO
@@ -303,6 +300,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             datas = getRenderZCGForm(insuranceOrder, template);
         }
         System.out.println("报文数据:" + datas);
+
         EcooperationWebServiceService serviceService = new EcooperationWebServiceService();
         EcooperationWebService service = serviceService.getEcooperationWebServicePort();
         System.out.println("INSURANCE_SERVICE_NO:     " + INSURANCE_SERVICE_NO);

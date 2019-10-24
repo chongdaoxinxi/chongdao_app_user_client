@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.wevservicepro;
+package com.chongdao.client.service.insurance.webservice;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

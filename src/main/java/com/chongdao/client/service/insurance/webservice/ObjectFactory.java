@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.wevservicepro;
+package com.chongdao.client.service.insurance.webservice;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.chongdao.client.service.insurance.wevservicepro package. 
+ * generated in the com.chongdao.client.service.insurance.webservice package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -30,8 +30,8 @@ public class ObjectFactory {
     private final static QName _ModifyServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "modifyServiceResponse");
     private final static QName _ShortModifyService_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "shortModifyService");
     private final static QName _TransitServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "transitServiceResponse");
-    private final static QName _ShortInsureServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "shortInsureServiceResponse");
     private final static QName _ModifyService_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "modifyService");
+    private final static QName _ShortInsureServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "shortInsureServiceResponse");
     private final static QName _InsureServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "insureServiceResponse");
     private final static QName _ShortModifyServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "shortModifyServiceResponse");
     private final static QName _PrintProofServiceResponse_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "printProofServiceResponse");
@@ -42,7 +42,7 @@ public class ObjectFactory {
     private final static QName _PrintProofService_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "printProofService");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.chongdao.client.service.insurance.wevservicepro
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.chongdao.client.service.insurance.webservice
      * 
      */
     public ObjectFactory() {
@@ -105,19 +105,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ShortInsureServiceResponse }
-     * 
-     */
-    public ShortInsureServiceResponse createShortInsureServiceResponse() {
-        return new ShortInsureServiceResponse();
-    }
-
-    /**
      * Create an instance of {@link ModifyService }
      * 
      */
     public ModifyService createModifyService() {
         return new ModifyService();
+    }
+
+    /**
+     * Create an instance of {@link ShortInsureServiceResponse }
+     * 
+     */
+    public ShortInsureServiceResponse createShortInsureServiceResponse() {
+        return new ShortInsureServiceResponse();
     }
 
     /**
@@ -231,21 +231,21 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ShortInsureServiceResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "shortInsureServiceResponse")
-    public JAXBElement<ShortInsureServiceResponse> createShortInsureServiceResponse(ShortInsureServiceResponse value) {
-        return new JAXBElement<ShortInsureServiceResponse>(_ShortInsureServiceResponse_QNAME, ShortInsureServiceResponse.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ModifyService }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "modifyService")
     public JAXBElement<ModifyService> createModifyService(ModifyService value) {
         return new JAXBElement<ModifyService>(_ModifyService_QNAME, ModifyService.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ShortInsureServiceResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "shortInsureServiceResponse")
+    public JAXBElement<ShortInsureServiceResponse> createShortInsureServiceResponse(ShortInsureServiceResponse value) {
+        return new JAXBElement<ShortInsureServiceResponse>(_ShortInsureServiceResponse_QNAME, ShortInsureServiceResponse.class, null, value);
     }
 
     /**

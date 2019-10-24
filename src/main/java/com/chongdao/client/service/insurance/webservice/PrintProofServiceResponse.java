@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.wevservicepro;
+package com.chongdao.client.service.insurance.webservice;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>printProofServiceResponse complex typeçš„ Java ç±»ã€‚
+ * <p>printProofServiceResponse complex typeµÄ Java Àà¡£
  * 
- * <p>ä»¥ä¸‹æ¨¡å¼ç‰‡æ®µæŒ‡å®šåŒ…å«åœ¨æ­¤ç±»ä¸­çš„é¢„æœŸå†…å®¹ã€‚
+ * <p>ÒÔÏÂÄ£Ê½Æ¬¶ÎÖ¸¶¨°üº¬ÔÚ´ËÀàÖĞµÄÔ¤ÆÚÄÚÈİ¡£
  * 
  * <pre>
  * &lt;complexType name="printProofServiceResponse">
@@ -36,7 +36,7 @@ public class PrintProofServiceResponse {
     protected String _return;
 
     /**
-     * è·å–returnå±æ€§çš„å€¼ã€‚
+     * »ñÈ¡returnÊôĞÔµÄÖµ¡£
      * 
      * @return
      *     possible object is
@@ -48,7 +48,7 @@ public class PrintProofServiceResponse {
     }
 
     /**
-     * è®¾ç½®returnå±æ€§çš„å€¼ã€‚
+     * ÉèÖÃreturnÊôĞÔµÄÖµ¡£
      * 
      * @param value
      *     allowed object is
