@@ -136,6 +136,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         cartTotalPrice = orderGoodsDTO.getCartTotalPrice();
         //已优惠价格
         totalDiscount = orderVo.getTotalDiscount().add(totalDiscount);
+        orderVo.setTotalDiscount(totalDiscount);
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(orderCommonVO.getShopId());
         if (shop != null) {
@@ -155,22 +156,22 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
         orderVo.setDiscountPrice(totalDiscount);
         if (orderCommonVO.getCouponId() != null && orderCommonVO.getCouponId() > 0) {
             //计算使用商品优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCouponId()).get();
-            if (cpnThresholdRule != null){
+            CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).orElse(null);
+            if (couponInfo != null){
                 //优惠总计
-                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(cpnThresholdRule.getMinPrice()));
-                orderVo.setGoodsCouponPrice(cpnThresholdRule.getMinPrice());
-                cartTotalPrice.subtract(cpnThresholdRule.getMinPrice());
+                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
+                orderVo.setGoodsCouponPrice(couponInfo.getCpnValue());
+                cartTotalPrice = cartTotalPrice.subtract(couponInfo.getCpnValue());
             }
         }
         if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0){
             //计算使用配送优惠券后的价格
-            CpnThresholdRule cpnThresholdRule = thresholdRuleRepository.findById(orderCommonVO.getCardId()).get();
-            if (cpnThresholdRule != null){
-                orderVo.setServiceCouponPrice(cpnThresholdRule.getMinPrice());
+            CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).orElse(null);
+            if (couponInfo != null){
+                orderVo.setServiceCouponPrice(couponInfo.getMinPrice());
                 //优惠总计
-                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(cpnThresholdRule.getMinPrice()));
-                cartTotalPrice.subtract(cpnThresholdRule.getMinPrice());
+                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getMinPrice()));
+                cartTotalPrice = cartTotalPrice.subtract(couponInfo.getMinPrice());
             }
         }
         //配送费(到店自取无配送费) 有优惠需减去优惠
@@ -824,7 +825,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService{
             orderVo.setDeliverAddressName(order.getDeliverAddressName());
             orderVo.setDeliverUserPhone(order.getDeliverUserPhone());
             orderVo.setDeliverUserName(order.getDeliverUserName());
-
             //订单明细
             List<OrderGoodsVo> orderGoodsVoList = Lists.newArrayList();
             //购买商品数目
