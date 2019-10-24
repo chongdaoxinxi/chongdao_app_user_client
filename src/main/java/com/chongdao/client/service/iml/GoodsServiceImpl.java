@@ -10,6 +10,7 @@ import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.ShopRepository;
+import com.chongdao.client.repository.UnitRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
@@ -42,6 +43,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     private CouponCommon couponCommon;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private UnitRepository unitRepository;
 
     /**
      * 分页查询商品
@@ -428,6 +431,13 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             Shop shop = shopRepository.findById(shopId).orElse(null);
             if(shop != null) {
                 good.setAreaCode(shop.getAreaCode());
+            }
+        }
+        String unit = good.getUnit();
+        if(unit != null) {
+            Unit unit1 = unitRepository.findById(Integer.valueOf(unit)).orElse(null);
+            if(unit1 != null) {
+                good.setUnitName(unit1.getLabel());
             }
         }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), goodsRepository.saveAndFlush(good));
