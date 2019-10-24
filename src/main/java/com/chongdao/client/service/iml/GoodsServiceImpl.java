@@ -9,6 +9,7 @@ import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
@@ -39,6 +40,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     @Autowired
     private CouponCommon couponCommon;
+    @Autowired
+    private ShopRepository shopRepository;
 
     /**
      * 分页查询商品
@@ -419,6 +422,13 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     public ResultResponse saveGood(Good good) {
         if(good.getId() == null) {
             good.setCreateTime(new Date());
+        }
+        Integer shopId = good.getShopId();
+        if(shopId != null) {
+            Shop shop = shopRepository.findById(shopId).orElse(null);
+            if(shop != null) {
+                good.setAreaCode(shop.getAreaCode());
+            }
         }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), goodsRepository.saveAndFlush(good));
     }
