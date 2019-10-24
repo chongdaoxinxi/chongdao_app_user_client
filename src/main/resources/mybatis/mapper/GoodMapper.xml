@@ -441,8 +441,8 @@
         <if test="goodName != null ">
             and g.name like concat(concat("%",#{goodName}),"%")
         </if>
-        <if test="goodsTypeId != null ">
-            and g.goods_type_id = #{goodsTypeId}
+        <if test="categoryId != null ">
+            and g.category_id = #{categoryId}
         </if>
         order by g.create_time asc
     </select>

@@ -316,12 +316,12 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      * @return
      */
     @Override
-    public ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, String goodName, int pageNum, int pageSize) {
+    public ResultResponse getGoodList(Integer shopId,Integer categoryId, String goodName, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         if (shopId == null ){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "shopId不能为空");
         }
-        List<GoodsPcVO> goodList = goodMapper.getGoodList(shopId,goodsTypeId, goodName);
+        List<GoodsPcVO> goodList = goodMapper.getGoodList(shopId,categoryId, goodName);
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         goodList.stream().forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();

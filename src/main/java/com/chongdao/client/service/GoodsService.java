@@ -50,13 +50,13 @@ public interface GoodsService {
 
     /**
      * 获取商品列表
-     * @param goodsTypeId
+     * @param categoryId
      * @param goodName
      * @param pageNum
      * @param pageSize
      * @return
      */
-    ResultResponse getGoodList(Integer shopId,Integer goodsTypeId, String goodName, int pageNum, int pageSize);
+    ResultResponse getGoodList(Integer shopId,Integer categoryId, String goodName, int pageNum, int pageSize);
 
 
     /**

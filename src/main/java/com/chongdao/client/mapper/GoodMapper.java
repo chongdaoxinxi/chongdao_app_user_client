@@ -43,7 +43,7 @@ public interface GoodMapper {
 
 
     //----------------------------------商户端------------------------------------------//
-    List<GoodsPcVO> getGoodList(@Param("shopId")Integer shopId, @Param("goodsTypeId") Integer goodsTypeId, @Param("goodName") String goodName);
+    List<GoodsPcVO> getGoodList(@Param("shopId")Integer shopId, @Param("categoryId") Integer categoryId, @Param("goodName") String goodName);
 
 
     void updateGoodsStatus(@Param("goodId") Integer goodId, @Param("status") Integer status);
