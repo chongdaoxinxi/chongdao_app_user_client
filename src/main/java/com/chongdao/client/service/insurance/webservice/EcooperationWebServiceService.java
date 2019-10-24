@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.webservice;
+package com.chongdao.client.service.insurance.wevservicepro;
 
 import java.net.MalformedURLException;
 import java.net.URL;

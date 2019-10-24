@@ -1,5 +1,5 @@
 
-package com.chongdao.client.service.insurance.webservice;
+package com.chongdao.client.service.insurance.wevservicepro;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.chongdao.client.service.insurance.webservice package. 
+ * generated in the com.chongdao.client.service.insurance.wevservicepro package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -42,7 +42,7 @@ public class ObjectFactory {
     private final static QName _PrintProofService_QNAME = new QName("http://webservice.ecooperation.epicc.com.cn/", "printProofService");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.chongdao.client.service.insurance.webservice
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.chongdao.client.service.insurance.wevservicepro
      * 
      */
     public ObjectFactory() {
