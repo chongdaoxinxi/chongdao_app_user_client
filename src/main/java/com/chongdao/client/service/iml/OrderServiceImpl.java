@@ -16,6 +16,7 @@ import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.mapper.OrderInfoVOMapper;
 import com.chongdao.client.service.CartsService;
 import com.chongdao.client.service.CashAccountService;
+import com.chongdao.client.service.OrderRefundService;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -58,7 +59,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private FreightComputer freightComputer;
     @Autowired
     private CashAccountService cashAccountService;
-
+    @Autowired
+    private OrderRefundService orderRefundService;
     @Autowired
     private OrderInfoVOMapper orderInfoVOMapper;
 //    @Autowired
@@ -1418,12 +1420,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         orderInfo.setOrderStatus(USER_APPLY_REFUND.getStatus());
         orderInfo.setUpdateTime(new Date());
         orderInfoRepository.save(orderInfo);
-        //UserAddress user = userAddressRepository.findByIdAndUserId(orderInfo.getReceiveAddressId(), userId);
+        //添加OrderRefund记录
+        orderRefundService.addOrderRefundRecord(orderInfo, 1, "用户申请退款");
         //短信推送
-//        Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
-//        smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
-//        //推送管理员
-//        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(),shop.getShopName(),phone);
+        Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
+        //推送给商家
+        smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
+        //推送管理员
+        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(),shop.getShopName(),phone);
 //        //推送配送员
 //        if (orderInfo.getExpressId() == null){
 //            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
