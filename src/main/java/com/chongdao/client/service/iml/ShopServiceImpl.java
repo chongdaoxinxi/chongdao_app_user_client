@@ -210,8 +210,12 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                 if (good.getUnitName() != null){
                     goodsListVO.setName(good.getName() + good.getUnitName());
                 }
+                //去除10，和0一样都是原价
+                if (good.getDiscount() == 10.0d) {
+                    goodsListVO.setDiscount(0.0d);
+                }
                 goodsListVO.setDiscountPrice(good.getPrice());
-                if (good.getDiscount() != null && good.getDiscount() > 0.0d) {
+                if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
                     goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
                 }
                 //宠物卡片

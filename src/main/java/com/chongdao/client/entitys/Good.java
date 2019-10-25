@@ -54,7 +54,7 @@ public class Good {
 
 	private BigDecimal ratioPrice = price.multiply(new BigDecimal(ratio)).setScale(2);
 
-	private Integer stock;
+	private Integer stock = 0;
 
 	@JsonSerialize(using = Date2LongSerializer.class)
 	private Date createTime;
@@ -68,7 +68,7 @@ public class Good {
 
 	private Integer categoryId;
 
-	private Integer sales;
+	private Integer sales = 0;
 
 
 	//猫、狗的类型

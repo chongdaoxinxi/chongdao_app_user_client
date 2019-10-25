@@ -98,15 +98,15 @@ public class OrderInfoVO {
 
     private String receiveAddressName;
 
-    private String deliverAddressName;
+  //  private String deliverAddressName;
 
     private String receiveUserName;
 
-    private String deliverUserName;
+ //   private String deliverUserName;
 
     private String receiveUserPhone;
 
-    private String deliverUserPhone;
+   // private String deliverUserPhone;
 
 
     public OrderInfoVO(Integer id, Integer serviceType, String orderNo, Integer userId, Integer shopId, Integer orderStatus, BigDecimal goodsPrice, BigDecimal originGoodsPrice,
@@ -114,7 +114,7 @@ public class OrderInfoVO {
                        Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
                        BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
                        Date updateTime, Integer enabledSpell, String petId, Integer petCount, BigDecimal insurancePrice, String shopName, String shopLogo, String shopPhone,
-                       String receiveAddressName,String deliverAddressName,String receiveUserName,String deliverUserName,String receiveUserPhone,String deliverUserPhone) {
+                       String receiveAddressName,String receiveUserName,String receiveUserPhone) {
         this.id = id;
         this.serviceType = serviceType;
         this.orderNo = orderNo;
@@ -156,11 +156,11 @@ public class OrderInfoVO {
         this.shopLogo = shopLogo;
         this.shopPhone = shopPhone;
         this.receiveAddressName = receiveAddressName;
-        this.deliverAddressName = deliverAddressName;
+       // this.deliverAddressName = deliverAddressName;
         this.receiveUserName = receiveUserName;
-        this.deliverUserName = deliverUserName;
+        //this.deliverUserName = deliverUserName;
         this.receiveUserPhone = receiveUserPhone;
-        this.deliverUserPhone = deliverUserPhone;
+       // this.deliverUserPhone = deliverUserPhone;
     }
 
 
