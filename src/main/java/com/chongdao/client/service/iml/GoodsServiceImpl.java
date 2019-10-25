@@ -92,7 +92,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             }
         }
         //全部
-        if (goodsTypeId == 0) {
+        if (goodsTypeId != null && goodsTypeId == 0) {
             goodsTypeId = null;
         }
 
