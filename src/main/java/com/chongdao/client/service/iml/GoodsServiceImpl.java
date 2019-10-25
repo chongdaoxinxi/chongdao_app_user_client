@@ -91,6 +91,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 petCategoryIds = String.valueOf(petCategoryId);
             }
         }
+        //全部
+        if (goodsTypeId == 0) {
+            goodsTypeId = null;
+        }
 
         //查询所有上架商品(综合排序)
         List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
@@ -145,8 +149,11 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         }
 
         BeanUtils.copyProperties(good, goodsDetailVo);
+        if (good.getDiscount() == 10.0d){
+            good.setDiscount(0.0d);
+        }
         //计算打折后的价格。折扣必须大于0且不能为空
-        if (good.getDiscount() > 0 && good.getDiscount() !=null){
+        if (good.getDiscount() > 0 && good.getDiscount() < 10 && good.getDiscount() !=null){
             goodsDetailVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2,BigDecimal.ROUND_HALF_UP)));
         }
         //商家设置第二件折扣
@@ -191,8 +198,11 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             if (!good.getIcon().contains("http")) {
                 goodsListVO.setIcon(IP + good.getIcon());
             }
+            if (good.getDiscount() == 10.0d) {
+                goodsListVO.setDiscount(0.0d);
+            }
             //折扣大于0时，才会显示折扣价
-            if (good.getDiscount() > 0.0D && good.getDiscount() != null ){
+            if (good.getDiscount() > 0.0D && good.getDiscount() < 10 &&good.getDiscount() != null ){
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
             }
             //商家设置第二件折扣
@@ -309,7 +319,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
 
     /**
      * 获取商品列表
-     * @param goodsTypeId
+     * @param categoryId
      * @param goodName
      * @param pageNum
      * @param pageSize
@@ -325,6 +335,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         goodList.stream().forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();
+            if (good.getDiscount() > 10) {
+                good.setDiscount(0.0d);
+            }
             BeanUtils.copyProperties(good,goodsListVO);
             goodsListVOList.add(goodsListVO);
         });

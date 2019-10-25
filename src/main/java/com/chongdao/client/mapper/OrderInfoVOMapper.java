@@ -10,4 +10,6 @@ import java.util.List;
 public interface OrderInfoVOMapper {
 
     List<OrderInfoVO> selectByOrderNos( @Param("orderNos") List<String> orderNos,@Param("userId") Integer userId);
+
+    List<OrderInfoVO> selectByUserIdList(@Param("userId") Integer userId, @Param("type")String type);
 }

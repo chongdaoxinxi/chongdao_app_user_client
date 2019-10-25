@@ -3,6 +3,7 @@ package com.chongdao.client.entitys;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.simpleframework.xml.Transient;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,6 +46,15 @@ public class OrderDetail {
     private BigDecimal totalPrice;
 
     private String reOrderNo;
+
+    @Transient
+    private String shopName;
+
+    @Transient
+    private String shopLogo;
+
+    @Transient
+    private String shopPhone;
 
     public OrderDetail(Integer id, String orderNo, Integer count, Integer goodId, Integer orderId, String name, BigDecimal price, String icon, BigDecimal currentPrice, Date createTime, Date updateTime, Integer userId, BigDecimal totalPrice,String reOrderNo) {
         this.id = id;

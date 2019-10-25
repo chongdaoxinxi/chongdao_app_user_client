@@ -3,6 +3,7 @@ package com.chongdao.client.entitys;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.simpleframework.xml.Transient;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
