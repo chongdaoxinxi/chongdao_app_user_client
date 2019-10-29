@@ -727,6 +727,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     @Override
     public ResultResponse initOrderEval(String orderNo) {
         OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+
         OrderEvalVO orderEvalVO = null;
         if (orderInfo != null) {
             Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
