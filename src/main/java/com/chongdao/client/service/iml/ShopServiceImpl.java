@@ -7,6 +7,7 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.repository.AreaRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.DistanceUtil;
@@ -20,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -35,7 +37,8 @@ import static com.chongdao.client.common.Const.goodsListProActivities.DISCOUNT;
 public class ShopServiceImpl extends CommonRepository  implements ShopService {
     @Autowired
     private ShopRepository shopRepository;
-
+    @Autowired
+    private AreaRepository areaRepository;
     @Autowired
     private CouponCommon couponCommon;
 
@@ -108,7 +111,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                 PageHelper.startPage(pageNum,pageSize);
                 List<Shop> shops = shopMapper.selectByAreaCodeAndShopName(areaCode, shopName);
                 PageInfo pageInfo = new PageInfo(shops);
-                pageInfo.setList(shopListVOList(shops,null));
+                pageInfo.setList(shops);
                 return ResultResponse.createBySuccess(pageInfo);
             }
         }
@@ -150,15 +153,18 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         return ResultResponse.createBySuccess(shopVO);
     }
 
-
-
-
+    @Override
+    @Transactional
     public ResultResponse addShop(Shop shop) {
         Shop s = new Shop();
         BeanUtils.copyProperties(shop, s);
         s.setMoney(new BigDecimal(0));
         //根据areaId获取areaCode
-
+        Integer areaId = shop.getAreaId();
+        if(areaId != null) {
+            Area area = areaRepository.findById(areaId).orElse(null);
+            s.setAreaCode(area.getCode());
+        }
         s.setType(1);
         s.setGrade(0.0);
         s.setStatus(-1);
@@ -166,6 +172,11 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         s.setIsHot(i.byteValue());
         s.setIsJoinCommonWeal(i.byteValue());
         s.setIsStop(i.byteValue());
+        if(shop.getId() == null) {
+            s.setCreateTime(new Date());
+        } else {
+            s.setUpdateTime(new Date());
+        }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.saveAndFlush(s));
     }
 
