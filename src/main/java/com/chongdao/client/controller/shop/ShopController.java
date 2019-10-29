@@ -125,12 +125,12 @@ public class ShopController {
     @GetMapping("getShopGoodsList")
     public ResultResponse getShopGoodsList(@RequestParam Integer shopId,
                                          @RequestParam Integer goodsTypeId,Integer userId){
-        ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + goodsTypeId);
-        if (resultResponse != null){
-            return resultResponse;
-        }
-        resultResponse = this.shopService.getShopService(shopId, goodsTypeId, userId);
-        GuavaCache.setKey("getShopGoods_" + shopId + "_" + goodsTypeId, resultResponse);
+//        ResultResponse resultResponse = (ResultResponse) GuavaCache.getKey("getShopGoods_" + shopId + "_" + goodsTypeId);
+//        if (resultResponse != null){
+//            return resultResponse;
+//        }
+//        resultResponse = this.shopService.getShopService(shopId, goodsTypeId, userId);
+//        GuavaCache.setKey("getShopGoods_" + shopId + "_" + goodsTypeId, resultResponse);
         return this.shopService.getShopService(shopId,goodsTypeId,userId);
     }
 

@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(u);
             userLoginVO.setUserId(u.getId());
         }else {
-            userLoginVO.setPhone(user.getName());
+            userLoginVO.setPhone(user.getPhone());
             userLoginVO.setName(user.getName());
             userLoginVO.setUserId(user.getId());
         }

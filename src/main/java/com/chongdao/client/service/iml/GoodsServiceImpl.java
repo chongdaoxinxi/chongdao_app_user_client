@@ -91,16 +91,35 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 petCategoryIds = String.valueOf(petCategoryId);
             }
         }
+        List<Integer> goodsTypeIds = Lists.newArrayList();
         //全部
-        if (goodsTypeId != null && goodsTypeId == 0) {
-            goodsTypeId = null;
+        if (goodsTypeId == null || goodsTypeId == 0) {
+            goodsTypeId = 0;
+        }else {
+            goodsTypeIds.add(goodsTypeId);
         }
-
-        //查询所有上架商品(综合排序)
-        List<Good> goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null: keyword,
-                brandId,goodsTypeId,StringUtils.isBlank(scopeIds) ? null: scopeIds,
-                StringUtils.isBlank(petCategoryIds) ? null: petCategoryIds,areaCode,
-                orderBy);
+        //先判断该分类是否有子级
+        List<GoodsType> goodsTypeList = goodsTypeRepository.findByCategoryIdAndStatusAndParentId(3, 1,goodsTypeId);
+        if (!CollectionUtils.isEmpty(goodsTypeList)) {
+            for (GoodsType goodsType : goodsTypeList) {
+                goodsTypeIds.add(goodsType.getId());
+            }
+        }
+        List<Good> goodList = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(goodsTypeList)) {
+            //查询所有和包含子分类的商品
+            //查询所有上架商品(综合排序)
+            goodList = goodMapper.selectByName(StringUtils.isBlank(keyword) ? null : keyword,
+                    brandId, goodsTypeIds, StringUtils.isBlank(scopeIds) ? null : scopeIds,
+                    StringUtils.isBlank(petCategoryIds) ? null : petCategoryIds, areaCode,
+                    orderBy);
+        }else {
+            //查询所有上架商品(综合排序)
+            goodList = goodMapper.selectGoodsList(StringUtils.isBlank(keyword) ? null : keyword,
+                    brandId, goodsTypeId, StringUtils.isBlank(scopeIds) ? null : scopeIds,
+                    StringUtils.isBlank(petCategoryIds) ? null : petCategoryIds, areaCode,
+                    orderBy);
+        }
         PageInfo pageInfo = new PageInfo(goodList);
         pageInfo.setList(this.goodsListVOList(goodList));
         return ResultResponse.createBySuccess(pageInfo);

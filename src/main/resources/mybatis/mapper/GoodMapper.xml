@@ -493,6 +493,34 @@
         <if test="brandId != null">
             and g.brand_id = #{brandId}
         </if>
+        <if test="goodsTypeIds != null">
+            and g.goods_type_id in
+             <foreach collection="goodsTypeIds" item="item" index="index" open="(" separator="," close=")">
+                 #{item}
+             </foreach>
+        </if>
+        <if test="scopeIds != null">
+            and g.scope_id in (${scopeIds})
+        </if>
+        <if test="petCategoryIds != null">
+            and g.pet_category_id in (${petCategoryIds})
+        </if>
+
+        order by ${orderBy}
+    </select>
+
+
+    <select id="selectGoodsList" resultMap="BaseResultMap" parameterType="String">
+        select
+        <include refid="Base_Column_Lists"/>
+        from  good g
+        where g.status = 1 and g.area_code = #{areaCode} and g.category_id = 3
+        <if test="goodsName != null">
+            and g.name like CONCAT('%',#{goodsName},'%')
+        </if>
+        <if test="brandId != null">
+            and g.brand_id = #{brandId}
+        </if>
         <if test="goodsTypeId != null">
             and g.goods_type_id = #{goodsTypeId}
         </if>
