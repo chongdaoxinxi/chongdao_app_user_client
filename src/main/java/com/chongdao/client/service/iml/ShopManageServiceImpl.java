@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Optional;
 
+import static com.chongdao.client.common.Const.IP;
+
 /**
  * @Description 商家端
  * @Author onlineS
@@ -82,6 +84,9 @@ public class ShopManageServiceImpl implements ShopManageService {
                 .flatMap(id -> shopRepository.findById(shopId))
                 .map(s -> {
                     ShopManageVO smVo = new ShopManageVO();
+                    if (!s.getLogo().contains("http")) {
+                        s.setLogo(IP + s.getLogo());
+                    }
                     BeanUtils.copyProperties(s, smVo);
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), smVo);
                 }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));

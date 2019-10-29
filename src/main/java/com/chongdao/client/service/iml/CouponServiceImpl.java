@@ -238,7 +238,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 cpnInfoVo.setCpnValue(couponInfo.getCpnValue());
                 cpnInfoVo.setValidityStartDate(DateTimeUtil.dateToStr2(couponInfo.getValidityStartDate()));
                 cpnInfoVo.setValidityEndDate(DateTimeUtil.dateToStr2(couponInfo.getValidityEndDate()));
-                List<Shop> shopList = shopMapper.selectByShopIds(couponInfo.getScopeShopId());
+                List<Shop> shopList = shopMapper.selectByShopIds(StringUtils.isBlank(couponInfo.getScopeShopId())? null:couponInfo.getScopeShopId());
                 if (!CollectionUtils.isEmpty(shopList)) {
                     cpnInfoVo.setScopeTypeShopId(couponInfo.getScopeShopId());
                     for (Shop shop : shopList) {

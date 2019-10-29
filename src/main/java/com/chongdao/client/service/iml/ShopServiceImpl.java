@@ -495,6 +495,9 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         List<ShopVO> shopVOList = Lists.newArrayList();
         shopList.forEach(shop-> {
             ShopVO shopVo = new ShopVO();
+            if (!shop.getLogo().contains("http")) {
+                shop.setLogo(IP + shop.getLogo());
+            }
             BeanUtils.copyProperties(shop, shopVo);
             //封装优惠券
             List<CouponInfo> couponList = couponInfoRepository.findByShopIdInAndCpnState(shop.getId(), CouponStatusEnum.COUPON_PUBLISHED.getStatus());

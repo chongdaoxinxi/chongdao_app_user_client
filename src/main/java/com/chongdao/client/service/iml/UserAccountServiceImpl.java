@@ -28,11 +28,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public ResultResponse<UserAccount> getUserAccountByUserId(Integer userId) {
-        if(Optional.ofNullable(userId).isPresent()) {
-            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userAccountRepository.findByUserId(userId));
-        } else {
-            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
-        }
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),userAccountRepository.findByUserId(userId));
     }
 
     @Override
