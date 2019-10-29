@@ -219,7 +219,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                     goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
                 }
                 //宠物卡片
-                this.assembelGoodsTypeVO(good, goodsListVO, unitList, petCardDogs, petCardCats,userId);
+                this.assembelGoodsTypeVO(good, goodsListVO, goodsTypeList,unitList, petCardDogs, petCardCats,userId);
                 goodsListVOList.add(goodsListVO);
 //                    goodsListVOList.add(goodsListVO);
 //                    goodsTypeVO.setGoodsListVOList(goodsListVOList);
@@ -238,56 +238,58 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
      * @param userId
      * @return
      */
-    private GoodsListVO assembelGoodsTypeVO(Good good,GoodsListVO goodsListVO,List<Unit> unitList,List<PetCard> petCardDogs,List<PetCard> petCardCats,Integer userId){
+    private GoodsListVO assembelGoodsTypeVO(Good good,GoodsListVO goodsListVO,List<GoodsType> goodsTypeList,List<Unit> unitList,List<PetCard> petCardDogs,List<PetCard> petCardCats,Integer userId){
         List<PetCard> petCardList = Lists.newArrayList();
         if (good.getCategoryId() != 3) {
-            if ((good.getName().contains("狗") || good.getName().contains("犬"))) {
+            if (good.getGoodsTypeId() == 57 || good.getGoodsTypeId() == 59 || good.getGoodsTypeId() == 55 || good.getGoodsTypeId() == 53){
                 //获取宠物卡片(狗)
-                petCardDogs.stream().forEach(petCard -> {
-                    //重量
-                    BigDecimal weight = petCard.getWeight();
-
-                    for (Unit unit : unitList) {
-                        BigDecimal min = unit.getMin();
-                        BigDecimal max = unit.getMax();
-                        if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
-                            if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
-                                petCard.setId(petCard.getId());
-                                petCard.setGoodsId(good.getId());
-                                petCard.setGoodsName(good.getName() + unit.getLabel());
-                                petCard.setGoodsPrice(good.getPrice());
-                                //查询实际购买该服务的人数
-                                int paymentNumber = goodMapper.paymentNumber(good.getId());
-                                petCard.setPaymentNumber(paymentNumber);
-                                petCardList.add(petCard);
-                                goodsListVO.setPetCardList(petCardList);
+                if (!petCardDogs.isEmpty()) {
+                    petCardDogs.stream().forEach(petCard -> {
+                        //重量
+                        BigDecimal weight = petCard.getWeight();
+                        for (Unit unit : unitList) {
+                            BigDecimal min = unit.getMin();
+                            BigDecimal max = unit.getMax();
+                            if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                                if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+                                    petCard.setId(petCard.getId());
+                                    petCard.setGoodsId(good.getId());
+                                    petCard.setGoodsName(good.getName() + unit.getLabel());
+                                    petCard.setGoodsPrice(good.getPrice());
+                                    //查询实际购买该服务的人数
+                                    int paymentNumber = goodMapper.paymentNumber(good.getId());
+                                    petCard.setPaymentNumber(paymentNumber);
+                                    petCardList.add(petCard);
+                                    goodsListVO.setPetCardList(petCardList);
+                                }
                             }
                         }
-                    }
-                });
-            } else if (good.getName().contains("猫")) {
+                    });
+                }
+            } else {
                 //获取宠物卡片(猫)
-                petCardCats.stream().forEach(petCard -> {
-                    //重量
-                    BigDecimal weight = petCard.getWeight();
-                    for (Unit unit : unitList) {
-                        BigDecimal min = unit.getMin();
-                        BigDecimal max = unit.getMax();
-                        if (min!= null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
-                            if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
-                                petCard.setGoodsId(good.getId());
-                                petCard.setGoodsName(good.getName() + unit.getLabel());
-                                petCard.setGoodsPrice(good.getPrice());
-                                //查询实际购买该服务的人数
-                                int paymentNumber = goodMapper.paymentNumber(good.getId());
-                                petCard.setPaymentNumber(paymentNumber);
-                                petCardList.add(petCard);
-                                goodsListVO.setPetCardList(petCardList);
+                if (!CollectionUtils.isEmpty(petCardCats)) {
+                    petCardCats.stream().forEach(petCard -> {
+                        //重量
+                        BigDecimal weight = petCard.getWeight();
+                        for (Unit unit : unitList) {
+                            BigDecimal min = unit.getMin();
+                            BigDecimal max = unit.getMax();
+                            if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                                if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+                                    petCard.setGoodsId(good.getId());
+                                    petCard.setGoodsName(good.getName() + unit.getLabel());
+                                    petCard.setGoodsPrice(good.getPrice());
+                                    //查询实际购买该服务的人数
+                                    int paymentNumber = goodMapper.paymentNumber(good.getId());
+                                    petCard.setPaymentNumber(paymentNumber);
+                                    petCardList.add(petCard);
+                                    goodsListVO.setPetCardList(petCardList);
+                                }
                             }
                         }
-                    }
-
-                });
+                    });
+                }
             }
         }
         return goodsListVO;
