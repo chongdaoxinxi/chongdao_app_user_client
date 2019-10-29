@@ -37,6 +37,9 @@ public class LoginUserUtil {
     public static ResultTokenVo resultTokenVo(String token){
         //检验该用户的token
         //将map转化为ResultTokenVo
+        if (StringUtils.isBlank(token)) {
+            throw new PetException(400,"用户未登录或登录失效,请重新登录");
+        }
         ResultTokenVo tokenVo = JsonUtil.map2Obj(TokenUtil.validateToken(token), ResultTokenVo.class);
         //如果返回是200代表用户已登录，否则未登录或者失效
         //登录失败

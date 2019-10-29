@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.PetCard;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.PetCardRepository;
 import com.chongdao.client.service.PetCardService;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +34,9 @@ public class PetCardServiceImpl implements PetCardService {
     @Override
     public ResultResponse<List<PetCard>> getPetCardByUserIdAndStatus(Integer userId, Integer status) {
         if(Optional.ofNullable(userId).isPresent() && Optional.ofNullable(status).isPresent()) {
-            return  ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserIdAndStatus(userId, status).orElse(null));
+            return  ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserIdAndStatus(userId, status).orElse(Lists.newArrayList()));
         } else if(Optional.ofNullable(userId).isPresent()) {
-            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserId(userId).orElse(null));
+            return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), petCardRepository.findByUserId(userId).orElse(Lists.newArrayList()));
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
