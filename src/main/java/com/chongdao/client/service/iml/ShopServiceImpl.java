@@ -12,6 +12,7 @@ import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ShopService;
 import com.chongdao.client.utils.DistanceUtil;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -158,24 +159,32 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
     public ResultResponse addShop(Shop shop) {
         Shop s = new Shop();
         BeanUtils.copyProperties(shop, s);
-        s.setMoney(new BigDecimal(0));
         //根据areaId获取areaCode
         Integer areaId = shop.getAreaId();
         if(areaId != null) {
             Area area = areaRepository.findById(areaId).orElse(null);
             s.setAreaCode(area.getCode());
         }
-        s.setType(1);
-        s.setGrade(0.0);
-        s.setStatus(-1);
-        Integer i = -1;
-        s.setIsHot(i.byteValue());
-        s.setIsJoinCommonWeal(i.byteValue());
-        s.setIsStop(i.byteValue());
         if(shop.getId() == null) {
             s.setCreateTime(new Date());
+            s.setType(1);
+            s.setGrade(0.0);
+            s.setStatus(-1);
+            Integer i = -1;
+            s.setIsHot(i.byteValue());
+            s.setIsJoinCommonWeal(i.byteValue());
+            s.setIsStop(i.byteValue());
+            s.setMoney(new BigDecimal(0));
+            //将密码MD5加密
+            s.setPassword(MD5Util.MD5(s.getPassword()));
         } else {
             s.setUpdateTime(new Date());
+            Shop old = shopRepository.findById(shop.getId()).orElse(null);
+            String oldPwd = old.getPassword();
+            if(!s.getPassword().equals(oldPwd)) {
+                //如果修改了密码, 那么将密码MD5重新加密
+                s.setPassword(MD5Util.MD5(s.getPassword()));
+            }
         }
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopRepository.saveAndFlush(s));
     }
