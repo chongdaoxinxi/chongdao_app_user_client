@@ -92,7 +92,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             }
         }
         //全部
-        if (goodsTypeId == 0) {
+        if (goodsTypeId != null && goodsTypeId == 0) {
             goodsTypeId = null;
         }
 
@@ -435,6 +435,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     }
 
     @Override
+    @Transactional
     public ResultResponse saveGood(Good good) {
         if(good.getId() == null) {
             good.setCreateTime(new Date());
