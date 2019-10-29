@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 /**
  * @Description 配送员端接口
  * @Author onlineS
@@ -144,8 +146,9 @@ public class ExpressManageController {
      * @return
      */
     @PostMapping("received")
-    public ResultResponse received(String token, Integer orderId) {
-        return null;
+    public ResultResponse received(String token, Integer orderId) throws IOException {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.received(tokenVo.getUserId(), orderId);
     }
 
     /**
@@ -156,6 +159,18 @@ public class ExpressManageController {
      */
     @PostMapping("delivery")
     public ResultResponse delivery(String token, Integer orderId) {
-        return null;
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.delivery(tokenVo.getUserId(), orderId);
+    }
+
+    /**
+     * 获取已完成订单统计
+     * @param token
+     * @return
+     */
+    @PostMapping("getCompleteOrderStatics")
+    public ResultResponse getCompleteOrderStatics(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return expressOrderService.getCompleteOrderStatics(tokenVo.getUserId());
     }
 }

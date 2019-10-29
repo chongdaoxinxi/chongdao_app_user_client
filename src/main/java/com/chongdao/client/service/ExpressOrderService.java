@@ -63,4 +63,11 @@ public interface ExpressOrderService {
      * @return
      */
     ResultResponse delivery(Integer expressId, Integer orderId);
+
+    /**
+     * 获取已完成订单统计
+     * @param expressId
+     * @return
+     */
+    ResultResponse getCompleteOrderStatics(Integer expressId);
 }

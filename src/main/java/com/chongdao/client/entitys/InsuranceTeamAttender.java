@@ -37,6 +37,7 @@ public class InsuranceTeamAttender implements Serializable {
     private Integer type;// 1:发起人, 2:参与人
     private Integer status;// 0:待确认(通过链接注册, 但还未下载app确认), 1:已确认
     private Integer isWin;//-1: 未中奖, 0:未开奖, 1:中奖
+    private Integer isSystem;//是否系统指定, -1:否, 1:是
     private Date attendTime;//确认参加组队时间
     private Date createTime;
 }

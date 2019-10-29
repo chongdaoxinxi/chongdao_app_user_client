@@ -15,6 +15,13 @@
             <arg column="area_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
+    <resultMap id="ExpressStaticsVO" type="com.chongdao.client.vo.ExpressStaticsVO">
+        <constructor>
+            <arg column="express_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="week_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="month_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        </constructor>
+    </resultMap>
     <sql id="Base_Column_List">
         exp.id, exp.username, exp.password, exp.native_password, exp.name, exp.phone, exp.type, exp.status, exp.area_code, exp.area_name
     </sql>
@@ -33,5 +40,14 @@
             and exp.type = #{type}
         </if>
         order by exp.area_code asc, exp.status desc, exp.type desc, exp.id asc
+    </select>
+    <select id="getCompleteOrderStatics" resultMap="ExpressStaticsVO" parameterType="map">
+        select *
+        from (SELECT count(1) as week_count
+              FROM order_info odi
+              WHERE DATE_FORMAT(odi.create_time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m') and odi.express_id = #{expressId}) A
+                 left join (SELECT count(2) as month_count
+                            FROM order_info odi
+                            WHERE YEARWEEK(date_format(odi.create_time, '%Y-%m-%d')) = YEARWEEK(now()) and odi.express_id = #{expressId}) B on 1 = 1
     </select>
 </mapper>

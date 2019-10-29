@@ -6,6 +6,7 @@ import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ManageStatusEnum;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
+import com.chongdao.client.mapper.ExpressMapper;
 import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ExpressOrderService;
@@ -40,6 +41,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     private SMSUtil smsUtil;
     @Autowired
     private InsuranceService insuranceService;
+    @Autowired
+    private ExpressMapper expressMapper;
 
     /**
      * 接单
@@ -194,6 +197,11 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             }
         }
         return ResultResponse.createBySuccess();
+    }
+
+    @Override
+    public ResultResponse getCompleteOrderStatics(Integer expressId) {
+        return ResultResponse.createBySuccess(expressMapper.getCompleteOrderStatics(expressId));
     }
 
     /**

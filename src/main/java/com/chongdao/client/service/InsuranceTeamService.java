@@ -7,13 +7,22 @@ public interface InsuranceTeamService {
      * 发起组队
      * @param builderId
      */
-    ResultResponse buildInsuranceTeam(Integer builderId);
+    ResultResponse buildInsuranceTeam(Integer builderId) throws Exception;
 
     /**
      * 访问组队分享页面
      * @param builderId
      */
     ResultResponse visitRecommendUrl(Integer builderId);
+
+    /**
+     * 注册并参加组队
+     * @param phone
+     * @param code
+     * @param teamId
+     * @return
+     */
+    ResultResponse signAndAttendInsuranceTeam(String phone, String code, Integer teamId);
 
     /**
      * 参加组队
@@ -41,4 +50,16 @@ public interface InsuranceTeamService {
      * @return
      */
     ResultResponse getAttendDetail(Integer builderId);
+
+    /**
+     * 系统自动填补组队人员(除开每第100/200/300...整数位队员所在队伍外, 均需要添加2个机器人, 且开奖都由这2个机器人中奖)
+     * @return
+     */
+    ResultResponse systemAutoAddAttender(Integer teamId);
+
+    /**
+     * 开奖
+     * @return
+     */
+    ResultResponse systemLuckyDraw(Integer teamId);
 }

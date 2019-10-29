@@ -32,4 +32,6 @@ public interface InsuranceTeamAttenderRepository extends JpaRepository<Insurance
      */
     @Query(value = "select u.* from insurance_team_attender ita left join user u on ita.team_id = ?1 and ita.status = 1", nativeQuery = true)
     List<User> getAttendedUserList(Integer teamId);
+
+    List<InsuranceTeamAttender> findByTeamId(Integer teamId);
 }

@@ -4,10 +4,15 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.InsuranceTeam;
 import com.chongdao.client.entitys.InsuranceTeamAttender;
 import com.chongdao.client.entitys.User;
+import com.chongdao.client.enums.UserStatusEnum;
 import com.chongdao.client.repository.InsuranceTeamAttenderRepository;
 import com.chongdao.client.repository.InsuranceTeamRepository;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.InsuranceTeamService;
+import com.chongdao.client.service.SmsService;
+import com.chongdao.client.utils.GeneratorUserName;
+import com.chongdao.client.utils.QrCodeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +31,16 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     private UserRepository userRepository;
     @Autowired
     private InsuranceTeamAttenderRepository insuranceTeamAttenderRepository;
+    @Autowired
+    private SmsService smsService;
 
 
-    private final static Integer effectTime = 24;//组队有效期24小时
+    private final static String RECOMMEND_URL = "http://www.xxx.com/xxxx.html";
+    private final static Integer EFFECT_TIME = 24;//组队有效期24小时
 
     @Override
     @Transactional
-    public ResultResponse buildInsuranceTeam(Integer builderId) {
+    public ResultResponse buildInsuranceTeam(Integer builderId) throws Exception {
         InsuranceTeam insuranceTeam = new InsuranceTeam();
         insuranceTeam.setBuilderId(builderId);
         User user = userRepository.findById(builderId).orElse(null);
@@ -41,8 +49,9 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         }
         insuranceTeam.setCreateTime(new Date());
         insuranceTeam.setStatus(1);
-        generateRecommendUrl(insuranceTeam);
-        return ResultResponse.createBySuccess(insuranceTeamRepository.save(insuranceTeam));
+        InsuranceTeam save = insuranceTeamRepository.save(insuranceTeam);
+        generateRecommendUrl(save);
+        return ResultResponse.createBySuccess(insuranceTeamRepository.save(save));
     }
 
     @Override
@@ -60,12 +69,42 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         return ResultResponse.createBySuccess();
     }
 
+    @Override
+    @Transactional
+    public ResultResponse signAndAttendInsuranceTeam(String phone, String code, Integer teamId) {
+        //检验验证码是否正确
+        if (StringUtils.isNoneBlank(smsService.getSmsCode(phone))) {
+            if (!smsService.getSmsCode(phone).equals(code)) {
+                User u = userRepository.findByPhone(phone);
+                if(u == null) {
+                    u.setPhone(phone);
+                    u.setName(phone);
+                    u.setLastLoginTime(new Date());
+                    u.setType(1);
+                    u.setStatus(1);
+                    u.setCreateTime(new Date());
+                    userRepository.save(u);
+                }
+                return attendInsuranceTeam(teamId, u.getId());
+            }
+        }
+        return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USER_CODE_ERROR.getStatus(), UserStatusEnum.USER_CODE_ERROR.getMessage());
+    }
+
     /**
      * 生成分享url以及二维码
      * @param insuranceTeam
      * @return
      */
-    private void generateRecommendUrl(InsuranceTeam insuranceTeam) {
+    private void generateRecommendUrl(InsuranceTeam insuranceTeam) throws Exception {
+        //生成url
+        String url = RECOMMEND_URL + "?teamId=" + insuranceTeam.getId();
+        insuranceTeam.setUrl(url);
+        //根据url生成二维码图片, 并保存在服务器, 然后保存访问路径
+        String qrCodeUrl = QrCodeUtils.encode(url, "http://47.100.63.167/images/logo.jpg", "/static/images/", true);
+        System.out.println("qrCodeUrl:" + qrCodeUrl);
+        insuranceTeam.setQrCodeUrl("http://47.100.63.167/images/" + qrCodeUrl);
+
     }
 
     @Override
@@ -91,7 +130,7 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     @Override
     public ResultResponse getMyTodoAttend(Integer userId) {
         Date now = new Date();
-        Date before = new Date(now.getTime() - effectTime*60*60*1000);
+        Date before = new Date(now.getTime() - EFFECT_TIME*60*60*1000);
         return ResultResponse.createBySuccess(insuranceTeamAttenderRepository.getTodoTeamAttender(before, userId));
     }
 
@@ -119,6 +158,74 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         resp.put("attendedUserList", attendedUserList);//已经参加组队的用户
         resp.put("winAttenderList", getWinAttenderList());//已经获奖的用户(全平台)
         return ResultResponse.createBySuccess(resp);
+    }
+
+    @Override
+    public ResultResponse systemAutoAddAttender(Integer teamId) {
+        InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
+        if(insuranceTeam != null) {
+            addRobot(insuranceTeam.getBuilderId(), teamId);
+            addRobot(insuranceTeam.getBuilderId(), teamId);
+            return ResultResponse.createBySuccess();
+        } else {
+            return ResultResponse.createByErrorMessage("无效的teamId");
+        }
+    }
+
+    /**
+     * 添加一个机器人队员
+     */
+    private void addRobot(Integer builderId, Integer teamId) {
+        //生成的robot的userId是null
+        InsuranceTeamAttender attender = new InsuranceTeamAttender();
+        attender.setName(GeneratorUserName.getRandomJianHan(4));//TODO, 需要一个随机逻辑来生成机器人名称
+        attender.setBuilderId(builderId);
+        attender.setTeamId(teamId);
+        attender.setStatus(1);
+        attender.setIsSystem(1);
+        attender.setIsWin(0);
+        attender.setType(2);
+        attender.setCreateTime(new Date());
+        attender.setAttendTime(new Date());
+        insuranceTeamAttenderRepository.save(attender);
+    }
+
+    @Override
+    public ResultResponse systemLuckyDraw(Integer teamId) {
+        List<InsuranceTeamAttender> list = insuranceTeamAttenderRepository.findByTeamId(teamId);
+        InsuranceTeamAttender robotAttender = getRobotAttender(list);
+        if(robotAttender == null) {
+            //正常开奖
+            Random rn = new Random();
+            int luckyIndex = rn.nextInt(12);
+            luckyDraw(list, list.get(luckyIndex));
+        } else {
+            //指定机器人开奖
+            luckyDraw(list, robotAttender);
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    private void luckyDraw(List<InsuranceTeamAttender> list, InsuranceTeamAttender attender) {
+        for (InsuranceTeamAttender teamAttender : list) {
+            if(teamAttender.getId() == attender.getId()) {
+                teamAttender.setIsWin(1);
+            } else {
+                teamAttender.setIsWin(-1);
+            }
+            insuranceTeamAttenderRepository.save(teamAttender);
+        }
+    }
+
+    private InsuranceTeamAttender getRobotAttender(List<InsuranceTeamAttender> list) {
+        List<InsuranceTeamAttender> robotList = new ArrayList<>();
+        for(InsuranceTeamAttender attender : list) {
+            Integer isSystem = attender.getIsSystem();
+            if(isSystem != null && isSystem == 1) {
+                robotList.add(attender);
+            }
+        }
+        return robotList.get(0);
     }
 
     /**
