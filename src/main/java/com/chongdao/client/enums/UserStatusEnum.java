@@ -13,6 +13,7 @@ public enum UserStatusEnum {
     USER_LOGIN_ALREADY(416,"已在别处登录"),
     USERNAME_OR_CODE_EMPTY(417,"手机号码或验证码不能为空"),
     USER_NOT_LOGIN_OR_TOKEN_EXPIRED(418,"用户未登录或token已过期"),
+    USER_NOT_LOGIN(419,"用户未登录或登录失效,请重新登录"),
     ;
 
     private int status;
