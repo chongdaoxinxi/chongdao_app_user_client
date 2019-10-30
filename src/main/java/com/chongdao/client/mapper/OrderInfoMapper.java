@@ -50,9 +50,9 @@ public interface OrderInfoMapper {
      */
     Integer findByShopIdPunctuality(Integer shopId);
 
-    List<OrderInfo> selectExpressOrderList(@Param("expressId") Integer expressId, @Param("type")String type);
+    List<OrderInfo> selectExpressOrderList(@Param("expressId") Integer expressId, @Param("type")String type, @Param("areaCode") String areCode);
 
-    List<OrderInfo> selectExpressAdminOrderList(@Param("type")String type);
+    List<OrderInfo> selectExpressAdminOrderList(@Param("type")String type, @Param("areaCode") String areaCode);
 
     List<OrderInfo> getConcessionalOrderList(@Param("areaCode") String areaCode, @Param("shopId") Integer shopId, @Param("shopName") String shopName, @Param("orderNo") String orderNo, @Param("username") String username, @Param("phone") String phone, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 

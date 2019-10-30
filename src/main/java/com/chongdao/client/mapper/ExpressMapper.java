@@ -12,4 +12,6 @@ public interface ExpressMapper {
     List<ExpressVO> getExpressListByAreaCodeAndName(@Param("areaCode") String areaCode, @Param("name") String name, @Param("type") Integer type, @Param("status") Integer status);
 
     ExpressStaticsVO getCompleteOrderStatics(@Param("expressId") Integer expressId);
+
+    ExpressStaticsVO getCompleteOrderStaticsByType(@Param("expressId") Integer expressId, @Param("type") Integer type);
 }

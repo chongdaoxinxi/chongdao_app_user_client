@@ -16,7 +16,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpressStaticsVO {
-    private String expressName;
     private Integer weekCount;
     private Integer monthCount;
 }

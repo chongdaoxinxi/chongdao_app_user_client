@@ -114,7 +114,17 @@ public interface OrderService {
      * @param pageSize
      * @return
      */
-    ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize);
+    ResultResponse<PageInfo> expressAdminOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取商家已接单分布统计
+     * @param expressId
+     * @param type
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultResponse getShopAcceptedOrderStatics(Integer expressId, String type, Integer pageNum, Integer pageSize);
 
     ResultResponse getRefundData(Integer orderId);
 
