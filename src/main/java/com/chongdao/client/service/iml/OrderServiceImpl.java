@@ -159,20 +159,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //计算使用商品优惠券后的价格
             CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).orElse(null);
             if (couponInfo != null) {
-                //优惠总计
-                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
-                orderVo.setGoodsCouponPrice(couponInfo.getCpnValue());
-                cartTotalPrice = cartTotalPrice.subtract(couponInfo.getCpnValue());
+                //判断红包与实付款金额大小
+                cartTotalPrice = this.cartTotalPrice(cartTotalPrice,couponInfo,orderVo);
             }
         }
         if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0) {
             //计算使用配送优惠券后的价格
             CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).orElse(null);
             if (couponInfo != null) {
-                orderVo.setServiceCouponPrice(couponInfo.getMinPrice());
-                //优惠总计
-                orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getMinPrice()));
-                cartTotalPrice = cartTotalPrice.subtract(couponInfo.getMinPrice());
+                cartTotalPrice = this.cartTotalPrice(cartTotalPrice,couponInfo,orderVo);
             }
         }
         //配送费(到店自取无配送费) 有优惠需减去优惠
@@ -1780,4 +1775,26 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         return orderVo;
     }
 
+
+    /**
+     * 判断红包与实付款大小
+     * @param cartTotalPrice
+     * @param couponInfo
+     * @param orderVo
+     * @return
+     */
+    private BigDecimal cartTotalPrice(BigDecimal cartTotalPrice, CouponInfo couponInfo, OrderVo orderVo){
+        //判断红包与实付款金额大小
+        if (cartTotalPrice.compareTo(couponInfo.getCpnValue()) == -1) {
+            orderVo.setTotalDiscount(cartTotalPrice);
+            orderVo.setGoodsCouponPrice(cartTotalPrice);
+            cartTotalPrice = cartTotalPrice.subtract(cartTotalPrice);
+        }else {
+            //优惠总计
+            orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
+            orderVo.setGoodsCouponPrice(couponInfo.getCpnValue());
+            cartTotalPrice = cartTotalPrice.subtract(couponInfo.getCpnValue());
+        }
+        return cartTotalPrice;
+    }
 }

@@ -1,9 +1,11 @@
 package com.chongdao.client.common;
 
 import com.chongdao.client.entitys.coupon.CouponInfo;
+import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.enums.CouponStatusEnum;
 import com.chongdao.client.repository.coupon.CouponInfoRepository;
+import com.chongdao.client.repository.coupon.CpnThresholdRuleRepository;
 import com.chongdao.client.repository.coupon.CpnUserRepository;
 import com.chongdao.client.service.iml.CouponServiceImpl;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -28,6 +30,9 @@ public class CouponCommon {
     @Autowired
     private CpnUserRepository cpnUserRepository;
 
+    @Autowired
+    private CpnThresholdRuleRepository cpnThresholdRuleRepository;
+
     //封装优惠券(店铺优惠外)  cpnType == 4
     public List<CouponInfo> couponInfoFullList(Integer shopId){
         //获取满减
@@ -38,6 +43,10 @@ public class CouponCommon {
                 long result = DateTimeUtil.costTime(DateTimeUtil.dateToStr(couponInfo.getValidityEndDate()),
                         DateTimeUtil.dateToStr(new Date()));
                 if (result > 0) {
+                    CpnThresholdRule cpnThresholdRule = cpnThresholdRuleRepository.findByCpnId(couponInfo.getId());
+                    if (cpnThresholdRule != null && cpnThresholdRule.getMinPrice() != null) {
+                        couponInfo.setMinPrice(cpnThresholdRule.getMinPrice());
+                    }
                     //设置优惠券限制范围名称
                     CouponServiceImpl.setCouponScope(couponInfo);
                     couponInfoFullList.add(couponInfo);
