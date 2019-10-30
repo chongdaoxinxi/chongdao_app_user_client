@@ -588,9 +588,15 @@
         select
         <include refid="Base_Column_List"/>
         from order_info
-        where express_id = #{expressId}
+        where 1 = 1
+        <if test="expressId != null">
+            and express_id in (${expressId})
+        </if>
         <if test="type != null">
             and order_status in (${type})
+        </if>
+        <if test="areaCode != null">
+            and area_code = #{areaCode}
         </if>
         order by order_info.create_time desc, order_info.order_status desc
     </select>
@@ -601,6 +607,9 @@
         where 1 = 1
         <if test="type != null">
             and order_status in (${type})
+        </if>
+        <if test="areaCode != null">
+            and area_code = #{areaCode}
         </if>
         order by order_info.create_time desc, order_info.order_status desc
     </select>

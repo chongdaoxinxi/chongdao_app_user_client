@@ -76,7 +76,22 @@ public class ExpressManageController {
      */
     @PostMapping("getExpressManageOrderList")
     public ResultResponse<PageInfo> getExpressManageOrderList(String token, String type, Integer pageNum, Integer pageSize) {
-        return orderService.expressAdminOrderList(type, pageNum, pageSize);
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.expressAdminOrderList(tokenVo.getUserId(), type, pageNum, pageSize);
+    }
+
+    /**
+     *获取商家已接单分布统计
+     * @param token
+     * @param type 1: 上门接宠, 2: 服务中, 3:到店接宠, 4: 已完成
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("getShopAcceptedOrderStatics")
+    public ResultResponse<PageInfo> getShopAcceptedOrderStatics(String token, String type, Integer pageNum, Integer pageSize) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return orderService.getShopAcceptedOrderStatics(tokenVo.getUserId(), type, pageNum, pageSize);
     }
 
     /**

@@ -1313,10 +1313,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         if (expressId == null || type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
+        //查出areaCode
+        String areaCode = getExpressAreaCode(expressId);
         PageHelper.startPage(pageNum, pageSize);
         if (type.equals("1")) {
             //可接单
             type = "2";
+            expressId = null;
         } else if (type.equals("2")) {
             //已接单
             type = "4,5,7,8,9,10,11,12,13,14,15";
@@ -1325,7 +1328,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             type = "3,6";
         }
 
-        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressOrderList(expressId, type);
+        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressOrderList(expressId, type, areaCode);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
         PageInfo pageResult = new PageInfo(orderInfos);
         pageResult.setList(orderVoList);
@@ -1341,23 +1344,87 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
      * @return
      */
     @Override
-    public ResultResponse<PageInfo> expressAdminOrderList(String type, Integer pageNum, Integer pageSize) {
+    public ResultResponse<PageInfo> expressAdminOrderList(Integer expressId, String type, Integer pageNum, Integer pageSize) {
         if (type == null) {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());
         }
-        PageHelper.startPage(pageNum, pageSize);
+        //查出areaCode
+        String areaCode = getExpressAreaCode(expressId);
+//        PageHelper.startPage(pageNum, pageSize);
+//        if (type.equals("1")) {
+//            //商家未接单
+//            type = "-1,0,1";
+//        } else if (type.equals("2")) {
+//            //商家已接单
+//            type = "2,3,4,5,6,7,8,9,10,11,12,13,14,15";
+//        }
         if (type.equals("1")) {
-            //商家未接单
-            type = "-1,0,1";
+            //可接单
+            type = "2";
         } else if (type.equals("2")) {
-            //商家已接单
-            type = "2,3,4,5,6,7,8,9,10,11,12,13,14,15";
+            //已接单
+            type = "4,5,7,8,9,10,11,12,13,14,15";
+        } else if (type.equals("3")) {
+            //已完成
+            type = "3,6";
         }
-        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type);
+
+        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type, areaCode);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
         PageInfo pageResult = new PageInfo(orderInfos);
         pageResult.setList(orderVoList);
         return ResultResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ResultResponse getShopAcceptedOrderStatics(Integer expressId, String type, Integer pageNum, Integer pageSize) {
+        if(type.equals("1")) {
+            //上门接宠
+            type = "7";
+        } else if(type.equals("2")) {
+            //服务中
+            type = "14, 15";
+        } else if(type.equals("3")) {
+            //到店接宠
+            type = "12";
+        } else if(type.equals("4")) {
+            //已完成
+            type = "3, 4, 5, 6, 8, 10, 13";
+        }
+        //判断是否管理员
+        if(isExpressAdmin(expressId)) {
+            expressId = null;
+        }
+        String areaCode = getExpressAreaCode(expressId);
+        List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type, areaCode);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
+        PageInfo pageResult = new PageInfo(orderInfos);
+        pageResult.setList(orderVoList);
+        return ResultResponse.createBySuccess(pageResult);
+    }
+
+    private String getExpressAreaCode(Integer expressId) {
+        String areaCode = "";
+        List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
+        if(list.size() > 0) {
+            Express express = list.get(0);
+            areaCode = express.getAreaCode();
+        }
+        return areaCode;
+    }
+
+    private Boolean isExpressAdmin(Integer expressId) {
+        boolean flag = false;
+        //判断是否管理员
+        List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
+        if(list.size() > 0) {
+            Express express = list.get(0);
+            Integer expressType = express.getType();
+            if(expressType != null && expressType == 2) {
+                flag = true;
+            }
+        }
+        return flag;
     }
 
     @Override

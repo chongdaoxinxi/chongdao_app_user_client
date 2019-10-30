@@ -1,12 +1,14 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Express;
 import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ManageStatusEnum;
 import com.chongdao.client.enums.OrderStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.ExpressMapper;
+import com.chongdao.client.repository.ExpressRepository;
 import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ExpressOrderService;
@@ -43,6 +45,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     private InsuranceService insuranceService;
     @Autowired
     private ExpressMapper expressMapper;
+    @Autowired
+    private ExpressRepository expressRepository;
 
     /**
      * 接单
@@ -201,6 +205,38 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
 
     @Override
     public ResultResponse getCompleteOrderStatics(Integer expressId) {
+        //判断是否管理员
+        if(isExpressAdmin(expressId)) {
+            expressId = null;
+        }
+        return ResultResponse.createBySuccess(expressMapper.getCompleteOrderStatics(expressId));
+    }
+
+    private Boolean isExpressAdmin(Integer expressId) {
+        boolean flag = false;
+        //判断是否管理员
+        List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
+        if(list.size() > 0) {
+            Express express = list.get(0);
+            Integer expressType = express.getType();
+            if(expressType != null && expressType == 2) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    public ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer type) {
+        List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
+        if(list.size() > 0) {
+            Express express = list.get(0);
+            Integer expressType = express.getType();
+            if(expressType == 2) {
+                //管理员
+                expressId = null;
+            }
+        }
         return ResultResponse.createBySuccess(expressMapper.getCompleteOrderStatics(expressId));
     }
 

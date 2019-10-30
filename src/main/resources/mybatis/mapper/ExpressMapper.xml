@@ -43,10 +43,19 @@
     <select id="getCompleteOrderStatics" resultMap="ExpressStaticsVO" parameterType="map">
         select *
         from (SELECT count(1) as week_count
-              FROM order_info odi
-              WHERE DATE_FORMAT(odi.create_time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m') and odi.express_id = #{expressId}) A
-                 left join (SELECT count(2) as month_count
-                            FROM order_info odi
-                            WHERE YEARWEEK(date_format(odi.create_time, '%Y-%m-%d')) = YEARWEEK(now()) and odi.express_id = #{expressId}) B on 1 = 1
+        FROM order_info odi
+        WHERE DATE_FORMAT(odi.create_time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+        <if test="expressId != null">
+            and odi.express_id = #{expressId}
+        </if>
+        ) A
+        left join (SELECT count(2) as month_count
+        FROM order_info odi
+        WHERE YEARWEEK(date_format(odi.create_time, '%Y-%m-%d')) = YEARWEEK(now()) <if test="expressId != null">
+        and odi.express_id = #{expressId}
+    </if>) B on 1 = 1
+    </select>
+    <select id="getCompleteOrderStaticsByType" resultMap="ExpressStaticsVO" parameterType="map">
+
     </select>
 </mapper>
