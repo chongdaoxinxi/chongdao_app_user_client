@@ -76,5 +76,5 @@ public interface ExpressOrderService {
      * @param expressId
      * @return
      */
-    ResultResponse getCompleteOrderStaticsByType(Integer expressId);
+    ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer pageNum, Integer pageSize);
 }

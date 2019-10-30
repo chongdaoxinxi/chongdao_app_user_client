@@ -20,9 +20,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompleteOrderStaticsVO {
+    private String weeks;
     private Date startDate;
     private Date endDate;
     private Integer totalCount;
     private BigDecimal totalMoney;
     private List<CompleteOrderStaticsSingleVO> list;
+
+    public CompleteOrderStaticsVO(String weeks, Date startDate, Date endDate, Integer totalCount, BigDecimal totalMoney) {
+        this.weeks = weeks;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalCount = totalCount;
+        this.totalMoney = totalMoney;
+    }
 }
