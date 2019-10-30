@@ -88,19 +88,19 @@ public class TokenUtil {
                 // TODO: handle exception
                 // don't trust the JWT!
                 // jwt 解析错误
-                resp.put("status",UserStatusEnum.TOKEN_EXPIRED.getStatus());
-                resp.put("message",UserStatusEnum.TOKEN_EXPIRED.getMessage());
+                resp.put("status",UserStatusEnum.USER_NOT_LOGIN.getStatus());
+                resp.put("message",UserStatusEnum.USER_NOT_LOGIN.getMessage());
                 return resp;
             } catch (ExpiredJwtException e) {
                 // TODO: handle exception
                 // jwt 已经过期，在设置jwt的时候如果设置了过期时间，这里会自动判断jwt是否已经过期，如果过期则会抛出这个异常，我们可以抓住这个异常并作相关处理。
-                resp.put("status",UserStatusEnum.TOKEN_EXPIRED.getStatus());
-                resp.put("message",UserStatusEnum.TOKEN_EXPIRED.getMessage());
+                resp.put("status",UserStatusEnum.USER_NOT_LOGIN.getStatus());
+                resp.put("message",UserStatusEnum.USER_NOT_LOGIN.getMessage());
                 return resp;
             }
         }else {
-            resp.put("status",UserStatusEnum.TOKEN_NOT_EMPTY.getStatus());
-            resp.put("message",UserStatusEnum.TOKEN_NOT_EMPTY.getMessage());
+            resp.put("status",UserStatusEnum.USER_NOT_LOGIN.getStatus());
+            resp.put("message",UserStatusEnum.USER_NOT_LOGIN.getMessage());
             return resp;
         }
     }
