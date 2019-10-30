@@ -142,7 +142,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 }
             }
         }
-
+        orderInfoRepository.save(orderInfo);
         //判断是否投保运输险
         if (orderInfo.getPetCount() != null && orderInfo.getPetCount() > 0 && serviceType != null && serviceType != 3) {
             //非到店自取, 且宠物数量大于0的
@@ -186,8 +186,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 Integer orderStatus = orderInfo.getOrderStatus();
                 if (orderStatus == OrderStatusEnum.EXPRESS_START_SERVICE.getStatus()) {
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//家至店送达
+                    orderInfoRepository.save(orderInfo);
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
-                    orderComplete(orderInfo);
                 } else if (orderStatus == OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus()) {
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_BACK_DELIVERY.getStatus());//店至家送达
                     orderInfo.setExpressFinishTime(new Date());//配送完成时间
