@@ -445,5 +445,4 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         }
         return cpnUser;
     }
-
 }
