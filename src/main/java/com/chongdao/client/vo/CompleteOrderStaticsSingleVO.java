@@ -19,6 +19,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class CompleteOrderStaticsSingleVO {
     private String name;
-    private String totalCount;
+    private Integer totalCount;
     private BigDecimal totalMoney;
 }

@@ -85,7 +85,7 @@
         left join express e on odi.express_id = e.id
         WHERE 1 = 1
         and odi.express_id is not null
-        and e.type = 1
+        # and e.type = 1
         <if test="areaCode != null and areaCode != ''">
             and odi.area_code = #{areaCode}
         </if>
@@ -98,21 +98,19 @@
         GROUP BY weeks, start_date, end_date
         ORDER BY weeks DESC
     </select>
-    <select id="getCompleteOrderStaticsGroupByNameLimitStartAndEndDate" resultMap="CompleteOrderStaticsSingleVO" parameterType="map">
-        SELECT DATE_FORMAT(odi.express_receive_time, '%Y%u') weeks,
-        count(1) AS total_count,
-        SUM(IFNULL(origin_service_price, 0) - IFNULL(insurance_price, 0)) AS total_money,
-        DATE_FORMAT(
-        (SELECT DATE_ADD(odi.express_receive_time, INTERVAL - WEEKDAY(odi.express_receive_time) DAY)),
-        '%Y%m%d') AS start_date,
-        DATE_FORMAT((SELECT DATE_ADD(odi.express_receive_time, INTERVAL
-        - WEEKDAY(odi.express_receive_time) + 6 DAY)), '%Y%m%d') AS
-        end_date
-        FROM order_info odi
-        left join express e on odi.express_id = e.id
+    <select id="getCompleteOrderStaticsGroupByNameLimitStartAndEndDate" resultMap="CompleteOrderStaticsSingleVO"
+            parameterType="map">
+        SELECT A.name, count(1) AS totalCount, sum(A.origin_service_price - A.insurance_price) AS total_money
+        FROM (
+        SELECT IFNULL(odi.origin_service_price, 0) AS origin_service_price, IFNULL(odi.insurance_price, 0) AS
+        insurance_price, e.name, e.id
+        from order_info odi
+        LEFT JOIN express e ON odi.express_id = e.id
         WHERE 1 = 1
-        and odi.express_id is not null
-        and e.type = 1
+        AND odi.express_id IS NOT NULL
+#         and e.type = 1
+        and odi.express_receive_time &gt; #{startDate}
+        and odi.express_receive_time &lt; #{endDate}
         <if test="areaCode != null and areaCode != ''">
             and odi.area_code = #{areaCode}
         </if>
@@ -122,7 +120,8 @@
         <if test="expressId != null">
             and odi.express_id = #{expressId}
         </if>
-        GROUP BY weeks, start_date, end_date
-        ORDER BY weeks DESC
+        ORDER BY e.id ASC
+        ) A
+        GROUP BY A.name, A.id
     </select>
 </mapper>

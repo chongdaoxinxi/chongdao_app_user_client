@@ -21,13 +21,13 @@ import java.util.List;
 @NoArgsConstructor
 public class CompleteOrderStaticsVO {
     private String weeks;
-    private Date startDate;
-    private Date endDate;
     private Integer totalCount;
     private BigDecimal totalMoney;
+    private Date startDate;
+    private Date endDate;
     private List<CompleteOrderStaticsSingleVO> list;
 
-    public CompleteOrderStaticsVO(String weeks, Date startDate, Date endDate, Integer totalCount, BigDecimal totalMoney) {
+    public CompleteOrderStaticsVO(String weeks, Integer totalCount, BigDecimal totalMoney, Date startDate, Date endDate) {
         this.weeks = weeks;
         this.startDate = startDate;
         this.endDate = endDate;
