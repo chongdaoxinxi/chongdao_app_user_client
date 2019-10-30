@@ -227,7 +227,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     @Override
-    public ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer type) {
+    public ResultResponse getCompleteOrderStaticsByType(Integer expressId) {
         List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
         if(list.size() > 0) {
             Express express = list.get(0);
@@ -237,7 +237,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 expressId = null;
             }
         }
-        return ResultResponse.createBySuccess(expressMapper.getCompleteOrderStatics(expressId));
+        return ResultResponse.createBySuccess(expressMapper.getCompleteOrderStaticsByType(expressId));
     }
 
     /**

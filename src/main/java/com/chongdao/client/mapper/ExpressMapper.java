@@ -13,5 +13,5 @@ public interface ExpressMapper {
 
     ExpressStaticsVO getCompleteOrderStatics(@Param("expressId") Integer expressId);
 
-    ExpressStaticsVO getCompleteOrderStaticsByType(@Param("expressId") Integer expressId, @Param("type") Integer type);
+    ExpressStaticsVO getCompleteOrderStaticsByType(@Param("expressId") Integer expressId);
 }
