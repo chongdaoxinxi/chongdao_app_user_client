@@ -86,6 +86,9 @@
         WHERE 1 = 1
         and odi.express_id is not null
         and e.type = 1
+        <if test="areaCode != null and areaCode != ''">
+            and odi.area_code = #{areaCode}
+        </if>
         <if test="type != null">
             and odi.order_status in (${type})
         </if>
@@ -110,6 +113,9 @@
         WHERE 1 = 1
         and odi.express_id is not null
         and e.type = 1
+        <if test="areaCode != null and areaCode != ''">
+            and odi.area_code = #{areaCode}
+        </if>
         <if test="type != null">
             and odi.order_status in (${type})
         </if>

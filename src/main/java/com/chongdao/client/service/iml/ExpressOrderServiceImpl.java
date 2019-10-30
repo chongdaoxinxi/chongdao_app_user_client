@@ -233,17 +233,20 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     @Override
     public ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer pageNum, Integer pageSize) {
         List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
+        String areaCode = "";
         if(list.size() > 0) {
             Express express = list.get(0);
+            areaCode = express.getAreaCode();
             Integer expressType = express.getType();
             if(expressType == 2) {
                 //管理员
                 expressId = null;
             }
         }
+
         PageHelper.startPage(pageNum, pageSize);
         //先进行一级分页
-        List<CompleteOrderStaticsVO> completeOrderStaticsList = expressMapper.getCompleteOrderStaticsGroupByWeek(expressId, "3, 4, 5, 6, 8, 9, 10, 13");
+        List<CompleteOrderStaticsVO> completeOrderStaticsList = expressMapper.getCompleteOrderStaticsGroupByWeek(expressId, "3, 4, 5, 6, 8, 9, 10, 13", areaCode);
         PageInfo pageResult = new PageInfo(completeOrderStaticsList);
         pageResult.setList(completeOrderStaticsList);
         List<CompleteOrderStaticsVO> pageableList = pageResult.getList();
@@ -251,7 +254,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         for(CompleteOrderStaticsVO cosv : pageableList) {
             Date startDate = cosv.getStartDate();
             Date endDate = cosv.getEndDate();
-            List<CompleteOrderStaticsSingleVO> sonList = expressMapper.getCompleteOrderStaticsGroupByNameLimitStartAndEndDate(expressId, "3, 4, 5, 6, 8, 9, 10, 13", startDate, endDate);
+            List<CompleteOrderStaticsSingleVO> sonList = expressMapper.getCompleteOrderStaticsGroupByNameLimitStartAndEndDate(expressId, "3, 4, 5, 6, 8, 9, 10, 13", areaCode, startDate, endDate);
             cosv.setList(sonList);
         }
         return ResultResponse.createBySuccess(pageResult);

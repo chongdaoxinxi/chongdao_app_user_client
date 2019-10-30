@@ -16,7 +16,7 @@ public interface ExpressMapper {
 
     ExpressStaticsVO getCompleteOrderStatics(@Param("expressId") Integer expressId);
 
-    List<CompleteOrderStaticsVO> getCompleteOrderStaticsGroupByWeek(@Param("expressId") Integer expressId, @Param("type") String type);
+    List<CompleteOrderStaticsVO> getCompleteOrderStaticsGroupByWeek(@Param("expressId") Integer expressId, @Param("type") String type, @Param("areaCode") String areaCode);
 
-    List<CompleteOrderStaticsSingleVO> getCompleteOrderStaticsGroupByNameLimitStartAndEndDate(@Param("expressId") Integer expressId, @Param("type") String type, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    List<CompleteOrderStaticsSingleVO> getCompleteOrderStaticsGroupByNameLimitStartAndEndDate(@Param("expressId") Integer expressId, @Param("type") String type, @Param("areaCode") String areaCode, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }
