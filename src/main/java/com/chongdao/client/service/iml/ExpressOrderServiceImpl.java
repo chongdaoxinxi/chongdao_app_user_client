@@ -127,7 +127,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         Integer isService = orderInfo.getIsService();
         Integer serviceType = orderInfo.getServiceType();
-        if (isService == -1) {
+        if (isService == null || isService == -1 || isService == 0) {
             //商品
             orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
             smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripGoodServiceStartUser(), orderInfo.getOrderNo(), phoneList);
@@ -174,7 +174,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         Integer isService = orderInfo.getIsService();
         Integer serviceType = orderInfo.getServiceType();
-        if (isService == -1) {
+        if (isService == null || isService == -1 || isService == 0) {
             //商品
             orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//商品送达
             orderInfo.setExpressFinishTime(new Date());//配送完成时间
