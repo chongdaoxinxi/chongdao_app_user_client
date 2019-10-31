@@ -72,10 +72,9 @@ public interface ExpressOrderService {
     ResultResponse getCompleteOrderStatics(Integer expressId);
 
     /**
-     * 获取订单统计(周/月)
+     * 获取订单统计
      * @param expressId
-     * @param type 1:周, 2:月
      * @return
      */
-    ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer type);
+    ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer pageNum, Integer pageSize);
 }

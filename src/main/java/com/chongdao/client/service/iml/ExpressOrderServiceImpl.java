@@ -15,6 +15,10 @@ import com.chongdao.client.service.ExpressOrderService;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.sms.SMSUtil;
+import com.chongdao.client.vo.CompleteOrderStaticsSingleVO;
+import com.chongdao.client.vo.CompleteOrderStaticsVO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -227,17 +231,33 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     @Override
-    public ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer type) {
+    public ResultResponse getCompleteOrderStaticsByType(Integer expressId, Integer pageNum, Integer pageSize) {
         List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
+        String areaCode = "";
         if(list.size() > 0) {
             Express express = list.get(0);
+            areaCode = express.getAreaCode();
             Integer expressType = express.getType();
             if(expressType == 2) {
                 //管理员
                 expressId = null;
             }
         }
-        return ResultResponse.createBySuccess(expressMapper.getCompleteOrderStatics(expressId));
+
+        PageHelper.startPage(pageNum, pageSize);
+        //先进行一级分页
+        List<CompleteOrderStaticsVO> completeOrderStaticsList = expressMapper.getCompleteOrderStaticsGroupByWeek(expressId, "3, 4, 5, 6, 8, 9, 10, 13", areaCode);
+        PageInfo pageResult = new PageInfo(completeOrderStaticsList);
+        pageResult.setList(completeOrderStaticsList);
+        List<CompleteOrderStaticsVO> pageableList = pageResult.getList();
+        //对一级分组的数组, 遍历取二级数据
+        for(CompleteOrderStaticsVO cosv : pageableList) {
+            Date startDate = cosv.getStartDate();
+            Date endDate = cosv.getEndDate();
+            List<CompleteOrderStaticsSingleVO> sonList = expressMapper.getCompleteOrderStaticsGroupByNameLimitStartAndEndDate(expressId, "3, 4, 5, 6, 8, 9, 10, 13", areaCode, startDate, endDate);
+            cosv.setList(sonList);
+        }
+        return ResultResponse.createBySuccess(pageResult);
     }
 
     /**

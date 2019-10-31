@@ -1385,6 +1385,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         } else if(type.equals("4")) {
             //已完成
             type = "3, 4, 5, 6, 8, 10, 13";
+        } else if(type.equals("5")) {
+            type = "1";
         }
         //判断是否管理员
         if(isExpressAdmin(expressId)) {

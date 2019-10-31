@@ -184,8 +184,8 @@ public class ExpressManageController {
      * @return
      */
     @PostMapping("getCompleteOrderStatics")
-    public ResultResponse getCompleteOrderStatics(String token) {
+    public ResultResponse getCompleteOrderStatics(String token, Integer pageNum, Integer pageSize) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
-        return expressOrderService.getCompleteOrderStatics(tokenVo.getUserId());
+        return expressOrderService.getCompleteOrderStaticsByType(tokenVo.getUserId(), pageNum, pageSize);
     }
 }
