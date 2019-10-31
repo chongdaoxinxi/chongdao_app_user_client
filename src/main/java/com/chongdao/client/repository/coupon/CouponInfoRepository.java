@@ -26,9 +26,9 @@ public interface CouponInfoRepository extends JpaRepository<CouponInfo,Integer> 
      */
     List<CouponInfo> findByShopIdInAndCpnState(Integer shopId,Integer cpnState);
 
-    List<CouponInfo> findByShopIdInAndCpnStateAndCpnType(Integer shopId,Integer cpnState, Integer cpnType);
+    List<CouponInfo> findByShopIdInAndCpnStateAndCpnTypeOrderByCpnValueDesc(Integer shopId,Integer cpnState, Integer cpnType);
 
-    List<CouponInfo> findByShopIdAndCpnStateAndCpnTypeNot(Integer shopId, Integer cpnState, Integer cpnType);
+    List<CouponInfo> findByShopIdAndCpnStateAndCpnTypeNotOrderByCpnValueDesc(Integer shopId, Integer cpnState, Integer cpnType);
 
     List<CouponInfo> findByIdAndShopIdAndCpnStateAndCpnTypeNot(Integer cpnId,Integer shopId, Integer cpnState, Integer cpnType);
 

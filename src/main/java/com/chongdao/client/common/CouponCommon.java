@@ -36,7 +36,7 @@ public class CouponCommon {
     //封装优惠券(店铺优惠外)  cpnType == 4
     public List<CouponInfo> couponInfoFullList(Integer shopId){
         //获取满减
-        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnStateAndCpnType(shopId, 1,4);
+        List<CouponInfo> couponInfoList = couponInfoRepository.findByShopIdInAndCpnStateAndCpnTypeOrderByCpnValueDesc(shopId, 1,4);
         List<CouponInfo> couponInfoFullList = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(couponInfoList)){
             couponInfoList.stream().forEach(couponInfo -> {
@@ -59,7 +59,7 @@ public class CouponCommon {
 
     //封装优惠券(店铺满减除外) cpnType 不等于 4
     public List<CouponInfo> couponInfoList(Integer shopId,Integer userId){
-        List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shopId, CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
+        List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNotOrderByCpnValueDesc(shopId, CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
         //优惠券
         List<CouponInfo> cpnInfoList = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(couponList)) {
