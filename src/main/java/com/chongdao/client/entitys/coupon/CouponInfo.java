@@ -43,7 +43,7 @@ public class CouponInfo {
 
     private Integer cpnState = 1; //状态  -1 已作废 0待发布 1已发布 2已下架
 
-    private Integer cpnStock; //库存（张数）
+    private Integer cpnStock = 0; //库存（张数）
 
     private String cpnDesc;   //描述
 
@@ -71,15 +71,15 @@ public class CouponInfo {
     @JsonSerialize(using = Date2LongSerializer.class)
     private Date updateDate;      //更新时间
 
-    private Integer useNumber;    //使用人数
+    private Integer useNumber = 0;    //使用人数
 
-    private Integer gainNumber;   //领取人数
-
-    @Transient
-    private BigDecimal minPrice;  //最低门槛金额
+    private Integer gainNumber = 0;   //领取人数
 
     @Transient
-    private BigDecimal maxPrice;  //最高门槛金额
+    private BigDecimal minPrice = BigDecimal.ZERO;  //最低门槛金额
+
+    @Transient
+    private BigDecimal maxPrice = BigDecimal.ZERO;  //最高门槛金额
 
     @Transient
     private String scopeTypeName; //适用范围类型名称

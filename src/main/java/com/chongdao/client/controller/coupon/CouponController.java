@@ -87,7 +87,7 @@ public class CouponController {
     @GetMapping("receiveNotCpnList/{shopId}/{userId}")
     public ResultResponse receiveNotCpnList(@PathVariable Integer shopId, @PathVariable Integer userId){
         //封装优惠券(店铺满减除外(cpnType = 4))
-        List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNot(shopId, CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
+        List<CouponInfo> couponList = couponInfoRepository.findByShopIdAndCpnStateAndCpnTypeNotOrderByCpnValueDesc(shopId, CouponStatusEnum.COUPON_PUBLISHED.getStatus(),4);
         List<CouponInfo> couponInfoList = Lists.newArrayList();
         couponList.stream().forEach(e ->{
             //二次校验，过滤失效的优惠券
