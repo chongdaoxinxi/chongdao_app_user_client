@@ -83,4 +83,10 @@ public class ExpressServiceImpl implements ExpressService {
         }
         return ResultResponse.createByErrorMessage("删除失败!");
     }
+
+    @Override
+    public ResultResponse getExpressInfo(String token) {
+        ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
+        return ResultResponse.createBySuccess(expressRepository.findByIdAndStatus(tokenVo.getUserId(), 1));
+    }
 }

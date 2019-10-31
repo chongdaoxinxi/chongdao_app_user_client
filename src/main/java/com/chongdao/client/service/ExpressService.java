@@ -9,4 +9,6 @@ public interface ExpressService {
     ResultResponse saveExpress(Express express);
 
     ResultResponse removeExpress(Integer expressId);
+
+    ResultResponse getExpressInfo(String token);
 }

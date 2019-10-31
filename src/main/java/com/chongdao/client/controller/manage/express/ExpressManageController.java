@@ -3,6 +3,7 @@ package com.chongdao.client.controller.manage.express;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.ExpressManageService;
 import com.chongdao.client.service.ExpressOrderService;
+import com.chongdao.client.service.ExpressService;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -30,6 +31,8 @@ public class ExpressManageController {
     private ExpressOrderService expressOrderService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ExpressService expressService;
 
     /**
      * 登录
@@ -50,6 +53,16 @@ public class ExpressManageController {
     @GetMapping("logout")
     public ResultResponse logout(String token) {
         return null;
+    }
+
+    /**
+     * 获取配送员基本信息
+     * @param token
+     * @return
+     */
+    @PostMapping("getExpressInfo")
+    public ResultResponse getExpressInfo(String token) {
+        return expressService.getExpressInfo(token);
     }
 
     /**
