@@ -34,7 +34,7 @@ public class OrderInfoVO {
 
     private Integer follow;
 
-    private Integer serviceType;//1:单程;2:双程;3:到店;
+    private Integer serviceType;//2:单程;1:双程;3:到店;
 
     private Integer cardId;
 
