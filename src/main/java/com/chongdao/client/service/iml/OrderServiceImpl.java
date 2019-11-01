@@ -2,6 +2,7 @@ package com.chongdao.client.service.iml;
 
 
 import com.chongdao.client.common.CommonRepository;
+import com.chongdao.client.common.CouponCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.dto.OrderGoodsDTO;
 import com.chongdao.client.entitys.*;
@@ -63,6 +64,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private OrderRefundService orderRefundService;
     @Autowired
     private OrderInfoVOMapper orderInfoVOMapper;
+    @Autowired
+    private CouponCommon couponCommon;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -160,14 +163,21 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCouponId()).orElse(null);
             if (couponInfo != null) {
                 //判断红包与实付款金额大小
-                cartTotalPrice = this.cartTotalPrice(cartTotalPrice,couponInfo,orderVo);
+                cartTotalPrice = this.cartTotalPrice(cartTotalPrice, couponInfo, orderVo);
             }
+        }else {
+            //代表无优惠券，可能存在满减（满减不与优惠券共用）
+            //匹配符合当前购买条件的满减
+            List<CouponInfo> couponInfoFullList = couponCommon.couponInfoFullList(shop.getId());
+            this.matchingCouponFull(couponInfoFullList,cartTotalPrice,orderVo);
+            //减去满减的价格
+            cartTotalPrice = cartTotalPrice.subtract(orderVo.getFullCouponPrice());
         }
         if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0) {
             //计算使用配送优惠券后的价格
             CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).orElse(null);
             if (couponInfo != null) {
-                cartTotalPrice = this.cartTotalPrice(cartTotalPrice,couponInfo,orderVo);
+                cartTotalPrice = this.cartTotalPrice(cartTotalPrice, couponInfo, orderVo);
             }
         }
         //配送费(到店自取无配送费) 有优惠需减去优惠
@@ -195,7 +205,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         orderVo.setServiceType(orderCommonVO.getServiceType());
         //实际付款（包含配送费）
         orderVo.setPayment(cartTotalPrice.add(orderVo.getServicePrice()));
-
         //如果是配送订单(非到店自取)且宠物数量大于1且用户选择购买了运输险, 那么计算运输险费用并更新OrderVo实体
         Integer serviceType = orderCommonVO.getServiceType();
         Integer isByInsurance = orderCommonVO.getIsByInsurance();
@@ -394,7 +403,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                 orderDetailVO.setGoodsIcon(IP + good.getIcon());
             }
             if (good != null) {
-                if ((good.getDiscount() != null  && good.getDiscount() < 10 && good.getDiscount() > 0)) {
+                if ((good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0)) {
                     orderVo.setDiscount(good.getDiscount());
                     orderVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10).setScale(1, BigDecimal.ROUND_HALF_UP)));
                 }
@@ -916,7 +925,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             if (good.getDiscount() > 0 && good.getDiscount() < 10) {
                 count = good.getDiscount();
             }
-            if (good.getReDiscount() > 0 ) {
+            if (good.getReDiscount() > 0) {
                 count = good.getReDiscount();
             }
             orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count));
@@ -1373,23 +1382,23 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
 
     @Override
     public ResultResponse getShopAcceptedOrderStatics(Integer expressId, String type, Integer pageNum, Integer pageSize) {
-        if(type.equals("1")) {
+        if (type.equals("1")) {
             //上门接宠
             type = "7";
-        } else if(type.equals("2")) {
+        } else if (type.equals("2")) {
             //服务中
             type = "14, 15";
-        } else if(type.equals("3")) {
+        } else if (type.equals("3")) {
             //到店接宠
             type = "12";
-        } else if(type.equals("4")) {
+        } else if (type.equals("4")) {
             //已完成
             type = "3, 4, 5, 6, 8, 10, 13";
-        } else if(type.equals("5")) {
+        } else if (type.equals("5")) {
             type = "1";
         }
         //判断是否管理员
-        if(isExpressAdmin(expressId)) {
+        if (isExpressAdmin(expressId)) {
             expressId = null;
         }
         String areaCode = getExpressAreaCode(expressId);
@@ -1403,7 +1412,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private String getExpressAreaCode(Integer expressId) {
         String areaCode = "";
         List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             Express express = list.get(0);
             areaCode = express.getAreaCode();
         }
@@ -1414,10 +1423,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         boolean flag = false;
         //判断是否管理员
         List<Express> list = expressRepository.findByIdAndStatus(expressId, 1);
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             Express express = list.get(0);
             Integer expressType = express.getType();
-            if(expressType != null && expressType == 2) {
+            if (expressType != null && expressType == 2) {
                 flag = true;
             }
         }
@@ -1490,9 +1499,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //短信推送
         Shop shop = shopRepository.findById(orderInfo.getShopId()).get();
         //推送给商家
-        smsService.sendOrderUserRefundShop(orderNo,shop.getPhone());
+        smsService.sendOrderUserRefundShop(orderNo, shop.getPhone());
         //推送管理员
-        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(),shop.getShopName(),phone);
+        smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(), shop.getShopName(), phone);
 //        //推送配送员
 //        if (orderInfo.getExpressId() == null){
 //            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
@@ -1700,6 +1709,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
 
     /**
      * 封装订单信息 2
+     *
      * @param order
      * @param orderItemList
      * @return
@@ -1709,7 +1719,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         BeanUtils.copyProperties(order, orderVo);
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
-        if(shop != null) {
+        if (shop != null) {
             orderVo.setShopName(shop.getShopName());
             orderVo.setShopLogo(shop.getLogo());
             if (!shop.getLogo().contains("http")) {
@@ -1717,7 +1727,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             }
             orderVo.setShopPhone(shop.getPhone());
         }
-       // 接宠地址
+        // 接宠地址
         UserAddress receiveAddress = null;
         if (order.getReceiveAddressId() != null) {
             receiveAddress = userAddressRepository.findById(order.getReceiveAddressId()).orElse(null);
@@ -1778,18 +1788,19 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
 
     /**
      * 判断红包与实付款大小
+     *
      * @param cartTotalPrice
      * @param couponInfo
      * @param orderVo
      * @return
      */
-    private BigDecimal cartTotalPrice(BigDecimal cartTotalPrice, CouponInfo couponInfo, OrderVo orderVo){
+    private BigDecimal cartTotalPrice(BigDecimal cartTotalPrice, CouponInfo couponInfo, OrderVo orderVo) {
         //判断红包与实付款金额大小
         if (cartTotalPrice.compareTo(couponInfo.getCpnValue()) == -1) {
             orderVo.setTotalDiscount(cartTotalPrice);
             orderVo.setGoodsCouponPrice(cartTotalPrice);
             cartTotalPrice = cartTotalPrice.subtract(cartTotalPrice);
-        }else {
+        } else {
             //优惠总计
             orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
             orderVo.setGoodsCouponPrice(couponInfo.getCpnValue());
@@ -1797,4 +1808,26 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         }
         return cartTotalPrice;
     }
+
+    /**
+     * 匹配符合当前购买条件的满减（从大到小，默认最先匹配到的满减）
+     * @param couponInfoFullList
+     * @param cartTotalPrice
+     * @param orderVo
+     * @return
+     */
+    private OrderVo matchingCouponFull(List<CouponInfo> couponInfoFullList, BigDecimal cartTotalPrice, OrderVo orderVo) {
+        if (!CollectionUtils.isEmpty(couponInfoFullList)) {
+            //满减从大到小排序，如果第一个以匹配到，后面无需再次匹配，默认最优
+            for (CouponInfo c : couponInfoFullList) {
+                if (cartTotalPrice.compareTo(c.getMinPrice()) <= 0) {
+                    orderVo.setFullCouponPrice(c.getCpnValue());
+                    orderVo.setFullCouponName(c.getCpnName());
+                    break;
+                }
+            }
+        }
+        return orderVo;
+    }
+
 }
