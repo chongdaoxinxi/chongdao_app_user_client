@@ -154,7 +154,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         //判断是否投保运输险
         if (orderInfo.getPetCount() != null && orderInfo.getPetCount() > 0 && serviceType != null && serviceType != 3) {
             //非到店自取, 且宠物数量大于0的
-//            insuranceService.insuranceZcg(orderInfo);
+            insuranceService.insuranceZcg(orderInfo);
         }
         return ResultResponse.createBySuccess();
     }
