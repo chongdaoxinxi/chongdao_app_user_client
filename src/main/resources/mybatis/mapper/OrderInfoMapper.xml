@@ -512,7 +512,7 @@
         <if test="type != null">
             and order_status in (${type})
         </if>
-        order by order_info.create_time
+        order by order_info.create_time desc
     </select>
 
     <select id="selectByShopIdListPc" parameterType="map" resultMap="BaseResultMap">
