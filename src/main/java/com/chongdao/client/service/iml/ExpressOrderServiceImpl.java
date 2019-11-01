@@ -194,6 +194,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 Integer orderStatus = orderInfo.getOrderStatus();
                 if (orderStatus == OrderStatusEnum.EXPRESS_START_SERVICE.getStatus()) {
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//家至店送达
+                    //双程第一次送达将订单状态自动流转为商家开始服务
+                    orderInfo.setOrderStatus(OrderStatusEnum.SHOP_START_SERVICE.getStatus());
                     orderInfoRepository.save(orderInfo);
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
                 } else if (orderStatus == OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus()) {
