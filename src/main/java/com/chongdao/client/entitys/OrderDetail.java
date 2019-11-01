@@ -47,14 +47,6 @@ public class OrderDetail {
 
     private String reOrderNo;
 
-    @Transient
-    private String shopName;
-
-    @Transient
-    private String shopLogo;
-
-    @Transient
-    private String shopPhone;
 
     public OrderDetail(Integer id, String orderNo, Integer count, Integer goodId, Integer orderId, String name, BigDecimal price, String icon, BigDecimal currentPrice, Date createTime, Date updateTime, Integer userId, BigDecimal totalPrice,String reOrderNo) {
         this.id = id;

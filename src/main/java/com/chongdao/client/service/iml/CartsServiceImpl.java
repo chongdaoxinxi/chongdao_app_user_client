@@ -5,6 +5,7 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Carts;
 import com.chongdao.client.entitys.Good;
 import com.chongdao.client.entitys.OrderDetail;
+import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.enums.GoodsStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.CartsMapper;
@@ -12,11 +13,14 @@ import com.chongdao.client.mapper.GoodMapper;
 import com.chongdao.client.repository.CartRepository;
 import com.chongdao.client.repository.GoodsRepository;
 import com.chongdao.client.repository.OrderDetailRepository;
+import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.service.CartsService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.CartGoodsVo;
 import com.chongdao.client.vo.CartVo;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,8 @@ public class CartsServiceImpl implements CartsService {
 
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
 
 
@@ -107,6 +113,7 @@ public class CartsServiceImpl implements CartsService {
         //再来一单为优先，清空之前选中的商品
         cartRepository.deleteByUserIdAndShopId(userId, shopId);
         List<OrderDetail> orderDetailList = orderDetailRepository.findByUserIdAndOrderNo(userId, orderNo);
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
         for (OrderDetail orderDetail : orderDetailList) {
             //排除已下架或已删除的商品
             Good good = goodsRepository.findByIdAndStatus(orderDetail.getGoodId(), (byte) 1);
@@ -121,6 +128,13 @@ public class CartsServiceImpl implements CartsService {
             cartItem.setCreateTime(new Date());
             cartItem.setUpdateTime(new Date());
             cartItem.setShopId(shopId);
+            if (StringUtils.isNotBlank(orderInfo.getPetId())){
+                List<String> petIds = Splitter.on(",").trimResults().splitToList(orderInfo.getPetId());
+                petIds.stream().forEach(petId -> {
+                    cartItem.setPetId(Integer.valueOf(petId));
+                    cartItem.setPetCount(1);
+                });
+            }
             int result = cartsMapper.insert(cartItem);
             if (result > 0){
                 return list(userId,shopId);

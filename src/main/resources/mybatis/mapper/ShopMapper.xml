@@ -503,7 +503,8 @@
         (select ifnull(max(re_discount),0.0) from good where shop_id=s.id and re_discount > 0 order by max(re_discount))
         reDiscount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;=
-        3000) sales
+        3000) sales,
+        (select ifnull(grade,5) from shop where id=s.id and round(getDistance(s.lat,s.lng,31.377266,121.287066)) &lt;= 3000) orderby_grade
         from shop s
         where s.status in (0,1) and s.area_code = #{areaCode}
         <if test="categoryId != null">
@@ -516,7 +517,7 @@
             and (select cpn_type from (select shop_id,cpn_type from cpn_info c where c.cpn_state=1 GROUP BY c.shop_id)cp
             where cp.shop_id=s.id) in (#{proActivities})
         </if>
-        order by sales desc,s.grade,dis
+        order by sales desc,orderby_grade,dis
     </select>
 
 
