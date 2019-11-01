@@ -9,7 +9,7 @@ public class OrderCommonVO {
     //0.商品 1.服务
     private Integer isService;
 
-    // 1.单程,2.双程
+    // 1.双程,2.单程
     private Integer serviceType;
 
     private Integer cardId;
