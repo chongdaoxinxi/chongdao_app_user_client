@@ -141,10 +141,38 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         if(insuranceTeamAttender != null) {
             insuranceTeamAttender.setStatus(1);
             insuranceTeamAttender.setAttendTime(new Date());
-            return ResultResponse.createBySuccess(insuranceTeamAttenderRepository.save(insuranceTeamAttender));
+            insuranceTeamAttenderRepository.save(insuranceTeamAttender);
+            //确认是否需要添加机器人
+            Integer teamId = insuranceTeamAttender.getTeamId();
+            List<InsuranceTeamAttender> list = insuranceTeamAttenderRepository.findByTeamId(teamId);
+            if(list.size() == 6) {
+                //添加完第6个队员的时候, 检测是否需要添加机器人
+                Boolean needToAddRobot = isNeedToAddRobot(list, teamId);
+                if(needToAddRobot) {
+                    systemAutoAddAttender(teamId);
+                }
+            }
+            return ResultResponse.createBySuccess();
         } else {
             return ResultResponse.createByErrorMessage("无效的ID");
         }
+    }
+
+    private Boolean isNeedToAddRobot(List<InsuranceTeamAttender> list, Integer teamId) {
+        boolean needToAdd = true;
+        for(InsuranceTeamAttender attender : list) {
+            Integer id = attender.getId();
+            Integer left = id%100;//如果该队伍包含100的倍数id的队员, 那么不往里面添加机器人
+            if(left == 0) {
+                needToAdd = false;
+            } else {
+                Integer isSystem = attender.getIsSystem();
+                if(isSystem == 1) {
+                    needToAdd = false;
+                }
+            }
+        }
+        return  needToAdd;
     }
 
     @Override
@@ -164,8 +192,8 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     public ResultResponse systemAutoAddAttender(Integer teamId) {
         InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
         if(insuranceTeam != null) {
-            addRobot(insuranceTeam.getBuilderId(), teamId);
-            addRobot(insuranceTeam.getBuilderId(), teamId);
+            addRobot(insuranceTeam.getBuilderId(), teamId);//添加一个机器人
+            addRobot(insuranceTeam.getBuilderId(), teamId);//添加一个机器人
             return ResultResponse.createBySuccess();
         } else {
             return ResultResponse.createByErrorMessage("无效的teamId");

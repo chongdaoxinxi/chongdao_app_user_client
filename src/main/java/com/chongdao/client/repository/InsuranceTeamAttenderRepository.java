@@ -30,7 +30,7 @@ public interface InsuranceTeamAttenderRepository extends JpaRepository<Insurance
      * 获取指定队伍已经参与组队的用户
      * @return
      */
-    @Query(value = "select u.* from insurance_team_attender ita left join user u on ita.team_id = ?1 and ita.status = 1", nativeQuery = true)
+    @Query(value = "select u.* from insurance_team_attender ita left join user u on ita.team_id = ?1 and ita.status = 1 limit 1, 8express_manage/received", nativeQuery = true)
     List<User> getAttendedUserList(Integer teamId);
 
     List<InsuranceTeamAttender> findByTeamId(Integer teamId);

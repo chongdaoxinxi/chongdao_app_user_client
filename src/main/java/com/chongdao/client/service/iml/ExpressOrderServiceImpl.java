@@ -70,7 +70,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ORDER_CANNT_ACCEPT.getStatus(), ManageStatusEnum.ORDER_CANNT_ACCEPT.getMessage());
                 } else {
                     //保存配送员id及更新状态至7
-                    odi.setExpressId(orderId);
+                    odi.setExpressId(expressId);
                     odi.setOrderStatus(OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus());
                     odi.setExpressReceiveTime(new Date());//配送员接单时间
                     OrderInfo orderInfo = orderInfoRepository.saveAndFlush(odi);
