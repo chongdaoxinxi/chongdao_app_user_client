@@ -14,6 +14,21 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
     @Query(value = "update cpn_user set is_delete=1 where cpn_id=?1",nativeQuery = true)
     void updateState(Integer cpnId);
 
+    @Transactional
+    @Modifying
+    @Query(value = "update cpn_user set count = count -1  where cpn_id=?1 and user_id=?2 and user_cpn_state = 1 and count > 0",nativeQuery = true)
+    void updateCpnId(Integer cpnId, Integer userId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update cpn_user set user_cpn_state = 1  where cpn_id=?1 and user_id=?2 and user_cpn_state = 0 and count > 0",nativeQuery = true)
+    void updateUserCpnState(Integer cpnId, Integer userId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update cpn_user set user_cpn_state = 0  where cpn_id=?1 and user_id=?2 and user_cpn_state = 1 and count > 0",nativeQuery = true)
+    void updateUserCpnStateAndNotUse(Integer cpnId, Integer userId);
+
     Iterable<CpnUser> findAllByUserCpnState(Integer state);
 
 
@@ -41,9 +56,9 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
      * @param cpnType
      * @return
      */
-    int countByUserIdAndIsDeleteAndCpnType(Integer userId, Integer delete,Integer cpnType);
+    int countByUserIdAndIsDeleteAndCpnTypeAndCountGreaterThanAndUserCpnState(Integer userId, Integer delete,Integer cpnType,int count,Integer userCpnState);
 
-    int countByUserIdAndIsDeleteAndCpnScopeTypeIn(Integer userId, Integer delete,List<Integer> cpnScopeTypes);
+    int countByUserIdAndIsDeleteAndCpnScopeTypeInAndCountGreaterThanAndUserCpnState(Integer userId, Integer delete,List<Integer> cpnScopeTypes,int count,Integer userCpnState);
 
 
     /**

@@ -1,5 +1,6 @@
 package com.chongdao.client.common;
 
+import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnThresholdRule;
 import com.chongdao.client.entitys.coupon.CpnUser;
@@ -80,5 +81,20 @@ public class CouponCommon {
             });
         }
         return cpnInfoList;
+    }
+
+    /**
+     * 减少配送券逻辑
+     * @param order
+     */
+    public void decrCouponCount(OrderInfo order){
+        //优惠券减少
+        if (order.getCouponId() != null) {
+            cpnUserRepository.updateCpnId(order.getCouponId(),order.getUserId());
+        }
+        //配送券减少
+        if (order.getCardId() != null) {
+            cpnUserRepository.updateCpnId(order.getCardId(),order.getUserId());
+        }
     }
 }

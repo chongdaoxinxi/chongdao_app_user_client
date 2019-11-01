@@ -224,6 +224,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
             } else {
                 //创建订单
+                if (orderCommonVO.getCouponId() != null) { //优惠券变为已使用
+                    cpnUserRepository.updateUserCpnState(orderCommonVO.getCouponId(),orderVo.getUserId());
+                }
+                if (orderCommonVO.getCardId() != null) { //配送券变为已使用
+                    cpnUserRepository.updateUserCpnState(orderCommonVO.getCardId(),orderVo.getUserId());
+                }
+
                 return this.createOrder(orderVo, orderCommonVO);
             }
         }

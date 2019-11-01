@@ -7,6 +7,7 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.Const;
+import com.chongdao.client.common.CouponCommon;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.config.AliPayConfig;
 import com.chongdao.client.dto.OrderLogDTO;
@@ -63,6 +64,9 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     private OrderService orderService;
     @Autowired
     private CashAccountService cashAccountService;
+
+    @Autowired
+    private CouponCommon couponCommon;
 
     /**
      * 支付宝对接
@@ -504,6 +508,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                         goodsRepository.updateGoodIdIn(orderDetail.getCount(), orderDetail.getGoodId());
                     });
                 }
+                //优惠券减少(配送)
+                couponCommon.decrCouponCount(order);
                 orderInfoMapper.updateByPrimaryKeySelective(order);
                 //判断是否自动接单
                 Shop shop = shopRepository.findById(order.getShopId()).get();
@@ -953,4 +959,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             cartsMapper.deleteByPrimaryKey(cart.getId());
         }
     }
+
+
+
 }

@@ -5,6 +5,7 @@ import com.chongdao.client.entitys.*;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnUser;
 import com.chongdao.client.utils.DateTimeUtil;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +33,7 @@ public class CloseCouponTask extends CommonRepository {
         log.info("【优惠券CouponInfo】定时任务开始...");
         //查询所有已发布的优惠券
         Iterable<CouponInfo> couponInfoList = couponInfoRepository.findAllByCpnState(1);
+        List<Integer> cpnIds = Lists.newArrayList();
         couponInfoList.forEach(e -> {
             //状态为已发布
             if (e.getCpnState() == 1) {
@@ -95,6 +97,13 @@ public class CloseCouponTask extends CommonRepository {
                     smsService.sendOrderTimeoutNotAcceptShop(e.getOrderNo(), shop.getPhone());
                     //推送管理员
                     smsService.sendOrderUserRefundUser(e.getOrderNo(), shop.getShopName(), phone);
+                    //如果存在优惠券或者配送券，释放
+                    if (e.getCardId() != null) {
+                        cpnUserRepository.updateUserCpnStateAndNotUse(e.getCardId(),e.getUserId());
+                    }
+                    if (e.getCouponId() != null) {
+                        cpnUserRepository.updateUserCpnStateAndNotUse(e.getCouponId(),e.getUserId());
+                    }
                     //推送配送员
                     if (e.getExpressId() == null) {
                         List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);

@@ -53,7 +53,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             cpnUserList.stream().forEach(cpnUser -> {
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
-                if (result > 0) {
+                if (result > 0 && cpnUser.getCount() != null && cpnUser.getCount() > 0 && cpnUser.getUserCpnState() != null &&  cpnUser.getUserCpnState() == 0) {
                     //逻辑处理
                     this.getCpnUser(cpnUser, totalPrice, categoryId);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
@@ -77,7 +77,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             cpnUserList.stream().forEach(cpnUser -> {
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
-                if (result > 0) {
+                if (result > 0 && cpnUser.getCount() != null && cpnUser.getCount() > 0 && cpnUser.getUserCpnState() != null &&  cpnUser.getUserCpnState() == 0) {
                     //设置是否可用
                     this.setServiceCouponEnabled(cpnUser,shopId);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
@@ -98,7 +98,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             cpnUserList.stream().forEach(cpnUser -> {
                 //查询截止日期与当前日期差
                 long result = this.computerTime(cpnUser.getValidityEndDate());
-                if (result > 0) {
+                if (result > 0 && cpnUser.getCount() != null && cpnUser.getCount() > 0 && cpnUser.getUserCpnState() != null &&  cpnUser.getUserCpnState() == 0) {
                     //设置是否可用
                     this.setServiceCouponEnabled(cpnUser,shopId);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(cpnUser);
@@ -196,14 +196,14 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             //查询截止日期与当前日期差
             long result = this.computerTime(cpnUser.getValidityEndDate());
             //二次校验，过滤过期的优惠券
-            if (result > 0){
+            if (result > 0 && cpnUser.getCount() != null && cpnUser.getCount() > 0 && cpnUser.getUserCpnState() != null &&  cpnUser.getUserCpnState() == 0){
                 count = count + this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
             }
         };
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
         //查询是否参加公益
         if (shop.getIsJoinCommonWeal() == 1) {
-            int result = cpnUserRepository.countByUserIdAndIsDeleteAndCpnType(userId, 0, CouponConst.COMMON);
+            int result = cpnUserRepository.countByUserIdAndIsDeleteAndCpnTypeAndCountGreaterThanAndUserCpnState(userId, 0, CouponConst.COMMON,0,0);
             count = count + result;
         }
         return count;
@@ -223,7 +223,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             //二次校验，过滤过期的优惠券
             //查询截止日期与当前日期差
             long result = this.computerTime(e.getValidityEndDate());
-            if (result > 0){
+            if (result > 0 && e.getCount() != null && e.getCount() > 0 && e.getUserCpnState() != null &&  e.getUserCpnState() == 0){
                 cpnIds.add(e.getCpnId());
             }
         });
@@ -268,10 +268,10 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      */
     public int getExpressCouponCount(Integer userId,Integer serviceType){
         if (serviceType == 1){ //双程
-            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnScopeTypeIn(userId, 0, Arrays.asList(6, 8, 10));
+            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnScopeTypeInAndCountGreaterThanAndUserCpnState(userId, 0, Arrays.asList(6, 8, 10),0,0);
             return count;
         }else{
-            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnScopeTypeIn(userId, 0, Arrays.asList(5, 7, 9));
+            int count = cpnUserRepository.countByUserIdAndIsDeleteAndCpnScopeTypeInAndCountGreaterThanAndUserCpnState(userId, 0, Arrays.asList(5, 7, 9),0,0);
             return count;
         }
     }
