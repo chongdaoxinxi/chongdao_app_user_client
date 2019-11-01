@@ -1827,7 +1827,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         if (!CollectionUtils.isEmpty(couponInfoFullList)) {
             //满减从大到小排序，如果第一个以匹配到，后面无需再次匹配，默认最优
             for (CouponInfo c : couponInfoFullList) {
-                if (cartTotalPrice.compareTo(c.getMinPrice()) <= 0) {
+                if (cartTotalPrice.compareTo(c.getMinPrice()) >= 0) {
                     orderVo.setFullCouponPrice(c.getCpnValue());
                     orderVo.setFullCouponName(c.getCpnName());
                     break;
