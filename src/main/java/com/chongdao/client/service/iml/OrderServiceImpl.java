@@ -233,10 +233,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         BigDecimal totalPrice = orderVo.getTotalPrice();
         BigDecimal payment = orderVo.getPayment();
         BigDecimal insurancePrice = new BigDecimal(0);
-        if (serviceType == 1) {
+        if (serviceType == 2) {
             //单程, 平台承担一只的运输险费用
             insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1));
-        } else if (serviceType == 2) {
+        } else if (serviceType == 1) {
             //双程, 平台承担一只的往返运输险费用
             insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1)).multiply(new BigDecimal(2));
         }

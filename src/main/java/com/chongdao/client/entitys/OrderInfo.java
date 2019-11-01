@@ -3,7 +3,6 @@ package com.chongdao.client.entitys;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.simpleframework.xml.Transient;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +41,7 @@ public class OrderInfo {
 
     private Integer follow;
 
-    private Integer serviceType;//1:单程;2:双程;3:到店;
+    private Integer serviceType;//1:双程;2:单程;3:到店;
 
     private Integer cardId;
 

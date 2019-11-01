@@ -134,11 +134,11 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         } else if (isService == 1) {
             //服务
             // 接到宠物开始配送订单相关逻辑
-            if (serviceType == 1) {
+            if (serviceType == 2) {
                 //单程
                 orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
                 smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
-            } else if (serviceType == 2) {
+            } else if (serviceType == 1) {
                 //双程
                 Integer orderStatus = orderInfo.getOrderStatus();
                 if (orderStatus == OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus()) {
@@ -183,13 +183,13 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         } else if (isService == 1) {
             //服务
             // 接到宠物开始配送订单相关逻辑
-            if (serviceType == 1) {
+            if (serviceType == 2) {
                 //单程
                 orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//单程送达
                 orderInfo.setExpressFinishTime(new Date());//配送员配送完成时间
                 smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
                 orderComplete(orderInfo);
-            } else if (serviceType == 2) {
+            } else if (serviceType == 1) {
                 //双程
                 Integer orderStatus = orderInfo.getOrderStatus();
                 if (orderStatus == OrderStatusEnum.EXPRESS_START_SERVICE.getStatus()) {
@@ -334,7 +334,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             if (odi != null) {
                 Integer serviceType = odi.getServiceType();
                 //只有双程才有到店功能
-                if (serviceType == 2) {
+                if (serviceType == 1) {
                     //双程
                     odi.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());
                     OrderInfo orderInfo = orderInfoRepository.saveAndFlush(odi);
@@ -401,7 +401,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         if (phoneList.size() > 0) {
             String msg = "";
             Integer serviceType = orderInfo.getServiceType();
-            if (serviceType == 1) {
+            if (serviceType == 2) {
                 //单程服务完成分两种情况: 店->家, 家->店
                 Integer isService = orderInfo.getIsService();
                 if (isService == -1) {
@@ -420,7 +420,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                         }
                     }
                 }
-            } else if (serviceType == 2) {
+            } else if (serviceType == 1) {
                 //双程
                 msg = smsUtil.getOrderPetArrivedUser();
             }
