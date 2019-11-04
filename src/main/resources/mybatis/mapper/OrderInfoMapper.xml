@@ -595,7 +595,7 @@
         <if test="type != null">
             and order_status in (${type})
         </if>
-        <if test="areaCode != null">
+        <if test="areaCode != null and areaCode != ''">
             and area_code = #{areaCode}
         </if>
         order by order_info.create_time desc, order_info.order_status desc
@@ -608,7 +608,7 @@
         <if test="type != null">
             and order_status in (${type})
         </if>
-        <if test="areaCode != null">
+        <if test="areaCode != null and areaCode != ''">
             and area_code = #{areaCode}
         </if>
         order by order_info.create_time desc, order_info.order_status desc
