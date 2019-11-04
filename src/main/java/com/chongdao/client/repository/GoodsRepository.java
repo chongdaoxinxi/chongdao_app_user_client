@@ -37,7 +37,7 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
      * @param shopId
      * @return
      */
-    @Query(value = "update good set discount = 0 where  shop_id = ?1", nativeQuery = true)
+    @Query(value = "update good set discount = 0,re_discount=0  where  shop_id = ?1", nativeQuery = true)
     @Modifying
     @Transactional
     Integer updateDiscount(Integer shopId);
