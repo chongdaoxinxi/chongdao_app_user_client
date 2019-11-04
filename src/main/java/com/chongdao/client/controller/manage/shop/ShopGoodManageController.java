@@ -148,7 +148,7 @@ public class ShopGoodManageController {
      * @param goodsTypeId
      * @return
      */
-    @GetMapping("goodsDiscount")
+    @GetMapping("goodsDiscount/{shopId}/{goodsTypeId}")
     public ResultResponse discountGood(@PathVariable Integer shopId, @PathVariable Integer goodsTypeId, String token, Double discount, Double reDiscount) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.discountGood(shopId, goodsTypeId, discount, reDiscount);
@@ -163,7 +163,6 @@ public class ShopGoodManageController {
     @GetMapping("goodsTypeList")
     public ResultResponse goodsTypeList(String token) {
         LoginUserUtil.resultTokenVo(token);
-
         return goodsService.goodsTypeList();
     }
 
@@ -217,8 +216,7 @@ public class ShopGoodManageController {
     }
 
     /**
-     * 一键恢复
-     *
+     * 一键恢复(系数)
      * @param token
      * @param shopId
      * @return
@@ -227,6 +225,19 @@ public class ShopGoodManageController {
     public ResultResponse recoverAll(@PathVariable Integer shopId, String token) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.recoverAll(shopId);
+    }
+
+
+    /**
+     * 一键恢复(折扣)
+     * @param token
+     * @param shopId
+     * @return
+     */
+    @PutMapping("recoverDiscount/{shopId}")
+    public ResultResponse recoverDiscount(@PathVariable Integer shopId, String token) {
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.recoverDiscount(shopId);
     }
 
     /**

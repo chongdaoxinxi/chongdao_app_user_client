@@ -12,6 +12,7 @@ import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.UnitRepository;
 import com.chongdao.client.service.GoodsService;
+import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.GoodsPcVO;
@@ -171,6 +172,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         if (good.getDiscount() == 10.0d){
             good.setDiscount(0.0d);
         }
+        //系数不为0 需提高原价 在进行折扣
+        if (good.getRatio() != null && good.getRatio() > 0) {
+            good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+        }
         //计算打折后的价格。折扣必须大于0且不能为空
         if (good.getDiscount() > 0 && good.getDiscount() < 10 && good.getDiscount() !=null){
             goodsDetailVo.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2,BigDecimal.ROUND_HALF_UP)));
@@ -219,6 +224,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             }
             if (good.getDiscount() == 10.0d) {
                 goodsListVO.setDiscount(0.0d);
+            }
+            //系数不为0 需提高原价 在进行折扣
+            if (good.getRatio() != null && good.getRatio() > 0) {
+                good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
             }
             //折扣大于0时，才会显示折扣价
             if (good.getDiscount() > 0.0D && good.getDiscount() < 10 &&good.getDiscount() != null ){
@@ -390,7 +399,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      */
     @Override
     public ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount, Double reDiscount) {
-        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null || reDiscount <= 0 || reDiscount > 9){
+        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        if (reDiscount != null && (reDiscount <= 0 || reDiscount > 9)){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
         //宠物用品
@@ -402,6 +414,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 ids.add(goodsType.getId());
             });
             goodMapper.updateDiscount(shopId,ids,discount,reDiscount);
+        }else if (goodsTypeId == 0){ //全部
+            goodMapper.updateDiscountAll(shopId, discount, reDiscount);
         }else {
             goodMapper.goodsDiscount(shopId, goodsTypeId, discount, reDiscount);
         }
@@ -549,7 +563,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     }
 
     /**
-     * 一键恢复
+     * 一键恢复(系数)
      * @param shopId
      * @return
      */
@@ -561,6 +575,21 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         goodsRepository.updateRatio(shopId);
         return ResultResponse.createBySuccess();
     }
+
+    /**
+     * 一键恢复(折扣)
+     * @param shopId
+     * @return
+     */
+    @Override
+    public ResultResponse recoverDiscount(Integer shopId) {
+        if (shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        goodsRepository.updateDiscount(shopId);
+        return ResultResponse.createBySuccess();
+    }
+
 
     /**
      * 启用/禁用/删除 商品类别
@@ -713,6 +742,17 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), "id或者shopId不能为空");
         }
         List<Good> goodList = goodMapper.findByShopIdAndGoodsTypeId(shopId, id);
+        if (!CollectionUtils.isEmpty(goodList)) {
+            for (Good good : goodList) {
+                //打折系数大于0，提高原价后再进行打折
+                if (good.getRatio() != null && good.getRatio() > 0 ) {
+                    good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+                }
+                if(good.getDiscount() != null && good.getDiscount() > 0 && good.getDiscount() < 10){
+                    good.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                }
+            }
+        }
         return ResultResponse.createBySuccess(goodList);
     }
 
@@ -724,6 +764,18 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     @Override
     public ResultResponse goodsDownList(Integer shopId) {
         List<Good> goodList = goodMapper.findByShopIdAndStatus(shopId);
+        if (!CollectionUtils.isEmpty(goodList)) {
+            goodList.stream().forEach(good -> {
+                //系数不为0 需提高原价 在进行折扣
+                if (good.getRatio() != null && good.getRatio() > 0) {
+                    good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+                }
+                //折扣大于0时，才会显示折扣价
+                if (good.getDiscount() > 0.0D && good.getDiscount() < 10 &&good.getDiscount() != null ){
+                    good.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
+                }
+            });
+        }
         return ResultResponse.createBySuccess(goodList);
     }
 

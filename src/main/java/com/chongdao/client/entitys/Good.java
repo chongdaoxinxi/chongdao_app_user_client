@@ -107,6 +107,9 @@ public class Good {
 	@Transient
 	private Integer couponId;
 
+	@Transient
+	private BigDecimal discountPrice = BigDecimal.ZERO;
+
 	public Good(Integer id, String name, String icon, BigDecimal price, Double discount,Double reDiscount,
 				Integer unit, String unitName, String des, Integer goodsTypeId, Integer shopId,
 				Double ratio, BigDecimal ratioPrice, Integer stock, Date createTime, Date updateTime,

@@ -67,4 +67,6 @@ public interface GoodMapper {
                         @Param("discount") Double discount, @Param("reDiscount") Double reDiscount);
 
     List<Good> findOfficialShopGoodsList(@Param("goodsId") String goodsId, @Param("shopId") Integer shopId);
+
+    void updateDiscountAll(@Param("shopId") Integer shopId, @Param("discount") Double discount, @Param("reDiscount") Double reDiscount);
 }

@@ -23,8 +23,7 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
     Integer updateRatioAndShopId(Double ratio, Integer shopId);
 
     /**
-     * 一键恢复原价
-     *
+     * 一键恢复原价(系数)
      * @param shopId
      * @return
      */
@@ -32,6 +31,16 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
     @Modifying
     @Transactional
     Integer updateRatio(Integer shopId);
+
+    /**
+     * 一键恢复原价(折扣)
+     * @param shopId
+     * @return
+     */
+    @Query(value = "update good set discount = 0,re_discount=0  where  shop_id = ?1", nativeQuery = true)
+    @Modifying
+    @Transactional
+    Integer updateDiscount(Integer shopId);
 
     /**
      * 获取店铺销量
