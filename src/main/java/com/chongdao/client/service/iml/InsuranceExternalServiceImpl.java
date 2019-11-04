@@ -647,16 +647,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         } else {
             BeanUtils.copyProperties(insuranceOrder, pdfVo);
             Integer petCardId = insuranceOrder.getPetCardId();
-            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
-            if (petCard != null) {
-                pdfVo.setPolicyNo(pdfVo.getPolicyNo());
-                pdfVo.setPetName(petCard.getName());
-                pdfVo.setTypeName(petCard.getTypeName());
-                pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
-                pdfVo.setAge(petCard.getAge() + "");
-                pdfVo.setPetCardType("test");//这里数据还未处理
-                pdfVo.setPetCardNo("test");//这里数据还未处理
-                pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+            if(petCardId != null) {
+                PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
+                if (petCard != null) {
+                    pdfVo.setPolicyNo(pdfVo.getPolicyNo());
+                    pdfVo.setPetName(petCard.getName());
+                    pdfVo.setTypeName(petCard.getTypeName());
+                    pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
+                    pdfVo.setAge(petCard.getAge() + "");
+                    pdfVo.setPetCardType("test");//这里数据还未处理
+                    pdfVo.setPetCardNo("test");//这里数据还未处理
+                    pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+                }
             }
         }
         try (InputStream inputStream = new ClassPathResource("/template/pickup_policy.docx").getInputStream()) {
@@ -740,13 +742,15 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         if(insuranceOrder.getInsuranceType() == 3) {
             Calendar c = Calendar.getInstance();
             c.setTime(insuranceOrder.getInsuranceEffectTime());
-            template.binding("StartHour", c.get(Calendar.HOUR_OF_DAY) + 1);
-            c.setTime(insuranceOrder.getInsuranceFailureTime());
-            template.binding("EndHour", c.get(Calendar.HOUR_OF_DAY) + 1);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            template.binding("StartDate", DateTimeUtil.dateToStr(c.getTime(), "yyyy-MM-dd"));//起保时间
+            c.setTime(insuranceOrder.getInsuranceEffectTime());
+            c.add(Calendar.YEAR, 1);
+            template.binding("EndDate", DateTimeUtil.dateToStr(c.getTime(), "yyyy-MM-dd"));//终保时间
         } else {
-            template.binding("StartHour", 0);
-            template.binding("EndHour", 24);
         }
+        template.binding("StartHour", 0);
+        template.binding("EndHour", 24);
         template.binding("SumAmount", insuranceOrder.getSumAmount().toString());//保额
         template.binding("SumPremium", insuranceOrder.getSumPremium().toString());//保费
         template.binding("Md5Value", generateInsuranceMD5SecretKey(uuid, insuranceOrder.getSumPremium().toString(), SECRET_KEY));
