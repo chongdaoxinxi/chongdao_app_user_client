@@ -399,7 +399,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
      */
     @Override
     public ResultResponse discountGood(Integer shopId,Integer goodsTypeId, Double discount, Double reDiscount) {
-        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null || reDiscount <= 0 || reDiscount > 9){
+        if (goodsTypeId == null || discount <= 0 || discount > 9 || shopId == null){
+            return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
+        }
+        if (reDiscount != null && (reDiscount <= 0 || reDiscount > 9)){
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),ResultEnum.PARAM_ERROR.getMessage());
         }
         //宠物用品
