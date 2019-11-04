@@ -237,7 +237,7 @@ public class ShopGoodManageController {
     @PutMapping("recoverDiscount/{shopId}")
     public ResultResponse recoverDiscount(@PathVariable Integer shopId, String token) {
         LoginUserUtil.resultTokenVo(token);
-        return goodsService.recoverAll(shopId);
+        return goodsService.recoverDiscount(shopId);
     }
 
     /**
