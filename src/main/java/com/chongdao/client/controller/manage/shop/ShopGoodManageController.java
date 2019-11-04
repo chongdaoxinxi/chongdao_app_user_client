@@ -148,7 +148,7 @@ public class ShopGoodManageController {
      * @param goodsTypeId
      * @return
      */
-    @GetMapping("goodsDiscount")
+    @GetMapping("goodsDiscount/{shopId}/{goodsTypeId}")
     public ResultResponse discountGood(@PathVariable Integer shopId, @PathVariable Integer goodsTypeId, String token, Double discount, Double reDiscount) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.discountGood(shopId, goodsTypeId, discount, reDiscount);
