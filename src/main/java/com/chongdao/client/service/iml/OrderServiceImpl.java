@@ -1587,6 +1587,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
      * @return
      */
     private OrderGoodsVo orderDiscountAndFee(OrderGoodsVo orderGoodsVo, Integer goodsQuantity) {
+        //系数不为0 需提高原价 在进行折扣
+        if (orderGoodsVo.getRatio() != null && orderGoodsVo.getRatio() > 0) {
+            orderGoodsVo.setGoodsPrice(orderGoodsVo.getGoodsPrice().multiply(BigDecimal.valueOf(orderGoodsVo.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+        }
         //折扣价
         if (orderGoodsVo.getDiscount() > 0) {
             orderGoodsVo.setDiscountPrice(BigDecimalUtil.mul(orderGoodsVo.getGoodsPrice().doubleValue(), orderGoodsVo.getDiscount() / 10));
@@ -1673,6 +1677,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                                 if (!good.getIcon().contains("http")) {
                                     orderGoodsVo.setGoodsIcon(good.getIcon());
                                 }
+                            }
+                            if (good.getRatio() != null && good.getRatio() > 0) {
+                                orderGoodsVo.setRatio(good.getRatio());
                             }
                             orderGoodsVo.setDiscount(good.getDiscount());
                             orderGoodsVo.setReDiscount(good.getReDiscount());

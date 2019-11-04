@@ -551,7 +551,7 @@
          g.goods_type_id, g.shop_id, g.ratio, g.ratio_price,  g.create_time, g.update_time,    g.stock, g.status, g.category_id, g.sales,
          g.brand_id, g.scope_id, g.pet_category_id, g.bathing_service_id,g.sort,g.area_code, g.shop_ids,g.qr_code,gt.module_id module_id,g.type_name,g.area_code
           from good g Inner join goods_type gt on g.goods_type_id = gt.id
-          where g.shop_id = #{shopId} and g.goods_type_id = #{id}
+          where g.shop_id = #{shopId} and g.goods_type_id = #{id} and g.status = 1
     </select>
 
     <select id="findByShopIdAndStatus" resultMap="BaseResultMap">

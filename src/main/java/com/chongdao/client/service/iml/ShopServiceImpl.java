@@ -223,6 +223,10 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         }
         for (Good good : goodList) {
                 GoodsListVO goodsListVO = new GoodsListVO();
+                //系数不为0 需提高原价 在进行折扣
+                if (good.getRatio() != null && good.getRatio() > 0) {
+                    good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+                }
                 BeanUtils.copyProperties(good,goodsListVO);
                 if (!good.getIcon().contains("http")) {
                     goodsListVO.setIcon(IP + good.getIcon());

@@ -30,6 +30,9 @@ public class OrderGoodsVo {
 
     private String reDiscountDesc; //第二件描述
 
+    //提高系数默认为1
+    private Double ratio = 1.0D;
+
     private BigDecimal totalPrice;
 
     private String createTime;

@@ -109,11 +109,18 @@ public interface GoodsService {
     ResultResponse improveRatio(Double ratio,Integer goodsTypeId,Integer shopId);
 
     /**
-     * 一键恢复
+     * 一键恢复(系数)
      * @param shopId
      * @return
      */
     ResultResponse recoverAll(Integer shopId);
+
+    /**
+     * 一键恢复(折扣)
+     * @param shopId
+     * @return
+     */
+    ResultResponse recoverDiscount(Integer shopId);
 
     ResultResponse updateGoodTypeStatus(Integer goodTypeId, Integer status);
 

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,7 +193,15 @@ public class GoodsController {
             String url = QrCodeUtils.encode(qrCodeUri, stringList.get(0), "/static/", true);
             good.setQrCode("http://47.100.63.167/static/" + url);
             goodsRepository.save(good);
-            return ResultResponse.createBySuccess(good.getQrCode());
+            //系数不为0 需提高原价 在进行折扣
+            if (good.getRatio() != null && good.getRatio() > 0) {
+                good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+            }
+            //折扣大于0时，才会显示折扣价
+            if (good.getDiscount() > 0.0D && good.getDiscount() < 10 &&good.getDiscount() != null ){
+                good.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
+            }
+            return ResultResponse.createBySuccess(good);
         }
         return ResultResponse.createByError();
 

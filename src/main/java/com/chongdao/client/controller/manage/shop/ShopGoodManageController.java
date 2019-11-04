@@ -163,7 +163,6 @@ public class ShopGoodManageController {
     @GetMapping("goodsTypeList")
     public ResultResponse goodsTypeList(String token) {
         LoginUserUtil.resultTokenVo(token);
-
         return goodsService.goodsTypeList();
     }
 
@@ -217,14 +216,26 @@ public class ShopGoodManageController {
     }
 
     /**
-     * 一键恢复
-     *
+     * 一键恢复(系数)
      * @param token
      * @param shopId
      * @return
      */
     @PutMapping("recoverAll/{shopId}")
     public ResultResponse recoverAll(@PathVariable Integer shopId, String token) {
+        LoginUserUtil.resultTokenVo(token);
+        return goodsService.recoverAll(shopId);
+    }
+
+
+    /**
+     * 一键恢复(折扣)
+     * @param token
+     * @param shopId
+     * @return
+     */
+    @PutMapping("recoverDiscount/{shopId}")
+    public ResultResponse recoverDiscount(@PathVariable Integer shopId, String token) {
         LoginUserUtil.resultTokenVo(token);
         return goodsService.recoverAll(shopId);
     }
