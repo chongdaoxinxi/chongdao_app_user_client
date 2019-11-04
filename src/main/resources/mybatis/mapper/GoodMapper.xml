@@ -600,4 +600,30 @@
         </set>
         where  shop_id = #{shopId}
     </update>
+
+    <update id="updateDiscountAllAndService" parameterType="map">
+        update good
+        <set>
+            <if test="discount != null">
+                discount=#{discount},
+            </if>
+            <if test="reDiscount != null">
+                re_discount=#{reDiscount},
+            </if>
+        </set>
+        where  shop_id = #{shopId} and category_id != 3
+    </update>
+
+    <update id="updateDiscountAllAndGoods" parameterType="map">
+        update good
+        <set>
+            <if test="discount != null">
+                discount=#{discount},
+            </if>
+            <if test="reDiscount != null">
+                re_discount=#{reDiscount},
+            </if>
+        </set>
+        where  shop_id = #{shopId} and category_id = 3
+    </update>
 </mapper>

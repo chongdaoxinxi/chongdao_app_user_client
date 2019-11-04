@@ -22,6 +22,16 @@ public interface GoodsRepository extends JpaRepository<Good, Integer> {
     @Transactional
     Integer updateRatioAndShopId(Double ratio, Integer shopId);
 
+    @Query(value = "update good set ratio = ?1 where   shop_id = ?2 and category_id != 3", nativeQuery = true)
+    @Modifying
+    @Transactional
+    Integer updateRatioAndShopIdAndService(Double ratio, Integer shopId);
+
+    @Query(value = "update good set ratio = ?1 where   shop_id = ?2 and category_id = 3", nativeQuery = true)
+    @Modifying
+    @Transactional
+    Integer updateRatioAndShopIdAndGoods(Double ratio, Integer shopId);
+
     /**
      * 一键恢复原价(系数)
      * @param shopId

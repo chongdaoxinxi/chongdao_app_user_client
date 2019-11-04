@@ -242,7 +242,6 @@ public class ShopGoodManageController {
 
     /**
      * 启用/禁用/删除 商品类别
-     *
      * @param token
      * @param goodsTypeId
      * @param status

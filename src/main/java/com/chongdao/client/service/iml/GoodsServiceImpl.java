@@ -416,6 +416,10 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             goodMapper.updateDiscount(shopId,ids,discount,reDiscount);
         }else if (goodsTypeId == 0){ //全部
             goodMapper.updateDiscountAll(shopId, discount, reDiscount);
+        }else if (goodsTypeId == -1){ //全部服务
+            goodMapper.updateDiscountAllAndService(shopId, discount, reDiscount);
+        }else if (goodsTypeId == -2){ //全部商品
+            goodMapper.updateDiscountAllAndGoods(shopId, discount, reDiscount);
         }else {
             goodMapper.goodsDiscount(shopId, goodsTypeId, discount, reDiscount);
         }
@@ -554,10 +558,15 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 return ResultResponse.createByErrorMessage("提高系数失败");
             }
             return ResultResponse.createBySuccess();
-        }
-        Integer integer = goodsRepository.updateRatioAndGoodsTypeIdAndShopId(ratio, goodsTypeId, shopId);
-        if (integer == 0){
-            return ResultResponse.createByErrorMessage("提高系数失败");
+        }else if (goodsTypeId == -1) { //全部服务
+            goodsRepository.updateRatioAndShopIdAndService(ratio, shopId);
+        }else if (goodsTypeId == -2){//全部商品
+            goodsRepository.updateRatioAndShopIdAndGoods(ratio, shopId);
+        }else {
+            Integer integer = goodsRepository.updateRatioAndGoodsTypeIdAndShopId(ratio, goodsTypeId, shopId);
+            if (integer == 0) {
+                return ResultResponse.createByErrorMessage("提高系数失败");
+            }
         }
         return ResultResponse.createBySuccess();
     }
@@ -771,7 +780,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                     good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
                 }
                 //折扣大于0时，才会显示折扣价
-                if (good.getDiscount() > 0.0D && good.getDiscount() < 10 &&good.getDiscount() != null ){
+                if ( good.getDiscount() != null && good.getDiscount() > 0.0D && good.getDiscount() < 10){
                     good.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
                 }
             });
