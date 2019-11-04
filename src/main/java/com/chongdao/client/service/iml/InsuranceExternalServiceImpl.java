@@ -103,8 +103,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
-            "\t\t\t<StartHour>0</StartHour>\n" +
-            "\t\t\t<EndHour>24</EndHour>\n" +
+            "\t\t\t<StartHour>${StartHour}</StartHour>\n" +
+            "\t\t\t<EndHour>${EndHour}</EndHour>\n" +
             "\t\t\t<SumAmount>${SumAmount}</SumAmount>\n" +
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
@@ -158,8 +158,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
-            "\t\t\t<StartHour>0</StartHour>\n" +
-            "\t\t\t<EndHour>24</EndHour>\n" +
+            "\t\t\t<StartHour>${StartHour}</StartHour>\n" +
+            "\t\t\t<EndHour>${EndHour}</EndHour>\n" +
             "\t\t\t<SumAmount>${SumAmount}</SumAmount>\n" +
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
@@ -207,8 +207,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t<OperateTimes>${OperateTimes}</OperateTimes>\n" +
             "\t\t\t<StartDate>${StartDate}</StartDate>\n" +
             "\t\t\t<EndDate>${EndDate}</EndDate>\n" +
-            "\t\t\t<StartHour>0</StartHour>\n" +
-            "\t\t\t<EndHour>24</EndHour>\n" +
+            "\t\t\t<StartHour>${StartHour}</StartHour>\n" +
+            "\t\t\t<EndHour>${EndHour}</EndHour>\n" +
             "\t\t\t<SumAmount>${SumAmount}</SumAmount>\n" +
             "\t\t\t<SumPremium>${SumPremium}</SumPremium>\n" +
             "\t\t\t<ArguSolution>1</ArguSolution>\n" +
@@ -647,16 +647,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         } else {
             BeanUtils.copyProperties(insuranceOrder, pdfVo);
             Integer petCardId = insuranceOrder.getPetCardId();
-            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
-            if (petCard != null) {
-                pdfVo.setPolicyNo(pdfVo.getPolicyNo());
-                pdfVo.setPetName(petCard.getName());
-                pdfVo.setTypeName(petCard.getTypeName());
-                pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
-                pdfVo.setAge(petCard.getAge() + "");
-                pdfVo.setPetCardType("test");//这里数据还未处理
-                pdfVo.setPetCardNo("test");//这里数据还未处理
-                pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+            if(petCardId != null) {
+                PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
+                if (petCard != null) {
+                    pdfVo.setPolicyNo(pdfVo.getPolicyNo());
+                    pdfVo.setPetName(petCard.getName());
+                    pdfVo.setTypeName(petCard.getTypeName());
+                    pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
+                    pdfVo.setAge(petCard.getAge() + "");
+                    pdfVo.setPetCardType("test");//这里数据还未处理
+                    pdfVo.setPetCardNo("test");//这里数据还未处理
+                    pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+                }
             }
         }
         try (InputStream inputStream = new ClassPathResource("/template/pickup_policy.docx").getInputStream()) {
@@ -737,6 +739,18 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("OperateTimes", DateTimeUtil.dateToStr(insuranceOrder.getCreateTime(), "yyyy-MM-dd hh:mm:ss"));//下单时间
         template.binding("StartDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceEffectTime(), "yyyy-MM-dd"));//起保时间
         template.binding("EndDate", DateTimeUtil.dateToStr(insuranceOrder.getInsuranceFailureTime(), "yyyy-MM-dd"));//终保时间
+        if(insuranceOrder.getInsuranceType() == 3) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(insuranceOrder.getInsuranceEffectTime());
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            template.binding("StartDate", DateTimeUtil.dateToStr(c.getTime(), "yyyy-MM-dd"));//起保时间
+            c.setTime(insuranceOrder.getInsuranceEffectTime());
+            c.add(Calendar.YEAR, 1);
+            template.binding("EndDate", DateTimeUtil.dateToStr(c.getTime(), "yyyy-MM-dd"));//终保时间
+        } else {
+        }
+        template.binding("StartHour", 0);
+        template.binding("EndHour", 24);
         template.binding("SumAmount", insuranceOrder.getSumAmount().toString());//保额
         template.binding("SumPremium", insuranceOrder.getSumPremium().toString());//保费
         template.binding("Md5Value", generateInsuranceMD5SecretKey(uuid, insuranceOrder.getSumPremium().toString(), SECRET_KEY));
@@ -755,6 +769,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         template.binding("InsuredAddress", insuranceOrder.getAcceptAddress());
         template.binding("InsuredIdMobile", insuranceOrder.getAcceptPhone());
         template.binding("InsuredEmail", insuranceOrder.getAcceptMail());
+
 //        额外字段-医疗险字段
         if (insuranceOrder.getInsuranceType() == 1) {
             // 由于H5投保放弃了宠物卡片, 所以此处代码暂时注销
