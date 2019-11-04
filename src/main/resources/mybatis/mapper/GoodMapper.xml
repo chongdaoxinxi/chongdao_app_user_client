@@ -586,4 +586,18 @@
             </foreach>
         </if>
     </update>
+
+
+    <update id="updateDiscountAll" parameterType="map">
+        update good
+        <set>
+            <if test="discount != null">
+                discount=#{discount},
+            </if>
+            <if test="reDiscount != null">
+                re_discount=#{reDiscount},
+            </if>
+        </set>
+        where  shop_id = #{shopId}
+    </update>
 </mapper>

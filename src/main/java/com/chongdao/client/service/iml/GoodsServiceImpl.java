@@ -414,6 +414,8 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 ids.add(goodsType.getId());
             });
             goodMapper.updateDiscount(shopId,ids,discount,reDiscount);
+        }else if (goodsTypeId == 0){ //全部
+            goodMapper.updateDiscountAll(shopId, discount, reDiscount);
         }else {
             goodMapper.goodsDiscount(shopId, goodsTypeId, discount, reDiscount);
         }
