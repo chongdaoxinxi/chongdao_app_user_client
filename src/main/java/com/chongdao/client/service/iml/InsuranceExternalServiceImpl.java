@@ -548,8 +548,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             //测试, 生成运输险的电子单证
             //保存我们生成的电子单证的访问地址和下载链接
             insuranceOrder.setPolicyNo(policyNo);
-            generatePetupPolicy(insuranceOrder);
-            savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+//            generatePetupPolicy(insuranceOrder);
+//            savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
             updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
         } else {
             insuranceOrder.setPolicyNo(policyNo);//保存电子单证号
