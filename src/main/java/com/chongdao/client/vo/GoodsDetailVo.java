@@ -27,6 +27,7 @@ public class GoodsDetailVo {
     //第二件折扣
     private Double reDiscount;
 
+    private Double discount;
     private String reDiscountDesc; //第二件描述
 
     /** 销量*/
