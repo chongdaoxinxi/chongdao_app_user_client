@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -46,12 +45,10 @@ public class InsuranceExternalController {
      * @throws IOException
      */
     @PostMapping("payInsureCallBack")
-    public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo, HttpServletResponse response) throws IOException {
-        //TODO
+    public ResultResponse payInsureCallBack(@RequestBody String payCallBackInfo) throws IOException {
         System.out.println("payCallBackInfo:" + payCallBackInfo);
         System.out.println("回调成功!");
         insuranceExternalService.payCallBackManage(payCallBackInfo);
-//        response.sendRedirect("http://47.100.63.167/insurance/insurance_index.html");
         return ResultResponse.createBySuccess();
     }
 
