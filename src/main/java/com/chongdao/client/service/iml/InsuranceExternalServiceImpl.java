@@ -548,15 +548,27 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             //测试, 生成运输险的电子单证
             //保存我们生成的电子单证的访问地址和下载链接
             insuranceOrder.setPolicyNo(policyNo);
-//            generatePetupPolicy(insuranceOrder);
-//            savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+            try {
+                generatePetupPolicy(insuranceOrder);
+                savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
         } else {
             insuranceOrder.setPolicyNo(policyNo);//保存电子单证号
-            savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+            try {
+                savePolicy(insuranceOrder, downloadUrl);//保存电子单证信息
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //对于见费出单的, 将电子单证和电子单证下载下来的图片保存到新字段
-            insuranceOrder.setPolicyCdxxDownloadUrl(insuranceOrder.getPolicyDownloadUrl());
-            insuranceOrder.setPolicyCdxxImage(insuranceOrder.getPolicyImage());
+            if(StringUtils.isNotBlank(insuranceOrder.getPolicyDownloadUrl())) {
+                insuranceOrder.setPolicyCdxxDownloadUrl(insuranceOrder.getPolicyDownloadUrl());
+            }
+            if(StringUtils.isNotBlank(insuranceOrder.getPolicyImage())) {
+                insuranceOrder.setPolicyCdxxImage(insuranceOrder.getPolicyImage());
+            }
             updateInsuranceOrderStatus(insuranceOrder);//更新保单状态信息
         }
         System.out.println("电子单证下载链接:" + downloadUrl);
@@ -601,10 +613,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             }, (res) -> {
                 InputStream inputStream = res.getBody();
                 FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + insuranceOrder.getPolicyNo() + ".pdf");
-//                //测试
-//                FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + "test_xxx" + ".pdf");
-//                FileOutputStream out = new FileOutputStream("F:/" + "test_xxx" + ".pdf");
-
                 int byteCount = 0;
                 while ((byteCount = inputStream.read()) != -1) {
                     out.write(byteCount);
@@ -627,40 +635,21 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
      */
     private void generatePetupPolicy(InsuranceOrder insuranceOrder) throws IOException {
         InsuranceOrderPdfVO pdfVo = new InsuranceOrderPdfVO();
-        //测试
-        if (insuranceOrder == null) {
-            insuranceOrder = new InsuranceOrder();
-            insuranceOrder.setName("test");
-            insuranceOrder.setPhone("test");
-            insuranceOrder.setCardType("test");
-            insuranceOrder.setCardNo("test");
-            insuranceOrder.setOrderNo("test");
-            BeanUtils.copyProperties(insuranceOrder, pdfVo);
-            pdfVo.setPolicyNo("test");
-            pdfVo.setPetName("test");
-            pdfVo.setTypeName("test");
-            pdfVo.setBirthDate("test");
-            pdfVo.setAge("1");
-            pdfVo.setPetCardType("test");
-            pdfVo.setPetCardNo("test");
-            pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
-        } else {
-            BeanUtils.copyProperties(insuranceOrder, pdfVo);
-            Integer petCardId = insuranceOrder.getPetCardId();
-            if(petCardId != null) {
-                PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
-                if (petCard != null) {
-                    pdfVo.setPolicyNo(pdfVo.getPolicyNo());
-                    pdfVo.setPetName(petCard.getName());
-                    pdfVo.setTypeName(petCard.getTypeName());
-                    pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
-                    pdfVo.setAge(petCard.getAge() + "");
-                    pdfVo.setPetCardType("test");//这里数据还未处理
-                    pdfVo.setPetCardNo("test");//这里数据还未处理
-                    pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
-                }
-            }
-        }
+        BeanUtils.copyProperties(insuranceOrder, pdfVo);
+        Integer petCardId = insuranceOrder.getPetCardId();
+        pdfVo.setPolicyNo(pdfVo.getPolicyNo());
+        pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
+//        if(petCardId != null) {
+//            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
+//            if (petCard != null) {
+////                pdfVo.setPetName(petCard.getName());
+////                pdfVo.setTypeName(petCard.getTypeName());
+////                pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
+////                pdfVo.setAge(petCard.getAge() + "");
+////                pdfVo.setPetCardType("test");//这里数据还未处理
+////                pdfVo.setPetCardNo("test");//这里数据还未处理
+//            }
+//        }
         try (InputStream inputStream = new ClassPathResource("/template/pickup_policy.docx").getInputStream()) {
             Map<String, Object> map = new HashMap<>();
             map.put("pdfVo", pdfVo);
