@@ -240,7 +240,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t</Insureds>\n" +
             //Agricultural节点
             "\t\t\t<Agricultural>\n" +
-            "\t\t\t\t<ListType>07</ListType>\n" +
+            "\t\t\t\t<ListType>05</ListType>\n" +
             "\t\t\t\t<SumFamily>1</SumFamily>\n" +
             "\t\t\t\t<gzqydm>上海</gzqydm>\n" +
             "\t\t\t\t<gzqymc>上海</gzqymc>\n" +
