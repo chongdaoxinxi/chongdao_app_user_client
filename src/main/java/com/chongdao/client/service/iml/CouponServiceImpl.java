@@ -259,6 +259,17 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         return ResultResponse.createBySuccess(cpnInfoVos);
     }
 
+    @Override
+    public ResultResponse presentMedicalCard(Integer userId) {
+        Integer cpnId = 999;
+        CouponInfo couponInfo = couponInfoRepository.findById(cpnId).orElse(null);
+        if(couponInfo != null) {
+            receiveCoupon(userId, couponInfo);
+            return ResultResponse.createBySuccess();
+        }
+        return ResultResponse.createByError();
+    }
+
 
     /**
      * 获取配送优惠券

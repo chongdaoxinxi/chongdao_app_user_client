@@ -6,6 +6,7 @@ import com.chongdao.client.entitys.InsuranceShopChip;
 import com.chongdao.client.entitys.Management;
 import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.repository.*;
+import com.chongdao.client.service.CouponService;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
@@ -60,6 +61,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private OrderInfoRepository orderInfoRepository;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private CouponService couponService;
 
     @Value("${insurance.invoiceUrl}")
     private String INVOICE_URL;//请求电子发票接口
@@ -645,17 +648,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Integer petCardId = insuranceOrder.getPetCardId();
         pdfVo.setPolicyNo(pdfVo.getPolicyNo());
         pdfVo.setCreateDate(DateTimeUtil.dateToStr(new Date(), "yyyy-MM-dd"));
-//        if(petCardId != null) {
-//            PetCard petCard = petCardRepository.findById(petCardId).orElse(null);
-//            if (petCard != null) {
-////                pdfVo.setPetName(petCard.getName());
-////                pdfVo.setTypeName(petCard.getTypeName());
-////                pdfVo.setBirthDate(DateTimeUtil.dateToStr(petCard.getBirthDate(), "yyyy-MM-dd"));
-////                pdfVo.setAge(petCard.getAge() + "");
-////                pdfVo.setPetCardType("test");//这里数据还未处理
-////                pdfVo.setPetCardNo("test");//这里数据还未处理
-//            }
-//        }
         try (InputStream inputStream = new ClassPathResource("/template/pickup_policy.docx").getInputStream()) {
             Map<String, Object> map = new HashMap<>();
             map.put("pdfVo", pdfVo);
@@ -687,8 +679,23 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         InsuranceOrder save = insuranceOrderRepository.save(insuranceOrder);
         //校验是否有推广码, 调用返利接口
         String recommendCode = save.getRecommendCode();
-        if(StringUtils.isNotBlank(recommendCode)) {
+        Integer insuranceType = save.getInsuranceType();
+        if(StringUtils.isNotBlank(recommendCode) && insuranceType != null && insuranceType != 3) {
             recommendService.recommendInsuranceOrder(save.getId());
+        }
+        //如果是医疗险调用赠送体检劵接口
+        if(insuranceType == 1) {
+            presentMedicalCard(insuranceOrder);
+        }
+
+    }
+
+    private void presentMedicalCard(InsuranceOrder insuranceOrder) {
+        Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();
+        if(medicalInsuranceShopChipId == null) {
+            //调用赠送体检券的接口
+            //TODO
+            couponService.presentMedicalCard(insuranceOrder.getUserId());
         }
     }
 

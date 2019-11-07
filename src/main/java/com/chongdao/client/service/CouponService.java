@@ -44,7 +44,12 @@ public interface CouponService {
      */
     ResultResponse couponList(Integer userId);
 
-
+    /**
+     * 赠送一张免费体检券
+     * @param userId
+     * @return
+     */
+    ResultResponse presentMedicalCard(Integer userId);
     //---------------------------------------------------------- 商户端 -----------------------------------------------
 
 
