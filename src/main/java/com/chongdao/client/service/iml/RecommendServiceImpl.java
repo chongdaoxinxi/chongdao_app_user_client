@@ -147,6 +147,16 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public boolean isSatisfyOrderRewardQualification(Integer orderId) {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
+        return isSatisfyOrderReward(orderInfo);
+    }
+
+    @Override
+    public boolean isSatisfyOrderRewardQualificationByOrderNo(String orderNo) {
+        OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+        return isSatisfyOrderReward(orderInfo);
+    }
+
+    private Boolean isSatisfyOrderReward(OrderInfo orderInfo) {
         if (orderInfo == null) {
             return false;
         }

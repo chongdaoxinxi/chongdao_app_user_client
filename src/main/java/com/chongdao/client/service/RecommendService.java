@@ -26,6 +26,13 @@ public interface RecommendService {
     boolean isSatisfyOrderRewardQualification(Integer orderId);
 
     /**
+     * 校验订单是否满足返现要求
+     * @param orderNo
+     * @return
+     */
+    boolean isSatisfyOrderRewardQualificationByOrderNo(String orderNo);
+
+    /**
      * 推广新用户首单完成时返现(首单完成时调用)
      * @param orderId
      * @return

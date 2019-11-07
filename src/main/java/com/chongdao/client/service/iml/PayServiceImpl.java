@@ -23,6 +23,7 @@ import com.chongdao.client.repository.PayInfoRepository;
 import com.chongdao.client.service.CashAccountService;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.PayService;
+import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
 import com.chongdao.client.utils.wxpay.PayUtil;
@@ -67,6 +68,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
 
     @Autowired
     private CouponCommon couponCommon;
+    @Autowired
+    private RecommendService recommendService;
 
     /**
      * 支付宝对接
@@ -822,6 +825,19 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             successCallBackMsgoOrderOperate(order);
             //调用用户支付后的资金流转逻辑
             cashAccountService.customOrderCashIn(order);
+            //调用订单返利
+            recommendOrder(order);
+        }
+    }
+
+    /**
+     * 订单返利
+     * @param orderInfo
+     */
+    private void recommendOrder(OrderInfo orderInfo) {
+        boolean flag = recommendService.isSatisfyOrderRewardQualificationByOrderNo(orderInfo.getOrderNo());//校验是否满足订单返利功能
+        if(flag) {
+            recommendService.recommendUserFirstOrder(orderInfo.getId());
         }
     }
 
