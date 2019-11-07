@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description TODO
+ * @Description 返利自动定时任务
  * @Author onlineS
  * @Date 2019/11/7
  * @Version 1.0

@@ -272,7 +272,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     }
 
     /**
-     * 取消订单(状态变为-1)-----------?? 此方法存在合理嘛
+     * 取消订单(状态变为2)-----------?? 此方法存在合理嘛
      *
      * @param expressId
      * @param orderId
@@ -284,7 +284,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         return Optional.ofNullable(orderId).
                 flatMap(id -> orderInfoRepository.findById(id))
                 .map(o -> {
-                    o.setOrderStatus(-1);
+                    o.setOrderStatus(2);
                     expressAdminCancelOrderSmsSender(orderInfoRepository.saveAndFlush(o));
                     return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
                 })

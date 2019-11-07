@@ -656,8 +656,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
                 DocxUtil.processDocxTemplate(inputStream, outputStream, map, null);
                 //生产环境
                 FileOutputStream out = new FileOutputStream(POLICY_FOLDER_PREFIX + pdfVo.getPolicyNo() + "_cdxx" + ".pdf");
-                //本地测试环境
-//                FileOutputStream out = new FileOutputStream("F:/" + pdfVo.getPolicyNo() + ".pdf");
 
                 PdfUtil.convertPdf(new ByteArrayInputStream(outputStream.toByteArray()), out);
                 outputStream.close();
@@ -694,7 +692,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         Integer medicalInsuranceShopChipId = insuranceOrder.getMedicalInsuranceShopChipId();
         if(medicalInsuranceShopChipId == null) {
             //调用赠送体检券的接口
-            //TODO
             couponService.presentMedicalCard(insuranceOrder.getUserId());
         }
     }

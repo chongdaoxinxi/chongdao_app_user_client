@@ -120,7 +120,7 @@ public class ExpressManageController {
     }
 
     /**
-     * 取消订单(状态变为-1)-----------疑问 此方法存在合理嘛
+     * 取消订单(状态变为2)-----------疑问 此方法存在合理嘛
      * @param token
      * @param orderId
      * @return

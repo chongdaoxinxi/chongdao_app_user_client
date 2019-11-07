@@ -17,7 +17,7 @@ public interface ExpressOrderService {
     ResultResponse expressAcceptOrder(Integer expressId, Integer orderId);
 
     /**
-     * 取消订单(状态变为-1)-----------疑问 此方法存在合理嘛
+     * 取消订单(状态变为2)-----------疑问 此方法存在合理嘛
      * @param expressId
      * @param orderId
      * @return
