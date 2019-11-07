@@ -15,10 +15,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.mapper.OrderInfoVOMapper;
-import com.chongdao.client.service.CartsService;
-import com.chongdao.client.service.CashAccountService;
-import com.chongdao.client.service.OrderRefundService;
-import com.chongdao.client.service.OrderService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
@@ -66,6 +63,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private OrderInfoVOMapper orderInfoVOMapper;
     @Autowired
     private CouponCommon couponCommon;
+    @Autowired
+    private OrderOperateLogService orderOperateLogService;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -1108,6 +1107,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         cashAccountService.customOrderCashIn(orderInfo);
         //发送短信
         acceptOrderSmsSender(orderInfo);
+        //生成流转日志
+        orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", OrderStatusEnum.PAID.getStatus(), OrderStatusEnum.ACCEPTED_ORDER.getStatus());
         return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
     }
 
@@ -1214,6 +1215,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
      * @return
      */
     private ResultResponse refundOrderData(OrderInfo o, Integer targetStatus, String refundNote, Boolean isRefuseOrder) {
+        //生成流转日志
+        orderOperateLogService.addOrderOperateLogService(o.getId(), o.getOrderNo(), "", o.getOrderStatus(), targetStatus);
         //更新订单状态为4
         o.setOrderStatus(targetStatus);
         orderInfoRepository.saveAndFlush(o);
@@ -1275,6 +1278,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
      * @return
      */
     private ResultResponse shopServiceCompletedData(OrderInfo orderInfo) {
+        //生成流转日志
+        orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", orderInfo.getOrderStatus(), OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus());
         //更新状态
         orderInfo.setOrderStatus(OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus());
         orderInfo.setShopFinishTime(new Date());//商家服务完成时间

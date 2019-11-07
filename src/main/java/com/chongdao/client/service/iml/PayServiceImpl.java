@@ -20,10 +20,7 @@ import com.chongdao.client.enums.PaymentTypeEnum;
 import com.chongdao.client.repository.HtOrderInfoRepository;
 import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.repository.PayInfoRepository;
-import com.chongdao.client.service.CashAccountService;
-import com.chongdao.client.service.OrderService;
-import com.chongdao.client.service.PayService;
-import com.chongdao.client.service.RecommendService;
+import com.chongdao.client.service.*;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.wxpay.BasicInfo;
 import com.chongdao.client.utils.wxpay.PayUtil;
@@ -70,6 +67,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     private CouponCommon couponCommon;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private OrderOperateLogService orderOperateLogService;
 
     /**
      * 支付宝对接
@@ -829,6 +828,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             cashAccountService.customOrderCashIn(order);
             //调用订单返利
             recommendOrder(order);
+            //生成流转记录
+            orderOperateLogService.addOrderOperateLogService(order.getId(), order.getOrderNo(), "", OrderStatusEnum.NO_PAY.getStatus(), OrderStatusEnum.PAID.getStatus());
         }
     }
 

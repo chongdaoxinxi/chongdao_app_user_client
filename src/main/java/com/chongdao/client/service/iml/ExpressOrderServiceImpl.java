@@ -12,6 +12,7 @@ import com.chongdao.client.repository.ExpressRepository;
 import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.ExpressOrderService;
+import com.chongdao.client.service.OrderOperateLogService;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.sms.SMSUtil;
@@ -51,6 +52,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
     private ExpressMapper expressMapper;
     @Autowired
     private ExpressRepository expressRepository;
+    @Autowired
+    private OrderOperateLogService orderOperateLogService;
 
     /**
      * 接单
@@ -69,6 +72,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 if (orderStatus != OrderStatusEnum.ACCEPTED_ORDER.getStatus()) {
                     return ResultResponse.createByErrorCodeMessage(ManageStatusEnum.ORDER_CANNT_ACCEPT.getStatus(), ManageStatusEnum.ORDER_CANNT_ACCEPT.getMessage());
                 } else {
+                    //生成流转日志
+                    orderOperateLogService.addOrderOperateLogService(odi.getId(), odi.getOrderNo(), "", odi.getOrderStatus(), OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus());
                     //保存配送员id及更新状态至7
                     odi.setExpressId(expressId);
                     odi.setOrderStatus(OrderStatusEnum.EXPRESS_ACCEPTED_ORDER.getStatus());
@@ -127,6 +132,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         Integer isService = orderInfo.getIsService();
         Integer serviceType = orderInfo.getServiceType();
+        Integer oldStatus = orderInfo.getOrderStatus();
+        Integer targetStaus = OrderStatusEnum.EXPRESS_START_SERVICE.getStatus();
         if (isService == null || isService == -1 || isService == 0) {
             //商品
             orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
@@ -145,12 +152,15 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
                 } else if (orderStatus == OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus()) {
+                    targetStaus = OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus();
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus());//返程开始配送
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
                 }
             }
         }
         orderInfoRepository.save(orderInfo);
+        //生成流转日志
+        orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
         //判断是否投保运输险
         if (orderInfo.getPetCount() != null && orderInfo.getPetCount() > 0 && serviceType != null && serviceType != 3) {
             //非到店自取, 且宠物数量大于0的
@@ -174,11 +184,15 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
         Integer isService = orderInfo.getIsService();
         Integer serviceType = orderInfo.getServiceType();
+        Integer oldStatus = orderInfo.getOrderStatus();
+        Integer targetStaus = OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus();
         if (isService == null || isService == -1 || isService == 0) {
             //商品
             orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//商品送达
             orderInfo.setExpressFinishTime(new Date());//配送完成时间
             smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderGoodsServedUser(), orderInfo.getOrderNo(), phoneList);
+            //生成流转日志
+            orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
             orderComplete(orderInfo);
         } else if (isService == 1) {
             //服务
@@ -188,6 +202,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//单程送达
                 orderInfo.setExpressFinishTime(new Date());//配送员配送完成时间
                 smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
+                //生成流转日志
+                orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
                 orderComplete(orderInfo);
             } else if (serviceType == 1) {
                 //双程
@@ -198,10 +214,16 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     orderInfo.setOrderStatus(OrderStatusEnum.SHOP_START_SERVICE.getStatus());
                     orderInfoRepository.save(orderInfo);
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
+                    //生成流转日志
+                    orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
                 } else if (orderStatus == OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus()) {
+                    targetStaus = OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus();
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_BACK_DELIVERY.getStatus());//店至家送达
                     orderInfo.setExpressFinishTime(new Date());//配送完成时间
+                    //发送短信
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
+                    //生成流转日志
+                    orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
                     orderComplete(orderInfo);
                 }
             }
@@ -267,6 +289,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
      * @param orderInfo
      */
     private void orderComplete(OrderInfo orderInfo) {
+        //生成流转日志
+        orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", orderInfo.getOrderStatus(), OrderStatusEnum.ORDER_SUCCESS.getStatus());
         orderInfo.setOrderStatus(OrderStatusEnum.ORDER_SUCCESS.getStatus());
         orderInfoRepository.save(orderInfo);
     }
@@ -284,7 +308,9 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         return Optional.ofNullable(orderId).
                 flatMap(id -> orderInfoRepository.findById(id))
                 .map(o -> {
-                    o.setOrderStatus(2);
+                    //生成流转日志
+                    orderOperateLogService.addOrderOperateLogService(o.getId(), o.getOrderNo(), "", o.getOrderStatus(), OrderStatusEnum.ACCEPTED_ORDER.getStatus());
+                    o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
                     expressAdminCancelOrderSmsSender(orderInfoRepository.saveAndFlush(o));
                     return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
                 })
