@@ -1,17 +1,21 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.*;
+import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.entitys.InsuranceShopChip;
+import com.chongdao.client.entitys.Management;
+import com.chongdao.client.entitys.OrderInfo;
 import com.chongdao.client.repository.*;
+import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.service.insurance.InsuranceExternalService;
+import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
+import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.DocxUtil;
 import com.chongdao.client.utils.Md5;
 import com.chongdao.client.utils.PdfUtil;
 import com.chongdao.client.vo.InsuranceOrderPdfVO;
 import fr.opensagres.xdocreport.core.XDocReportException;
-import com.chongdao.client.service.insurance.webservice.EcooperationWebService;
-import com.chongdao.client.service.insurance.webservice.EcooperationWebServiceService;
 import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
@@ -54,6 +58,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private ManagementRepository managementRepository;
     @Autowired
     private OrderInfoRepository orderInfoRepository;
+    @Autowired
+    private RecommendService recommendService;
 
     @Value("${insurance.invoiceUrl}")
     private String INVOICE_URL;//请求电子发票接口
@@ -678,7 +684,12 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
     private void updateInsuranceOrderStatus(InsuranceOrder insuranceOrder) {
         insuranceOrder.setApplyTime(new Date());
         insuranceOrder.setStatus(2);//已支付进入等待期
-        insuranceOrderRepository.save(insuranceOrder);
+        InsuranceOrder save = insuranceOrderRepository.save(insuranceOrder);
+        //校验是否有推广码, 调用返利接口
+        String recommendCode = save.getRecommendCode();
+        if(StringUtils.isNotBlank(recommendCode)) {
+            recommendService.recommendInsuranceOrder(save.getId());
+        }
     }
 
     /**

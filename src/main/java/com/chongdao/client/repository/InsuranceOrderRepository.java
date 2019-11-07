@@ -14,4 +14,6 @@ public interface InsuranceOrderRepository extends JpaRepository<InsuranceOrder, 
     List<InsuranceOrder> findByProposalNo(String proposalNo);
 
     List<InsuranceOrder> findByUserIdAndStatusGreaterThan(Integer userId, Integer status);
+
+    List<InsuranceOrder> findByStatus(Integer status);
 }
