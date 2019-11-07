@@ -539,6 +539,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 }
                 //调用用户支付后的资金流转逻辑
                 cashAccountService.customOrderCashIn(order);
+                //调用返利方法
+                recommendOrder(order);
             }
             //生成支付信息
             try {
