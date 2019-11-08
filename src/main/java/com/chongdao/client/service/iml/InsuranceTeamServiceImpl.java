@@ -35,8 +35,21 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     private SmsService smsService;
 
 
-    private final static String RECOMMEND_URL = "http://www.xxx.com/xxxx.html";
+    private final static String RECOMMEND_URL = "http://www.xxx.com/xxxx.html";//推广页面url
     private final static Integer EFFECT_TIME = 24;//组队有效期24小时
+
+    @Override
+    @Transactional
+    public ResultResponse signAndBuildInsuranceTeam(String phone, String code) throws Exception {
+        //检验验证码是否正确
+        if (StringUtils.isNoneBlank(smsService.getSmsCode(phone))) {
+            if (!smsService.getSmsCode(phone).equals(code)) {
+                User u = signUser(phone);
+                return buildInsuranceTeam(u.getId());
+            }
+        }
+        return ResultResponse.createByError();
+    }
 
     @Override
     @Transactional
@@ -75,20 +88,25 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         //检验验证码是否正确
         if (StringUtils.isNoneBlank(smsService.getSmsCode(phone))) {
             if (!smsService.getSmsCode(phone).equals(code)) {
-                User u = userRepository.findByPhone(phone);
-                if(u == null) {
-                    u.setPhone(phone);
-                    u.setName(phone);
-                    u.setLastLoginTime(new Date());
-                    u.setType(1);
-                    u.setStatus(1);
-                    u.setCreateTime(new Date());
-                    userRepository.save(u);
-                }
+                User u = signUser(phone);
                 return attendInsuranceTeam(teamId, u.getId());
             }
         }
         return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USER_CODE_ERROR.getStatus(), UserStatusEnum.USER_CODE_ERROR.getMessage());
+    }
+
+    private User signUser(String phone) {
+        User u = userRepository.findByPhone(phone);
+        if(u == null) {
+            u.setPhone(phone);
+            u.setName(phone);
+            u.setLastLoginTime(new Date());
+            u.setType(1);
+            u.setStatus(1);
+            u.setCreateTime(new Date());
+           return userRepository.save(u);
+        }
+        return u;
     }
 
     /**
