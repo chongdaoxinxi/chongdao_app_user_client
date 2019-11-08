@@ -1,13 +1,13 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Good;
 import com.chongdao.client.entitys.Management;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.AdminStatusEnum;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
-import com.chongdao.client.repository.ManagementRepository;
-import com.chongdao.client.repository.ShopRepository;
+import com.chongdao.client.repository.*;
 import com.chongdao.client.service.AdminService;
 import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.utils.TokenUtil;
@@ -16,9 +16,12 @@ import com.chongdao.client.vo.AdminLoginVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @Description TODO
@@ -32,14 +35,24 @@ public class AdminServiceImpl implements AdminService {
     private ManagementRepository managementRepository;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserAddressRepository userAddressRepository;
+    @Autowired
+    private GoodsRepository goodsRepository;
+    @Autowired
+    private ExpressRepository expressRepository;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
     @Override
     public ResultResponse adminLogin(String username, String password) {
-        if(StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             return ResultResponse.createByErrorCodeMessage(AdminStatusEnum.ADMIN_NAME_OR_PASSWORD_EMPTY.getStatus(), AdminStatusEnum.ADMIN_NAME_OR_PASSWORD_EMPTY.getMessage());
         }
         List<Management> managementList = managementRepository.findByNameAndPasswordAndStatus(username, MD5Util.MD5(password), 1).orElse(null);
-        if(managementList != null && managementList.size() > 0) {
+        if (managementList != null && managementList.size() > 0) {
             if (managementList.size() == 1) {
                 return assembleAdminLogin(managementList.get(0));
             } else {
@@ -47,8 +60,8 @@ public class AdminServiceImpl implements AdminService {
             }
         } else {
             List<Shop> shopList = shopRepository.findByAccountNameAndPassword(username, MD5Util.MD5(password)).orElse(null);
-            if(shopList != null && shopList.size() > 0) {
-                if(shopList.size() == 1) {
+            if (shopList != null && shopList.size() > 0) {
+                if (shopList.size() == 1) {
                     return assembleShopLogin(shopList.get(0));
                 } else {
                     return ResultResponse.createByErrorCodeMessage(AdminStatusEnum.ADMIN_DATA_ERROR.getStatus(), AdminStatusEnum.ADMIN_DATA_ERROR.getMessage());
@@ -62,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
         Integer id = management.getId();
         String username = management.getName();
         String password = management.getPassword();
-        if(id != null && username != null && password != null) {
+        if (id != null && username != null && password != null) {
             AdminLoginVO adminLoginVO = new AdminLoginVO();
             adminLoginVO.setManagementId(id);
             adminLoginVO.setUsername(username);
@@ -70,9 +83,9 @@ public class AdminServiceImpl implements AdminService {
             Date date = new Date();
             adminLoginVO.setLastLoginTime(date);
             String role = RoleEnum.ADMIN_PC.getCode();
-            if(management.getType() == 1) {
+            if (management.getType() == 1) {
                 role = RoleEnum.SUPER_ADMIN_PC.getCode();
-            } else if(management.getType() == 3) {
+            } else if (management.getType() == 3) {
                 role = RoleEnum.INSURANCE_PC.getCode();
             }
             adminLoginVO.setToken(TokenUtil.generateToken(id, username, date, role));
@@ -86,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
         Integer id = shop.getId();
         String username = shop.getShopName();
         String password = shop.getPassword();
-        if(id != null && username != null && password != null) {
+        if (id != null && username != null && password != null) {
             AdminLoginVO adminLoginVO = new AdminLoginVO();
             adminLoginVO.setManagementId(id);
             adminLoginVO.setUsername(username);
@@ -102,7 +115,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultResponse getAdminInfo(Integer managementId, String role) {
-        if(role != null ) {
+        if (role != null) {
             if (role.equals(RoleEnum.ADMIN_PC.getCode()) || role.equals(RoleEnum.SUPER_ADMIN_PC.getCode()) || role.equals(RoleEnum.INSURANCE_PC.getCode())) {
                 Management management = managementRepository.findById(managementId).orElse(null);
                 if (management != null) {
@@ -118,7 +131,7 @@ public class AdminServiceImpl implements AdminService {
                     } else if (role.equals(RoleEnum.SUPER_ADMIN_PC.getCode())) {
                         String[] arr = {"superadmin"};
                         vo.setAccess(arr);
-                    } else if(role.equals(RoleEnum.INSURANCE_PC.getCode())) {
+                    } else if (role.equals(RoleEnum.INSURANCE_PC.getCode())) {
                         String[] arr = {"insuranceadmin"};
                         vo.setAccess(arr);
                     }
@@ -133,7 +146,7 @@ public class AdminServiceImpl implements AdminService {
                     vo.setUserId(shop.getId());
                     String[] arr = new String[5];
                     arr[0] = "shop";
-                    if(shop.getType() == 2) {
+                    if (shop.getType() == 2) {
                         //医院类店铺
                         arr[1] = "medical";
                     }
@@ -143,5 +156,35 @@ public class AdminServiceImpl implements AdminService {
             }
         }
         return ResultResponse.createByErrorCodeMessage(AdminStatusEnum.ADMIN_DATA_ERROR.getStatus(), AdminStatusEnum.ADMIN_DATA_ERROR.getMessage());
+    }
+
+    @Override
+    @Transactional
+    public ResultResponse randomAddRobotOrder(Integer shopId) {
+        List<Shop> list = shopRepository.findAllByStatusNotAndAreaCode(1, "3101");
+        List<Integer> shopIdList = new ArrayList<>();
+        for(Shop s : list) {
+            shopIdList.add(s.getId());
+        }
+        Random random = new Random();
+        for(int i = 0; i< 30; i++) {
+            int index = random.nextInt(shopIdList.size());
+            System.out.println("shopId:" + shopIdList.get(index));
+            List<Good> goodList = goodsRepository.findByShopId(shopIdList.get(index));
+            for (Good g : goodList) {
+                int randomInt = random.nextInt(5);
+                System.out.println("randomInt:" + randomInt);
+                g.setSales(randomInt);
+                goodsRepository.save(g);
+            }
+        }
+//        List<Good> list = goodsRepository.findAll();
+//
+//        for (Good g : list) {
+//            int i = random.nextInt(5);
+//            g.setSales(i);
+//            goodsRepository.save(g);
+//        }
+        return ResultResponse.createBySuccess();
     }
 }

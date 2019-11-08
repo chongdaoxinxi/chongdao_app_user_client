@@ -3,6 +3,7 @@ package com.chongdao.client.entitys;
 
 import com.chongdao.client.utils.Date2LongSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 public class Good {
 
 	@Id

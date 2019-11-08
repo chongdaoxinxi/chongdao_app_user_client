@@ -6,4 +6,6 @@ public interface AdminService {
     ResultResponse adminLogin(String username, String password);
 
     ResultResponse getAdminInfo(Integer managementId, String role);
+
+    ResultResponse randomAddRobotOrder(Integer shopId);
 }

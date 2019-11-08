@@ -53,6 +53,8 @@ public class AdminPcController {
     private BannerService bannerService;
     @Autowired
     private UserWithdrawalService userWithdrawalService;
+    @Autowired
+    private AdminService adminService;
 
     /**
      * 确认退款完成
@@ -539,5 +541,14 @@ public class AdminPcController {
     @PostMapping("checkAreaWithdrawal")
     public ResultResponse checkAreaWithdrawal(Integer areaWithdrawalId, String note, BigDecimal realMoney, Integer targetStatus) {
         return  areaWithdrawalApplyService.checkAreaWithdrawal(areaWithdrawalId, note, realMoney, targetStatus);
+    }
+
+    /**
+     * 随机添加机器人订单
+     * @return
+     */
+    @PostMapping("randomAddRobotOrder")
+    public ResultResponse randomAddRobotOrder(Integer shopId) {
+        return adminService.randomAddRobotOrder(shopId);
     }
 }
