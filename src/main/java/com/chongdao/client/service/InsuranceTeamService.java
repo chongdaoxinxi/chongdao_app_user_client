@@ -3,6 +3,14 @@ package com.chongdao.client.service;
 import com.chongdao.client.common.ResultResponse;
 
 public interface InsuranceTeamService {
+
+    /**
+     * 注册并发起组队
+     * @return
+     * @throws Exception
+     */
+    ResultResponse signAndBuildInsuranceTeam(String phone, String code) throws Exception;
+
     /**
      * 发起组队
      * @param builderId
