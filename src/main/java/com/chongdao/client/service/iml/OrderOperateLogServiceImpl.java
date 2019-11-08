@@ -4,6 +4,7 @@ import com.chongdao.client.entitys.OrderOperateLog;
 import com.chongdao.client.repository.OrderOperateLogRepository;
 import com.chongdao.client.service.OrderOperateLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
  * @Date 2019/11/7
  * @Version 1.0
  **/
+@Service
 public class OrderOperateLogServiceImpl implements OrderOperateLogService {
     @Autowired
     private OrderOperateLogRepository orderOperateLogRepository;

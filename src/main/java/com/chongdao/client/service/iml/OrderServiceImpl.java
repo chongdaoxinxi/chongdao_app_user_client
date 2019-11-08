@@ -953,6 +953,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         order.setOrderNo(orderNo);
         order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         BeanUtils.copyProperties(orderVo, order);
+        order.setIsService(orderCommonVO.getIsService());
         //等于0 更改为已支付
         if (order.getPayment().compareTo(BigDecimal.ZERO) == 0) {
             order.setOrderStatus(OrderStatusEnum.PAID.getStatus());
