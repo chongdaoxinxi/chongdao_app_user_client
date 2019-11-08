@@ -951,8 +951,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         OrderInfo order = new OrderInfo();
         String orderNo = GenerateOrderNo.genUniqueKey();
         order.setOrderNo(orderNo);
-        order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         BeanUtils.copyProperties(orderVo, order);
+        order.setOrderStatus(OrderStatusEnum.NO_PAY.getStatus());
         order.setIsService(orderCommonVO.getIsService());
         //等于0 更改为已支付
         if (order.getPayment().compareTo(BigDecimal.ZERO) == 0) {
