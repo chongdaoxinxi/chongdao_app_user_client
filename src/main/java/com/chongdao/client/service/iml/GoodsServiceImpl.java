@@ -12,7 +12,6 @@ import com.chongdao.client.exception.PetException;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.UnitRepository;
 import com.chongdao.client.service.GoodsService;
-import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.vo.GoodsDetailVo;
 import com.chongdao.client.vo.GoodsListVO;
 import com.chongdao.client.vo.GoodsPcVO;
@@ -30,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -735,7 +735,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 }
             });
         }
-
+        if(goodList == null) {
+            goodList = new ArrayList<>();
+        }
         return ResultResponse.createBySuccess(this.goodsListVOList(goodList));
     }
 
