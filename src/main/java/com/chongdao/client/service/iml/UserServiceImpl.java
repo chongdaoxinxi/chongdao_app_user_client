@@ -48,6 +48,9 @@ public class UserServiceImpl implements UserService {
             return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USERNAME_OR_CODE_EMPTY.getStatus(), UserStatusEnum.USERNAME_OR_CODE_EMPTY.getMessage());
         }
         User user = userRepository.findByPhone(phone);
+        if ("2".equals(type) && user == null) {
+            return ResultResponse.createByErrorMessage("用户不存在");
+        }
         UserLoginVO userLoginVO = new UserLoginVO();
         userLoginVO.setLastLoginTime(new Date());
         userLoginVO.setCode(code);
