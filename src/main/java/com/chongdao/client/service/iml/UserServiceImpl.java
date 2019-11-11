@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
             userLoginVO.setPhone(user.getPhone());
             userLoginVO.setName(user.getName());
             userLoginVO.setUserId(user.getId());
+            userLoginVO.setNum(1);
         }
         //更新用户登录时间
         userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getPhone());

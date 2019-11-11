@@ -36,5 +36,8 @@ public class UserLoginVO {
 
     private Date lastLoginTime;
 
+    //0 第一次登陆 1 已有登陆记录
+    private Integer num = 0;
+
 
 }
