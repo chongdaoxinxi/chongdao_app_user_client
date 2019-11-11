@@ -28,7 +28,8 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public ResultResponse<UserAccount> getUserAccountByUserId(Integer userId) {
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(),userAccountRepository.findByUserId(userId));
+        UserAccount userAccount = userAccountRepository.findByUserId(userId);
+        return ResultResponse.createBySuccess(userAccount);
     }
 
     @Override

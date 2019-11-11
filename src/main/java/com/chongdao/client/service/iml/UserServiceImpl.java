@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
             userLoginVO.setPhone(user.getPhone());
             userLoginVO.setName(user.getName());
             userLoginVO.setUserId(user.getId());
+            userLoginVO.setNum(1);
         }
         //更新用户登录时间
         userRepository.updateLastLoginTimeByName(userLoginVO.getLastLoginTime(), userLoginVO.getPhone());
@@ -164,10 +165,15 @@ public class UserServiceImpl implements UserService {
                 .map(u -> {
                     UserSettingVO uso = new UserSettingVO();
                     uso.setName(u.getName());
+
                     uso.setUserId(u.getId());
                     uso.setPhone(u.getPhone());
                     uso.setIcon(u.getIcon());
                     uso.setType(u.getType());
+                    //存在密码，不需要再次设置密码，可以修改
+                    if (StringUtils.isNotBlank(u.getPassword())) {
+                        uso.setIsPwd(1);
+                    }
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), uso);
                 }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }

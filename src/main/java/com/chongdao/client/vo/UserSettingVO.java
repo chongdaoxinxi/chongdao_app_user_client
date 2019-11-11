@@ -16,4 +16,6 @@ public class UserSettingVO {
     private Integer type;
     /** 验证码 */
     private String code;
+
+    private Integer isPwd = -1;
 }
