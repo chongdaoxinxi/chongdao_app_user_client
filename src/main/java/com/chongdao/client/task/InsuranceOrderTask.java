@@ -1,7 +1,9 @@
 package com.chongdao.client.task;
 
 import com.chongdao.client.entitys.InsuranceOrder;
+import com.chongdao.client.entitys.InsuranceShopChip;
 import com.chongdao.client.repository.InsuranceOrderRepository;
+import com.chongdao.client.repository.InsuranceShopChipRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +24,8 @@ import java.util.List;
 public class InsuranceOrderTask {
     @Autowired
     private InsuranceOrderRepository insuranceOrderRepository;
+    @Autowired
+    private InsuranceShopChipRepository insuranceShopChipRepository;
 
     @Async
     @Scheduled(cron="0 0 2 * * ?")
@@ -35,6 +39,15 @@ public class InsuranceOrderTask {
                 //如果投保下单后24小时后还未支付, 将订单关闭
                 insuranceOrder.setStatus(-1);
                 insuranceOrderRepository.save(insuranceOrder);
+                //如果选择了宠物芯片, 则恢复宠物芯片为可用状态
+                Integer chipId = insuranceOrder.getMedicalInsuranceShopChipId();
+                if(chipId != null) {
+                    InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(chipId).orElse(null);
+                    if(insuranceShopChip != null) {
+                        insuranceShopChip.setStatus(1);
+                        insuranceShopChipRepository.save(insuranceShopChip);
+                    }
+                }
             }
         }
     }
