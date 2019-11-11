@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -55,6 +56,8 @@ public class AdminPcController {
     private UserWithdrawalService userWithdrawalService;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private UploadService uploadService;
 
     /**
      * 确认退款完成
@@ -551,4 +554,14 @@ public class AdminPcController {
     public ResultResponse randomAddRobotOrder(Integer shopId) {
         return adminService.randomAddRobotOrder(shopId);
     }
+
+    /**
+     * 转换图片(从旧服务器到新服务器)
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("convertImageUrl")
+    public ResultResponse convertImageUrl() throws IOException {
+        return uploadService.convertOldImageToNew();
+    };
 }
