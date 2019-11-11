@@ -165,10 +165,15 @@ public class UserServiceImpl implements UserService {
                 .map(u -> {
                     UserSettingVO uso = new UserSettingVO();
                     uso.setName(u.getName());
+
                     uso.setUserId(u.getId());
                     uso.setPhone(u.getPhone());
                     uso.setIcon(u.getIcon());
                     uso.setType(u.getType());
+                    //存在密码，不需要再次设置密码，可以修改
+                    if (StringUtils.isNotBlank(u.getPassword())) {
+                        uso.setIsPwd(1);
+                    }
                     return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), uso);
                 }).orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
