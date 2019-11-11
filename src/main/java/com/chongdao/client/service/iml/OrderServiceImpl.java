@@ -219,7 +219,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                     return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
                 }
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
-            } else if ((orderCommonVO.getReceiveAddressId() == null) && orderCommonVO.getReceiveTime() == null) {
+            } else if ((orderCommonVO.getReceiveAddressId() == null) || orderCommonVO.getReceiveTime() == null) {
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
             } else {
                 //创建订单
