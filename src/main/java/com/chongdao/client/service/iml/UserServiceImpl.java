@@ -8,6 +8,7 @@ import com.chongdao.client.enums.UserStatusEnum;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.service.UserService;
+import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.vo.UserSettingVO;
@@ -42,16 +43,23 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public ResultResponse<UserLoginVO> login(String phone, String code) {
+    public ResultResponse<UserLoginVO> login(String phone, String code, String password, String type) {
         if (StringUtils.isBlank(phone)){
             return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USERNAME_OR_CODE_EMPTY.getStatus(), UserStatusEnum.USERNAME_OR_CODE_EMPTY.getMessage());
         }
         User user = userRepository.findByPhone(phone);
+        if ("2".equals(type) && user == null) {
+            return ResultResponse.createByErrorMessage("用户不存在");
+        }
         UserLoginVO userLoginVO = new UserLoginVO();
         userLoginVO.setLastLoginTime(new Date());
         userLoginVO.setCode(code);
         userLoginVO.setName(phone);
-        return assembleUserLogin(userLoginVO,user);
+        userLoginVO.setPhone(phone);
+        if (user != null) {
+            userLoginVO.setPassword(user.getPassword());
+        }
+        return assembleUserLogin(userLoginVO,user,password,type);
 
     }
 
@@ -62,8 +70,8 @@ public class UserServiceImpl implements UserService {
      * @param user
      * @return
      */
-    private ResultResponse<UserLoginVO> assembleUserLogin(UserLoginVO userLoginVO,User user){
-        ResultResponse<UserLoginVO> response = checkCodeValid(userLoginVO.getName(),userLoginVO.getCode());
+    private ResultResponse<UserLoginVO> assembleUserLogin(UserLoginVO userLoginVO,User user,String password,String type){
+        ResultResponse<UserLoginVO> response = checkCodeValid(userLoginVO,password,type);
         if (!response.isSuccess()){
                 return response;
         }
@@ -87,12 +95,12 @@ public class UserServiceImpl implements UserService {
     }
     /**
      * 校验验证码是否正确
-     * @param name
+     * @param
      * @return
      */
     private ResultResponse<UserLoginVO> checkCodeValid(String name, String code) {
         //检验验证码是否正确
-        if (StringUtils.isNoneBlank(smsService.getSmsCode(name))) {
+        if ( StringUtils.isNoneBlank(smsService.getSmsCode(name))) {
             if (!smsService.getSmsCode(name).equals(code)) {
                 return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USER_CODE_ERROR.getStatus(), UserStatusEnum.USER_CODE_ERROR.getMessage());
             }
@@ -104,8 +112,30 @@ public class UserServiceImpl implements UserService {
 
 
     /**
-     * 用户端注册
+     * 验证码和密码校验
      * @param userLoginVO
+     * @param password
+     * @param type
+     * @return
+     */
+    private ResultResponse<UserLoginVO> checkCodeValid(UserLoginVO userLoginVO,String password,String type) {
+        //检验验证码是否正确
+        if ("1".equals(type) && StringUtils.isNoneBlank(smsService.getSmsCode(userLoginVO.getPhone()))) {
+            if (!smsService.getSmsCode(userLoginVO.getPhone()).equals(userLoginVO.getCode())) {
+                return ResultResponse.createByErrorCodeMessage(UserStatusEnum.USER_CODE_ERROR.getStatus(), UserStatusEnum.USER_CODE_ERROR.getMessage());
+            }
+        }else if ("2".equals(type) && !MD5Util.MD5(password).equals(userLoginVO.getPassword())){  //密码校验
+            return ResultResponse.createByErrorMessage("密码错误");
+        }else {
+            return ResultResponse.createBySuccess();
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+
+    /**
+     * 用户端注册
+     * @param
      * @return
      */
 /*    @Override
@@ -224,6 +254,63 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponse getUserByPhone(String phone) {
         return ResultResponse.createBySuccess(userRepository.findByPhoneLike("%" + phone + "%"));
+    }
+
+    /**
+     * 设置密码
+     * @param userId
+     * @param password
+     * @param confirmPassword
+     * @return
+     */
+    @Transactional
+    @Override
+    public ResultResponse<User> settingPwd(Integer userId, String password, String confirmPassword,String newPassword) {
+        if (!password.equals(confirmPassword)) {
+            return ResultResponse.createByErrorMessage("两次输入密码不一致,请重新输入");
+        }
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            //密码为空，代表第一次设置密码
+            if (StringUtils.isBlank(user.getPassword())) {
+                user.setPassword(MD5Util.MD5(password));
+            }else {
+                if (!MD5Util.MD5(password).equals(user.getPassword())) {
+                    return ResultResponse.createByErrorMessage("旧密码错误,请重新输入");
+                }else {
+                    user.setPassword(MD5Util.MD5(newPassword));
+                }
+            }
+            userRepository.save(user);
+            return ResultResponse.createBySuccess();
+        }
+        return ResultResponse.createByErrorMessage("用户不存在");
+    }
+
+    /**
+     * 重置密码
+     * @param phone
+     * @param code
+     * @param password
+     * @param confirmPassword
+     * @return
+     */
+    @Override
+    public ResultResponse<User> resetPwd(String phone, String code, String password, String confirmPassword) {
+        //校验验证码是否正确
+        ResultResponse<UserLoginVO> response = checkCodeValid(phone, code);
+        if (!response.isSuccess()){
+            return ResultResponse.createByErrorMessage("验证码错误");
+        }
+        if (!password.equals(confirmPassword)) {
+            return ResultResponse.createByErrorMessage("两次输入密码不一致,请重新输入");
+        }
+        User user = userRepository.findByPhone(phone);
+        if (user == null) {
+            return ResultResponse.createByErrorMessage("该用户不存在");
+        }
+        user.setPassword(password);
+        return ResultResponse.createBySuccess();
     }
 
     private void initNewUserCommonFields(User u) {

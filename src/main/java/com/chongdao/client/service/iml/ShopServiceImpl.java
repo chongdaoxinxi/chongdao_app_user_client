@@ -16,6 +16,8 @@ import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -151,6 +153,22 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         //查询用户到店铺的距离
         double distance = DistanceUtil.getDistance(lat, lng, shop.getLat(), shop.getLng());
         shopVO.setDistance(BigDecimal.valueOf(distance/1000).setScale(1, BigDecimal.ROUND_UP) + "km");
+        //商家图片信息
+        if (StringUtils.isNotBlank(shop.getShowImg())) {
+            String showImgs = "";
+            List<String> stringList = Splitter.on(",").trimResults().splitToList(shop.getShowImg());
+            if (!CollectionUtils.isEmpty(stringList)) {
+                for (String s : stringList) {
+                    if (!"http".contains(s)) {
+                        showImgs = Joiner.on(",").skipNulls().join(IP + s, showImgs);
+                    }
+                }
+                if (StringUtils.isNotBlank(showImgs)) {
+                    shopVO.setShowImg(showImgs);
+                }
+            }
+        }
+
         return ResultResponse.createBySuccess(shopVO);
     }
 
