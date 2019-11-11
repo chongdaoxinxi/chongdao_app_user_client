@@ -315,7 +315,8 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return ResultResponse.createByErrorMessage("该用户不存在");
         }
-        user.setPassword(password);
+        user.setPassword(MD5Util.MD5(password));
+        userRepository.save(user);
         return ResultResponse.createBySuccess();
     }
 
