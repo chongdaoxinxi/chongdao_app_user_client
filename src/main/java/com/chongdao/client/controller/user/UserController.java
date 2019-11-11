@@ -3,6 +3,7 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Package;
+import com.chongdao.client.entitys.User;
 import com.chongdao.client.service.PackageService;
 import com.chongdao.client.service.UserCardService;
 import com.chongdao.client.service.UserService;
@@ -30,11 +31,34 @@ public class UserController {
 
     /**
      * 用户登录接口
+     * type 1:验证码登录 2::密码登录
      * @return
      */
     @PostMapping("login")
-    public ResultResponse<UserLoginVO> login(@RequestParam("phone") String phone,@RequestParam("code") String code){
-        return userService.login(phone, code);
+    public ResultResponse<UserLoginVO> login(@RequestParam("phone") String phone,String code, String password,@RequestParam("type") String type){
+        return userService.login(phone, code,password,type);
+    }
+
+    /**
+     * 用户设置密码接口
+     * @return
+     */
+    @PostMapping("settingPwd")
+    public ResultResponse<User> settingPwd(@RequestParam("userId") Integer userId,@RequestParam("password") String password, String confirmPassword,String newPassword){
+        return userService.settingPwd(userId,password,confirmPassword,newPassword);
+    }
+
+    /**
+     * 重置密码
+     * @param phone
+     * @param code
+     * @param password
+     * @param confirmPassword
+     * @return
+     */
+    @PostMapping("resetPwd")
+    public ResultResponse<User> resetPwd(@RequestParam("phone") String phone, @RequestParam("code")String code, @RequestParam("password") String password, @RequestParam("confirmPassword")String confirmPassword){
+        return userService.resetPwd(phone,code,password,confirmPassword);
     }
 
     /**

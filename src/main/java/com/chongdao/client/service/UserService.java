@@ -1,6 +1,7 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.User;
 import com.chongdao.client.vo.UserLoginVO;
 import com.chongdao.client.vo.UserSettingVO;
 
@@ -9,7 +10,7 @@ public interface UserService {
      * 用户登录接口
      * @return
      */
-    ResultResponse<UserLoginVO> login(String phone, String code);
+    ResultResponse<UserLoginVO> login(String phone, String code, String password, String type);
 
     //ResultResponse<String> register(UserLoginVO userLoginVO);
 
@@ -26,4 +27,8 @@ public interface UserService {
     ResultResponse checkSmsCode(String phone, String code);
 
     ResultResponse getUserByPhone(String phone);
+
+    ResultResponse<User> settingPwd(Integer userId, String password, String confirmPassword,String newPassword);
+
+    ResultResponse<User> resetPwd(String phone, String code, String password, String confirmPassword);
 }
