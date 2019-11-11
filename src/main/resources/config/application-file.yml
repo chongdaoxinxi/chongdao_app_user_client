@@ -8,3 +8,4 @@ fdfs:
    tracker-list:            #TrackerList参数,支持多个
       - 47.100.63.167:22122
    host: 47.100.63.167
+   url: www.chongdaopet.cn
