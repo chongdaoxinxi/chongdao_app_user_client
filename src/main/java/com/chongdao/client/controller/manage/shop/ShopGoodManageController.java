@@ -62,6 +62,16 @@ public class ShopGoodManageController {
     }
 
     /**
+     * 获取三级分类的父分类
+     * @param childId
+     * @return
+     */
+    @GetMapping("getSecondLevelTypeByChild")
+    public ResultResponse getSecondLevelTypeByChild(Integer childId) {
+        return goodsTypeService.getSecondLevelTypeByChild(childId);
+    }
+
+    /**
      * 三级类别
      * @return
      */
