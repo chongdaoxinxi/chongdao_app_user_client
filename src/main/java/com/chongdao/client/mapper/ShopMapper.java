@@ -52,5 +52,5 @@ public interface ShopMapper {
                             @Param("discount") Integer discount,@Param("proActivities") String proActivities,@Param("areaCode") String areaCode);
 
 
-
+    List<Shop> listAll(@Param("lng") Double lng,@Param("lat")Double lat,@Param("areaCode") String areaCode);
 }
