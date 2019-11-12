@@ -44,7 +44,7 @@ public class UserController {
      * @return
      */
     @PostMapping("settingPwd")
-    public ResultResponse<User> settingPwd(@RequestParam("userId") Integer userId,@RequestParam("password") String password, String confirmPassword,String newPassword){
+    public ResultResponse<User> settingPwd(@RequestParam("userId") Integer userId,String password, String confirmPassword,String newPassword){
         return userService.settingPwd(userId,password,confirmPassword,newPassword);
     }
 

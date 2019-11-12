@@ -272,7 +272,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ResultResponse<User> settingPwd(Integer userId, String password, String confirmPassword,String newPassword) {
-        if (!password.equals(confirmPassword)) {
+        if (!newPassword.equals(confirmPassword)) {
             return ResultResponse.createByErrorMessage("两次输入密码不一致,请重新输入");
         }
         User user = userRepository.findById(userId).orElse(null);
@@ -315,7 +315,8 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return ResultResponse.createByErrorMessage("该用户不存在");
         }
-        user.setPassword(password);
+        user.setPassword(MD5Util.MD5(password));
+        userRepository.save(user);
         return ResultResponse.createBySuccess();
     }
 

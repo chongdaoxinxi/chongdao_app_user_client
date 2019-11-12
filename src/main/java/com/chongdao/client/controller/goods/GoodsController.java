@@ -94,10 +94,7 @@ public class GoodsController {
      */
     @GetMapping("getCategory")
     public ResultResponse getBrand(){
-        List<BrandGoodsTypeVO> brandGoodsTypeVOList= (List<BrandGoodsTypeVO>) GuavaCache.getKey("getCategory");
-        if (brandGoodsTypeVOList != null){
-            return ResultResponse.createBySuccess(brandGoodsTypeVOList);
-        }
+        List<BrandGoodsTypeVO> brandGoodsTypeVOList= Lists.newArrayList();
         brandGoodsTypeVOList = Lists.newArrayList();
         //获取所有类别(只包含商品)
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatusAndCategoryId(0,1,3);
@@ -117,7 +114,6 @@ public class GoodsController {
             brandGoodsTypeVO.setParentId(goodsType.getParentId());
             brandGoodsTypeVOList.add(brandGoodsTypeVO);
         }
-        GuavaCache.setKey("getCategory", brandGoodsTypeVOList);
         return ResultResponse.createBySuccess(brandGoodsTypeVOList);
     }
 
