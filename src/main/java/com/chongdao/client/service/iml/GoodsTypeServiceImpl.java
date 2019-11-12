@@ -98,6 +98,15 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
     }
 
     @Override
+    public ResultResponse getSecondLevelTypeByChild(Integer childId) {
+        GoodsType goodsType = goodsTypeRepository.findById(childId).orElse(null);
+        if(goodsType != null) {
+            return ResultResponse.createBySuccess(goodsTypeRepository.findById(goodsType.getParentId()));
+        }
+        return ResultResponse.createByErrorMessage("无效的goodsTypeId");
+    }
+
+    @Override
     public ResultResponse getGoodsTypeListByParentId(Integer parentId) {
         return ResultResponse.createBySuccess(goodsTypeRepository.findByParentIdAndStatus(parentId, 1));
     }

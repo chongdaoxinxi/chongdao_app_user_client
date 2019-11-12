@@ -439,7 +439,7 @@
         left join goods_type gt on g.goods_type_id = gt.id
         where g.status in (0,1) and g.shop_id = #{shopId}
         <if test="goodName != null ">
-            and g.name like concat("%",#{goodName}),"%")
+            and g.name like concat('%',#{goodName},'%')
         </if>
         <if test="categoryId != null ">
             and g.category_id = #{categoryId}

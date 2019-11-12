@@ -15,6 +15,8 @@ public interface GoodsTypeService {
      */
     ResultResponse getGoodsTypeListByCategoryId(Integer categoryId);
 
+    ResultResponse getSecondLevelTypeByChild(Integer childId);
+
     /**
      * 三级类别
      * @param parentId
