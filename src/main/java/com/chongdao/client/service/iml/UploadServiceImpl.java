@@ -64,7 +64,8 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public ResultResponse convertOldImageToNew() throws IOException {
-        convertShopImage();
+//        convertShopImage();
+        conertGoodImage();
         return null;
     }
 

@@ -2,10 +2,12 @@ package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Banner;
+import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.Express;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
+import com.chongdao.client.repository.BrandRepository;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description 管理员pc端
@@ -58,6 +62,8 @@ public class AdminPcController {
     private AdminService adminService;
     @Autowired
     private UploadService uploadService;
+    @Autowired
+    private BrandRepository brandRepository;
 
     /**
      * 确认退款完成
@@ -564,4 +570,32 @@ public class AdminPcController {
     public ResultResponse convertImageUrl() throws IOException {
         return uploadService.convertOldImageToNew();
     };
+
+    @PostMapping("importWord")
+    public ResultResponse importWord(String path) {
+//        String[] split = WordPoiUtil.readOnWord(path);
+//        for(String string : split) {
+//            Brand brand = new Brand();
+//            brand.setName(string);
+//            brand.setGoodsTypeId(4);
+//            brand.setCreateTime(new Date());
+//            brandRepository.save(brand);
+//        }
+//        System.out.println("data import complete!");
+
+        //去掉重复的品牌部分
+        List<String> repeatedBrand = brandRepository.getRepeatedBrand();
+        List<Brand> toRemove = new ArrayList<>();
+        for(String brand : repeatedBrand) {
+            List<Brand> list = brandRepository.findByName(brand);
+            for(int i=1; i<list.size(); i++) {
+                toRemove.add(list.get(i));
+            }
+        }
+        for(Brand brand : toRemove) {
+            brandRepository.delete(brand);
+        }
+        System.out.println("check completed!");
+        return null;
+    }
 }
