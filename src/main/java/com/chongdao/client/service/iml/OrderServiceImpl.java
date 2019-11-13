@@ -214,12 +214,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //如果orderType为2代表提交订单 3代表拼单
         if (orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_CREATE.getStatus() || orderCommonVO.getOrderType() == OrderStatusEnum.ORDER_SPELL.getStatus()) {
             //地址判断
-            if (orderCommonVO.getServiceType() != 3 && (orderCommonVO.getReceiveAddressId() == null)) {
-                if (orderCommonVO.getServiceType() == 1 && orderVo.getDeliverTime() == null && orderCommonVO.getDeliverAddressId() == null) { //双程
+            if (orderCommonVO.getServiceType() != 3 && (orderCommonVO.getReceiveAddressId() == null || orderCommonVO.getReceiveAddressId() == 0)) {
+                if (orderCommonVO.getServiceType() == 1 && orderVo.getDeliverTime() == null && (orderCommonVO.getDeliverAddressId() == null || orderCommonVO.getDeliverAddressId() == 0)) { //双程
                     return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
                 }
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
-            } else if ((orderCommonVO.getReceiveAddressId() == null) || orderCommonVO.getReceiveTime() == null) {
+            } else if ((orderCommonVO.getReceiveAddressId() == null || orderCommonVO.getReceiveAddressId() == 0) || orderCommonVO.getReceiveTime() == null) {
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.ADDRESS_EMPTY.getStatus(), GoodsStatusEnum.ADDRESS_EMPTY.getMessage());
             } else {
                 //创建订单
@@ -1684,7 +1684,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                             if (StringUtils.isNotBlank(good.getIcon())) {
                                 orderGoodsVo.setGoodsIcon(good.getIcon());
                                 if (!good.getIcon().contains("http")) {
-                                    orderGoodsVo.setGoodsIcon(good.getIcon());
+                                    orderGoodsVo.setGoodsIcon(IP + good.getIcon());
                                 }
                             }
                             if (good.getRatio() != null && good.getRatio() > 0) {
