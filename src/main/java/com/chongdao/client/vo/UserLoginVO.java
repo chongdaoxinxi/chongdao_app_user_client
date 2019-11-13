@@ -38,6 +38,8 @@ public class UserLoginVO {
 
     //0 第一次登陆 1 已有登陆记录
     private Integer num = 0;
+    //广告展示，未登录展示一直展示，登录以后消失
+    private Integer isShow = 0;
 
 
 }
