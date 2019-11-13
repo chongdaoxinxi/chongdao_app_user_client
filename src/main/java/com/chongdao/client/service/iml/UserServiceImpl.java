@@ -279,8 +279,11 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             //密码为空，代表第一次设置密码
             if (StringUtils.isBlank(user.getPassword())) {
-                user.setPassword(MD5Util.MD5(password));
+                user.setPassword(MD5Util.MD5(newPassword));
             }else {
+                if (StringUtils.isBlank(password)) {
+                    return ResultResponse.createByErrorMessage("旧密码不能为空");
+                }
                 if (!MD5Util.MD5(password).equals(user.getPassword())) {
                     return ResultResponse.createByErrorMessage("旧密码错误,请重新输入");
                 }else {

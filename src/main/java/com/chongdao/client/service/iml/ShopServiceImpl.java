@@ -518,6 +518,10 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(),"经纬度不能为空");
         }
         List<Shop> shopList = shopMapper.listGeo(lng,lat,areaCode);
+        //3公里内无店铺
+        if (CollectionUtils.isEmpty(shopList)) {
+            shopList = shopMapper.listAll(lng,lat,areaCode);
+        }
         return ResultResponse.createBySuccess(this.shopListVOList(shopList,null));
     }
 
