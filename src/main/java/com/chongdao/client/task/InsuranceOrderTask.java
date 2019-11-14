@@ -48,7 +48,9 @@ public class InsuranceOrderTask {
                         insuranceShopChipRepository.save(insuranceShopChip);
                     }
                 }
+                System.out.println(insuranceOrder.getInsuranceOrderNo() + ", 超时未支付被关闭!");
             }
         }
+        System.out.println("超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
     }
 }
