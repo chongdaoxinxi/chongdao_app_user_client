@@ -34,8 +34,8 @@ import java.util.*;
 @Service
 public class RecommendServiceImpl implements RecommendService {
     private final static String RECOMMEND_URL = "https://www.chongdaopet.cn/recommend_sign/registered.html";//推广H5页面地址
-    private final static String LOGO_URL = "https://www.chongdaopet.cn/static/logo.png";//logo图片地址
-    private final static String QRCODE_URL_PREFIX = "https://www.chongdaopet.cn/static/";
+    private final static String LOGO_URL = "https://www.chongdaopet.cn/static/images/logo.png";//logo图片地址
+    private final static String QRCODE_URL_PREFIX = "https://www.chongdaopet.cn/static/images/";
 
     @Autowired
     private RecommendInfoRepository recommendInfoRepository;
