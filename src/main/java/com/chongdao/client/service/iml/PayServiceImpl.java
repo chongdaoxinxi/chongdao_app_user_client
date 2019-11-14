@@ -622,7 +622,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             if ("SUCCESS".equals(ret.getResult_code())) {
                 //再次签名
                 Map<String, String> finalpackage = new TreeMap<>();
-                String timestamp = (System.currentTimeMillis()) + "";
+                String timestamp = (System.currentTimeMillis()/1000) + "";
                 if (payType == 1) {
                     //app支付
                     finalpackage.put("appid", BasicInfo.APP_AppID);
