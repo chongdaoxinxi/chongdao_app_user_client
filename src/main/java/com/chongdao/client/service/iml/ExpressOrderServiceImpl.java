@@ -82,7 +82,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
 
                     //短信通知用户
                     expressAcceptOrderSmsSender(orderInfo, "");
-                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+//                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+                    return ResultResponse.createBySuccess(orderInfo.getOrderStatus());
                 }
             }
         }
@@ -166,7 +167,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
             //非到店自取, 且宠物数量大于0的
             insuranceService.insuranceZcg(orderInfo);
         }
-        return ResultResponse.createBySuccess();
+//        return ResultResponse.createBySuccess();
+        return ResultResponse.createBySuccess(orderInfo.getOrderStatus());
     }
 
     /**
@@ -228,7 +230,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 }
             }
         }
-        return ResultResponse.createBySuccess();
+        return ResultResponse.createBySuccess(orderInfo.getOrderStatus());
+//        return ResultResponse.createBySuccess();
     }
 
     @Override
@@ -312,7 +315,8 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     orderOperateLogService.addOrderOperateLogService(o.getId(), o.getOrderNo(), "", o.getOrderStatus(), OrderStatusEnum.ACCEPTED_ORDER.getStatus());
                     o.setOrderStatus(OrderStatusEnum.ACCEPTED_ORDER.getStatus());
                     expressAdminCancelOrderSmsSender(orderInfoRepository.saveAndFlush(o));
-                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+//                    return ResultResponse.createBySuccessMessage(ResultEnum.SUCCESS.getMessage());
+                    return ResultResponse.createBySuccess(o.getOrderStatus());
                 })
                 .orElse(ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage()));
     }
