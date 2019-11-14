@@ -33,7 +33,7 @@ import java.util.*;
  **/
 @Service
 public class RecommendServiceImpl implements RecommendService {
-    private final static String RECOMMEND_URL = "https://xxx.xxxx.xxx";//推广H5页面地址
+    private final static String RECOMMEND_URL = "https://www.chongdaopet.cn/recommend_sign/registered.html";//推广H5页面地址
     private final static String LOGO_URL = "http://www.chongdaopet.cn/static/logo.png";//logo图片地址
 
     @Autowired
