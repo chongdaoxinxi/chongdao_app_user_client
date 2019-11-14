@@ -34,7 +34,7 @@ public class InsuranceOrderTask {
         for (InsuranceOrder insuranceOrder : list) {
             Date applyTime = insuranceOrder.getApplyTime();
             Date now = new Date();
-            Long l = (now.getTime() - applyTime.getTime())/ (1000*60*60*24);
+            Long l = (now.getTime() - applyTime.getTime())/ (1000*60*60);
             if(l > 24) {
                 //如果投保下单后24小时后还未支付, 将订单关闭
                 insuranceOrder.setStatus(-1);
