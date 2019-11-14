@@ -167,6 +167,9 @@ public class RecommendServiceImpl implements RecommendService {
             return false;
         }
         Integer recommendType = user.getRecommendType();
+        if(recommendType == null) {
+            return false;
+        }
         List<RecommendRecord> list = recommendRecordRepository.findByUserIdAndRecommenderIdAndRecommendType(user.getId(), user.getRecommendId(), user.getRecommendType());
         if(recommendType.equals(RecommendTypeEnum.USER_ROLE.getCode()) || recommendType.equals(RecommendTypeEnum.EXPRESS_ROLE.getCode())) {
             if(list.size() > 0) {
