@@ -34,6 +34,7 @@ import java.util.*;
 @Service
 public class RecommendServiceImpl implements RecommendService {
     private final static String RECOMMEND_URL = "https://xxx.xxxx.xxx";//推广H5页面地址
+    private final static String LOGO_URL = "http://www.chongdaopet.cn/static/logo.png";//logo图片地址
 
     @Autowired
     private RecommendInfoRepository recommendInfoRepository;
@@ -98,7 +99,7 @@ public class RecommendServiceImpl implements RecommendService {
         ri.setRecommenderId(id);
         ri.setType(type);
         ri.setRecommendUrl(url);
-        String qrCodeUrl = QrCodeUtils.encode(url, "http://47.100.63.167/images/logo.jpg", "/static/images/", true);
+        String qrCodeUrl = QrCodeUtils.encode(url, LOGO_URL, "/static/images/", true);
         System.out.println("qrCodeUrl:" + qrCodeUrl);
         ri.setQrCodeUrl("http://47.100.63.167/images/" + qrCodeUrl);
         ri.setCreateTime(new Date());
