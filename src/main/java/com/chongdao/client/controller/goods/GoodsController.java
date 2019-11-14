@@ -100,8 +100,12 @@ public class GoodsController {
         List<GoodsType> goodsTypeList = goodsTypeRepository.findByParentIdAndStatusAndCategoryId(0,1,3);
         for (GoodsType goodsType : goodsTypeList) {
             BrandGoodsTypeVO  brandGoodsTypeVO = new BrandGoodsTypeVO();
-            //根据类别获取所属品牌
-            List<Brand> brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(new ArrayList<>());
+            List<Brand> brandList = Lists.newArrayList();
+            if (goodsType.getId() != 4 && goodsType.getId() != 21) {
+                //TODO 二级分类 品牌暂时为空，实际是有的
+                //根据类别获取所属品牌
+                brandList = brandRepository.findByGoodsTypeId(goodsType.getId()).orElse(new ArrayList<>());
+            }
             //填充信息
             brandGoodsTypeVO.setGoodsTypeId(goodsType.getId());
             //父分类 只包含商品

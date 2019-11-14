@@ -298,6 +298,13 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                                     petCard.setGoodsId(good.getId());
                                     petCard.setGoodsName(good.getName() + unit.getLabel());
                                     petCard.setGoodsPrice(good.getPrice());
+                                    if (good.getDiscount() == 10.0d || good.getDiscount() == null) {
+                                        good.setDiscount(0.0d);
+                                    }
+                                    if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
+                                        petCard.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
+                                    }
+                                    petCard.setDiscount(good.getDiscount());
                                     //查询实际购买该服务的人数
                                     int paymentNumber = goodMapper.paymentNumber(good.getId());
                                     petCard.setPaymentNumber(paymentNumber);
