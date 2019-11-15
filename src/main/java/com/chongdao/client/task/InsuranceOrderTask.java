@@ -45,6 +45,8 @@ public class InsuranceOrderTask {
                     InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(chipId).orElse(null);
                     if(insuranceShopChip != null) {
                         insuranceShopChip.setStatus(1);
+                        insuranceShopChip.setSelectedTime(null);
+                        insuranceShopChip.setUsedTime(null);
                         insuranceShopChipRepository.save(insuranceShopChip);
                     }
                 }
