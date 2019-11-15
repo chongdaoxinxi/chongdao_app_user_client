@@ -544,7 +544,7 @@
         reDiscount,
         if(round(getDistance(lat,lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(lat,lng,#{lat},#{lng})),'m'),
         CONCAT(format(round(getDistance(lat,lng,#{lat},#{lng}))*0.001,1),'km')) distance
-        from shop  where round(getDistance(lat,lng,#{lat},#{lng})) &lt;= 3000 and area_code = #{areaCode}
+        from shop  where round(getDistance(lat,lng,#{lat},#{lng})) &lt;= 3000 and area_code = #{areaCode} and status=1
         order by dis
     </select>
 
@@ -558,7 +558,7 @@
         reDiscount,
         if(round(getDistance(lat,lng,#{lat},#{lng}))&lt;= 1000,CONCAT(round(getDistance(lat,lng,#{lat},#{lng})),'m'),
         CONCAT(format(round(getDistance(lat,lng,#{lat},#{lng}))*0.001,1),'km')) distance
-        from shop  where  area_code = #{areaCode}
+        from shop  where  area_code = #{areaCode} and status=1
         order by dis
     </select>
 
