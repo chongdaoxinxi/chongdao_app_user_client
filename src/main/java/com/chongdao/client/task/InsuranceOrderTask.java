@@ -53,6 +53,6 @@ public class InsuranceOrderTask {
                 System.out.println(insuranceOrder.getInsuranceOrderNo() + ", 超时未支付被关闭!");
             }
         }
-        System.out.println("超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
+        System.out.println("保险订单超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
     }
 }
