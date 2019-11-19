@@ -222,7 +222,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             if (!good.getIcon().contains("http")) {
                 goodsListVO.setIcon(IP + good.getIcon());
             }
-            if (good.getDiscount() != null && good.getDiscount() == 10.0d) {
+            if (good.getDiscount() == null || good.getDiscount() == 10.0d) {
                 goodsListVO.setDiscount(0.0d);
             }
             //系数不为0 需提高原价 在进行折扣
