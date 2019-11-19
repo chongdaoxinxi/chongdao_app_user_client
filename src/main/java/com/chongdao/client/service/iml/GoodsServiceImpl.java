@@ -476,6 +476,11 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     public ResultResponse saveGood(Good good) {
         if(good.getId() == null) {
             good.setCreateTime(new Date());
+        } else {
+            good.setUpdateTime(new Date());
+        }
+        if(good.getCreateTime() == null) {
+            good.setCreateTime(new Date());
         }
         Integer shopId = good.getShopId();
         if(shopId != null) {

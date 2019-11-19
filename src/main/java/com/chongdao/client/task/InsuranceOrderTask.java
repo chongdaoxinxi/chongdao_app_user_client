@@ -45,12 +45,14 @@ public class InsuranceOrderTask {
                     InsuranceShopChip insuranceShopChip = insuranceShopChipRepository.findById(chipId).orElse(null);
                     if(insuranceShopChip != null) {
                         insuranceShopChip.setStatus(1);
+                        insuranceShopChip.setSelectedTime(null);
+                        insuranceShopChip.setUsedTime(null);
                         insuranceShopChipRepository.save(insuranceShopChip);
                     }
                 }
                 System.out.println(insuranceOrder.getInsuranceOrderNo() + ", 超时未支付被关闭!");
             }
         }
-        System.out.println("超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
+        System.out.println("保险订单超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
     }
 }

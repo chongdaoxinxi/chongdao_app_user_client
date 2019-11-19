@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.chongdao.client.common.Const.IP;
 import static com.chongdao.client.enums.OrderStatusEnum.USER_APPLY_REFUND;
@@ -1023,9 +1022,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         } else if (type.equals("1")) {
             type = "1";//待接单
         } else if (type.equals("2")) {
-            type = "2,7,11,12,14,15";//已接单
+            type = "2,7,11";//已接单
         } else if (type.equals("3")) {
-            type = "3,6";//已完成
+            type = "3,6,12,14,15";//已完成
         } else if (type.equals("4")) {
             type = "0,4,5,8,9";//退款中
         } else {
