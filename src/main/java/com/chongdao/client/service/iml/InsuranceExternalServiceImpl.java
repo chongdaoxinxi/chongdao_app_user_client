@@ -676,10 +676,14 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         insuranceOrder.setStatus(2);//已支付进入等待期
         InsuranceOrder save = insuranceOrderRepository.save(insuranceOrder);
         //校验是否有推广码, 调用返利接口
-        String recommendCode = save.getRecommendCode();
+        //校验是否满足返利条件, 调用返利接口
+//        String recommendCode = save.getRecommendCode();
         Integer insuranceType = save.getInsuranceType();
-        if(StringUtils.isNotBlank(recommendCode) && insuranceType != null && insuranceType != 3) {
-            recommendService.recommendInsuranceOrder(save.getId());
+        if(insuranceType != null && insuranceType != 3) {
+            boolean satisfy = recommendService.isSatisfyInsuranceOrderRewardByOrderId(save.getId());
+            if(satisfy) {
+                recommendService.recommendInsuranceOrder(save.getId());
+            }
         }
         //如果是医疗险调用赠送体检劵接口
         if(insuranceType == 1) {

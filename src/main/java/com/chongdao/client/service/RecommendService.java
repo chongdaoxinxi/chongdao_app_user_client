@@ -33,6 +33,13 @@ public interface RecommendService {
     boolean isSatisfyOrderRewardQualificationByOrderNo(String orderNo);
 
     /**
+     * 校验保险订单是否满足返现要求
+     * @param insuranceOrderId
+     * @return
+     */
+    boolean isSatisfyInsuranceOrderRewardByOrderId(Integer insuranceOrderId);
+
+    /**
      * 推广新用户首单完成时返现(首单完成时调用)
      * @param orderId
      * @return
