@@ -253,7 +253,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                     goodsListVO.setName(good.getName() + good.getUnitName());
                 }
                 //去除10，和0一样都是原价
-                if (good.getDiscount() == 10.0d) {
+                if (good.getDiscount() == null || good.getDiscount() == 10.0d) {
                     goodsListVO.setDiscount(0.0d);
                 }
                 goodsListVO.setDiscountPrice(good.getPrice());

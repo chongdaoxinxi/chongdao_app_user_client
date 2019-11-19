@@ -222,7 +222,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
             if (!good.getIcon().contains("http")) {
                 goodsListVO.setIcon(IP + good.getIcon());
             }
-            if (good.getDiscount() == 10.0d) {
+            if (good.getDiscount() == null || good.getDiscount() == 10.0d) {
                 goodsListVO.setDiscount(0.0d);
             }
             //系数不为0 需提高原价 在进行折扣
@@ -230,7 +230,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
                 good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
             }
             //折扣大于0时，才会显示折扣价
-            if (good.getDiscount() > 0.0D && good.getDiscount() < 10 &&good.getDiscount() != null ){
+            if (good.getDiscount() != null && good.getDiscount() > 0.0D && good.getDiscount() < 10 ){
                 goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10).setScale(2, BigDecimal.ROUND_HALF_UP)));
             }
             //商家设置第二件折扣
@@ -363,7 +363,7 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         List<GoodsListVO> goodsListVOList = Lists.newArrayList();
         goodList.stream().forEach(good -> {
             GoodsListVO goodsListVO = new GoodsListVO();
-            if (good.getDiscount() > 10) {
+            if (good.getDiscount() != null && good.getDiscount() > 10) {
                 good.setDiscount(0.0d);
             }
             BeanUtils.copyProperties(good,goodsListVO);
