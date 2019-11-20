@@ -9,7 +9,6 @@ public class PetException extends RuntimeException{
 
     /** 状态码 */
     private Integer code;
-
     public PetException(ResultEnum resultEnum) {
         super(resultEnum.getMessage());
 

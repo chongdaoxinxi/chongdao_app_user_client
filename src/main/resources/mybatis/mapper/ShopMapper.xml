@@ -504,7 +504,7 @@
         reDiscount,
         (select ifnull(sum(sales),0) from good where shop_id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;=
         3000) sales,
-        (select ifnull(grade,5) from shop where id=s.id and round(getDistance(s.lat,s.lng,31.377266,121.287066)) &lt;= 3000) orderby_grade
+        (select ifnull(grade,5) from shop where id=s.id and round(getDistance(s.lat,s.lng,#{lat},#{lng})) &lt;= 3000) orderby_grade
         from shop s
         where s.status in (0,1) and s.area_code = #{areaCode}
         <if test="categoryId != null">
