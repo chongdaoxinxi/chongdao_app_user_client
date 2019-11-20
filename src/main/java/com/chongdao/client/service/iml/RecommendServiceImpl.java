@@ -207,20 +207,20 @@ public class RecommendServiceImpl implements RecommendService {
                 return true;
             }
         } else if(recommendType.equals(RecommendTypeEnum.SHOP_ROLE.getCode())) {
-            Integer recommendId = user.getRecommendId();//是商店推人时, 这个ID就是shopId
-            if(recommendId == orderInfo.getShopId()) {
-                //只有非推荐人商铺下的单才计算在返利中
-                return false;
-            }
-
-            if(list.size() > 4) {
-                return false;
-            } else {
-                //再判定订单中是否含有商品, 不含商品的订单, 当推广人是商家时 也无法进行返利
-                //TODO
-
-                return true;
-            }
+//            Integer recommendId = user.getRecommendId();//是商店推人时, 这个ID就是shopId
+//            if(recommendId == orderInfo.getShopId()) {
+//                //只有非推荐人商铺下的单才计算在返利中
+//                return false;
+//            }
+//
+//            if(list.size() > 4) {
+//                return false;
+//            } else {
+//                //再判定订单中是否含有商品, 不含商品的订单, 当推广人是商家时 也无法进行返利
+//                //TODO
+//
+//                return true;
+//            }
         }
         return false;
     }
@@ -466,7 +466,7 @@ public class RecommendServiceImpl implements RecommendService {
      */
     @Override
     @Transactional
-    public boolean recommendInsuranceOrder(Integer insuranceOrderId) {
+        public boolean recommendInsuranceOrder(Integer insuranceOrderId) {
         InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
         Integer userId = insuranceOrder.getUserId();
         User user = userRepository.findById(userId).orElse(null);
