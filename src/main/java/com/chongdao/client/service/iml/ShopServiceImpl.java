@@ -168,6 +168,12 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                 }
             }
         }
+        if (StringUtils.isBlank(shopVO.getDistance())) {
+            shopVO.setDistance("0km");
+        }
+        if(StringUtils.isBlank(shopVO.getDes())){
+            shopVO.setDes("暂无描述");
+        }
 
         return ResultResponse.createBySuccess(shopVO);
     }
@@ -289,30 +295,32 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                     petCardDogs.stream().forEach(petCard -> {
                         //重量
                         BigDecimal weight = petCard.getWeight();
+                        PetCard p = new PetCard();
                         for (Unit unit : unitList) {
                             BigDecimal min = unit.getMin();
                             BigDecimal max = unit.getMax();
                             if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
                                 if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
-                                    petCard.setId(petCard.getId());
-                                    petCard.setGoodsId(good.getId());
-                                    petCard.setGoodsName(good.getName() + unit.getLabel());
-                                    petCard.setGoodsPrice(good.getPrice());
+                                    BeanUtils.copyProperties(petCard,p);
+                                    p.setId(petCard.getId());
+                                    p.setGoodsId(good.getId());
+                                    p.setGoodsName(good.getName() + unit.getLabel());
+                                    p.setGoodsPrice(good.getPrice());
                                     if (good.getDiscount() == 10.0d || good.getDiscount() == null) {
                                         good.setDiscount(0.0d);
                                     }
                                     if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
-                                        petCard.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
+                                        p.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10)).setScale(2, BigDecimal.ROUND_HALF_UP));
                                     }
-                                    petCard.setDiscount(good.getDiscount());
+                                    p.setDiscount(good.getDiscount());
                                     //查询实际购买该服务的人数
                                     int paymentNumber = goodMapper.paymentNumber(good.getId());
-                                    petCard.setPaymentNumber(paymentNumber);
-                                    petCardList.add(petCard);
-                                    goodsListVO.setPetCardList(petCardList);
+                                    p.setPaymentNumber(paymentNumber);
+                                    petCardList.add(p);
                                 }
                             }
                         }
+                        goodsListVO.setPetCardList(petCardList);
                     });
                 }
             } else {
@@ -580,6 +588,12 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         shopList.forEach(shop -> {
             ShopVO shopVO = new ShopVO();
             BeanUtils.copyProperties(shop,shopVO);
+            if(StringUtils.isBlank(shopVO.getDistance())){
+                shopVO.setDistance("0km");
+            }
+            if(StringUtils.isBlank(shopVO.getDes())){
+                shopVO.setDes("暂无描述");
+            }
             if (!shop.getLogo().contains("http")) {
                 shopVO.setLogo(IP + shop.getLogo());
             }
