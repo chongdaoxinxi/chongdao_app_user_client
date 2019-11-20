@@ -10,8 +10,8 @@ public enum RecommendTypeEnum {
     MEDICAL_INSURANCE(1, "医疗保险返现"),
     FAMILY_INSURANCE(2, "家责保险返现"),
     ORDER(3, "订单返现"),
-    ORDER_REWARD_PERCENT(5, "首单返现比例"),
-    INSURANCE_REWARD_PERCENT(5, "保险返现比例"),
+    ORDER_REWARD_PERCENT(8, "首单返现比例"),
+    INSURANCE_REWARD_PERCENT(8, "保险返现比例"),
     ORDER_REWARD_MAX(58, "首单返现上限")
     ;
 

@@ -158,6 +158,34 @@ public class RecommendServiceImpl implements RecommendService {
         return isSatisfyOrderReward(orderInfo);
     }
 
+    @Override
+    public boolean isSatisfyInsuranceOrderRewardByOrderId(Integer insuranceOrderId) {
+        InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
+        if(insuranceOrder == null) {
+            return false;
+        }
+        Integer userId = insuranceOrder.getUserId();
+        User user = userRepository.findById(userId).orElse(null);
+        if(user == null) {
+            return false;
+        }
+        Integer recommendType = user.getRecommendType();
+        if(recommendType == null) {
+            return false;
+        }
+        Integer insuranceType = insuranceOrder.getInsuranceType();
+        Integer consumeType = RecommendTypeEnum.MEDICAL_INSURANCE.getCode();
+        if(insuranceType == 2) {
+            consumeType = RecommendTypeEnum.FAMILY_INSURANCE.getCode();
+        }
+        List<RecommendRecord> list = recommendRecordRepository.findByUserIdAndRecommenderIdAndRecommendTypeAndConsumeType(user.getId(), user.getRecommendId(), user.getRecommendType(), consumeType);
+        if(list.size() > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private Boolean isSatisfyOrderReward(OrderInfo orderInfo) {
         if (orderInfo == null) {
             return false;
@@ -171,7 +199,7 @@ public class RecommendServiceImpl implements RecommendService {
         if(recommendType == null) {
             return false;
         }
-        List<RecommendRecord> list = recommendRecordRepository.findByUserIdAndRecommenderIdAndRecommendType(user.getId(), user.getRecommendId(), user.getRecommendType());
+        List<RecommendRecord> list = recommendRecordRepository.findByUserIdAndRecommenderIdAndRecommendTypeAndConsumeType(user.getId(), user.getRecommendId(), user.getRecommendType(), RecommendTypeEnum.ORDER.getCode());
         if(recommendType.equals(RecommendTypeEnum.USER_ROLE.getCode()) || recommendType.equals(RecommendTypeEnum.EXPRESS_ROLE.getCode())) {
             if(list.size() > 0) {
                 return false;
@@ -440,30 +468,56 @@ public class RecommendServiceImpl implements RecommendService {
     @Transactional
     public boolean recommendInsuranceOrder(Integer insuranceOrderId) {
         InsuranceOrder insuranceOrder = insuranceOrderRepository.findById(insuranceOrderId).orElse(null);
-        String recommendCode = insuranceOrder.getRecommendCode();
-        List<RecommendInfo> riList = recommendInfoRepository.findByRecommendCode(recommendCode);
-        if(riList != null && riList.size() > 0) {
-            RecommendInfo recommendInfo = riList.get(0);
-            Integer type = recommendInfo.getType();
-            Integer recommenderId = recommendInfo.getRecommenderId();
-            //生成返利记录
-            RecommendRecord rr = new RecommendRecord();
-            rr.setUserId(insuranceOrder.getUserId());
-            rr.setRecommenderId(recommenderId);
-            rr.setRecommendType(type);
-            rr.setConsumeId(insuranceOrderId);
-            rr.setConsumeType(insuranceOrder.getInsuranceType());
-            rr.setConsumeMoney(insuranceOrder.getSumAmount());
-            rr.setRewardPercent(RecommendTypeEnum.INSURANCE_REWARD_PERCENT.getCode());
-            rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(rr.getRewardPercent()/100)));
-            rr.setIsRefund(-1);
-            rr.setCreateTime(new Date());
-            recommendRecordRepository.save(rr);
-            //根据推荐人类型将资金存入相应账户
-            storeReward(rr.getId(), rr.getRecommenderId(), rr.getRecommendType(), rr.getConsumeType(), rr.getRewardMoney());
-            return true;
+        Integer userId = insuranceOrder.getUserId();
+        User user = userRepository.findById(userId).orElse(null);
+        Integer recommendId = user.getRecommendId();
+        Integer recommendType = user.getRecommendType();
+        //生成返利记录
+        RecommendRecord rr = new RecommendRecord();
+        rr.setUserId(insuranceOrder.getUserId());
+        rr.setRecommenderId(recommendId);
+        rr.setRecommendType(recommendType);
+        rr.setConsumeId(insuranceOrderId);
+        Integer insuranceType = insuranceOrder.getInsuranceType();
+        Integer consumeType = RecommendTypeEnum.MEDICAL_INSURANCE.getCode();
+        if(insuranceType == 2) {
+            consumeType = RecommendTypeEnum.FAMILY_INSURANCE.getCode();
         }
-        return false;
+        rr.setConsumeType(consumeType);
+        rr.setConsumeMoney(insuranceOrder.getSumAmount());
+        rr.setRewardPercent(RecommendTypeEnum.INSURANCE_REWARD_PERCENT.getCode());
+        rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(rr.getRewardPercent()/100)));
+        rr.setIsRefund(-1);
+        rr.setCreateTime(new Date());
+        recommendRecordRepository.save(rr);
+        //根据推荐人类型将资金存入相应账户
+        storeReward(rr.getId(), rr.getRecommenderId(), rr.getRecommendType(), rr.getConsumeType(), rr.getRewardMoney());
+        return true;
+
+//        String recommendCode = insuranceOrder.getRecommendCode();
+//        List<RecommendInfo> riList = recommendInfoRepository.findByRecommendCode(recommendCode);
+//        if(riList != null && riList.size() > 0) {
+//            RecommendInfo recommendInfo = riList.get(0);
+//            Integer type = recommendInfo.getType();
+//            Integer recommenderId = recommendInfo.getRecommenderId();
+//            //生成返利记录
+//            RecommendRecord rr = new RecommendRecord();
+//            rr.setUserId(insuranceOrder.getUserId());
+//            rr.setRecommenderId(recommenderId);
+//            rr.setRecommendType(type);
+//            rr.setConsumeId(insuranceOrderId);
+//            rr.setConsumeType(insuranceOrder.getInsuranceType());
+//            rr.setConsumeMoney(insuranceOrder.getSumAmount());
+//            rr.setRewardPercent(RecommendTypeEnum.INSURANCE_REWARD_PERCENT.getCode());
+//            rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(rr.getRewardPercent()/100)));
+//            rr.setIsRefund(-1);
+//            rr.setCreateTime(new Date());
+//            recommendRecordRepository.save(rr);
+//            //根据推荐人类型将资金存入相应账户
+//            storeReward(rr.getId(), rr.getRecommenderId(), rr.getRecommendType(), rr.getConsumeType(), rr.getRewardMoney());
+//            return true;
+//        }
+//        return false;
     }
 
     @Override
