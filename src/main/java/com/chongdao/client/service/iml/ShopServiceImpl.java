@@ -255,7 +255,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                 if (!good.getIcon().contains("http")) {
                     goodsListVO.setIcon(IP + good.getIcon());
                 }
-                if (good.getUnitName() != null){
+                if (good.getUnitName() != null && good.getCategoryId() != null && good.getCategoryId() != 3){
                     goodsListVO.setName(good.getName() + good.getUnitName());
                 }
                 //去除10，和0一样都是原价
