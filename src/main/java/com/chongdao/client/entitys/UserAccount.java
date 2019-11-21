@@ -26,7 +26,7 @@ public class UserAccount implements Serializable {
     private Integer id;
     private Integer userId;
     private BigDecimal money;
-    private Integer type;
+    private Integer type;// 1:用户充值;2:订单消费;3:订单退款;4:返现/提成;
     private Integer status;//-1:失效;1:生效
 
     @Override
