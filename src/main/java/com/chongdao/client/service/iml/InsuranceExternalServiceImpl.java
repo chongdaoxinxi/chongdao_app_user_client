@@ -689,7 +689,6 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
         if(insuranceType == 1) {
             presentMedicalCard(insuranceOrder);
         }
-
     }
 
     private void presentMedicalCard(InsuranceOrder insuranceOrder) {
