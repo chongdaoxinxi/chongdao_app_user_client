@@ -88,11 +88,6 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         BigDecimal cartTotalPrice = new BigDecimal(BigInteger.ZERO);
         BigDecimal totalDiscount = new BigDecimal(BigInteger.ZERO);
         OrderVo orderVo = new OrderVo();
-        //默认地址
-//        UserAddress address = userAddressRepository.findByUserIdAndIsDefaultAddress(userId, 1);
-//        if (address != null){
-//            orderVo.setUserAddress(address);
-//        }
         List<Integer> categoryIds = Lists.newArrayList();
         List<Integer> goodsIds = Lists.newArrayList();
         //从购物车中获取数据
@@ -199,11 +194,16 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //商品优惠券数量
         orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(userId, orderCommonVO.getShopId(), categoryIds, cartTotalPrice));
         //订单总价（包含配送费）
-        orderVo.setTotalPrice(cartTotalPrice.add(orderVo.getServicePrice()));
+        //需减去小计
+        cartTotalPrice  = (cartTotalPrice.add(orderVo.getServicePrice())).subtract(totalDiscount);
+        if (cartTotalPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            cartTotalPrice = new BigDecimal("0.01");
+        }
+        orderVo.setTotalPrice(cartTotalPrice);
         orderVo.setIsService(orderCommonVO.getIsService());
         orderVo.setServiceType(orderCommonVO.getServiceType());
         //实际付款（包含配送费）
-        orderVo.setPayment(cartTotalPrice.add(orderVo.getServicePrice()));
+        orderVo.setPayment(cartTotalPrice);
         //如果是配送订单(非到店自取)且宠物数量大于1且用户选择购买了运输险, 那么计算运输险费用并更新OrderVo实体
         Integer serviceType = orderCommonVO.getServiceType();
         Integer isByInsurance = orderCommonVO.getIsByInsurance();
