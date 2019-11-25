@@ -161,30 +161,29 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public ResultResponse randomAddRobotOrder(Integer shopId) {
-        List<Shop> list = shopRepository.findAllByStatusNotAndAreaCode(1, "3101");
+        List<Shop> list = shopRepository.findByStatus(1);
         List<Integer> shopIdList = new ArrayList<>();
         for(Shop s : list) {
             shopIdList.add(s.getId());
         }
         Random random = new Random();
-        for(int i = 0; i< 30; i++) {
-            int index = random.nextInt(shopIdList.size());
-            System.out.println("shopId:" + shopIdList.get(index));
-            List<Good> goodList = goodsRepository.findByShopId(shopIdList.get(index));
-            for (Good g : goodList) {
-                int randomInt = random.nextInt(5);
-                System.out.println("randomInt:" + randomInt);
-                g.setSales(randomInt);
-                goodsRepository.save(g);
+        for(Integer id : shopIdList) {
+            System.out.println("shopId:" + id);
+            List<Good> goodList = goodsRepository.findByShopId(id);
+            int j = 4;
+            if(goodList != null && goodList.size() > 0) {
+                if(goodList.size() < 5) {
+                    j = goodList.size() - 1;
+                }
+                for(int i = 0; i< j; i++) {
+                    Good good = goodList.get(i);
+                    int randomInt = random.nextInt(5) + 1;
+                    good.setSales(randomInt);
+                    goodsRepository.save(good);
+                }
             }
         }
-//        List<Good> list = goodsRepository.findAll();
-//
-//        for (Good g : list) {
-//            int i = random.nextInt(5);
-//            g.setSales(i);
-//            goodsRepository.save(g);
-//        }
+        System.out.println("机器人订单销量更新完毕!");
         return ResultResponse.createBySuccess();
     }
 }

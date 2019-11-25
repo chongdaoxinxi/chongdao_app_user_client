@@ -8,7 +8,6 @@ import com.chongdao.client.repository.GoodsRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.UploadService;
 import com.github.tobato.fastdfs.domain.StorePath;
-import com.github.tobato.fastdfs.proto.storage.DownloadByteArray;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -22,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.List;
 
 @Service
@@ -169,27 +168,73 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public ResultResponse downloadFile(String url, HttpServletResponse response) throws UnsupportedEncodingException {
-        if(url.indexOf("group") != -1) {
-            url = url.substring(url.indexOf("group"));
-        }
-        String group = url.substring(0, url.indexOf("/"));
-        String path = url.substring(url.indexOf("/") + 1);
-        DownloadByteArray downloadByteArray = new DownloadByteArray();
-        byte[] bytes = this.storageClient.downloadFile(group, path, downloadByteArray);
-        //设置响应头
-        response.reset();
-        response.setContentType("multipart/form-data");
-        response.addHeader("Content-Disposition",
-                "attachment;filename=" + URLEncoder.encode("店铺二维码", "UTF-8"));
+//        if(url.indexOf("group") != -1) {
+//            url = url.substring(url.indexOf("group"));
+//        }
+//        String group = url.substring(0, url.indexOf("/"));
+//        String path = url.substring(url.indexOf("/") + 1);
+//        DownloadByteArray downloadByteArray = new DownloadByteArray();
+
         try {
-            OutputStream os = response.getOutputStream();
-            os.write(bytes);
-            os.flush();
-            os.close();
-            log.info("下载成功");
-        } catch (Exception e) {
+            URL url_ = new URL(url);
+            HttpURLConnection conn =  null;
+            try {
+                URLConnection urlCon = url_.openConnection(); // 获取一个URLConnection
+                conn = (HttpURLConnection)urlCon;
+                conn.setConnectTimeout(5000);//设置连接超时时长
+                int code = conn.getResponseCode();//返回连接状态
+                if(code == 200){ //表示连接成功
+                    System.out.println("连接成功...");
+                    InputStream is = null;
+                    OutputStream os = null;
+                    try{
+                        is = conn.getInputStream(); //获取 输入流
+//                        os = new FileOutputStream("dog1.jpg");
+                        //设置响应头
+                        response.reset();
+                        response.setContentType("image/jpeg");
+                        response.addHeader("Content-Disposition",
+                                "attachment;filename=" + URLEncoder.encode("推广链接.jpg", "UTF-8"));
+                        os = response.getOutputStream();
+                        byte b[] = new byte[1024];
+                        int num = 0;
+                        while((num = is.read(b)) != -1){
+                            os.write(b,0,num);
+                        }
+                        log.info("下载成功");
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }finally{
+                        is.close();
+                        os.close();
+                    }
+                }else{
+                    System.out.println("网络连接异常");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                conn.disconnect();//关闭
+                System.out.println("文件下载完成...");
+            }
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+//        byte[] bytes = this.storageClient.downloadFile(group, path, downloadByteArray);
+//        //设置响应头
+//        response.reset();
+//        response.setContentType("multipart/form-data");
+//        response.addHeader("Content-Disposition",
+//                "attachment;filename=" + URLEncoder.encode("店铺二维码", "UTF-8"));
+//        try {
+//            OutputStream os = response.getOutputStream();
+//            os.write(bytes);
+//            os.flush();
+//            os.close();
+//            log.info("下载成功");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 }

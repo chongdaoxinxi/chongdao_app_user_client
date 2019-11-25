@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("/api/")
+    @RequestMapping("/api/")
 @CrossOrigin
 public class FastDFSController {
 
