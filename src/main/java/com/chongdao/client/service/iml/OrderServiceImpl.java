@@ -176,6 +176,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         }
         //配送费(到店自取无配送费) 有优惠需减去优惠
         if (orderCommonVO.getServiceType() != 3) {
+            System.out.println("非到店自取计算配送价格!, serviceType:" + orderCommonVO.getServiceType());
             BigDecimal originServicePrice = freightComputer.computerFee(
                     orderCommonVO.getServiceType(), orderCommonVO.getIsService(),
                     orderCommonVO.getReceiveAddressId(), orderCommonVO.getDeliverAddressId(),
