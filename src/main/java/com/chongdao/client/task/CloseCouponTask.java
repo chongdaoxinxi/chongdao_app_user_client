@@ -78,8 +78,8 @@ public class CloseCouponTask extends CommonRepository {
     /**
      * 15分钟未接单退款
      */
-    //@Async
-    //@Scheduled(cron="0 0/15 * * * ? ")
+    @Async
+    @Scheduled(cron="0 0/15 * * * ? ")
     //@Scheduled(cron="0/1 * * * * ?")
     public void closeOrderTask(){
         log.info("【关闭订单】定时任务开始...");
