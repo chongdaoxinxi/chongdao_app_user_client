@@ -24,7 +24,6 @@ public class ShopController {
     private GoodsService goodsService;
 
 
-
     /**
      * 首页(分页获取所有商铺)
      * @param pageNum 页数
@@ -41,7 +40,6 @@ public class ShopController {
                                           @RequestParam(value = "areaCode") String areaCode,
                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-
         return shopService.list(userId, categoryId, proActivities, orderBy, lng, lat, areaCode, pageNum, pageSize);
 
     }
