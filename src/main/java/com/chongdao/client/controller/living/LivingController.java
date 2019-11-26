@@ -72,7 +72,7 @@ public class LivingController {
      * @return
      */
     @PostMapping("add")
-    public ResultResponse<LivingInfo> add(@Valid LivingInfo livingInfo, BindingResult bindingResult){
+    public ResultResponse<LivingInfo> add(@RequestBody @Valid LivingInfo livingInfo, BindingResult bindingResult){
         LoginUserUtil.resultTokenVo(livingInfo.getToken());
         if (bindingResult.hasErrors()) {
             log.error("【发布活体】参数不正确，livingInfo={}:",livingInfo);
