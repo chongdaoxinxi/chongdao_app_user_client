@@ -126,6 +126,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     @Transactional
     public ResultResponse insuranceFeeCashIn(InsuranceFeeRecord insuranceFeeRecord) {
+        System.out.println("进入资金流转方法");
         BigDecimal money = insuranceFeeRecord.getMoney();
         BigDecimal toShopMoney = money;
         Integer type = insuranceFeeRecord.getType();//是否保险类
@@ -138,13 +139,13 @@ public class CashAccountServiceImpl implements CashAccountService {
             toShopMoney = getDeductedPrice(money, DeductPercentEnum.INSURANCE_FEE_DEDUCT.getCode());
         }
         shopMoneyDeal(shop, toShopMoney);
-        generateShopBill(null, shopId, money, "医疗费用订单", 4);
+        generateShopBill(insuranceFeeRecord.getId(), shopId, money, "医疗费用订单", 4);
         //钱入地区账户, 并生成流水记录
-        generateAreaBill(null, shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
+        generateAreaBill(insuranceFeeRecord.getId(), shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
         Management areaAdmin = getAreaAdmin(shop.getAreaCode());
         managementMoneyDeal(areaAdmin, money);
         //钱入超级账户, 并生成流水记录
-        generateSuperAdminBill(null, shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
+        generateSuperAdminBill(insuranceFeeRecord.getId(), shopId, shop.getAreaCode(), money, "医疗费用订单", 4);
         Management superAdmin = getSuperAdmin();
         managementMoneyDeal(superAdmin, money);
         return ResultResponse.createBySuccess();
@@ -276,10 +277,10 @@ public class CashAccountServiceImpl implements CashAccountService {
             applyMoney = applyMoney.multiply(new BigDecimal(-1));
             realMoney = realMoney.multiply(new BigDecimal(-1));
             shopMoneyDeal(shop, applyMoney);
-            generateShopBill(null, shopId, realMoney, "店铺提现", 3);
+            generateShopBill(shopApply.getId(), shopId, realMoney, "店铺提现", 3);
         } else {
             shopMoneyDeal(shop, applyMoney);
-            generateShopBill(null, shopId, realMoney.multiply(new BigDecimal(-1)), "店铺提现失败退还", 3);
+            generateShopBill(shopApply.getId(), shopId, realMoney.multiply(new BigDecimal(-1)), "店铺提现失败退还", 3);
         }
         return ResultResponse.createBySuccess();
     }
@@ -346,6 +347,7 @@ public class CashAccountServiceImpl implements CashAccountService {
      * 商家资金出入账
      */
     private void shopMoneyDeal(Shop s, BigDecimal money) {
+        System.out.println("添加资金, money: " + money);
         BigDecimal oldMoney = conversionNullBigDecimal(s.getMoney());
         s.setMoney(oldMoney.add(money));
         shopRepository.save(s);

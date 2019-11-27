@@ -586,6 +586,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
         model.setBody(BasicInfo.APP_NAME + "-" + goodStr);
         //支付订单号
         model.setOut_trade_no(orderNo);
+        System.out.println("订单号:" + orderNo);
 
         //如果为保险医疗费用订单查出该订单需支付的费用, 并转换成分
         if(totalFee == null) {
