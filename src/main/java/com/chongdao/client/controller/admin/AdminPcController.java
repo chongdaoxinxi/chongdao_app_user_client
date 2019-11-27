@@ -9,6 +9,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.BrandRepository;
 import com.chongdao.client.service.*;
+import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -558,7 +559,18 @@ public class AdminPcController {
      */
     @PostMapping("randomAddRobotOrder")
     public ResultResponse randomAddRobotOrder(Integer shopId) {
-        return adminService.randomAddRobotOrder(shopId);
+        BigDecimal a = new BigDecimal("35.1");
+        double v = a.doubleValue();
+        String s = Double.toString(v);
+        double count = 0.9D;
+        double dd = 1.0D;
+        double ddd = dd/10;
+        BigDecimal mul = BigDecimalUtil.mul(a.doubleValue(), count);
+        BigDecimal b = new BigDecimal(String.valueOf((double)95/(double)100));
+        BigDecimal c = a.multiply(b);
+
+        return null;
+//        return adminService.randomAddRobotOrder(shopId);
     }
 
     /**

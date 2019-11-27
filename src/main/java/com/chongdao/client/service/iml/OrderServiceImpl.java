@@ -908,7 +908,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         }
         List<OrderDetail> orderItemList = Lists.newArrayList();
         //折扣
-        Double count = 1.0D;
+        Double count = 10.0D;
         //校验购物车的数据,包括产品的状态和数量
         for (Carts cartItem : cartList) {
             OrderDetail orderDetail = new OrderDetail();
@@ -933,8 +933,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             if (good.getReDiscount() > 0) {
                 count = good.getReDiscount();
             }
-            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count));
-            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count)).doubleValue(), cartItem.getQuantity()));
+            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count/10));
+            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count/10)).doubleValue(), cartItem.getQuantity()));
             orderItemList.add(orderDetail);
         }
         return ResultResponse.createBySuccess(orderItemList);

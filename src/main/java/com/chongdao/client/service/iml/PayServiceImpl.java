@@ -107,6 +107,7 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             model.setSubject("养宠有道订单-" +orderNo);//商品名称
             model.setOutTradeNo(orderNo);//商户订单号
             model.setTimeoutExpress("30m"); //交易超时时间
+            System.out.println("支付宝支付金额" + String.valueOf(order.getPayment()));
             model.setTotalAmount(String.valueOf(order.getPayment())); //支付金额
             ali_request.setBizModel(model);
             ali_request.setNotifyUrl(AliPayConfig.NOTIFY_URL); //App支付异步回调地址

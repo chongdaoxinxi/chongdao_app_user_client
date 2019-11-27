@@ -80,7 +80,7 @@ public class FreightComputer {
         //服务类型为双程时，送地址不为空
         UserAddress deliverAddress = null;
         if (1 == serviceType) {
-            deliverAddress = userAddressRepository.findByIdAndUserId(receiveAddressId, userId);
+            deliverAddress = userAddressRepository.findByIdAndUserId(deliverAddressId, userId);
             deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
         }
         //超出三公里的费用
