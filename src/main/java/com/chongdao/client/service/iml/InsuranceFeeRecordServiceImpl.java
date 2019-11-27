@@ -58,6 +58,7 @@ public class InsuranceFeeRecordServiceImpl implements InsuranceFeeRecordService 
         BeanUtils.copyProperties(insuranceFeeRecord, ifr);
         ifr.setOrderNo("IFR_" + GenerateOrderNo.genUniqueKey());
         ifr.setCreateTime(new Date());
+        ifr.setStatus(-1);
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), insuranceFeeRecordRepository.save(ifr));
     }
 
