@@ -398,6 +398,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         sb.setPrice(price);
         sb.setNote(note);
         sb.setType(type);
+        sb.setCreateTime(new Date());
         shopBillRepository.save(sb);
     }
 
@@ -421,6 +422,7 @@ public class CashAccountServiceImpl implements CashAccountService {
         ab.setPrice(price);
         ab.setCreateTime(new Date());
         ab.setAreaCode(areaCode);
+        ab.setCreateTime(new Date());
         areaBillRepository.save(ab);
     }
 
