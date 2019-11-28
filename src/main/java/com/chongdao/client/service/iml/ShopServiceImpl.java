@@ -198,7 +198,13 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
             s.setIsHot(i.byteValue());
             s.setIsJoinCommonWeal(i.byteValue());
             s.setIsStop(i.byteValue());
+            //账户金额预设为0
             s.setMoney(new BigDecimal(0));
+            s.setCustomGoodOrderMoney(new BigDecimal(0));
+            s.setCustomServiceOrderMoney(new BigDecimal(0));
+            s.setArriveShopOrderMoney(new BigDecimal(0));
+            s.setInsuranceMoney(new BigDecimal(0));
+            s.setRecommendMoney(new BigDecimal(0));
             //将密码MD5加密
             s.setPassword(MD5Util.MD5(s.getPassword()));
         } else {
