@@ -1,22 +1,23 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Management;
-import com.chongdao.client.entitys.ShopBill;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.ShopBillMapper;
-import com.chongdao.client.repository.ManagementRepository;
-import com.chongdao.client.repository.ShopBillRepository;
+import com.chongdao.client.repository.*;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ShopBillService;
 import com.chongdao.client.vo.OrderShopVO;
+import com.chongdao.client.vo.ShopBillVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,12 @@ public class ShopBillServiceImpl implements ShopBillService {
     private ManagementRepository managementRepository;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
     @Override
     public ResultResponse addShopBillRecord(Integer orderId, Integer shopId, Integer type, String note, BigDecimal realMoney) {
@@ -97,9 +104,38 @@ public class ShopBillServiceImpl implements ShopBillService {
      * @return
      */
     @Override
-    public ResultResponse getShopBillByShopId(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
+    public ResultResponse getShopBillByShopId(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageSize){
         PageHelper.startPage(pageNum, pageSize);
         List<ShopBill> list = shopBillMapper.getShopBillByShopId(shopId, startDate, endDate);
+        List<ShopBillVO> voList = new ArrayList<>();
+        for(ShopBill sb : list) {
+            ShopBillVO sbV = new ShopBillVO();
+            BeanUtils.copyProperties(sb, sbV);
+            sbV.setUserName("");
+            Integer orderId = sb.getOrderId();
+            Integer type = sb.getType();
+            if(orderId != null) {
+                if(type == 1 || type == 2) {
+                    //正常订单
+                    OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
+                    if(orderInfo != null) {
+                        Integer userId = orderInfo.getUserId();
+                        if(userId != null) {
+                            User user = userRepository.findById(userId).orElse(null);
+                            if(user != null)  {
+                                sbV.setUserName(user.getName());
+                            }
+                        }
+                    }
+                } else if(type == 4) {
+                    //医疗订单
+                    InsuranceFeeRecord insuranceFeeRecord = insuranceFeeRecordRepository.findById(orderId).orElse(null);
+                    if(insuranceFeeRecord != null) {
+                        sbV.setUserName(insuranceFeeRecord.getUserName());
+                    }
+                }
+            }
+        }
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);
