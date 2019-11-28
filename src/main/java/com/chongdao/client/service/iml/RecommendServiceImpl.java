@@ -260,7 +260,7 @@ public class RecommendServiceImpl implements RecommendService {
         Integer percent = RecommendTypeEnum.ORDER_REWARD_PERCENT.getCode();
         rr.setRewardPercent(percent);
         //订单返现有最大值(现为58)
-        BigDecimal multiplyReward = payment.multiply(new BigDecimal(String.valueOf(percent / 100)));
+        BigDecimal multiplyReward = payment.multiply(new BigDecimal(String.valueOf((double)percent / (double)100)));
         if(multiplyReward.compareTo(new BigDecimal(String.valueOf(RecommendTypeEnum.ORDER_REWARD_MAX.getCode()))) > 1) {
             multiplyReward = new BigDecimal(String.valueOf(RecommendTypeEnum.ORDER_REWARD_MAX.getCode()));
         }
@@ -486,7 +486,8 @@ public class RecommendServiceImpl implements RecommendService {
         rr.setConsumeType(consumeType);
         rr.setConsumeMoney(insuranceOrder.getSumAmount());
         rr.setRewardPercent(RecommendTypeEnum.INSURANCE_REWARD_PERCENT.getCode());
-        rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(rr.getRewardPercent()/100)));
+        String percent = String.valueOf((double)rr.getRewardPercent()/(double)100);
+        rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(percent)));
         rr.setIsRefund(-1);
         rr.setCreateTime(new Date());
         recommendRecordRepository.save(rr);
