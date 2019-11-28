@@ -195,9 +195,9 @@ public class UploadServiceImpl implements UploadService {
                         response.setContentType("image/jpeg");
                         response.addHeader("Content-Disposition",
                                 "attachment;filename=" + URLEncoder.encode("推广链接.jpg", "UTF-8"));
-                        response.addHeader("Access-Control-Allow-Origin", "*");
-                        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-                        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+//                        response.addHeader("Access-Control-Allow-Origin", "*");
+//                        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//                        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
                         os = response.getOutputStream();
                         byte b[] = new byte[1024];
                         int num = 0;
