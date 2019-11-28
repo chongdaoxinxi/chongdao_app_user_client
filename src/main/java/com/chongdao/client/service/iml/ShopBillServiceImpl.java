@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,36 +118,7 @@ public class ShopBillServiceImpl implements ShopBillService {
     @Override
     public ResultResponse getShopBillByShopId(Integer shopId, Date startDate, Date endDate, Integer pageNum, Integer pageSize){
         PageHelper.startPage(pageNum, pageSize);
-        List<ShopBill> list = shopBillMapper.getShopBillByShopId(shopId, startDate, endDate);
-        List<ShopBillVO> voList = new ArrayList<>();
-        for(ShopBill sb : list) {
-            ShopBillVO sbV = new ShopBillVO();
-            BeanUtils.copyProperties(sb, sbV);
-            sbV.setUserName("");
-            Integer orderId = sb.getOrderId();
-            Integer type = sb.getType();
-            if(orderId != null) {
-                if(type == 1 || type == 2) {
-                    //正常订单
-                    OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
-                    if(orderInfo != null) {
-                        Integer userId = orderInfo.getUserId();
-                        if(userId != null) {
-                            User user = userRepository.findById(userId).orElse(null);
-                            if(user != null)  {
-                                sbV.setUserName(user.getName());
-                            }
-                        }
-                    }
-                } else if(type == 4) {
-                    //医疗订单
-                    InsuranceFeeRecord insuranceFeeRecord = insuranceFeeRecordRepository.findById(orderId).orElse(null);
-                    if(insuranceFeeRecord != null) {
-                        sbV.setUserName(insuranceFeeRecord.getUserName());
-                    }
-                }
-            }
-        }
+        List<ShopBillVO> list = shopBillMapper.getShopBillByShopId(shopId, startDate, endDate);
         PageInfo pageResult = new PageInfo(list);
         pageResult.setList(list);
         return ResultResponse.createBySuccess(pageResult);
