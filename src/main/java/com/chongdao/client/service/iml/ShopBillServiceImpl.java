@@ -7,7 +7,7 @@ import com.chongdao.client.mapper.ShopBillMapper;
 import com.chongdao.client.repository.*;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ShopBillService;
-import com.chongdao.client.vo.OrderShopVO;
+import com.chongdao.client.vo.ShopBillDetailVO;
 import com.chongdao.client.vo.ShopBillVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,13 +83,27 @@ public class ShopBillServiceImpl implements ShopBillService {
     @Override
     public ResultResponse getShopBillOrderDetailById(Integer shopBillId) {
         ShopBill shopBill = shopBillRepository.findById(shopBillId).orElse(null);
-        OrderShopVO orderVo = orderService.getOrderDetailByOrderId(shopBill.getOrderId());
-        BigDecimal price = shopBill.getPrice();
-        orderVo.setRealInMoney(price);//实际收款
-        BigDecimal deductPrice = orderVo.getGoodsPrice().subtract(price);
-        BigDecimal deduct = deductPrice.divide(orderVo.getGoodsPrice(), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-        orderVo.setDeduct(deduct);//扣费比例
-        return ResultResponse.createBySuccess(orderVo);
+        ShopBillDetailVO sbdVo = new ShopBillDetailVO();
+        BeanUtils.copyProperties(shopBill, sbdVo);
+        Integer orderId = shopBill.getOrderId();
+        Integer type = shopBill.getType();
+        if(orderId != null) {
+            if(type == 1 || type == 2) {
+                OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
+                BigDecimal goodsPrice = orderInfo.getGoodsPrice();
+                Integer orderStatus = orderInfo.getOrderStatus();
+                sbdVo.setOrderPrice(goodsPrice);
+                sbdVo.setOrderNo(orderInfo.getOrderNo());
+                sbdVo.setStatus(orderStatus);
+            }
+        }
+//        OrderShopVO orderVo = orderService.getOrderDetailByOrderId(shopBill.getOrderId());
+//        BigDecimal price = shopBill.getPrice();
+//        orderVo.setRealInMoney(price);//实际收款
+//        BigDecimal deductPrice = orderVo.getGoodsPrice().subtract(price);
+//        BigDecimal deduct = deductPrice.divide(orderVo.getGoodsPrice(), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+//        orderVo.setDeduct(deduct);//扣费比例
+        return ResultResponse.createBySuccess(sbdVo);
     }
 
     /**
