@@ -60,6 +60,7 @@ public class ShopApplyServiceImpl implements ShopApplyService {
         sa.setApplyMoney(applyMoney);
         sa.setApplyNote(applyNote);
         sa.setStatus(0);
+        sa.setRealMoney(new BigDecimal(0));
         sa.setCreateTime(new Date());
         sa.setUpdateTime(new Date());
         //完成资金处理逻辑
