@@ -29,11 +29,11 @@
     </sql>
     <select id="getShopBillByShopId" resultMap="ShopBillVO" parameterType="map">
         select
-        <include refid="Base_Column_List"/>, u.name as user_name
+        <include refid="Base_Column_List"/>, IFNULL(u.name, '') as user_name
         from shop_bill sb
         left join  order_info odi on sb.order_id = odi.id
-        where sb.shop_id = #{shopId}
         left join user u on odi.user_id = u.id
+        where sb.shop_id = #{shopId}
         <if test="startDate != null">
             and sb.create_time &gt; #{startDate}
         </if>

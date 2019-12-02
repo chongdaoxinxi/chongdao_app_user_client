@@ -84,16 +84,20 @@ public class ShopBillServiceImpl implements ShopBillService {
         ShopBill shopBill = shopBillRepository.findById(shopBillId).orElse(null);
         ShopBillDetailVO sbdVo = new ShopBillDetailVO();
         BeanUtils.copyProperties(shopBill, sbdVo);
+        sbdVo.setOrderPrice(new BigDecimal(0));
+        sbdVo.setOrderNo("");
         Integer orderId = shopBill.getOrderId();
         Integer type = shopBill.getType();
         if(orderId != null) {
             if(type == 1 || type == 2) {
                 OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElse(null);
-                BigDecimal goodsPrice = orderInfo.getGoodsPrice();
-                Integer orderStatus = orderInfo.getOrderStatus();
-                sbdVo.setOrderPrice(goodsPrice);
-                sbdVo.setOrderNo(orderInfo.getOrderNo());
-                sbdVo.setStatus(orderStatus);
+                if(orderInfo != null) {
+                    BigDecimal goodsPrice = orderInfo.getGoodsPrice();
+                    Integer orderStatus = orderInfo.getOrderStatus();
+                    sbdVo.setOrderPrice(goodsPrice);
+                    sbdVo.setOrderNo(orderInfo.getOrderNo());
+                    sbdVo.setStatus(orderStatus);
+                }
             }
         }
 //        OrderShopVO orderVo = orderService.getOrderDetailByOrderId(shopBill.getOrderId());

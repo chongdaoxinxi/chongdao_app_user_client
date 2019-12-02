@@ -79,9 +79,11 @@ public class FreightComputer {
         Double deliverDistance = 0.0d;
         //服务类型为双程时，送地址不为空
         UserAddress deliverAddress = null;
-        if (1 == serviceType) {
+        if (1 == serviceType && deliverAddressId != null) {
             deliverAddress = userAddressRepository.findByIdAndUserId(deliverAddressId, userId);
-            deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
+            if(deliverAddress != null) {
+                deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
+            }
         }
         //超出三公里的费用
         Double overMoneyBase = this.getOverMoneys(serviceType,receiveDistance,deliverDistance,firstServiceMoneys);
