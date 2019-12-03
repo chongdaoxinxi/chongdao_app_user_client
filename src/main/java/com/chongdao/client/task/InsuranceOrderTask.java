@@ -1,7 +1,9 @@
 package com.chongdao.client.task;
 
+import com.chongdao.client.entitys.InsuranceFeeRecord;
 import com.chongdao.client.entitys.InsuranceOrder;
 import com.chongdao.client.entitys.InsuranceShopChip;
+import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.repository.InsuranceOrderRepository;
 import com.chongdao.client.repository.InsuranceShopChipRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,8 @@ public class InsuranceOrderTask {
     private InsuranceOrderRepository insuranceOrderRepository;
     @Autowired
     private InsuranceShopChipRepository insuranceShopChipRepository;
+    @Autowired
+    private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
     @Async
     @Scheduled(cron="0 0 2 * * ?")
@@ -54,5 +58,22 @@ public class InsuranceOrderTask {
             }
         }
         System.out.println("保险订单超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
+    }
+
+    @Async
+    @Scheduled(cron="0 0 3 * * ?")
+    public void updateOverdueInsuranceFeeOrder() {
+        List<InsuranceFeeRecord> list = insuranceFeeRecordRepository.findByStatus(-1);//待支付医疗费用
+        for(InsuranceFeeRecord record : list) {
+            Date createTime = record.getCreateTime();
+            Date now = new Date();
+            Long l = (now.getTime() - createTime.getTime())/ (1000*60*60);
+            if(l > 24) {
+                record.setStatus(-2);
+                insuranceFeeRecordRepository.save(record);
+                System.out.println("医疗费用订单" + record.getOrderNo() + ", 超时未支付被关闭!");
+            }
+        }
+        System.out.println("医疗费用订单超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
     }
 }

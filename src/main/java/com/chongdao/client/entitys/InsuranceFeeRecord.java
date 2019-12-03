@@ -36,7 +36,7 @@ public class InsuranceFeeRecord implements Serializable {
     private BigDecimal money;//医疗费用
     private String photo;//照片
     private Integer type;//1:保险类;2:非保险类
-    private Integer status;// -1: 待支付; 1:已支付
+    private Integer status;// -1: 待支付; 1:已支付; -2: 已过期作废
     private Date createTime;
     private Date paymentTime;
     private Integer paymentType;//1: 支付宝支付, 2: 微信app支付, 3:微信小程序支付

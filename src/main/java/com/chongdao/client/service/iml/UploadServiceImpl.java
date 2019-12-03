@@ -133,7 +133,7 @@ public class UploadServiceImpl implements UploadService {
                         File file = new File(tempPath + "\\" + fileName);
                         FileInputStream in = new FileInputStream(file);
                         StorePath storePath = this.storageClient.uploadFile(in, file.length(), FilenameUtils.getExtension(fileName), null);
-                        String visitUrl = "http://" + url + "/" + storePath.getFullPath();
+                        String visitUrl = "https://" + url + "/" + storePath.getFullPath();
                         System.out.println("visitUrl:    " + visitUrl);
                         g.setIcon(visitUrl);
                         goodsRepository.save(g);

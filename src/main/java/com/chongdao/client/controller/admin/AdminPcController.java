@@ -1,17 +1,17 @@
 package com.chongdao.client.controller.admin;
 
 import com.chongdao.client.common.ResultResponse;
-import com.chongdao.client.entitys.Banner;
-import com.chongdao.client.entitys.Brand;
-import com.chongdao.client.entitys.Express;
-import com.chongdao.client.entitys.Shop;
+import com.chongdao.client.entitys.*;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.enums.RoleEnum;
 import com.chongdao.client.repository.BrandRepository;
+import com.chongdao.client.repository.GoodsRepository;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +65,10 @@ public class AdminPcController {
     private UploadService uploadService;
     @Autowired
     private BrandRepository brandRepository;
+    @Autowired
+    private ShopRepository shopRepository;
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     /**
      * 确认退款完成
@@ -608,6 +612,51 @@ public class AdminPcController {
             brandRepository.delete(brand);
         }
         System.out.println("check completed!");
+        return null;
+    }
+
+    /**
+     * 为没有体检商品的医院类商家添加一个体检商品
+     * @return
+     */
+    @PostMapping("addTijianToHospitalShop")
+    public ResultResponse addTijianToHospitalShop() {
+        Good tijian = goodsRepository.findById(12852).orElse(null);
+        List<Shop> list = shopRepository.findByType(2);
+        int i = 0;
+        for(Shop s : list) {
+            Integer id = s.getId();
+            List<Good> tijianList = goodsRepository.findByNameLikeAndShopId("%基础体检套餐%", id);
+            if(id == 426) {
+                Good good = new Good();
+                BeanUtils.copyProperties(tijian, good);
+                String areaCode = s.getAreaCode();
+                good.setShopId(id);
+                good.setAreaCode(areaCode);
+                good.setCreateTime(new Date());
+                good.setUpdateTime(new Date());
+                good.setPrice(new BigDecimal(99));
+                good.setId(null);
+                goodsRepository.save(good);
+                i++;
+            }
+            if(tijianList.size() > 0) {
+                continue;
+            } else {
+                Good good = new Good();
+                BeanUtils.copyProperties(tijian, good);
+                String areaCode = s.getAreaCode();
+                good.setShopId(id);
+                good.setAreaCode(areaCode);
+                good.setCreateTime(new Date());
+                good.setUpdateTime(new Date());
+                good.setPrice(new BigDecimal(99));
+                good.setId(null);
+                goodsRepository.save(good);
+                i++;
+            }
+        }
+        System.out.println("新增"+ i + "个商家的体检券");
         return null;
     }
 }
