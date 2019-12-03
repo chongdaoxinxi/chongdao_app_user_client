@@ -252,29 +252,29 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
             goodList = goodsRepository.findByShopIdAndGoodsTypeIdAndStatus(shopId, goodsTypeId, (byte) 1);
         }
         for (Good good : goodList) {
-                GoodsListVO goodsListVO = new GoodsListVO();
-                //系数不为0 需提高原价 在进行折扣
-                if (good.getRatio() != null && good.getRatio() > 0) {
-                    good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
-                }
-                BeanUtils.copyProperties(good,goodsListVO);
-                if (!good.getIcon().contains("http")) {
-                    goodsListVO.setIcon(IP + good.getIcon());
-                }
-                if (good.getUnitName() != null && good.getCategoryId() != null && good.getCategoryId() != 3){
-                    goodsListVO.setName(good.getName() + good.getUnitName());
-                }
-                //去除10，和0一样都是原价
-                if (good.getDiscount() == null || good.getDiscount() == 10.0d) {
-                    goodsListVO.setDiscount(0.0d);
-                }
-                goodsListVO.setDiscountPrice(good.getPrice());
-                if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
-                    goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
-                }
-                //宠物卡片
-                this.assembelGoodsTypeVO(good, goodsListVO, goodsTypeList,unitList, petCardDogs, petCardCats,userId);
-                goodsListVOList.add(goodsListVO);
+            GoodsListVO goodsListVO = new GoodsListVO();
+            //系数不为0 需提高原价 在进行折扣
+            if (good.getRatio() != null && good.getRatio() > 0) {
+                good.setPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+            }
+            BeanUtils.copyProperties(good,goodsListVO);
+            if (!good.getIcon().contains("http")) {
+                goodsListVO.setIcon(IP + good.getIcon());
+            }
+            if (good.getUnitName() != null && good.getCategoryId() != null && good.getCategoryId() != 3){
+                goodsListVO.setName(good.getName() + good.getUnitName());
+            }
+            //去除10，和0一样都是原价
+            if (good.getDiscount() == null || good.getDiscount() == 10.0d) {
+                goodsListVO.setDiscount(0.0d);
+            }
+            goodsListVO.setDiscountPrice(good.getPrice());
+            if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
+                goodsListVO.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount()/10)).setScale(2,BigDecimal.ROUND_HALF_UP));
+            }
+            //宠物卡片
+            this.assembelGoodsTypeVO(good, goodsListVO, goodsTypeList,unitList, petCardDogs, petCardCats,userId);
+            goodsListVOList.add(goodsListVO);
 //                    goodsListVOList.add(goodsListVO);
 //                    goodsTypeVO.setGoodsListVOList(goodsListVOList);
 //                    goodsTypeVOList.add(goodsTypeVO);

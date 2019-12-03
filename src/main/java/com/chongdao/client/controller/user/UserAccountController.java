@@ -2,8 +2,10 @@ package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAccount;
+import com.chongdao.client.entitys.UserBank;
 import com.chongdao.client.entitys.UserWithdrawal;
 import com.chongdao.client.service.UserAccountService;
+import com.chongdao.client.service.UserBankService;
 import com.chongdao.client.service.UserTransService;
 import com.chongdao.client.service.UserWithdrawalService;
 import com.chongdao.client.utils.LoginUserUtil;
@@ -28,6 +30,8 @@ public class UserAccountController {
     private UserTransService userTransService;
     @Autowired
     private UserWithdrawalService userWithdrawalService;
+    @Autowired
+    private UserBankService userBankService;
 
     /**
      *
@@ -86,4 +90,24 @@ public class UserAccountController {
      */
     @PostMapping("getUserWithdrawalList")
     public ResultResponse getUserWithdrawalList(String token, Date startDate, Date endDate, Integer pageNum, Integer pageSize) { return userWithdrawalService.getUserWithdrawalList(token, null, null, null, startDate, endDate, pageNum, pageSize);}
+
+    /**
+     * 添加绑定用户银行卡
+     * @param userBank
+     * @return
+     */
+    @PostMapping("addUserBank")
+    public ResultResponse addUserBank(@RequestBody UserBank userBank){
+        return userBankService.addUserBankService(userBank);
+    }
+
+    /**
+     * 获取我绑定的银行卡
+     * @param userId
+     * @return
+     */
+    @PostMapping("getUserBankList")
+    public ResultResponse getUserBankList(Integer userId) {
+        return userBankService.getUserBankList(userId);
+    }
 }

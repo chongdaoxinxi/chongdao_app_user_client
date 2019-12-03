@@ -1,6 +1,5 @@
 package com.chongdao.client.controller.goods;
 
-import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.Brand;
 import com.chongdao.client.entitys.Good;
