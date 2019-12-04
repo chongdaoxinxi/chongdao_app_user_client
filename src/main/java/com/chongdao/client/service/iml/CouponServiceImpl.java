@@ -69,6 +69,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 if (result > 0 && tijianCoupon.getCount() != null && tijianCoupon.getCount() > 0 && tijianCoupon.getUserCpnState() != null &&  tijianCoupon.getUserCpnState() == 0) {
                     //逻辑处理
                     this.getCpnUser(tijianCoupon, totalPrice, categoryId);
+                    tijianCoupon.setEnabled(1);
                     CouponInfo couponInfo = this.assembelCpnInfoEnabled(tijianCoupon);
                     //设置优惠券限制范围名称
                     this.setCouponScope(couponInfo);

@@ -186,6 +186,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                     orderVo.getShopId(), userId);
             //原价
             orderVo.setOriginServicePrice(originServicePrice);
+            System.out.println("servicePrice>>>>>>>>>>>>>>>>" + orderVo.getOriginServicePrice());
             //优惠后的价格
             orderVo.setServicePrice(originServicePrice.subtract(orderVo.getServiceCouponPrice()));
         }

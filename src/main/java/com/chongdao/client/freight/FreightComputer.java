@@ -86,7 +86,7 @@ public class FreightComputer {
             }
         }
         //超出三公里的费用
-        Double overMoneyBase = this.getOverMoneys(serviceType,receiveDistance,deliverDistance,firstServiceMoneys);
+        Double overMoneyBase = this.getOverMoneys(serviceType,receiveDistance,deliverDistance,firstServiceMoneys);//超出三公里的每公里费用
         return new BigDecimal(baseMoney+this.computerFinalFee(serviceType,receiveDistance,deliverDistance,
                 firstServiceMoneys,overMoneyBase,baseDistance,areaCode));
 
@@ -174,10 +174,12 @@ public class FreightComputer {
         } else if ( receiveDistance > Double.valueOf(firstServiceMoneys.get(0)) || receiveDistance > deliverDistance) {
             //接地址距离大于送地址距离或者接地址距离商家超出三公里
             overMoney = overBaseDistance;
-        } else {
-            //小于三公里的费用
-            overMoney = Double.valueOf(firstServiceMoneys.get(2));
         }
+//        else {
+//            //小于三公里的费用
+//            overMoney = Double.valueOf(firstServiceMoneys.get(2));
+//        }
+        //上海地区超出价格*1.5
         if (areaCode.equals("3101") && serviceType != 2) {
             overMoney = overMoney * 1.5;
         }
