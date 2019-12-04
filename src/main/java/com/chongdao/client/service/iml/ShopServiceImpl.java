@@ -295,62 +295,93 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
     private GoodsListVO assembelGoodsTypeVO(Good good,GoodsListVO goodsListVO,List<GoodsType> goodsTypeList,List<Unit> unitList,List<PetCard> petCardDogs,List<PetCard> petCardCats,Integer userId){
         List<PetCard> petCardList = Lists.newArrayList();
         if (good.getCategoryId() != 3) {
-            if (good.getGoodsTypeId() == 57 || good.getGoodsTypeId() == 59 || good.getGoodsTypeId() == 55 || good.getGoodsTypeId() == 53){
+            if (good.getGoodsTypeId() == 57 || good.getGoodsTypeId() == 59 || good.getGoodsTypeId() == 55 || good.getGoodsTypeId() == 53 || good.getGoodsTypeId() == 9){
                 //获取宠物卡片(狗)
                 if (!petCardDogs.isEmpty()) {
                     petCardDogs.stream().forEach(petCard -> {
                         //重量
                         BigDecimal weight = petCard.getWeight();
                         PetCard p = new PetCard();
-                        for (Unit unit : unitList) {
-                            BigDecimal min = unit.getMin();
-                            BigDecimal max = unit.getMax();
-                            if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
-                                if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
-                                    BeanUtils.copyProperties(petCard,p);
-                                    p.setId(petCard.getId());
-                                    p.setGoodsId(good.getId());
-                                    p.setGoodsName(good.getName() + unit.getLabel());
-                                    p.setGoodsPrice(good.getPrice());
-                                    if (good.getDiscount() == 10.0d || good.getDiscount() == null) {
-                                        good.setDiscount(0.0d);
-                                    }
-                                    if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
-                                        p.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10)).setScale(2, BigDecimal.ROUND_HALF_UP));
-                                    }
-                                    p.setDiscount(good.getDiscount());
-                                    //查询实际购买该服务的人数
-                                    int paymentNumber = goodMapper.paymentNumber(good.getId());
-                                    p.setPaymentNumber(paymentNumber);
-                                    petCardList.add(p);
-                                }
+                        Boolean inUnit = isInUnit(good.getUnitName(), weight);
+                        if(inUnit) {
+                            BeanUtils.copyProperties(petCard,p);
+                            p.setId(petCard.getId());
+                            p.setGoodsId(good.getId());
+                            p.setGoodsName(good.getName() + good.getUnitName());
+                            p.setGoodsPrice(good.getPrice());
+                            if (good.getDiscount() == 10.0d || good.getDiscount() == null) {
+                                good.setDiscount(0.0d);
                             }
+                            if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
+                                p.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10)).setScale(2, BigDecimal.ROUND_HALF_UP));
+                            }
+                            p.setDiscount(good.getDiscount());
+                            //查询实际购买该服务的人数
+                            int paymentNumber = goodMapper.paymentNumber(good.getId());
+                            p.setPaymentNumber(paymentNumber);
+                            petCardList.add(p);
                         }
+//                        for (Unit unit : unitList) {
+//                            BigDecimal min = unit.getMin();
+//                            BigDecimal max = unit.getMax();
+//                            if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+//                                if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+//                                    BeanUtils.copyProperties(petCard,p);
+//                                    p.setId(petCard.getId());
+//                                    p.setGoodsId(good.getId());
+//                                    p.setGoodsName(good.getName() + unit.getLabel());
+//                                    p.setGoodsPrice(good.getPrice());
+//                                    if (good.getDiscount() == 10.0d || good.getDiscount() == null) {
+//                                        good.setDiscount(0.0d);
+//                                    }
+//                                    if (good.getDiscount() != null && good.getDiscount() < 10 && good.getDiscount() > 0.0d) {
+//                                        p.setDiscountPrice(good.getPrice().multiply(BigDecimal.valueOf(good.getDiscount() / 10)).setScale(2, BigDecimal.ROUND_HALF_UP));
+//                                    }
+//                                    p.setDiscount(good.getDiscount());
+//                                    //查询实际购买该服务的人数
+//                                    int paymentNumber = goodMapper.paymentNumber(good.getId());
+//                                    p.setPaymentNumber(paymentNumber);
+//                                    petCardList.add(p);
+//                                }
+//                            }
+//                        }
                         goodsListVO.setPetCardList(petCardList);
                     });
                 }
-            } else {
+            }
+            if(good.getGoodsTypeId() == 52 || good.getGoodsTypeId() == 54 || good.getGoodsTypeId() == 56 || good.getGoodsTypeId() == 58 || good.getGoodsTypeId() == 9){
                 //获取宠物卡片(猫)
                 if (!CollectionUtils.isEmpty(petCardCats)) {
                     petCardCats.stream().forEach(petCard -> {
                         //重量
                         BigDecimal weight = petCard.getWeight();
-                        for (Unit unit : unitList) {
-                            BigDecimal min = unit.getMin();
-                            BigDecimal max = unit.getMax();
-                            if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
-                                if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
-                                    petCard.setGoodsId(good.getId());
-                                    petCard.setGoodsName(good.getName() + unit.getLabel());
-                                    petCard.setGoodsPrice(good.getPrice());
-                                    //查询实际购买该服务的人数
-                                    int paymentNumber = goodMapper.paymentNumber(good.getId());
-                                    petCard.setPaymentNumber(paymentNumber);
-                                    petCardList.add(petCard);
-                                    goodsListVO.setPetCardList(petCardList);
-                                }
-                            }
+                        Boolean inUnit = isInUnit(good.getUnitName(), weight);
+                        if(inUnit) {
+                            petCard.setGoodsId(good.getId());
+                            petCard.setGoodsName(good.getName() + good.getUnitName());
+                            petCard.setGoodsPrice(good.getPrice());
+                            //查询实际购买该服务的人数
+                            int paymentNumber = goodMapper.paymentNumber(good.getId());
+                            petCard.setPaymentNumber(paymentNumber);
+                            petCardList.add(petCard);
+                            goodsListVO.setPetCardList(petCardList);
                         }
+//                        for (Unit unit : unitList) {
+//                            BigDecimal min = unit.getMin();
+//                            BigDecimal max = unit.getMax();
+//                            if (min != null && max != null && weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+//                                if (good.getUnitName() != null && unit.getLabel().equals(good.getUnitName())) {
+//                                    petCard.setGoodsId(good.getId());
+//                                    petCard.setGoodsName(good.getName() + unit.getLabel());
+//                                    petCard.setGoodsPrice(good.getPrice());
+//                                    //查询实际购买该服务的人数
+//                                    int paymentNumber = goodMapper.paymentNumber(good.getId());
+//                                    petCard.setPaymentNumber(paymentNumber);
+//                                    petCardList.add(petCard);
+//                                    goodsListVO.setPetCardList(petCardList);
+//                                }
+//                            }
+//                        }
                     });
                 }
             }
@@ -358,6 +389,28 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         return goodsListVO;
     }
 
+    /**
+     * 判断是否在规格单位范围内(根据unitName)
+     * @return
+     */
+    private Boolean isInUnit(String unitName, BigDecimal weight) {
+            if(StringUtils.isNotBlank(unitName)) {
+                if(unitName.indexOf("-") != -1) {
+                    String[] arrs = unitName.split("-");
+                    if(arrs[1] != null) {
+                        String[] kgs = arrs[1].split("kg");
+                        if(arrs[0] != null && kgs[0] != null) {
+                            BigDecimal min =  new BigDecimal(arrs[0]);
+                            BigDecimal max = new BigDecimal(kgs[0]);
+                            if(weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+    }
 
     /**
      * 获取店铺所有订单评价以及店铺总评价

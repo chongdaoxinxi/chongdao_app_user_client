@@ -70,7 +70,12 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
      */
     List<CpnUser> findByUserIdAndUserCpnStateAndIsDelete(Integer userId,Integer states,Integer isDelete);
 
-
-
+    /**
+     * 获取可用的体检券
+     * @param userId
+     * @return
+     */
+    @Query(value = "select * from cpn_user cu where cu.user_id = ?1 and cu.cpn_id = ?2",nativeQuery = true)
+    List<CpnUser> getCanUserTijianCpn(Integer userId, Integer cpnId);
 
 }

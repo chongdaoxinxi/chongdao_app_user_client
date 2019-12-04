@@ -36,10 +36,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.chongdao.client.common.Const.IP;
 import static com.chongdao.client.enums.OrderStatusEnum.USER_APPLY_REFUND;
@@ -100,6 +97,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //宠物数量
         Integer petCount = 0;
         String petIds = "";
+        Set petIdSet = new HashSet<>();
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -111,18 +109,23 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //只有服务才会存在宠物卡片
             if (orderCommonVO.getIsService() == 1) {
                 petIds = Joiner.on(",").skipNulls().join(cart.getPetId(), petIds);
+                petIdSet.add(cart.getPetId());
             }
-            //需要排除一个宠物卡片选择不同类型的服务
-            if (petIds.length() == 2) { //长度为2代表购物车遍历的是第一个商品（2, 这种）
-                petCount = cart.getPetCount();
-            }
-            if (!petIds.contains(String.valueOf(cart.getPetId()))) {
-                petCount = petCount + cart.getPetCount();
-            }
+//            //需要排除一个宠物卡片选择不同类型的服务
+//            if (petIds.length() == 2) { //长度为2代表购物车遍历的是第一个商品（2, 这种）
+//                petCount = cart.getPetCount();
+//            }
+//            if (!petIds.contains(String.valueOf(cart.getPetId()))) {
+//                petCount = petCount + cart.getPetCount();
+//            }
+        }
+        if (!petIdSet.isEmpty()) {
+            petCount = petIdSet.size();
         }
         if (StringUtils.isNotBlank(petIds)) {
             orderVo.setPetIds(petIds.substring(0, petIds.length() - 1));
         }
+        System.out.println("petCount" + petCount);
         orderVo.setPetCount(petCount);
         //订单类型非"到店自取"时(商品除外)，需要判断当前用户是否选择宠物卡片，否则提示用户去选择宠物卡片
         if (orderCommonVO.getServiceType() != 3 && orderCommonVO.getIsService() == 1 && StringUtils.isBlank(petIds) && petCount < 1) {
@@ -159,11 +162,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                 //判断红包与实付款金额大小
                 cartTotalPrice = this.cartTotalPrice(cartTotalPrice, couponInfo, orderVo);
             }
-        }else {
+        } else {
             //代表无优惠券，可能存在满减（满减不与优惠券共用）
             //匹配符合当前购买条件的满减
             List<CouponInfo> couponInfoFullList = couponCommon.couponInfoFullList(shop.getId());
-            this.matchingCouponFull(couponInfoFullList,cartTotalPrice,orderVo);
+            this.matchingCouponFull(couponInfoFullList, cartTotalPrice, orderVo);
             //减去满减的价格
             cartTotalPrice = cartTotalPrice.subtract(orderVo.getFullCouponPrice());
         }
@@ -194,7 +197,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(userId, orderCommonVO.getShopId(), categoryIds, cartTotalPrice));
         //订单总价（包含配送费）
         //需减去小计
-        cartTotalPrice  = (cartTotalPrice.add(orderVo.getServicePrice())).subtract(totalDiscount);
+        cartTotalPrice = (cartTotalPrice.add(orderVo.getServicePrice())).subtract(totalDiscount);
         if (cartTotalPrice.compareTo(BigDecimal.ZERO) <= 0) {
             cartTotalPrice = new BigDecimal("0.01");
         }
@@ -206,8 +209,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //如果是配送订单(非到店自取)且宠物数量大于1且用户选择购买了运输险, 那么计算运输险费用并更新OrderVo实体
         Integer serviceType = orderCommonVO.getServiceType();
         Integer isByInsurance = orderCommonVO.getIsByInsurance();
-        if (isByInsurance != null && isByInsurance == 1 && serviceType != null && serviceType == 3 && petCount != null && petCount > 1) {
-            setInsurancePrice(orderVo);
+        System.out.println("petCount>>>>>>>>>>>>>>>>>" + petCount);
+        System.out.println("serviceType>>>>>>>>>>>>>>>>>" + serviceType);
+        if (serviceType != null && serviceType != 3 && petCount != null && petCount >= 1) {
+            setInsurancePrice(orderVo, isByInsurance, orderCommonVO.getOrderType());
         }
 
         //如果orderType为2代表提交订单 3代表拼单
@@ -223,10 +228,10 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             } else {
                 //创建订单
                 if (orderCommonVO.getCouponId() != null) { //优惠券变为已使用
-                    cpnUserRepository.updateUserCpnState(orderCommonVO.getCouponId(),orderVo.getUserId());
+                    cpnUserRepository.updateUserCpnState(orderCommonVO.getCouponId(), orderVo.getUserId());
                 }
                 if (orderCommonVO.getCardId() != null) { //配送券变为已使用
-                    cpnUserRepository.updateUserCpnState(orderCommonVO.getCardId(),orderVo.getUserId());
+                    cpnUserRepository.updateUserCpnState(orderCommonVO.getCardId(), orderVo.getUserId());
                 }
 
                 return this.createOrder(orderVo, orderCommonVO);
@@ -240,23 +245,30 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
      *
      * @param orderVo
      */
-    private void setInsurancePrice(OrderVo orderVo) {
-        BigDecimal singlePrice = new BigDecimal(1.5);//单个运输险的价格
+    private void setInsurancePrice(OrderVo orderVo, Integer isByInsurance, Integer orderType) {
+        BigDecimal singlePrice = new BigDecimal(1);//单个运输险的价格
         Integer serviceType = orderVo.getServiceType();
         Integer petCount = orderVo.getPetCount();
         BigDecimal totalPrice = orderVo.getTotalPrice();
         BigDecimal payment = orderVo.getPayment();
         BigDecimal insurancePrice = new BigDecimal(0);
         if (serviceType == 2) {
-            //单程, 平台承担一只的运输险费用
+            //单程, 宠物数量 - 平台承担一只的运输险费用
             insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1));
         } else if (serviceType == 1) {
-            //双程, 平台承担一只的往返运输险费用
+            //双程, 宠物数量*2 - 平台承担一只的往返运输险费用
             insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1)).multiply(new BigDecimal(2));
         }
         orderVo.setInsurancePrice(insurancePrice);
-        orderVo.setTotalPrice(totalPrice.add(insurancePrice));
-        orderVo.setPayment(payment.add(insurancePrice));
+        System.out.println("isByInsurance>>>>>>>>>>>>>>>>>" + isByInsurance);
+        System.out.println("insurancePrice>>>>>>>>>>>>>>>>>" + insurancePrice);
+        if (isByInsurance != null && isByInsurance == 1 && orderType != null && orderType == OrderStatusEnum.ORDER_CREATE.getStatus()) {
+            //如果选择购买运费险(而且是创建订单不是预下单页面), 那么总价加上运费险的价格, 如果不购买则只做显示
+            orderVo.setTotalPrice(totalPrice.add(insurancePrice));
+            orderVo.setPayment(payment.add(insurancePrice));
+            System.out.println("setTotalPrice>>>>>>>>>>>>>>>>>" + orderVo.getTotalPrice());
+            System.out.println("payment>>>>>>>>>>>>>>>>>" + orderVo.getPayment());
+        }
     }
 
     /**
@@ -933,8 +945,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             if (good.getReDiscount() > 0) {
                 count = good.getReDiscount();
             }
-            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count/10));
-            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count/10)).doubleValue(), cartItem.getQuantity()));
+            orderDetail.setCurrentPrice(BigDecimalUtil.mul(good.getPrice().doubleValue(), count / 10));
+            orderDetail.setTotalPrice(BigDecimalUtil.mul((good.getPrice()).multiply(new BigDecimal(count / 10)).doubleValue(), cartItem.getQuantity()));
             orderItemList.add(orderDetail);
         }
         return ResultResponse.createBySuccess(orderItemList);
@@ -967,7 +979,12 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         order.setPetId(orderVo.getPetIds());
         order.setPetCount(orderVo.getPetCount());
         order.setShopId(orderCommonVO.getShopId());
-        order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
+        BigDecimal insurancePrice = orderVo.getInsurancePrice();
+        if (insurancePrice != null) {
+            order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()).subtract(orderVo.getInsurancePrice()));
+        } else {
+            order.setGoodsPrice(orderVo.getPayment().subtract(orderVo.getServicePrice()));
+        }
         order.setSingleServiceType(orderCommonVO.getSingleServiceType());
         order.setOrderNo(orderNo);
         order.setReceiveAddressId(orderCommonVO.getReceiveAddressId());
@@ -1597,7 +1614,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private OrderGoodsVo orderDiscountAndFee(OrderGoodsVo orderGoodsVo, Integer goodsQuantity) {
         //系数不为0 需提高原价 在进行折扣
         if (orderGoodsVo.getRatio() != null && orderGoodsVo.getRatio() > 0) {
-            orderGoodsVo.setGoodsPrice(orderGoodsVo.getGoodsPrice().multiply(BigDecimal.valueOf(orderGoodsVo.getRatio())).setScale(2,BigDecimal.ROUND_HALF_UP));
+            orderGoodsVo.setGoodsPrice(orderGoodsVo.getGoodsPrice().multiply(BigDecimal.valueOf(orderGoodsVo.getRatio())).setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         //折扣价
         if (orderGoodsVo.getDiscount() > 0) {
@@ -1833,6 +1850,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
 
     /**
      * 匹配符合当前购买条件的满减（从大到小，默认最先匹配到的满减）
+     *
      * @param couponInfoFullList
      * @param cartTotalPrice
      * @param orderVo

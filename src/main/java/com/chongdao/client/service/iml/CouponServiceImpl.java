@@ -62,6 +62,19 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                     couponInfoList.add(couponInfo);
                 }
             });
+            ////////////////////////////////增加一个特殊的体检券的获取
+            CpnUser tijianCoupon = getTijianCoupon(userId);
+            if(tijianCoupon != null) {
+                long result = this.computerTime(tijianCoupon.getValidityEndDate());
+                if (result > 0 && tijianCoupon.getCount() != null && tijianCoupon.getCount() > 0 && tijianCoupon.getUserCpnState() != null &&  tijianCoupon.getUserCpnState() == 0) {
+                    //逻辑处理
+                    this.getCpnUser(tijianCoupon, totalPrice, categoryId);
+                    CouponInfo couponInfo = this.assembelCpnInfoEnabled(tijianCoupon);
+                    //设置优惠券限制范围名称
+                    this.setCouponScope(couponInfo);
+                    couponInfoList.add(couponInfo);
+                }
+            }
             return ResultResponse.createBySuccess(couponInfoList);
         }
         //配送优惠券(双程)
@@ -207,6 +220,15 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             count = count + result;
         }
         return count;
+    }
+
+    private CpnUser getTijianCoupon(Integer userId) {
+        //体检券id写死为6
+        List<CpnUser> list = cpnUserRepository.getCanUserTijianCpn(userId, 6);
+        if(list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
     }
 
     /**

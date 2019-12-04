@@ -110,10 +110,12 @@ public class UploadServiceImpl implements UploadService {
     private void conertGoodImage() {
         String oldUrl = "";
         List<Good> all = goodsRepository.findAll();
+        int count = 0;
         for(Good g : all) {
             String icon = g.getIcon();
             if(StringUtils.isNotBlank(icon)) {
                 if(icon.indexOf("http") == -1) {
+                    count++;
                     oldUrl = icon;
                     oldUrl = "https://www.chongdaopet.com/images/" + oldUrl;
                     String fileName = oldUrl.substring(oldUrl.lastIndexOf("/") + 1);
@@ -141,9 +143,17 @@ public class UploadServiceImpl implements UploadService {
                         return null;
                     });
                 }
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(count >= 2500) {
+                break;
             }
         }
-        System.out.println("convert goods icon complete!");
+        System.out.println("convert goods icon complete!" + "共转换" + count + "张商品图片");
     }
 
     /**
