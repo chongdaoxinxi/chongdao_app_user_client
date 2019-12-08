@@ -201,7 +201,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(userId, orderCommonVO.getShopId(), categoryIds, cartTotalPrice));
         //订单总价（包含配送费）
         //需减去小计
-        cartTotalPrice = (cartTotalPrice.add(orderVo.getServicePrice())).subtract(totalDiscount);
+//        cartTotalPrice = (cartTotalPrice.add(orderVo.getServicePrice())).subtract(totalDiscount);
+        cartTotalPrice = (cartTotalPrice.add(orderVo.getServicePrice()));//此处的cartTotalPrice已经是折扣过的价格了, 所以不再减去totalDiscount
         if (cartTotalPrice.compareTo(BigDecimal.ZERO) <= 0) {
             cartTotalPrice = new BigDecimal("0.01");
         }
