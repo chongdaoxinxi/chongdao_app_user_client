@@ -80,27 +80,33 @@ public class UploadServiceImpl implements UploadService {
                     String fileName = oldUrl.substring(oldUrl.lastIndexOf("/") + 1);
                     String tempPath = "F:\\temp_image";
                     //根据下载链接, 将图片下载存储到服务器上, 并保存访问url
-                    RestTemplate rest = new RestTemplate();
-                    rest.execute(oldUrl, HttpMethod.GET, (req) -> {
-                    }, (res) -> {
-                        InputStream inputStream = res.getBody();
-                        FileOutputStream out = new FileOutputStream(tempPath + "\\" + fileName);
-                        int byteCount = 0;
-                        while ((byteCount = inputStream.read()) != -1) {
-                            out.write(byteCount);
-                        }
-                        out.close();
-                        inputStream.close();
-                        File file = new File(tempPath + "\\" + fileName);
-                        FileInputStream in = new FileInputStream(file);
-                        StorePath storePath = this.storageClient.uploadFile(in, file.length(), FilenameUtils.getExtension(fileName), null);
-                        String visitUrl = "http://" + url + "/" + storePath.getFullPath();
-                        System.out.println("visitUrl:    " + visitUrl);
-                        s.setLogo(visitUrl);
-                        shopRepository.save(s);
-                        in.close();
-                        return null;
-                    });
+                    try {
+                        RestTemplate rest = new RestTemplate();
+                        rest.execute(oldUrl, HttpMethod.GET, (req) -> {
+                        }, (res) -> {
+                            InputStream inputStream = res.getBody();
+                            FileOutputStream out = new FileOutputStream(tempPath + "\\" + fileName);
+                            int byteCount = 0;
+                            while ((byteCount = inputStream.read()) != -1) {
+                                out.write(byteCount);
+                            }
+                            out.close();
+                            inputStream.close();
+                            File file = new File(tempPath + "\\" + fileName);
+                            FileInputStream in = new FileInputStream(file);
+                            StorePath storePath = this.storageClient.uploadFile(in, file.length(), FilenameUtils.getExtension(fileName), null);
+                            String visitUrl = "http://" + url + "/" + storePath.getFullPath();
+                            System.out.println("visitUrl:    " + visitUrl);
+                            s.setLogo(visitUrl);
+                            shopRepository.save(s);
+                            in.close();
+                            return null;
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        continue;
+                    }
                 }
             }
         }

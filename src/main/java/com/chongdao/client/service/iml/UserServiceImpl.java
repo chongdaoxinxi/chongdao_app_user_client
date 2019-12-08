@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
         }
         //校验手机是否已经存在
         User user = userRepository.findByPhone(phone);
-        if(user == null) {
+        if(user != null) {
             return ResultResponse.createByErrorMessage("该手机号已经注册过!");
         }
 

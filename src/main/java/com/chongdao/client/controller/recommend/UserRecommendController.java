@@ -2,6 +2,7 @@ package com.chongdao.client.controller.recommend;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.RecommendService;
+import com.chongdao.client.service.UserService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRecommendController {
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 生成推广链接
@@ -92,5 +95,15 @@ public class UserRecommendController {
     @PostMapping("getMyRecommendDetail")
     public ResultResponse getMyRecommendDetail(String token) {
         return recommendService.getMyRecommendDetail(token);
+    }
+
+    /**
+         * 获取推广注册链接中推广人的信息
+     * @param userId
+     * @return
+     */
+    @PostMapping("getMyRecommenderInfo")
+    public ResultResponse getMyRecommenderInfo(Integer userId) {
+        return userService.getUserSettingInfo(userId);
     }
 }

@@ -106,10 +106,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             orderGoodsVo.setGoodsId(cart.getGoodsId());
             orderGoodsVo.setQuantity(cart.getQuantity());
             orderGoodsVoList.add(orderGoodsVo);
+            Integer petId = cart.getPetId();
             //只有服务才会存在宠物卡片
             if (orderCommonVO.getIsService() == 1) {
                 petIds = Joiner.on(",").skipNulls().join(cart.getPetId(), petIds);
-                petIdSet.add(cart.getPetId());
+                if(petId != null) {
+                    petIdSet.add(cart.getPetId());
+                }
             }
 //            //需要排除一个宠物卡片选择不同类型的服务
 //            if (petIds.length() == 2) { //长度为2代表购物车遍历的是第一个商品（2, 这种）

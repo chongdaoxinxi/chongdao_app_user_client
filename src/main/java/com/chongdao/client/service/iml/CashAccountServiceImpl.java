@@ -329,6 +329,7 @@ public class CashAccountServiceImpl implements CashAccountService {
      */
     private BigDecimal getDeductedPrice(BigDecimal old, Integer deductPercent) {
         String deductedPercent = String.valueOf((double)(100 - deductPercent) / (double) 100);
+        System.out.println("入账money>>>>>>>>>>" + old.multiply(new BigDecimal(deductedPercent)));
         return old.multiply(new BigDecimal(deductedPercent));
     }
 
