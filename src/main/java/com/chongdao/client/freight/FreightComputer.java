@@ -93,6 +93,37 @@ public class FreightComputer {
     }
 
     /**
+     * 计算配送距离
+     * @param serviceType
+     * @param receiveAddressId
+     * @param deliverAddressId
+     * @param shopId
+     * @param userId
+     * @return
+     */
+    public BigDecimal computerDistance(Integer serviceType, Integer receiveAddressId, Integer deliverAddressId, Integer shopId,Integer userId) {
+        //查询用户接地址
+        UserAddress receiveUserAddress = userAddressRepository.findByIdAndUserId(receiveAddressId, userId);
+        //查询商铺信息
+        Shop shop = shopRepository.findById(shopId).get();
+        if(receiveUserAddress == null || shop == null) {
+            return BigDecimal.ZERO;
+        }
+        //接地址 到 商家的距离
+        Double receiveDistance = DistanceUtil.getDistance(receiveUserAddress.getLat(), receiveUserAddress.getLng(), shop.getLat(), shop.getLng());
+        Double deliverDistance = 0.0d;
+        //服务类型为双程时，送地址不为空
+        UserAddress deliverAddress = null;
+        if (1 == serviceType && deliverAddressId != null) {
+            deliverAddress = userAddressRepository.findByIdAndUserId(deliverAddressId, userId);
+            if(deliverAddress != null) {
+                deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
+            }
+        }
+        return new BigDecimal((receiveDistance + deliverDistance)/1000).setScale(2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
      * 获取运费码
      * @param serviceType
      * @param areaCode

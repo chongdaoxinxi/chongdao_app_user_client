@@ -164,4 +164,6 @@ public class OrderVo {
     private String deliverUserName;
 
     private String deliverUserPhone;
+
+    private BigDecimal serviceDistance;//配送距离
 }

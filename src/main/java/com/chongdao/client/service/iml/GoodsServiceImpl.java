@@ -457,6 +457,9 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
         Shop shop = shopRepository.findById(shopId).get();
         good.setAreaCode(shop.getAreaCode());
         if (goodsListVO.getId() == null){
+            if(good.getCreateTime() == null) {
+                good.setCreateTime(new Date());
+            }
             int result = goodMapper.insert(good);
             if (result == 0){
                 return ResultResponse.createByErrorCodeMessage(GoodsStatusEnum.SAVE_GOODS_ERROR.getStatus(),

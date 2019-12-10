@@ -40,7 +40,7 @@ public class UserAccountController {
      * @return
      */
     @GetMapping("getUserAccount")
-    public ResultResponse<UserAccount> getUserAccount(String token) {
+    public ResultResponse getUserAccount(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         return userAccountService.getUserAccountByUserId(tokenVo.getUserId());
     }

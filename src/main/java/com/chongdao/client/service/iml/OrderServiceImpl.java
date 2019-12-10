@@ -110,7 +110,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //只有服务才会存在宠物卡片
             if (orderCommonVO.getIsService() == 1) {
                 petIds = Joiner.on(",").skipNulls().join(cart.getPetId(), petIds);
-                if(petId != null) {
+                if (petId != null) {
                     petIdSet.add(cart.getPetId());
                 }
             }
@@ -192,6 +192,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             System.out.println("servicePrice>>>>>>>>>>>>>>>>" + orderVo.getOriginServicePrice());
             //优惠后的价格
             orderVo.setServicePrice(originServicePrice.subtract(orderVo.getServiceCouponPrice()));
+
+            //计算配送距离, 并返回给前台
+            orderVo.setServiceDistance(freightComputer.computerDistance(orderCommonVO.getServiceType(), orderCommonVO.getReceiveAddressId(), orderCommonVO.getDeliverAddressId(), orderVo.getShopId(), userId));
         }
         //店铺满减
         orderVo.setCouponInfoList(this.getCouponInfoList(orderVo.getShopId()));

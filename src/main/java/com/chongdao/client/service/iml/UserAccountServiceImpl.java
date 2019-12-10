@@ -1,9 +1,11 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.User;
 import com.chongdao.client.entitys.UserAccount;
 import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.UserAccountRepository;
+import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.UserAccountService;
 import com.chongdao.client.service.UserTransService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,14 @@ public class UserAccountServiceImpl implements UserAccountService {
     private UserAccountRepository userAccountRepository;
     @Autowired
     private UserTransService userTransService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public ResultResponse<UserAccount> getUserAccountByUserId(Integer userId) {
-        UserAccount userAccount = userAccountRepository.findByUserId(userId);
-        return ResultResponse.createBySuccess(userAccount);
+    public ResultResponse getUserAccountByUserId(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+//        UserAccount userAccount = userAccountRepository.findByUserId(userId);
+        return ResultResponse.createBySuccess(user);
     }
 
     @Override
