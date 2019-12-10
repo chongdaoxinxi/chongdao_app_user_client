@@ -314,9 +314,11 @@ public class GoodsServiceImpl extends CommonRepository implements GoodsService {
     public ResultResponse getGoodCategoryList(Integer param) {
         List<GoodsType> goodsTypeList = Lists.newArrayList();
         if (0 == param) {
+            //商品
             goodsTypeList = goodsTypeRepository.findByStatusAndCategoryId(1, 3);
             this.goodsTypeList(goodsTypeList);
         }else if (param == 1){
+            //服务
             goodsTypeList = goodsTypeRepository.findByStatusAndCategoryIdNotAndIdNot(1, 3,0);
             this.goodsTypeList(goodsTypeList);
         }else if (param  == 2){

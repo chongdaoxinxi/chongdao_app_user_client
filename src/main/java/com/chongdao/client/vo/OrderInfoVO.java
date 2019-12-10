@@ -113,7 +113,7 @@ public class OrderInfoVO {
                        BigDecimal servicePrice, BigDecimal originServicePrice, BigDecimal totalDiscount, Integer isService, BigDecimal payment, Integer follow, Integer cardId, String remark, String areaCode,
                        Date deliverTime, Date paymentTime, Integer paymentType, Date shopReceiveTime, Date shopFinishTime, Integer expressId, Date expressReceiveTime, Date expressFinishTime,
                        BigDecimal reward, Integer receiveAddressId, Integer deliverAddressId, Date receiveTime, Integer couponId, Date createTime, Integer singleServiceType,
-                       Date updateTime, Integer enabledSpell, String petId, Integer petCount, BigDecimal insurancePrice, String shopName, String shopLogo, String shopPhone,
+                       Date updateTime, Integer enabledSpell, String petId, Integer petCount, BigDecimal insurancePrice, String shopName, String shopPhone, String shopLogo,
                        String receiveAddressName,String receiveUserName,String receiveUserPhone) {
         this.id = id;
         this.serviceType = serviceType;
