@@ -132,11 +132,11 @@ public class FreightComputer {
      */
     private String getCode(Integer serviceType,String areaCode,Integer isService){
         String code = "";
-        if (1 == serviceType && areaCode.equals("3101") && 1 == isService ){
+        if (1 == serviceType && (areaCode.equals("3101") || areaCode.equals("3205")) && 1 == isService ){
             code = SH_TWICE_3KM_FEE;
         }else if (1 == serviceType && areaCode.equals("5201") && 1 == isService ){
             code = GY_TWICE_3KM_FEE;
-        }else if (2 == serviceType && areaCode.equals("3101") && 1 == isService ){
+        }else if (2 == serviceType && (areaCode.equals("3101") || areaCode.equals("3205")) && 1 == isService ){
             code = SH_SINGLE_3KM_FEE;
         }else if (2 == serviceType && areaCode.equals("5201") && 1 == isService){
             code = GY_SINGLE_3KM_FEE;
@@ -211,7 +211,7 @@ public class FreightComputer {
 //            overMoney = Double.valueOf(firstServiceMoneys.get(2));
 //        }
         //上海地区超出价格*1.5
-        if (areaCode.equals("3101") && serviceType != 2) {
+        if ((areaCode.equals("3101") || areaCode.equals("3205")) && serviceType != 2) {
             overMoney = overMoney * 1.5;
         }
         return overMoney;

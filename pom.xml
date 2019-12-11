@@ -266,6 +266,14 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
         </dependency>
+        <!-- 小米推送SDK -->
+        <dependency>
+            <groupId>com.mipush</groupId>
+            <artifactId>http-mipush</artifactId>
+            <version>1.0.5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/MiPush_SDK_Server_Http2_1.0.5.jar</systemPath>
+        </dependency>
 
     </dependencies>
 

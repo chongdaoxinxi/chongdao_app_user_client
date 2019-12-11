@@ -1,6 +1,7 @@
 package com.chongdao.client.controller.user;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.service.UserRegInfoService;
 import com.chongdao.client.service.UserService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserSettingController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRegInfoService userRegInfoService;
 
     /**
      * 获取用户设置信息
@@ -39,5 +42,17 @@ public class UserSettingController {
     @PostMapping("saveUserSetting")
     public ResultResponse saveUserSetting(@RequestBody UserSettingVO uso){
         return userService.saveUserSetting(uso);
+    }
+
+    /**
+     * 保存/更新用户设备标识
+     * @param userId
+     * @param regId
+     * @param alias
+     * @return
+     */
+    @PostMapping("saveUserRegInfo")
+    public ResultResponse saveUserRegInfo(Integer userId, String regId, String alias) {
+        return userRegInfoService.addUserRegInfo(userId, regId, alias);
     };
 }
