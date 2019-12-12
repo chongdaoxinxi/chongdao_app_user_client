@@ -7,8 +7,10 @@ import com.chongdao.client.service.UserBankService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -22,6 +24,7 @@ public class UserBankServiceImpl implements UserBankService {
     private UserBankRepository userBankRepository;
 
     @Override
+    @Transactional
     public ResultResponse addUserBankService(UserBank userBank) {
         Integer userId = userBank.getUserId();
         Integer id = userBank.getId();
@@ -29,10 +32,13 @@ public class UserBankServiceImpl implements UserBankService {
             //保存
             return ResultResponse.createBySuccess(userBankRepository.save(userBank));
         } else {
-//            List<UserBank> list = userBankRepository.findByUserId(userId);
-//            if(list.size() > 0) {
-//                return ResultResponse.createByErrorMessage("该用户已经存在银行卡信息!");
-//            }
+            List<UserBank> list = userBankRepository.findByUserId(userId);
+            if(list.size() > 0) {
+                //如果存在旧的银行卡, 那么新添加将删除以前的记录
+                for(UserBank ub : list) {
+                    userBankRepository.delete(ub);
+                }
+            }
             //新增
             UserBank newOne = new UserBank();
             BeanUtils.copyProperties(userBank, newOne);
