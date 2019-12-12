@@ -65,7 +65,8 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
             UserWithdrawal add = new UserWithdrawal();
             BeanUtils.copyProperties(userWithdrawal, add);
             add.setCreateTime(new Date());
-            add.setStatus(0);
+            add.setStatus(0);//默认状态为待审核
+            add.setName(user.getName());//防止前台传过来修改昵称后没来的及刷新的昵称
             userWithdrawalRepository.save(add);
 
         } else {

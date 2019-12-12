@@ -69,7 +69,7 @@ public class UserTransServiceImpl implements UserTransService {
                 Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "createTime");
                 return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userTransRepository.findByUserIdAndType(userId, type, pageable));
             } else {
-                return ResultResponse.createBySuccess(userTransRepository.getRewardUserTrans(pageNum, pageSize));
+                return ResultResponse.createBySuccess(userTransRepository.getRewardUserTrans(userId, pageNum, pageSize));
             }
         } else {
             return ResultResponse.createByErrorCodeMessage(ResultEnum.PARAM_ERROR.getStatus(), ResultEnum.PARAM_ERROR.getMessage());

@@ -17,6 +17,6 @@ import java.util.List;
 public interface UserTransRepository extends JpaRepository<UserTrans, Integer> {
     Page<UserTrans> findByUserIdAndType(Integer userId, Integer type, Pageable pageable);
 
-    @Query(value="select ut.* from user_trans ut where ut.type = 4 or ut.type = 5 or ut.type = 6 order by ut.create_time desc limit ?1, ?2", nativeQuery = true)
-    List<UserTrans> getRewardUserTrans(Integer pageNum, Integer pageSize);
+    @Query(value="select ut.* from user_trans ut where ut.user_id = ?1 and (ut.type = 4 or ut.type = 5 or ut.type = 6) order by ut.create_time desc limit ?2, ?3", nativeQuery = true)
+    List<UserTrans> getRewardUserTrans(Integer userId, Integer pageNum, Integer pageSize);
 }

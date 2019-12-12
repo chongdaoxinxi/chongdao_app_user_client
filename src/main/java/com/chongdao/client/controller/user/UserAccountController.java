@@ -58,7 +58,7 @@ public class UserAccountController {
     /**
      *
      * @param token
-     * @param type 1:用户充值;2:订单消费;3:订单退款
+     * @param type 1:用户充值;2:订单消费;3:订单退款;4:返现;7:用户提现
      * @param pageNum
      * @param pageSize
      * @return

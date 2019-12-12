@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
         if (user == null){
             u.setPhone(userLoginVO.getName());
             u.setName(userLoginVO.getName());
+            u.setMoney(new BigDecimal(0));
             u.setLastLoginTime(new Date());
             userRepository.save(u);
             userLoginVO.setUserId(u.getId());
@@ -244,6 +245,7 @@ public class UserServiceImpl implements UserService {
         initNewUserCommonFields(u);
         u.setPhone(phone);
         u.setName(phone);//默认名称为手机号码
+        u.setMoney(new BigDecimal(0));
         u.setRecommendId(recommendId);
         u.setRecommendType(type);
         u.setIsLoginApp(-1);
