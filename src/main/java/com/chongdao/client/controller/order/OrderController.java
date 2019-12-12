@@ -7,6 +7,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.repository.OrderInfoRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.OrderService;
+import com.chongdao.client.service.ServiceRuleService;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.OrderCommonVO;
@@ -39,6 +40,9 @@ public class OrderController {
 
     @Autowired
     private ShopRepository shopRepository;
+
+    @Autowired
+    private ServiceRuleService serviceRuleService;
 
 
 
@@ -175,4 +179,17 @@ public class OrderController {
         return ResultResponse.createBySuccess();
     }
 
+    /**
+     * 获取配送规则页面所需详细参数
+     * @param originServicePrice - 订单总配送价格(未减免)
+     * @param serviceType - 订单服务类型(单程/双程/到店)
+     * @param isService - 订单类型(服务/商品)
+     * @param areaCode - 订单所需区域码
+     * @param serviceDistance - 订单配送距离
+     * @return
+     */
+    @PostMapping("getServiceRuleInfo")
+    public ResultResponse getServiceRuleInfo(BigDecimal originServicePrice, Integer serviceType, Integer isService, String areaCode, BigDecimal serviceDistance) {
+        return serviceRuleService.getServiceRuleInfo(originServicePrice, serviceType, isService, areaCode, serviceDistance);
+    }
 }

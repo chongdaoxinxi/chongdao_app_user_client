@@ -21,15 +21,15 @@ import java.util.List;
  */
 @Component
 public class FreightComputer {
-
-    //贵阳单程计算 （3公里以内双程配送费10元,超过3公里后每公里以3元计算,大于10公里后每公里以6元计算）
+    //贵阳单程商品计算 （3公里以内双程配送费10元,超过3公里后每公里以3元计算,大于10公里后每公里以5元计算）
+    //贵阳单程计算 （3公里以内双程配送费10元,超过3公里后每公里以3元计算,大于10公里后每公里以5元计算）
     private static final String GY_SINGLE_3KM_FEE  = "singlerate_5201";
-    //贵阳双程计算 （3公里以内双程配送费15元,超过3公里后每公里以3元计算,大于10公里后每公里以6元计算）
+    //贵阳双程计算 （3公里以内双程配送费15元,超过3公里后每公里以3元计算,大于10公里后每公里以5元计算）
     private static final String GY_TWICE_3KM_FEE  = "twicerate_5201";
 
-    //上海区域 3公里以内单程配送费15元,超过3公里后每公里加4.5元 大于10公里后每公里以6元计算
-    //3公里以内双程配送费30元,同上
-    //3公里以内单程配送费10元,超过3公里后每公里加4.5元
+    //上海商品计算 3公里以内单程配送费15元,超过3公里后每公里加3元 大于10公里后每公里以5元计算
+    //上海单程计算 3公里以内单程配送费15元,超过3公里后每公里加3元 大于10公里后每公里以5元计算
+    //上海双程计算 3公里以内双程配送费30元,超过3公里后每公里加4.5元 大于10公里后每公里以7.5元计算
     private static final String SH_SINGLE_3KM_FEE  = "singlerate";
     private static final String SH_TWICE_3KM_FEE  = "twicerate";
     private static final String GOODS_FEE = "goodslerate";
