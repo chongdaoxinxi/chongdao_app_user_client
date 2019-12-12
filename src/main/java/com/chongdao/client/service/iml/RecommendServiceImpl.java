@@ -175,8 +175,10 @@ public class RecommendServiceImpl implements RecommendService {
         }
         Integer insuranceType = insuranceOrder.getInsuranceType();
         Integer consumeType = RecommendTypeEnum.MEDICAL_INSURANCE.getCode();
-        if(insuranceType == 2) {
-            consumeType = RecommendTypeEnum.FAMILY_INSURANCE.getCode();
+        if(insuranceType == null || insuranceType != 1) {
+            //只有医疗险有返利
+            return false;
+//            consumeType = RecommendTypeEnum.FAMILY_INSURANCE.getCode();
         }
         List<RecommendRecord> list = recommendRecordRepository.findByUserIdAndRecommenderIdAndRecommendTypeAndConsumeType(user.getId(), user.getRecommendId(), user.getRecommendType(), consumeType);
         if(list.size() > 0) {
