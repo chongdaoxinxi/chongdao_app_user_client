@@ -61,6 +61,11 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
         if (money.compareTo(left) > 1) {
             return ResultResponse.createByErrorMessage("申请提现金额不能大于用户余额!");
         }
+        //校验是否有正在审核中的提现
+        List<UserWithdrawal> auditingWithdrawalList = userWithdrawalRepository.findByStatus(0);
+        if(auditingWithdrawalList.size() > 0) {
+            return ResultResponse.createByErrorMessage("您有正在审核中的提现, 暂时无法提现, 请耐心等待!");
+        }
         if (id == null) {
             UserWithdrawal add = new UserWithdrawal();
             BeanUtils.copyProperties(userWithdrawal, add);
