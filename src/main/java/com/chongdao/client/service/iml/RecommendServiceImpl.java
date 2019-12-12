@@ -484,7 +484,7 @@ public class RecommendServiceImpl implements RecommendService {
             consumeType = RecommendTypeEnum.FAMILY_INSURANCE.getCode();
         }
         rr.setConsumeType(consumeType);
-        rr.setConsumeMoney(insuranceOrder.getSumAmount());
+        rr.setConsumeMoney(insuranceOrder.getSumPremium());//保费
         rr.setRewardPercent(RecommendTypeEnum.INSURANCE_REWARD_PERCENT.getCode());
         String percent = String.valueOf((double)rr.getRewardPercent()/(double)100);
         rr.setRewardMoney(rr.getConsumeMoney().multiply(new BigDecimal(percent)));

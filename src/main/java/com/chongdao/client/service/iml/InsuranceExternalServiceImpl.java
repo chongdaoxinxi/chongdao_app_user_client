@@ -786,7 +786,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
 //            template.binding("Variety", petCard.getBreed());//宠物品种
             BigDecimal petAge = insuranceOrder.getPetAge();
             if(petAge != null) {
-                template.binding("ItemAge", petAge.multiply(new BigDecimal(12)));
+//                template.binding("ItemAge", petAge.multiply(new BigDecimal(12)));
+                template.binding("ItemAge", petAge.intValue());
             } else {
                 template.binding("ItemAge", 0);
             }
