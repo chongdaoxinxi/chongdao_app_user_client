@@ -69,6 +69,8 @@ public class AdminPcController {
     private ShopRepository shopRepository;
     @Autowired
     private GoodsRepository goodsRepository;
+    @Autowired
+    private CouponService couponService;
 
     /**
      * 确认退款完成
@@ -658,5 +660,10 @@ public class AdminPcController {
         }
         System.out.println("新增"+ i + "个商家的体检券");
         return null;
+    }
+
+    @PostMapping("addPresentTijianJuan")
+    public ResultResponse addPresentTijianJuan(Integer userId) {
+        return couponService.presentMedicalCard(userId);
     }
 }
