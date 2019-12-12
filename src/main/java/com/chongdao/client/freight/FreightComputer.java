@@ -133,14 +133,19 @@ public class FreightComputer {
     private String getCode(Integer serviceType,String areaCode,Integer isService){
         String code = "";
         if (1 == serviceType && (areaCode.equals("3101") || areaCode.equals("3205")) && 1 == isService ){
+            //双程非贵阳地区
             code = SH_TWICE_3KM_FEE;
         }else if (1 == serviceType && areaCode.equals("5201") && 1 == isService ){
+            //双程贵阳地区
             code = GY_TWICE_3KM_FEE;
         }else if (2 == serviceType && (areaCode.equals("3101") || areaCode.equals("3205")) && 1 == isService ){
+            //单程非贵阳地区
             code = SH_SINGLE_3KM_FEE;
         }else if (2 == serviceType && areaCode.equals("5201") && 1 == isService){
+            //单程贵阳地区
             code = GY_SINGLE_3KM_FEE;
         }else{
+            //商品雷
             code = GOODS_FEE;
         }
         return code;
@@ -163,7 +168,8 @@ public class FreightComputer {
             }else if (receiveDistance <= RANGE_3_KM || deliverDistance <= RANGE_3_KM ){
                 overMoneyBase = 0.0d;
             }else{
-                overMoneyBase = OVERSTEP_10KM_PRICE;
+//                overMoneyBase = OVERSTEP_10KM_PRICE;
+                overMoneyBase = Double.valueOf(firstServiceMoneys.get(3));
             }
         }else if (2 == serviceType){
             if (receiveDistance > RANGE_3_KM && receiveDistance <= RANGE_10_KM){
@@ -171,7 +177,8 @@ public class FreightComputer {
             }else if (receiveDistance <= RANGE_3_KM){
                 overMoneyBase = 0.0d;
             }else{
-                overMoneyBase = OVERSTEP_10KM_PRICE;
+//                overMoneyBase = OVERSTEP_10KM_PRICE;
+                overMoneyBase = Double.valueOf(firstServiceMoneys.get(3));
             }
         }
         return overMoneyBase;
