@@ -52,7 +52,7 @@ public class UserSettingController {
      * @return
      */
     @PostMapping("saveUserRegInfo")
-    public ResultResponse saveUserRegInfo(Integer userId, String regId, String alias) {
-        return userRegInfoService.addUserRegInfo(userId, regId, alias);
+    public ResultResponse saveUserRegInfo(Integer userId, String regId, String alias, String userAccount) {
+        return userRegInfoService.addUserRegInfo(userId, regId, alias, userAccount);
     };
 }

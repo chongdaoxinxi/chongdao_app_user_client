@@ -33,6 +33,7 @@ public class UserRegInfo implements Serializable {
     private Integer userId;
     private String regId;
     private String alias;
+    private String userAccount;
     private Date createTime;
     private Date updateTime;
 }
