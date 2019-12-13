@@ -49,10 +49,12 @@ public class UserSettingController {
      * @param userId
      * @param regId
      * @param alias
+     * @param userAccount
+     * @param type 1:安卓, 2:IOS
      * @return
      */
     @PostMapping("saveUserRegInfo")
-    public ResultResponse saveUserRegInfo(Integer userId, String regId, String alias, String userAccount) {
-        return userRegInfoService.addUserRegInfo(userId, regId, alias, userAccount);
+    public ResultResponse saveUserRegInfo(Integer userId, String regId, String alias, String userAccount, Integer type) {
+        return userRegInfoService.addUserRegInfo(userId, regId, alias, userAccount, type);
     };
 }

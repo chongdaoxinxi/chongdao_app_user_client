@@ -9,5 +9,5 @@ import com.chongdao.client.common.ResultResponse;
  * @Version 1.0
  **/
 public interface UserRegInfoService {
-    ResultResponse addUserRegInfo(Integer userId, String regId, String alias, String userAccount);
+    ResultResponse addUserRegInfo(Integer userId, String regId, String alias, String userAccount, Integer type);
 }

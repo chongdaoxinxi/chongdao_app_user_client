@@ -20,7 +20,7 @@ public class UserRegInfoServiceImpl implements UserRegInfoService {
     private UserRegInfoRepository userRegInfoRepository;
 
     @Override
-    public ResultResponse addUserRegInfo(Integer userId, String regId, String alias, String userAccount) {
+    public ResultResponse addUserRegInfo(Integer userId, String regId, String alias, String userAccount, Integer type) {
         if(userId == null) {
             return ResultResponse.createByErrorMessage("userId不能为空!");
         }
@@ -31,6 +31,7 @@ public class UserRegInfoServiceImpl implements UserRegInfoService {
             userRegInfo.setRegId(regId);
             userRegInfo.setAlias(alias);
             userRegInfo.setUserAccount(userAccount);
+            userRegInfo.setType(type);
             userRegInfo.setCreateTime(new Date());
             userRegInfoRepository.save(userRegInfo);
             return ResultResponse.createBySuccess("保存用户标识成功!");
@@ -38,6 +39,7 @@ public class UserRegInfoServiceImpl implements UserRegInfoService {
             info.setRegId(regId);
             info.setAlias(alias);
             info.setUserAccount(userAccount);
+            info.setType(type);
             info.setUpdateTime(new Date());
             userRegInfoRepository.save(info);
             return ResultResponse.createBySuccess("更新用户标识成功!");

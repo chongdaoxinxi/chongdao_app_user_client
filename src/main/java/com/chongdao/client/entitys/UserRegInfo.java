@@ -34,6 +34,7 @@ public class UserRegInfo implements Serializable {
     private String regId;
     private String alias;
     private String userAccount;
+    private Integer type; //1:安卓, 2:IOS
     private Date createTime;
     private Date updateTime;
 }
