@@ -48,6 +48,8 @@ public interface CpnUserRepository extends JpaRepository<CpnUser,Integer> {
 
     List<CpnUser> findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String shopId,Integer userId,
                                                                                       Integer cpnState,Integer isDelete,List<Integer> cpnType,List<Integer> scopeTypes);
+    List<CpnUser> findByCpnIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(int cpnId, Integer userId,
+                                                                                              Integer cpnState, Integer isDelete, List<Integer> cpnType, List<Integer> scopeTypes);
 
     /***
      * 获取优惠券数量

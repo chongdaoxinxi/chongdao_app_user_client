@@ -63,17 +63,21 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 }
             });
             ////////////////////////////////增加一个特殊的体检券的获取
-            CpnUser tijianCoupon = getTijianCoupon(userId);
-            if(tijianCoupon != null) {
-                long result = this.computerTime(tijianCoupon.getValidityEndDate());
-                if (result > 0 && tijianCoupon.getCount() != null && tijianCoupon.getCount() > 0 && tijianCoupon.getUserCpnState() != null &&  tijianCoupon.getUserCpnState() == 0) {
-                    //逻辑处理
-                    this.getCpnUser(tijianCoupon, totalPrice, categoryId);
-                    tijianCoupon.setEnabled(1);
-                    CouponInfo couponInfo = this.assembelCpnInfoEnabled(tijianCoupon);
-                    //设置优惠券限制范围名称
-                    this.setCouponScope(couponInfo);
-                    couponInfoList.add(couponInfo);
+            Shop shop = shopRepository.findById(Integer.valueOf(shopId)).orElse(null);
+            if(shop != null && shop.getType() != null && shop.getType() == 2) {
+                //医院类商家
+                CpnUser tijianCoupon = getTijianCoupon(userId);
+                if(tijianCoupon != null) {
+                    long result = this.computerTime(tijianCoupon.getValidityEndDate());
+                    if (result > 0 && tijianCoupon.getCount() != null && tijianCoupon.getCount() > 0 && tijianCoupon.getUserCpnState() != null &&  tijianCoupon.getUserCpnState() == 0) {
+                        //逻辑处理
+                        this.getCpnUser(tijianCoupon, totalPrice, categoryId);
+                        tijianCoupon.setEnabled(1);
+                        CouponInfo couponInfo = this.assembelCpnInfoEnabled(tijianCoupon);
+                        //设置优惠券限制范围名称
+                        this.setCouponScope(couponInfo);
+                        couponInfoList.add(couponInfo);
+                    }
                 }
             }
             return ResultResponse.createBySuccess(couponInfoList);
@@ -206,6 +210,12 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
         //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
         List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String.valueOf(shopId), userId, 0, 0, Arrays.asList(1,2,3), Arrays.asList(1,3,4));
+        Shop shop = shopMapper.selectByPrimaryKey(shopId);
+        if(shop != null && shop.getType() != null && shop.getType() == 2) {
+            //额外查询体检券
+            List<CpnUser> tijianList = cpnUserRepository.findByCpnIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(999, userId, 0, 0, Arrays.asList(1, 2, 3), Arrays.asList(1, 3, 4));
+            cpnUserList.addAll(tijianList);
+        }
         for (CpnUser cpnUser : cpnUserList) {
             //查询截止日期与当前日期差
             long result = this.computerTime(cpnUser.getValidityEndDate());
@@ -214,7 +224,6 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                 count = count + this.getCpnUserCount(cpnUser, totalPrice, categoryIds);
             }
         };
-        Shop shop = shopMapper.selectByPrimaryKey(shopId);
         //查询是否参加公益
         if (shop.getIsJoinCommonWeal() == 1) {
             int result = cpnUserRepository.countByUserIdAndIsDeleteAndCpnTypeAndCountGreaterThanAndUserCpnState(userId, 0, CouponConst.COMMON,0,0);
@@ -225,7 +234,7 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
 
     private CpnUser getTijianCoupon(Integer userId) {
         //体检券id写死为6
-        List<CpnUser> list = cpnUserRepository.getCanUserTijianCpn(userId, 6);
+        List<CpnUser> list = cpnUserRepository.getCanUserTijianCpn(userId, 999);
         if(list.size() > 0) {
             return list.get(0);
         }
