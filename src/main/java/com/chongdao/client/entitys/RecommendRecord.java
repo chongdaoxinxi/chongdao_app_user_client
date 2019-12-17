@@ -37,6 +37,7 @@ public class RecommendRecord implements Serializable {
     private Integer rewardPercent;//奖励比例
     private BigDecimal rewardMoney;//奖励金额
     private Integer isRefund;//是否发生过退款, 1:是, -1:否
+    private String paymentVoucher;//支付凭证
     private Date createTime;
     private Date updateTime;
 }

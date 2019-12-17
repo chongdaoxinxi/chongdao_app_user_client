@@ -31,6 +31,9 @@ public class InsuranceOrderTask {
     @Autowired
     private InsuranceFeeRecordRepository insuranceFeeRecordRepository;
 
+    /**
+     * 保险订单超时未支付关闭
+     */
     @Async
     @Scheduled(cron="0 0 2 * * ?")
     public void updateOverdueInsuranceOrder() {
@@ -60,6 +63,9 @@ public class InsuranceOrderTask {
         System.out.println("保险订单超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
     }
 
+    /**
+     * 超时未支付医疗费用订单自动关闭
+     */
     @Async
     @Scheduled(cron="0 0 3 * * ?")
     public void updateOverdueInsuranceFeeOrder() {
@@ -75,5 +81,26 @@ public class InsuranceOrderTask {
             }
         }
         System.out.println("医疗费用订单超时未支付关闭任务执行完毕" + "当前时间:" + new Date());
+    }
+
+    /**
+     * 更新保险订单状态(由等待期进入保障期)
+     */
+    @Async
+    @Scheduled(cron="0 0 4 * * ?")
+    public void updateInsuranceOrderStatus() {
+        List<InsuranceOrder> list = insuranceOrderRepository.findByStatus(2);//等待期的保单
+//        List<InsuranceFeeRecord> list = insuranceFeeRecordRepository.findByStatus(2);
+        for(InsuranceOrder order : list) {
+            Date createTime = order.getCreateTime();
+            Date now = new Date();
+            Long l = (now.getTime() - createTime.getTime())/ (1000*60*60*24);
+            if(l >= 7) {
+                order.setStatus(3);
+                insuranceOrderRepository.save(order);
+                System.out.println("保险订单" + order.getOrderNo() + ", 等待期已满, 进入保障期!");
+            }
+        }
+        System.out.println("保险订单等待期满转保障期任务执行完毕" + "当前时间:" + new Date());
     }
 }

@@ -9,7 +9,10 @@ import com.chongdao.client.repository.GoodsRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.BigDecimalUtil;
+import com.chongdao.client.utils.DateTimeUtil;
+import com.chongdao.client.utils.InsuranceFeePaymentVoucherUtil;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.PaymentVoucherVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -665,5 +668,17 @@ public class AdminPcController {
     @PostMapping("addPresentTijianJuan")
     public ResultResponse addPresentTijianJuan(Integer userId) {
         return couponService.presentMedicalCard(userId);
+    }
+
+    @PostMapping("testPaymentVoucher")
+    public ResultResponse testPaymentVoucher() {
+        PaymentVoucherVO pv = new PaymentVoucherVO();
+        pv.setShopName("xxx");
+        pv.setOrderNo("xxx");
+        pv.setMoney(new BigDecimal(111.11));
+        pv.setPayType("xxx");
+        pv.setCreateTime(DateTimeUtil.dateToStr(new Date()));
+        System.out.println(InsuranceFeePaymentVoucherUtil.graphicsGeneration(pv));
+        return null;
     }
 }

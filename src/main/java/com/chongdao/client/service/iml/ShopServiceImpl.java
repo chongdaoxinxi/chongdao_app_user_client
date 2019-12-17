@@ -191,7 +191,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
         }
         if(shop.getId() == null) {
             s.setCreateTime(new Date());
-            s.setType(1);
+//            s.setType(1);
             s.setGrade(0.0);
             s.setStatus(-1);
             Integer i = -1;

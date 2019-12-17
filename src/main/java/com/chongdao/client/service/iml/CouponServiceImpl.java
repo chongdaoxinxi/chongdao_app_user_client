@@ -211,8 +211,8 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
         List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String.valueOf(shopId), userId, 0, 0, Arrays.asList(1,2,3), Arrays.asList(1,3,4));
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
+        //医院类商家, 额外查询体检券
         if(shop != null && shop.getType() != null && shop.getType() == 2) {
-            //额外查询体检券
             List<CpnUser> tijianList = cpnUserRepository.findByCpnIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(999, userId, 0, 0, Arrays.asList(1, 2, 3), Arrays.asList(1, 3, 4));
             cpnUserList.addAll(tijianList);
         }
