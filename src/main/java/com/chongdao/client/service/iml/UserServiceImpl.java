@@ -8,6 +8,7 @@ import com.chongdao.client.enums.UserStatusEnum;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.service.SmsService;
 import com.chongdao.client.service.UserService;
+import com.chongdao.client.service.UserXcxService;
 import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.utils.TokenUtil;
 import com.chongdao.client.vo.UserLoginVO;
@@ -36,6 +37,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SmsService smsService;
 
+    @Autowired
+    private UserXcxService userXcxService;
 
     /**
      * 用户端登录
@@ -84,6 +87,7 @@ public class UserServiceImpl implements UserService {
             u.setLastLoginTime(new Date());
             userRepository.save(u);
             userLoginVO.setUserId(u.getId());
+            oldUserXcxReward(u.getPhone());//小程序老用户奖励逻辑
         }else {
             userLoginVO.setPhone(user.getPhone());
             userLoginVO.setName(user.getName());
@@ -97,6 +101,18 @@ public class UserServiceImpl implements UserService {
         userLoginVO.setToken(TokenUtil.generateToken(userLoginVO.getUserId(),userLoginVO.getName(),userLoginVO.getLastLoginTime(), "USER"));
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userLoginVO);
     }
+
+    /**
+     * 小程序老用户奖励逻辑
+     * @param phone
+     */
+    private void oldUserXcxReward(String phone) {
+        boolean flag = userXcxService.checkIsXcxOldUser(phone);
+        if(flag) {
+            userXcxService.addServiceCpnToXcxUser(phone);
+        }
+    }
+
     /**
      * 校验验证码是否正确
      * @param
@@ -249,7 +265,9 @@ public class UserServiceImpl implements UserService {
         u.setRecommendId(recommendId);
         u.setRecommendType(type);
         u.setIsLoginApp(-1);
-        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), userRepository.saveAndFlush(u));
+        User newUser = userRepository.saveAndFlush(u);
+        oldUserXcxReward(u.getPhone());//小程序老用户奖励逻辑
+        return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage());
     }
 
     @Override

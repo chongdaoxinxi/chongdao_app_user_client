@@ -399,7 +399,7 @@ public class ShopServiceImpl extends CommonRepository  implements ShopService {
                     String[] arrs = unitName.split("-");
                     if(arrs[1] != null) {
                         String[] kgs = arrs[1].split("kg");
-                        if(arrs[0] != null && kgs[0] != null) {
+                        if(arrs != null && arrs.length > 0 && arrs[0] != null && kgs != null && kgs.length > 0 && kgs[0] != null) {
                             BigDecimal min =  new BigDecimal(arrs[0]);
                             BigDecimal max = new BigDecimal(kgs[0]);
                             if(weight.compareTo(min) >= 0 && weight.compareTo(max) <= 0) {
