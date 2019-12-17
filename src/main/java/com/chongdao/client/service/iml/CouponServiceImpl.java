@@ -84,9 +84,9 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
         }
         //配送优惠券(双程)
         if (serviceType == 1 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){
-            //6配送双程  8仅限服务（双程）10仅限商品（配送双程）
+            //4限服务 6配送双程  8仅限服务（双程）10仅限商品（配送双程）
             //该查询查询所有，不包含限制店铺判断
-            List<CpnUser> cpnUserList = cpnUserRepository.findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
+            List<CpnUser> cpnUserList = cpnUserRepository.findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(4, 6, 8, 10));
             //限制店铺使用的查询结果
             List<CpnUser> cpnLimitUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId,userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(6, 8, 10));
             if (!CollectionUtils.isEmpty(cpnLimitUserList)){
@@ -106,8 +106,8 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             });
             return ResultResponse.createBySuccess(couponInfoList);
         }else if (serviceType == 2 && type.equals(CouponStatusEnum.COUPON_SERVICE_DELIVERY.getStatus())){//单程
-            //5配送单程  7仅限服务（单程）9仅限商品（配送单程）
-            List<CpnUser> cpnUserList =cpnUserRepository.findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(5,7,9));
+            //4限服务 5配送单程  7仅限服务（单程）9仅限商品（配送单程）
+            List<CpnUser> cpnUserList =cpnUserRepository.findByUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(userId, 0, 0,Arrays.asList(1,2,3), Arrays.asList(4, 5,7,9));
             //限制店铺使用的查询结果
             List<CpnUser> cpnLimitUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(shopId,userId, 0, 0, Arrays.asList(1,2,3),Arrays.asList(5,7,9));
             if (!CollectionUtils.isEmpty(cpnLimitUserList)){
