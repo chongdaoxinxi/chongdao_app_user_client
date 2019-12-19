@@ -50,6 +50,13 @@ public interface CouponService {
      * @return
      */
     ResultResponse presentMedicalCard(Integer userId);
+
+    /**
+     * 赠送30元配送券
+     * @param userId
+     * @return
+     */
+    ResultResponse presentService30Card(Integer userId);
     //---------------------------------------------------------- 商户端 -----------------------------------------------
 
 

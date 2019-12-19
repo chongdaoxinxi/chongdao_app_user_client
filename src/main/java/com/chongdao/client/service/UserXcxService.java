@@ -1,7 +1,5 @@
 package com.chongdao.client.service;
 
-import com.chongdao.client.common.ResultResponse;
-
 public interface UserXcxService {
 
     /**
@@ -16,5 +14,5 @@ public interface UserXcxService {
      * @param phone
      * @return
      */
-    ResultResponse addServiceCpnToXcxUser(String phone);
+    void addServiceCpnToXcxUser(String phone);
 }

@@ -1,10 +1,10 @@
 package com.chongdao.client.service.iml;
 
-import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.User;
 import com.chongdao.client.entitys.UserXcx;
 import com.chongdao.client.repository.UserRepository;
 import com.chongdao.client.repository.UserXcxRepository;
+import com.chongdao.client.service.CouponService;
 import com.chongdao.client.service.UserXcxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,8 @@ public class UserXcxServiceImpl implements UserXcxService {
     private UserXcxRepository userXcxRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CouponService couponService;
 
     @Override
     public boolean checkIsXcxOldUser(String phone) {
@@ -37,11 +39,10 @@ public class UserXcxServiceImpl implements UserXcxService {
 
     @Override
     @Transactional
-    public ResultResponse addServiceCpnToXcxUser(String phone) {
+    public void addServiceCpnToXcxUser(String phone) {
         User user = userRepository.findByPhone(phone);
         if(user != null) {
-
+            couponService.presentService30Card(user.getId());
         }
-        return null;
     }
 }
