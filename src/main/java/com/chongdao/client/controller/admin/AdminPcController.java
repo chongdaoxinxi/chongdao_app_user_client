@@ -670,6 +670,12 @@ public class AdminPcController {
         return couponService.presentMedicalCard(userId);
     }
 
+    @PostMapping("addService30")
+    public ResultResponse addService30() {
+        return couponService.presentService30Card(3);
+    }
+
+
     @PostMapping("testPaymentVoucher")
     public ResultResponse testPaymentVoucher() {
         PaymentVoucherVO pv = new PaymentVoucherVO();

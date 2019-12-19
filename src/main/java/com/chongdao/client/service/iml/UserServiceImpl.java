@@ -108,6 +108,7 @@ public class UserServiceImpl implements UserService {
      */
     private void oldUserXcxReward(String phone) {
         boolean flag = userXcxService.checkIsXcxOldUser(phone);
+        System.out.println("flag:>>>>" + flag);
         if(flag) {
             userXcxService.addServiceCpnToXcxUser(phone);
         }

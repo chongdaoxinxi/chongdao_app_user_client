@@ -173,13 +173,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //减去满减的价格
             cartTotalPrice = cartTotalPrice.subtract(orderVo.getFullCouponPrice());
         }
-        if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0) {
-            //计算使用配送优惠券后的价格
-            CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).orElse(null);
-            if (couponInfo != null) {
-                cartTotalPrice = this.cartTotalPrice(cartTotalPrice, couponInfo, orderVo);
-            }
-        }
+
         //配送费(到店自取无配送费) 有优惠需减去优惠
         if (orderCommonVO.getServiceType() != 3) {
             System.out.println("非到店自取计算配送价格!, serviceType:" + orderCommonVO.getServiceType());
@@ -190,9 +184,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //原价
             orderVo.setOriginServicePrice(originServicePrice);
             System.out.println("servicePrice>>>>>>>>>>>>>>>>" + orderVo.getOriginServicePrice());
+            if (orderCommonVO.getCardId() != null && orderCommonVO.getCardId() > 0) {
+                //计算使用配送优惠券后的价格
+                CouponInfo couponInfo = couponInfoRepository.findById(orderCommonVO.getCardId()).orElse(null);
+                if (couponInfo != null) {
+                    cartServiceCoupon(orderVo.getOriginServicePrice(), couponInfo, orderVo);
+                }
+            }
             //优惠后的价格
             orderVo.setServicePrice(originServicePrice.subtract(orderVo.getServiceCouponPrice()));
-
             //计算配送距离, 并返回给前台
             orderVo.setServiceDistance(freightComputer.computerDistance(orderCommonVO.getServiceType(), orderCommonVO.getReceiveAddressId(), orderCommonVO.getDeliverAddressId(), orderVo.getShopId(), userId));
         }
@@ -201,10 +201,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //配送优惠券数量 1:双程 2:单程（商品默认为单程）
         orderVo.setServiceCouponCount(couponService.getExpressCouponCount(userId, orderCommonVO.getServiceType()));
         //商品优惠券数量
-        orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(userId, orderCommonVO.getShopId(), categoryIds, cartTotalPrice));
+        orderVo.setGoodsCouponCount(couponService.countByUserIdAndIsDeleteAndAndCpnType(cartList, userId, orderCommonVO.getShopId(), categoryIds, cartTotalPrice));
         //订单总价（包含配送费）
-        //需减去小计
-//        cartTotalPrice = (cartTotalPrice.add(orderVo.getServicePrice())).subtract(totalDiscount);
         cartTotalPrice = (cartTotalPrice.add(orderVo.getServicePrice()));//此处的cartTotalPrice已经是折扣过的价格了, 所以不再减去totalDiscount
         if (cartTotalPrice.compareTo(BigDecimal.ZERO) <= 0) {
             cartTotalPrice = new BigDecimal("0.01");
@@ -1854,6 +1852,21 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             cartTotalPrice = cartTotalPrice.subtract(couponInfo.getCpnValue());
         }
         return cartTotalPrice;
+    }
+
+    /**
+     * 处理配送优惠
+     * @param couponInfo
+     * @param orderVo
+     */
+    private void cartServiceCoupon(BigDecimal originServicePrice, CouponInfo couponInfo, OrderVo orderVo){
+        if (originServicePrice.compareTo(couponInfo.getCpnValue()) == -1) {
+            orderVo.setTotalDiscount(originServicePrice);
+            orderVo.setServiceCouponPrice(originServicePrice);
+        } else {
+            orderVo.setTotalDiscount(orderVo.getTotalDiscount().add(couponInfo.getCpnValue()));
+            orderVo.setServiceCouponPrice(couponInfo.getCpnValue());
+        }
     }
 
     /**

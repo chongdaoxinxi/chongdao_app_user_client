@@ -41,6 +41,7 @@ public class UserXcxServiceImpl implements UserXcxService {
     @Transactional
     public void addServiceCpnToXcxUser(String phone) {
         User user = userRepository.findByPhone(phone);
+        System.out.println("user:>>>>>>>" + user.getId());
         if(user != null) {
             couponService.presentService30Card(user.getId());
         }

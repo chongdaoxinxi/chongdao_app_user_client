@@ -1,6 +1,7 @@
 package com.chongdao.client.service;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Carts;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 
 import java.math.BigDecimal;
@@ -35,7 +36,7 @@ public interface CouponService {
      * @param userId
      * @return
      */
-    int countByUserIdAndIsDeleteAndAndCpnType(Integer userId, Integer shopId, List<Integer> categoryIds, BigDecimal totalPrice);
+    int countByUserIdAndIsDeleteAndAndCpnType(List<Carts> cartList, Integer userId, Integer shopId, List<Integer> categoryIds, BigDecimal totalPrice);
 
     /**
      * 卡包

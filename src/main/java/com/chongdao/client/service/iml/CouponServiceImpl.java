@@ -4,6 +4,8 @@ import com.chongdao.client.common.CommonRepository;
 import com.chongdao.client.common.CouponConst;
 import com.chongdao.client.common.CouponScopeCommon;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Carts;
+import com.chongdao.client.entitys.Good;
 import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.coupon.CouponInfo;
 import com.chongdao.client.entitys.coupon.CpnThresholdRule;
@@ -72,7 +74,13 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
                     if (result > 0 && tijianCoupon.getCount() != null && tijianCoupon.getCount() > 0 && tijianCoupon.getUserCpnState() != null &&  tijianCoupon.getUserCpnState() == 0) {
                         //逻辑处理
                         this.getCpnUser(tijianCoupon, totalPrice, categoryId);
-                        tijianCoupon.setEnabled(1);
+                        List<Carts> cartList = cartRepository.findByUserIdAndShopId(userId, Integer.valueOf(shopId));
+                        boolean hasTijian = isHasTijian(cartList);
+                        if(hasTijian) {
+                            tijianCoupon.setEnabled(1);
+                        } else {
+                            tijianCoupon.setEnabled(0);
+                        }
                         CouponInfo couponInfo = this.assembelCpnInfoEnabled(tijianCoupon);
                         //设置优惠券限制范围名称
                         this.setCouponScope(couponInfo);
@@ -207,14 +215,14 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      * @return
      */
     @Override
-    public int countByUserIdAndIsDeleteAndAndCpnType(Integer userId, Integer shopId,List<Integer> categoryIds,BigDecimal totalPrice) {
+    public int countByUserIdAndIsDeleteAndAndCpnType(List<Carts> cartList, Integer userId, Integer shopId, List<Integer> categoryIds, BigDecimal totalPrice) {
         Integer count = 0;
         //查询优惠券列表(商品and服务) cpnScopeType: 1全场通用 3限商品 4限服务
         //cpnType:优惠券类型 1现金券 2满减券 3折扣券 4店铺满减
         List<CpnUser> cpnUserList = cpnUserRepository.findByShopIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(String.valueOf(shopId), userId, 0, 0, Arrays.asList(1,2,3), Arrays.asList(1,3,4));
         Shop shop = shopMapper.selectByPrimaryKey(shopId);
         //医院类商家, 额外查询体检券
-        if(shop != null && shop.getType() != null && shop.getType() == 2) {
+        if(shop != null && shop.getType() != null && shop.getType() == 2 && isHasTijian(cartList)) {
             List<CpnUser> tijianList = cpnUserRepository.findByCpnIdAndUserIdAndUserCpnStateAndIsDeleteAndCpnTypeInAndCpnScopeTypeIn(999, userId, 0, 0, Arrays.asList(1, 2, 3), Arrays.asList(1, 3, 4));
             cpnUserList.addAll(tijianList);
         }
@@ -232,6 +240,28 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
             count = count + result;
         }
         return count;
+    }
+
+    /**
+     * 判断购物车中是否含有基础体检套餐
+     * @param cartList
+     * @return
+     */
+    private boolean isHasTijian(List<Carts> cartList) {
+        boolean flag = false;
+        for(Carts cart : cartList) {
+            Integer goodsId = cart.getGoodsId();
+            if(goodsId != null) {
+                Good good = goodsRepository.findById(goodsId).orElse(null);
+                if(good != null) {
+                    String name = good.getName();
+                    if(name.equals("基础体检套餐")) {
+                        flag = true;
+                    }
+                }
+            }
+        }
+        return flag;
     }
 
     private CpnUser getTijianCoupon(Integer userId) {
@@ -492,6 +522,12 @@ public class CouponServiceImpl extends CommonRepository implements CouponService
      * @return
      */
     private CpnUser setServiceCouponEnabled(CpnUser cpnUser,String shopId){
+        if(StringUtils.isNotBlank(cpnUser.getShopId()) && cpnUser.getShopId().equals("1")) {
+            //官方店铺发送的优惠券全场都可用
+            cpnUser.setEnabled(1);
+            return cpnUser;
+        }
+
         if (StringUtils.isNotBlank(cpnUser.getShopId()) && StringUtils.contains(cpnUser.getShopId(),shopId)){
             cpnUser.setEnabled(1);
         }else if (StringUtils.isBlank(cpnUser.getShopId())){
