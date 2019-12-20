@@ -62,6 +62,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private CouponCommon couponCommon;
     @Autowired
     private OrderOperateLogService orderOperateLogService;
+    @Autowired
+    private OrderService orderService;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -1540,6 +1542,9 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         smsService.sendOrderUserRefundShop(orderNo, shop.getPhone());
         //推送管理员
         smsService.sendOrderUserRefundUser(orderInfo.getOrderNo(), shop.getShopName(), phone);
+
+        //商家默认同意退款
+        orderService.shopRefundOrder(orderInfo.getId());
 //        //推送配送员
 //        if (orderInfo.getExpressId() == null){
 //            List<Express> expressList = expressRepository.findByAreaCodeAndStatus(shop.getAreaCode(), 1);
