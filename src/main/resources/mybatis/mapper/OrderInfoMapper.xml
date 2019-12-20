@@ -520,7 +520,7 @@
         <include refid="Base_Alias_Column_List"/>
         from order_info o
         left join user u on o.user_id = u.id
-        left join order_address oaddr on o.id = oaddr.order_id
+        left join order_address oaddr on o.id = oaddr.receive_address_id
         where shop_id = #{shopId}
         <if test="orderNo != null and orderNo != ''">
             and o.order_no like concat('%',#{orderNo},'%')
