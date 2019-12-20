@@ -5,8 +5,6 @@ import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.entitys.UserAddress;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 /**
  * 用户收货地址接口
  */

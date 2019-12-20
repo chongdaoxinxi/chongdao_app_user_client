@@ -15,6 +15,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.mapper.OrderInfoVOMapper;
+import com.chongdao.client.repository.UserAddressRepository;
 import com.chongdao.client.service.*;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
@@ -64,6 +65,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private OrderOperateLogService orderOperateLogService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private UserAddressRepository userAddressRepository;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
