@@ -84,6 +84,8 @@ public class UserServiceImpl implements UserService {
             u.setPhone(userLoginVO.getName());
             u.setName(userLoginVO.getName());
             u.setMoney(new BigDecimal(0));
+            u.setCreateTime(new Date());
+            u.setUpdateTime(new Date());
             u.setLastLoginTime(new Date());
             userRepository.save(u);
             userLoginVO.setUserId(u.getId());

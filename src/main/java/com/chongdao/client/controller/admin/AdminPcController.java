@@ -672,7 +672,7 @@ public class AdminPcController {
 
     @PostMapping("addService30")
     public ResultResponse addService30() {
-        return couponService.presentService30Card(3);
+        return couponService.presentService30Card(85);
     }
 
 
