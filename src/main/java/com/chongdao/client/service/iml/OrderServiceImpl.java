@@ -1792,7 +1792,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         }
         //送宠地址
         UserAddress deliverAddress = null;
-        if (deliverAddress != null) {
+        if (order.getDeliverAddressId() != null) {
             deliverAddress = userAddressRepository.findById(order.getDeliverAddressId()).orElse(null);
             if (deliverAddress != null) {
                 orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
