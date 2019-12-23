@@ -1444,6 +1444,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         if (isExpressAdmin(expressId)) {
             expressId = null;
         }
+        PageHelper.startPage(pageNum, pageSize);
         String areaCode = getExpressAreaCode(expressId);
         List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type, areaCode);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
