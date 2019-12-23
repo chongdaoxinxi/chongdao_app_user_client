@@ -79,6 +79,8 @@ public class InsuranceServiceImpl implements InsuranceService {
     private InsuranceShopChipMapper insuranceShopChipMapper;
     @Autowired
     private InsuranceFeeRecordMapper insuranceFeeRecordMapper;
+    @Autowired
+    private UserAddressRepository userAddressRepository;
 
     /**
      * 保存保单数据
@@ -165,7 +167,20 @@ public class InsuranceServiceImpl implements InsuranceService {
     public ResultResponse insuranceZcg(OrderInfo orderInfo) throws IOException {
         Integer insuranceCount = orderInfo.getPetCount();//根据宠物数量来投保
         for(int i = 0; i < insuranceCount; i++) {
-            InsuranceOrder order = setZcgInsuranceOrderParam();
+            String userName = "";
+            String phone = "";
+            Integer receiveAddressId = orderInfo.getReceiveAddressId();
+            if(receiveAddressId == null) {
+                receiveAddressId = orderInfo.getDeliverAddressId();
+            }
+            if(receiveAddressId != null) {
+                UserAddress userAddress = userAddressRepository.findById(receiveAddressId).orElse(null);
+                if(userAddress != null) {
+                    userName = userAddress.getUserName();
+                    phone = userAddress.getPhone();
+                }
+            }
+            InsuranceOrder order = setZcgInsuranceOrderParam(userName, phone);
             InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
             //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
             //请求外部接口, 生成保单
@@ -177,7 +192,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     /**
      * 设置运输险订单参数
      */
-    private InsuranceOrder setZcgInsuranceOrderParam() {
+    private InsuranceOrder setZcgInsuranceOrderParam(String userName, String phone) {
         InsuranceOrder order = new InsuranceOrder();
         //生成订单号
         order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID
@@ -185,15 +200,23 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setInsuranceType(3);
         //根据配送订单号保存相关的保险订单信息(用户信息及保险时间信息等)
         order.setBeneficiary(0);
-        order.setName(zcgName);
-        order.setPhone(zcgPhone);
+        if(StringUtils.isNotBlank(userName)) {
+            order.setName(userName);
+        } else {
+            order.setName(zcgName);
+        }
+        if(StringUtils.isNotBlank(phone)) {
+            order.setPhone(phone);
+        } else {
+            order.setPhone(zcgPhone);
+        }
         order.setCardType("01");//默认类型为身份证
         order.setCardNo(zcgCardNo);//身份证号userShareCallBack
         order.setEmail(zcgMail);
         order.setAddress(zcgAddress);//地址
         //被保人与投保人相同, 即为下单人
-        order.setAcceptName(zcgName);
-        order.setAcceptPhone(zcgPhone);
+        order.setAcceptName(order.getName());
+        order.setAcceptPhone(order.getPhone());
         order.setAcceptCardType("01");
         order.setAcceptCardNo(zcgCardNo);
         order.setAddress(zcgMail);
