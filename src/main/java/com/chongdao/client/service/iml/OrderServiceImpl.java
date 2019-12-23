@@ -1415,7 +1415,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //已完成
             type = "3,6";
         }
-
+        PageHelper.startPage(pageNum, pageSize);
         List<OrderInfo> orderInfos = orderInfoMapper.selectExpressAdminOrderList(type, areaCode);
         List<OrderVo> orderVoList = assembleOrderVoList(orderInfos, null);
         PageInfo pageResult = new PageInfo(orderInfos);
