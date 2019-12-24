@@ -80,7 +80,7 @@ public class FreightComputer {
         //服务类型为双程时，送地址不为空
         UserAddress deliverAddress = null;
         if (1 == serviceType && deliverAddressId != null) {
-            deliverAddress = userAddressRepository.findByIdAndUserId(deliverAddressId, userId);
+            deliverAddress = userAddressRepository.findByIdAndUserId(receiveAddressId, userId);
             if(deliverAddress != null) {
                 deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
             }
@@ -111,16 +111,17 @@ public class FreightComputer {
         }
         //接地址 到 商家的距离
         Double receiveDistance = DistanceUtil.getDistance(receiveUserAddress.getLat(), receiveUserAddress.getLng(), shop.getLat(), shop.getLng());
-        Double deliverDistance = 0.0d;
-        //服务类型为双程时，送地址不为空
-        UserAddress deliverAddress = null;
-        if (1 == serviceType && deliverAddressId != null) {
-            deliverAddress = userAddressRepository.findByIdAndUserId(deliverAddressId, userId);
-            if(deliverAddress != null) {
-                deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
-            }
-        }
-        return new BigDecimal((receiveDistance + deliverDistance)/1000).setScale(2, BigDecimal.ROUND_HALF_UP);
+        return new BigDecimal(receiveDistance);
+//        Double deliverDistance = 0.0d;
+//        //服务类型为双程时，送地址不为空
+//        UserAddress deliverAddress = null;
+//        if (1 == serviceType && deliverAddressId != null) {
+//            deliverAddress = userAddressRepository.findByIdAndUserId(deliverAddressId, userId);
+//            if(deliverAddress != null) {
+//                deliverDistance = DistanceUtil.getDistance(deliverAddress.getLat(), deliverAddress.getLng(), shop.getLat(), shop.getLng());
+//            }
+//        }
+//        return new BigDecimal((receiveDistance + deliverDistance)/1000).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     /**
@@ -177,7 +178,7 @@ public class FreightComputer {
             }else if (receiveDistance <= RANGE_3_KM){
                 overMoneyBase = 0.0d;
             }else{
-//                overMoneyBase = OVERSTEP_10KM_PRICE;
+//                overMoneyBase = OVERSTEP_10KM_PRICE;computerDistance
                 overMoneyBase = Double.valueOf(firstServiceMoneys.get(3));
             }
         }
@@ -218,9 +219,9 @@ public class FreightComputer {
 //            overMoney = Double.valueOf(firstServiceMoneys.get(2));
 //        }
         //上海地区超出价格*1.5
-        if ((areaCode.equals("3101") || areaCode.equals("3205")) && serviceType != 2) {
-            overMoney = overMoney * 1.5;
-        }
+//        if ((areaCode.equals("3101") || areaCode.equals("3205")) && serviceType != 2) {
+//            overMoney = overMoney * 1.5;
+//        }
         return overMoney;
     }
 
