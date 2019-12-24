@@ -408,6 +408,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         orderVo.setShopName(shop.getShopName());
         orderVo.setShopLogo(shop.getLogo());
         orderVo.setShopPhone(shop.getPhone());
+        orderVo.setShopAddress(shop.getAddress());
         if (!shop.getLogo().contains("http")) {
             orderVo.setShopLogo(IP + shop.getLogo());
         }

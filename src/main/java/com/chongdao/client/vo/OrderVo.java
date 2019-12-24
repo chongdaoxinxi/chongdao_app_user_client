@@ -81,6 +81,8 @@ public class OrderVo {
 
     private String shopLogo;
 
+    private String shopAddress;
+
     private String goodsName;
 
     private BigDecimal discountPrice = BigDecimal.ZERO;
