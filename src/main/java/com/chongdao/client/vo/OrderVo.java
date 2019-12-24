@@ -159,6 +159,10 @@ public class OrderVo {
 
     private BigDecimal insurancePrice;
 
+    private String receiveName;
+    private String receivePhone;
+    private String deliverName;
+    private String deliverPhone;
 
     //该字段用于区分优惠券使用场景
     private String categoryId;

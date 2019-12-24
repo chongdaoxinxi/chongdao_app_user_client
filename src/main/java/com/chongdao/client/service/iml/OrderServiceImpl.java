@@ -1788,8 +1788,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             receiveAddress = userAddressRepository.findById(order.getReceiveAddressId()).orElse(null);
             if (receiveAddress != null) {
                 orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
-                orderVo.setPhone(receiveAddress.getPhone());
-                orderVo.setUsername(receiveAddress.getUserName());
+                orderVo.setReceiveName(receiveAddress.getPhone());
+                orderVo.setReceivePhone(receiveAddress.getUserName());
             }
         }
         //送宠地址
@@ -1798,8 +1798,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             deliverAddress = userAddressRepository.findById(order.getDeliverAddressId()).orElse(null);
             if (deliverAddress != null) {
                 orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
-                orderVo.setDeliverUserPhone(deliverAddress.getPhone());
-                orderVo.setDeliverUserName(deliverAddress.getUserName());
+                orderVo.setDeliverName(deliverAddress.getUserName());
+                orderVo.setDeliverPhone(deliverAddress.getPhone());
             }
         }
 
