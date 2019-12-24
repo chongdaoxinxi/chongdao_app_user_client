@@ -1,7 +1,7 @@
 package com.chongdao.client.controller.recommend;
 
 import com.chongdao.client.common.ResultResponse;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/douyin/")
 public class DouyinController {
 
-    @PostMapping("monitorUrlIos")
+    @GetMapping("monitorUrlIos")
     public ResultResponse monitorUrlIos(String adid, String cid, String idfa, String mac, String os, String timestamp, String callback_url) throws Exception {
         System.out.println("ios_adid>>>" + adid);
         System.out.println("ios_cid>>>" + cid);
@@ -27,7 +27,7 @@ public class DouyinController {
         return null;
     }
 
-    @PostMapping("monitorUrlAndroid")
+    @GetMapping("monitorUrlAndroid")
     public ResultResponse monitorUrlAndroid(String adid, String cid, String imei, String mac, String oaid, String androidid, String os, String timestamp, String callback_url) throws Exception {
         System.out.println("android_adid>>>" + adid);
         System.out.println("android_cid>>>" + cid);
