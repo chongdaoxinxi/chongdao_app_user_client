@@ -181,7 +181,7 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             "\t\t\t\t<AppliIdType>${AppliIdType}</AppliIdType>\n" +
             "\t\t\t\t<AppliIdNo>${AppliIdNo}</AppliIdNo>\n" +
             "\t\t\t\t<AppliIdMobile>${AppliIdMobile}</AppliIdMobile>\n" +
-            "\t\t\t\t<SendSMS>Y</SendSMS>\n" +
+            "\t\t\t\t<SendSMS>${SendSMS}</SendSMS>\n" +
             "\t\t\t</Applicant>\n" +
             "\t\t\t<Insureds>\n" +
             "\t\t\t\t<Insured>\n" +
@@ -754,6 +754,8 @@ public class InsuranceExternalServiceImpl implements InsuranceExternalService {
             c.setTime(insuranceOrder.getInsuranceEffectTime());
             c.add(Calendar.YEAR, 1);
             template.binding("EndDate", DateTimeUtil.dateToStr(c.getTime(), "yyyy-MM-dd"));//终保时间
+            //设置为不发送消息提示
+            template.binding("SendSMS", "N");
         } else {
         }
         template.binding("StartHour", 0);

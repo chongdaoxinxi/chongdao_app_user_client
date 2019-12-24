@@ -155,7 +155,7 @@ public class InsuranceServiceImpl implements InsuranceService {
         }
 
         //设置一些默认参数
-        setDefaultInsuranceOrderParam(order);
+        setDefaultInsuranceOrderParam(order, 1);
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
 
@@ -201,16 +201,8 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setInsuranceType(3);
         //根据配送订单号保存相关的保险订单信息(用户信息及保险时间信息等)
         order.setBeneficiary(0);
-        if(StringUtils.isNotBlank(userName)) {
-            order.setName(userName);
-        } else {
-            order.setName(zcgName);
-        }
-        if(StringUtils.isNotBlank(phone)) {
-            order.setPhone(phone);
-        } else {
-            order.setPhone(zcgPhone);
-        }
+        order.setName(zcgName);
+        order.setPhone(zcgPhone);
         order.setCardType("01");//默认类型为身份证
         order.setCardNo(zcgCardNo);//身份证号userShareCallBack
         order.setEmail(zcgMail);
@@ -230,7 +222,7 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setSumPremium(new BigDecimal(zcgSumPremium));//保费
 
         //设置一些默认参数
-        setDefaultInsuranceOrderParam(order);
+        setDefaultInsuranceOrderParam(order, 0);
         return order;
     }
 
@@ -238,10 +230,10 @@ public class InsuranceServiceImpl implements InsuranceService {
      * 设置一些默认参数
      * @param order
      */
-    private void setDefaultInsuranceOrderParam(InsuranceOrder order) {
+    private void setDefaultInsuranceOrderParam(InsuranceOrder order, Integer isSendMsg) {
         //设置一些默认参数
         order.setAcceptSeqNo(1);//默认被保人只有1个
-        order.setIsSendMsg(1);//默认发送短消息
+        order.setIsSendMsg(isSendMsg);//默认发送短消息
         order.setStatus(0);//状态初始化为已保存
         order.setCreateTime(new Date());
     }
