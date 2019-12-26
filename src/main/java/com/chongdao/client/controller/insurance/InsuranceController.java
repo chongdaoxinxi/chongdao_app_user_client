@@ -283,6 +283,18 @@ public class InsuranceController {
     }
 
     /**
+     * 上传理赔确认书
+     * @param claimsId
+     * @param fileName
+     * @param url
+     * @return
+     */
+    @PostMapping("addClaimsConfirmation")
+    public ResultResponse addClaimsConfirmation(Integer claimsId, String fileName, String url) {
+        return insuranceClaimsService.addClaimsConfirmation(claimsId, fileName, url);
+    }
+
+    /**
      * 确认理赔金额打款完成
      * @param insuranceClaimsId
      * @return

@@ -40,4 +40,6 @@ public class InsuranceClaimsAuditVO {
     private BigDecimal sumPremium;
     private String name;
     private String phone;
+    private String claimsConfirmation;//理赔确认书
+    private String claimsConfirmationFileName;//理赔确认书文件名
 }

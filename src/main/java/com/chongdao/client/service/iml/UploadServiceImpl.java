@@ -71,10 +71,10 @@ public class UploadServiceImpl implements UploadService {
     private void convertShopImage() {
         String oldUrl = "";
         List<Shop> all = shopRepository.findAll();
-        for(Shop s : all) {
+        for (Shop s : all) {
             String logo = s.getLogo();
-            if(StringUtils.isNotBlank(logo)) {
-                if(logo.indexOf("http") == -1) {
+            if (StringUtils.isNotBlank(logo)) {
+                if (logo.indexOf("http") == -1) {
                     oldUrl = logo;
                     oldUrl = "https://www.chongdaopet.com/images/" + oldUrl;
                     String fileName = oldUrl.substring(oldUrl.lastIndexOf("/") + 1);
@@ -117,10 +117,10 @@ public class UploadServiceImpl implements UploadService {
         String oldUrl = "";
         List<Good> all = goodsRepository.findAll();
         int count = 0;
-        for(Good g : all) {
+        for (Good g : all) {
             String icon = g.getIcon();
-            if(StringUtils.isNotBlank(icon)) {
-                if(icon.indexOf("http") == -1) {
+            if (StringUtils.isNotBlank(icon)) {
+                if (icon.indexOf("http") == -1) {
                     count++;
                     oldUrl = icon;
                     oldUrl = "https://www.chongdaopet.com/images/" + oldUrl;
@@ -155,7 +155,7 @@ public class UploadServiceImpl implements UploadService {
                     e.printStackTrace();
                 }
             }
-            if(count >= 2500) {
+            if (count >= 2500) {
                 break;
             }
         }
@@ -184,76 +184,74 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public ResultResponse downloadFile(String url, HttpServletResponse response) throws UnsupportedEncodingException {
-//        if(url.indexOf("group") != -1) {
-//            url = url.substring(url.indexOf("group"));
-//        }
-//        String group = url.substring(0, url.indexOf("/"));
-//        String path = url.substring(url.indexOf("/") + 1);
-//        DownloadByteArray downloadByteArray = new DownloadByteArray();
-
         try {
             URL url_ = new URL(url);
-            HttpURLConnection conn =  null;
+            HttpURLConnection conn = null;
             try {
                 URLConnection urlCon = url_.openConnection(); // 获取一个URLConnection
-                conn = (HttpURLConnection)urlCon;
+                conn = (HttpURLConnection) urlCon;
                 conn.setConnectTimeout(5000);//设置连接超时时长
                 int code = conn.getResponseCode();//返回连接状态
-                if(code == 200){ //表示连接成功
+                if (code == 200) { //表示连接成功
                     System.out.println("连接成功...");
                     InputStream is = null;
                     OutputStream os = null;
-                    try{
+                    try {
                         is = conn.getInputStream(); //获取 输入流
-//                        os = new FileOutputStream("dog1.jpg");
                         //设置响应头
                         response.reset();
-                        response.setContentType("image/jpeg");
-                        response.addHeader("Content-Disposition",
-                                "attachment;filename=" + URLEncoder.encode("推广链接.jpg", "UTF-8"));
-//                        response.addHeader("Access-Control-Allow-Origin", "*");
-//                        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//                        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+                        String fileContentType = getFileContentType(url);
+                        if (StringUtils.isNotBlank(fileContentType)) {
+                            response.setContentType(fileContentType);
+                            response.addHeader("Content-Disposition",
+                                    "attachment;filename=" + URLEncoder.encode(getFileName(url), "UTF-8"));
+                        } else {
+                            response.setContentType("image/jpeg");
+                            response.addHeader("Content-Disposition",
+                                    "attachment;filename=" + URLEncoder.encode(getFileName(url), "UTF-8"));
+                        }
                         os = response.getOutputStream();
                         byte b[] = new byte[1024];
                         int num = 0;
-                        while((num = is.read(b)) != -1){
-                            os.write(b,0,num);
+                        while ((num = is.read(b)) != -1) {
+                            os.write(b, 0, num);
                         }
                         log.info("下载成功");
-                    }catch(IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    }finally{
+                    } finally {
                         is.close();
                         os.close();
                     }
-                }else{
+                } else {
                     System.out.println("网络连接异常");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally{
+            } finally {
                 conn.disconnect();//关闭
                 System.out.println("文件下载完成...");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-//        byte[] bytes = this.storageClient.downloadFile(group, path, downloadByteArray);
-//        //设置响应头
-//        response.reset();
-//        response.setContentType("multipart/form-data");
-//        response.addHeader("Content-Disposition",
-//                "attachment;filename=" + URLEncoder.encode("店铺二维码", "UTF-8"));
-//        try {
-//            OutputStream os = response.getOutputStream();
-//            os.write(bytes);
-//            os.flush();
-//            os.close();
-//            log.info("下载成功");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return null;
+    }
+
+    private String getFileContentType(String url) {
+        String suffix = url.substring(url.lastIndexOf(".") + 1);
+        if (suffix.equals("jpg") || suffix.equals("png") || suffix.equals("jpeg")) {
+            return "image/jpeg";
+        } else if (suffix.equals("pdf")) {
+            return "application/pdf";
+        }
+        return "";
+    }
+
+    private String getFileName(String url) {
+        if(url.lastIndexOf("/") != -1) {
+            return url.substring(url.lastIndexOf("/") + 1);
+        }
+        return "";
     }
 }

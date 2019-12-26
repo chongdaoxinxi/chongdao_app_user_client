@@ -111,7 +111,7 @@ public class FreightComputer {
         }
         //接地址 到 商家的距离
         Double receiveDistance = DistanceUtil.getDistance(receiveUserAddress.getLat(), receiveUserAddress.getLng(), shop.getLat(), shop.getLng());
-        return new BigDecimal(receiveDistance);
+        return new BigDecimal(receiveDistance/1000).setScale(2, BigDecimal.ROUND_HALF_UP);
 //        Double deliverDistance = 0.0d;
 //        //服务类型为双程时，送地址不为空
 //        UserAddress deliverAddress = null;

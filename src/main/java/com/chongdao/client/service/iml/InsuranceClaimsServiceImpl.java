@@ -171,4 +171,18 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
             return ResultResponse.createByErrorMessage("无效的理赔订单ID");
         }
     }
+
+    @Override
+    public ResultResponse addClaimsConfirmation(Integer claimsId, String fileName, String url) {
+        InsuranceClaims insuranceClaims = insuranceClaimsRepository.findById(claimsId).orElse(null);
+        if(insuranceClaims != null) {
+            insuranceClaims.setClaimsConfirmation(url);
+            insuranceClaims.setClaimsConfirmationFileName(fileName);
+            insuranceClaims.setUpdateTime(new Date());
+            insuranceClaimsRepository.save(insuranceClaims);
+            return ResultResponse.createBySuccess("理赔确认书上传成功!");
+        } else {
+            return ResultResponse.createByErrorMessage("无效的理赔订单ID");
+        }
+    }
 }

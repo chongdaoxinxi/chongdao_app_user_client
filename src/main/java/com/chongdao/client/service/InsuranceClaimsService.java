@@ -48,4 +48,6 @@ public interface InsuranceClaimsService {
     ResultResponse confirmRemitSuccess(Integer insuranceClaimsId);
 
     ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money);
+
+    ResultResponse addClaimsConfirmation(Integer claimsId, String fileName, String url);
 }

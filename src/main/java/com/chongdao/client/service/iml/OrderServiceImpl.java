@@ -1772,6 +1772,15 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private OrderVo assembleOrderInfoVo(OrderInfo order, List<OrderDetail> orderItemList) {
         OrderVo orderVo = new OrderVo();
         BeanUtils.copyProperties(order, orderVo);
+        Integer userId = orderVo.getUserId();
+        String username = orderVo.getUsername();
+        if(StringUtils.isBlank(username) && userId != null) {
+            User user = userRepository.findById(userId).orElse(null);
+            if(user != null) {
+                orderVo.setUsername(user.getName());
+                orderVo.setPhone(user.getPhone());
+            }
+        }
         //查询店铺
         Shop shop = shopMapper.selectByPrimaryKey(order.getShopId());
         if (shop != null) {
