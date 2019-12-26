@@ -2,6 +2,7 @@ package com.chongdao.client.controller.fdfs;
 
 import com.chongdao.client.common.ResultResponse;
 import com.chongdao.client.service.UploadService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,7 +49,10 @@ public class FastDFSController {
      * @return
      */
     @GetMapping("downloadClaimsConfirmation")
-    public ResultResponse downloadClaimsConfirmation(String url, HttpServletResponse response) {
-        return  null;
+    public ResultResponse downloadClaimsConfirmation (String url, HttpServletResponse response) throws UnsupportedEncodingException {
+        if(StringUtils.isBlank(url)) {
+            return ResultResponse.createByErrorMessage("无效的链接或是链接不存在!");
+        }
+        return uploadService.downloadFile(url, response);
     }
 }
