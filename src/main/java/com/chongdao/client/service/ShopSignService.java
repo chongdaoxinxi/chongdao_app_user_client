@@ -10,4 +10,10 @@ public interface ShopSignService {
      * @return
      */
     ResultResponse applyShopSign(ShopSignInfo shopSignInfo);
+
+    /**
+     * 获取店铺类型
+     * @return
+     */
+    ResultResponse getShopType();
 }

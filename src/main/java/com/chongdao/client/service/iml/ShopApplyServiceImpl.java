@@ -9,10 +9,7 @@ import com.chongdao.client.mapper.ShopApplyMapper;
 import com.chongdao.client.repository.ManagementRepository;
 import com.chongdao.client.repository.ShopApplyRepository;
 import com.chongdao.client.repository.ShopRepository;
-import com.chongdao.client.service.CashAccountService;
-import com.chongdao.client.service.ShopApplyService;
-import com.chongdao.client.service.ShopBillService;
-import com.chongdao.client.service.ShopService;
+import com.chongdao.client.service.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +41,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     private CashAccountService cashAccountService;
     @Autowired
     private ManagementRepository managementRepository;
+    @Autowired
+    private SmsService smsService;
 
     /**
      * 添加提现记录
@@ -66,6 +65,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
         //完成资金处理逻辑
         cashAccountService.shopWithdrawal(sa, false);
         //TODO 短信通知管理员
+        String adminPhone = smsService.getAdminPhoneByAreaCode(s.getAreaCode());
+        smsService.customMsgSenderSimple("有商家申请提现, 请及时处理!", adminPhone);
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopApplyRepository.saveAndFlush(sa));
     }
 
@@ -85,6 +86,8 @@ public class ShopApplyServiceImpl implements ShopApplyService {
         sa.setStatus(1);
         sa.setUpdateTime(new Date());
         //TODO 短信通知商铺
+        Shop s = shopRepository.findById(sa.getShopId()).orElse(null);
+        smsService.customMsgSenderSimple("您申请的提现已经打款, 请查收!", s.getPhone());
         return ResultResponse.createBySuccess(ResultEnum.SUCCESS.getMessage(), shopApplyRepository.saveAndFlush(sa));
     }
 
