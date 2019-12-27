@@ -472,6 +472,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                 orderVo.setReceiveAddressName(receiveAddress.getLocation() + receiveAddress.getAddress());
                 orderVo.setUserLng(receiveAddress.getLng());
                 orderVo.setUserLat(receiveAddress.getLat());
+                orderVo.setReceiveName(receiveAddress.getUserName());
+                orderVo.setReceivePhone(receiveAddress.getPhone());
             }
 
         }
@@ -480,6 +482,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             UserAddress deliverAddress = userAddressRepository.findByIdAndUserId(orderInfo.getDeliverAddressId(), orderInfo.getUserId());
             if (deliverAddress != null) {
                 orderVo.setDeliverAddressName(deliverAddress.getLocation() + deliverAddress.getAddress());
+                orderVo.setDeliverName(deliverAddress.getUserName());
+                orderVo.setDeliverPhone(deliverAddress.getPhone());
             }
         }
         if (userId != null) {
