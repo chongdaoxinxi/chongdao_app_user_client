@@ -541,10 +541,6 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     //通知商家接单
                     //TODO
                 }
-                //调用用户支付后的资金流转逻辑
-                cashAccountService.customOrderCashIn(order);
-                //调用返利方法
-                recommendOrder(order);
             }
             //生成支付信息
             try {
@@ -830,14 +826,10 @@ public class PayServiceImpl extends CommonRepository implements PayService {
             //生成支付信息
             successCallBackPayInfoOperate(order.getUserId(), order.getOrderNo(), "", transactionId, resultCode, PayPlatformEnum.WX_APP_PAY.getCode());
             orderInfoMapper.updateByPrimaryKeySelective(order);
-            //发送短信息
-            successCallBackMsgoOrderOperate(order);
-            //调用用户支付后的资金流转逻辑
-            cashAccountService.customOrderCashIn(order);
-            //调用订单返利
-            recommendOrder(order);
             //生成流转记录
             orderOperateLogService.addOrderOperateLogService(order.getId(), order.getOrderNo(), "", OrderStatusEnum.NO_PAY.getStatus(), OrderStatusEnum.PAID.getStatus());
+            //发送短信息
+            successCallBackMsgoOrderOperate(order);
         }
     }
 
