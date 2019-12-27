@@ -134,7 +134,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         Integer isService = orderInfo.getIsService();
         Integer serviceType = orderInfo.getServiceType();
         Integer oldStatus = orderInfo.getOrderStatus();
-        Integer targetStaus = OrderStatusEnum.EXPRESS_START_SERVICE.getStatus();
+        Integer targetStatus = OrderStatusEnum.EXPRESS_START_SERVICE.getStatus();
         if (isService == null || isService == -1 || isService == 0) {
             //商品
             orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
@@ -153,7 +153,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_SERVICE.getStatus());//开始配送
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
                 } else if (orderStatus == OrderStatusEnum.SHOP_COMPLETE_SERVICE.getStatus()) {
-                    targetStaus = OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus();
+                    targetStatus = OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus();
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus());//返程开始配送
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getSingleTripPetServiceStartUser(), orderInfo.getOrderNo(), phoneList);
                 }
@@ -161,7 +161,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         }
         orderInfoRepository.save(orderInfo);
         //生成流转日志
-        orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
+        orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStatus);
         //判断是否投保运输险
         if (orderInfo.getPetCount() != null && orderInfo.getPetCount() > 0 && serviceType != null && serviceType != 3) {
             //非到店自取, 且宠物数量大于0的
@@ -187,14 +187,14 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
         Integer isService = orderInfo.getIsService();
         Integer serviceType = orderInfo.getServiceType();
         Integer oldStatus = orderInfo.getOrderStatus();
-        Integer targetStaus = OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus();
+        Integer targetStatus = OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus();
         if (isService == null || isService == -1 || isService == 0) {
             //商品
             orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus());//商品送达
             orderInfo.setExpressFinishTime(new Date());//配送完成时间
             smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderGoodsServedUser(), orderInfo.getOrderNo(), phoneList);
             //生成流转日志
-            orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
+            orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStatus);
             orderComplete(orderInfo);
         } else if (isService == 1) {
             //服务
@@ -205,7 +205,7 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                 orderInfo.setExpressFinishTime(new Date());//配送员配送完成时间
                 smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
                 //生成流转日志
-                orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
+                orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStatus);
                 orderComplete(orderInfo);
             } else if (serviceType == 1) {
                 //双程
@@ -217,15 +217,15 @@ public class ExpressOrderServiceImpl implements ExpressOrderService {
                     orderInfoRepository.save(orderInfo);
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
                     //生成流转日志
-                    orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
+                    orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStatus);
                 } else if (orderStatus == OrderStatusEnum.EXPRESS_START_DELIVERY_SERVICE.getStatus()) {
-                    targetStaus = OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus();
+                    targetStatus = OrderStatusEnum.EXPRESS_DELIVERY_COMPLETE.getStatus();
                     orderInfo.setOrderStatus(OrderStatusEnum.EXPRESS_BACK_DELIVERY.getStatus());//店至家送达
                     orderInfo.setExpressFinishTime(new Date());//配送完成时间
                     //发送短信
                     smsService.customOrderMsgSenderPatchNoShopName(smsUtil.getOrderPetsServedUser(), orderInfo.getOrderNo(), phoneList);
                     //生成流转日志
-                    orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStaus);
+                    orderOperateLogService.addOrderOperateLogService(orderInfo.getId(), orderInfo.getOrderNo(), "", oldStatus, targetStatus);
                     orderComplete(orderInfo);
                 }
             }

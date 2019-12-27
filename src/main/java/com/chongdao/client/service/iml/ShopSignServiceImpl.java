@@ -52,4 +52,9 @@ public class ShopSignServiceImpl implements ShopSignService {
         list.add(new ShopSignTypeVO(3, "宠物医保宠物医院"));
         return ResultResponse.createBySuccess(list);
     }
+
+    @Override
+    public ResultResponse getMySignList(Integer userId) {
+        return ResultResponse.createBySuccess(shopSignInfoRepository.findByUserId(userId));
+    }
 }

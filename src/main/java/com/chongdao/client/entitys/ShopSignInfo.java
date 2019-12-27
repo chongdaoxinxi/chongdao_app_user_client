@@ -30,6 +30,7 @@ public class ShopSignInfo implements Serializable {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    private Integer userId;//用户id, 申请入驻需要先注册成用户
     private String name;//门店名称
     private String branchName;//分店名称
     private String frontPhoto;//门脸照

@@ -180,7 +180,7 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         boolean needToAdd = true;
         for(InsuranceTeamAttender attender : list) {
             Integer id = attender.getId();
-            Integer left = id%100;//如果该队伍包含100的倍数id的队员, 那么不往里面添加机器人
+            Integer left = id%200;//如果该队伍包含100的倍数id的队员, 那么不往里面添加机器人
             if(left == 0) {
                 needToAdd = false;
             } else {

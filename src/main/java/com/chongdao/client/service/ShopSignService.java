@@ -16,4 +16,10 @@ public interface ShopSignService {
      * @return
      */
     ResultResponse getShopType();
+
+    /**
+     * 获取我的注册列表
+     * @return
+     */
+    ResultResponse getMySignList(Integer userId);
 }
