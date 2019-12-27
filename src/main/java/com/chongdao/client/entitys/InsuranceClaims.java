@@ -31,7 +31,7 @@ public class InsuranceClaims implements Serializable {
     private Integer medicalInsuranceOrderId;//医疗险订单ID
     private String diagnosticProof;//诊断证明
     private String costList;//费用清单
-    private String payCredentials;//支付凭证
+    private String payCredentials;//发票
     private String otherMaterials;//其他材料
     private String petPhotoFlank;//侧面宠物照片
     private String petPhotoFront;//正面面宠物照片

@@ -69,6 +69,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
     private RecommendService recommendService;
     @Autowired
     private OrderOperateLogService orderOperateLogService;
+    @Autowired
+    private InsuranceFeeRecordService insuranceFeeRecordService;
 
     /**
      * 支付宝对接
@@ -421,6 +423,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 successCallBackMsgInsuranceOrderOperate(save);
                 //调用医疗订单资金流转逻辑
                 cashAccountService.insuranceFeeCashIn(insuranceFeeRecord);
+                //生成支付凭证
+                insuranceFeeRecordService.generateInsuranceFeeRecordCertificate(insuranceFeeRecord.getId());
             }
         }
         //生成支付信息
@@ -810,6 +814,8 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 successCallBackMsgInsuranceOrderOperate(save);
                 //调用医疗订单资金流转逻辑
                 cashAccountService.insuranceFeeCashIn(insuranceFeeRecord);
+                //生成支付凭证
+                insuranceFeeRecordService.generateInsuranceFeeRecordCertificate(insuranceFeeRecord.getId());
             }
         } else {
             OrderInfo order = orderInfoRepository.findByOrderNo(orderNo);

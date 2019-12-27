@@ -55,4 +55,11 @@ public interface InsuranceFeeRecordService {
     ResultResponse confirmMyTodoFeeRecord(Integer insuranceFeeRecordId);
 
     ResultResponse getInsuranceFeeRecordDetail(Integer insuranceFeeRecordId);
+
+    /**
+     * 生成医疗支付凭证
+     * @param insuranceFeeRecordId
+     * @return
+     */
+    ResultResponse generateInsuranceFeeRecordCertificate(Integer insuranceFeeRecordId);
 }

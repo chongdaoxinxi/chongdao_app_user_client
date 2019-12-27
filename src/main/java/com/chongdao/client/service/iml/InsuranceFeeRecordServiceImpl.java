@@ -6,8 +6,11 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.mapper.InsuranceFeeRecordMapper;
 import com.chongdao.client.repository.InsuranceFeeRecordRepository;
 import com.chongdao.client.service.InsuranceFeeRecordService;
+import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
+import com.chongdao.client.utils.InsuranceFeePaymentVoucherUtil;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.PaymentVoucherVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -76,5 +79,21 @@ public class InsuranceFeeRecordServiceImpl implements InsuranceFeeRecordService 
     @Override
     public ResultResponse getInsuranceFeeRecordDetail(Integer insuranceFeeRecordId) {
         return ResultResponse.createBySuccess(insuranceFeeRecordMapper.getInsuranceFeeRecordById(insuranceFeeRecordId));
+    }
+
+    @Override
+    public ResultResponse generateInsuranceFeeRecordCertificate(Integer insuranceFeeRecordId) {
+        InsuranceFeeRecord insuranceFeeRecord = insuranceFeeRecordRepository.findById(insuranceFeeRecordId).orElse(null);
+        if(insuranceFeeRecord != null) {
+            PaymentVoucherVO pv = new PaymentVoucherVO();
+            pv.setShopName(insuranceFeeRecord.getShopName());
+            pv.setOrderNo(insuranceFeeRecord.getOrderNo());
+            pv.setMoney(insuranceFeeRecord.getMoney());
+            pv.setPayType("保险费用支付");
+            pv.setCreateTime(DateTimeUtil.dateToStr(new Date()));
+            System.out.println(InsuranceFeePaymentVoucherUtil.graphicsGeneration(pv));
+            return ResultResponse.createBySuccess();
+        }
+        return ResultResponse.createByErrorMessage("无效id");
     }
 }
