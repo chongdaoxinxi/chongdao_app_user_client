@@ -29,7 +29,7 @@ spring:
       show-sql: false   #是否输出sql
       properties:
          hibernate:
-            format_sql: true
+            format_sql: false
    #为null的字段不需要传给前端
    jackson:
      # default-property-inclusion: non_null
@@ -48,8 +48,8 @@ spring:
 mybatis:
    mapper-locations: classpath*:mybatis/mapper/*.xml
    type-aliases-package: com.chongdao.client.entitys
-   configuration:
-      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#   configuration:
+#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #日志
 logging:
