@@ -79,19 +79,19 @@ public class CashAccountServiceImpl implements CashAccountService {
         BigDecimal toShopRealMoney = getDeductedPrice(goodsPrice, DeductPercentEnum.CUSTOM_ORDER_DEDUCT.getCode());//扣除手续费
         shopMoneyDeal(shop, toShopRealMoney);
         generateShopBill(orderInfo.getId(), shopId, toShopRealMoney, "订单消费", 1);
-//        //商家的钱+系统的钱 入地区账户
-//        String areaCode = orderInfo.getAreaCode();
-//        Management areaAdmin = getAreaAdmin(areaCode);
-//        managementMoneyDeal(areaAdmin, total);
-//        //生成流水记录
-//        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, total, "订单消费", 1);
-//        //商家的钱+系统的钱 入超级账户
-//        Management superAdmin = getSuperAdmin();
-//        managementMoneyDeal(superAdmin, total);
-//        //生成流水记录
-//        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), total, "订单消费", 1);
-//        //生成订单资金交易记录
-//        generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), "订单消费");
+        //商家的钱+系统的钱 入地区账户
+        String areaCode = orderInfo.getAreaCode();
+        Management areaAdmin = getAreaAdmin(areaCode);
+        managementMoneyDeal(areaAdmin, total);
+        //生成流水记录
+        generateAreaBill(orderInfo.getId(), orderInfo.getShopId(), areaCode, total, "订单消费", 1);
+        //商家的钱+系统的钱 入超级账户
+        Management superAdmin = getSuperAdmin();
+        managementMoneyDeal(superAdmin, total);
+        //生成流水记录
+        generateSuperAdminBill(orderInfo.getId(), orderInfo.getShopId(), orderInfo.getAreaCode(), total, "订单消费", 1);
+        //生成订单资金交易记录
+        generateOrderTrans(orderInfo.getId(), orderInfo.getPayment(), orderInfo.getOrderNo(), "订单消费");
         return ResultResponse.createBySuccess();
     }
 
