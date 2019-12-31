@@ -672,6 +672,10 @@ public class AdminPcController {
 
     @PostMapping("addService30")
     public ResultResponse addService30() {
+//        System.out.println(String.valueOf((double)(100 - 5) / (double) 100));
+//        BigDecimal b = new BigDecimal(44.8);
+//        System.out.println(b.multiply(new BigDecimal(String.valueOf((double)(100 - 5) / (double) 100))));
+//        return null;
         return couponService.presentService30Card(83);
     }
 

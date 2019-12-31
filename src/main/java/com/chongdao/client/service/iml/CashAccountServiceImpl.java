@@ -277,10 +277,10 @@ public class CashAccountServiceImpl implements CashAccountService {
             applyMoney = applyMoney.multiply(new BigDecimal(-1));
             realMoney = realMoney.multiply(new BigDecimal(-1));
             shopMoneyDeal(shop, applyMoney);
-            generateShopBill(shopApply.getId(), shopId, realMoney, "店铺提现", 3);
+            generateShopBill(shopApply.getId(), shopId, applyMoney, "店铺提现", 3);
         } else {
             shopMoneyDeal(shop, applyMoney);
-            generateShopBill(shopApply.getId(), shopId, realMoney.multiply(new BigDecimal(-1)), "店铺提现失败退还", 3);
+            generateShopBill(shopApply.getId(), shopId, applyMoney.multiply(new BigDecimal(-1)), "店铺提现失败退还", 3);
         }
         return ResultResponse.createBySuccess();
     }
@@ -299,10 +299,10 @@ public class CashAccountServiceImpl implements CashAccountService {
             applyMoney = applyMoney.multiply(new BigDecimal(-1));
             realMoney = realMoney.multiply(new BigDecimal(-1));
             managementMoneyDeal(management, applyMoney);
-            generateAreaBill(null, null, management.getAreaCode(), realMoney, "地区账户提现", 3);
+            generateAreaBill(null, null, management.getAreaCode(), applyMoney, "地区账户提现", 3);
         } else {
             managementMoneyDeal(management, applyMoney);
-            generateAreaBill(null, null, management.getAreaCode(), realMoney.multiply(new BigDecimal(-1)), "地区账户提现退还", 3);
+            generateAreaBill(null, null, management.getAreaCode(), applyMoney.multiply(new BigDecimal(-1)), "地区账户提现退还", 3);
         }
         return ResultResponse.createBySuccess();
     }
@@ -330,7 +330,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     private BigDecimal getDeductedPrice(BigDecimal old, Integer deductPercent) {
         String deductedPercent = String.valueOf((double)(100 - deductPercent) / (double) 100);
         System.out.println("入账money>>>>>>>>>>" + old.multiply(new BigDecimal(deductedPercent)));
-        return old.multiply(new BigDecimal(deductedPercent));
+        return old.multiply(new BigDecimal(deductedPercent)).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     /**
