@@ -14,6 +14,7 @@ import com.chongdao.client.utils.GeneratorUserName;
 import com.chongdao.client.utils.QrCodeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -24,6 +25,7 @@ import java.util.*;
  * @Date 2019/10/25
  * @Version 1.0
  **/
+@Service
 public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     @Autowired
     private InsuranceTeamRepository insuranceTeamRepository;

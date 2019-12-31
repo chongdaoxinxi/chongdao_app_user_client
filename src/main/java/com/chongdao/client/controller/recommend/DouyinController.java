@@ -1,11 +1,9 @@
 package com.chongdao.client.controller.recommend;
 
 import com.chongdao.client.common.ResultResponse;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @Description TODO
@@ -28,13 +26,13 @@ public class DouyinController {
         System.out.println("ios_callback_url>>>" + callback_url);
 
 
-        String callBack = callback_url + "?adid=" + adid + "&cid=" + cid + "&idfa=" + idfa + "&mac=" + mac + "&os=" + os + "&conv_time=" + System.currentTimeMillis() + "&event_type=" + 0;
-        callBack = " http://ad.toutiao.com/track/activate/?" + "adid=" + adid + "&cid=" + cid + "&idfa=" + idfa + "&mac=" + mac + "&os=" + os + "&conv_time=" + System.currentTimeMillis() + "&event_type=" + 0;
-        RestTemplate rest = new RestTemplate();
-        rest.execute(callBack, HttpMethod.GET, (req) -> {
-        }, (res) -> {
-            return null;
-        });
+//        String callBack = callback_url + "?adid=" + adid + "&cid=" + cid + "&idfa=" + idfa + "&mac=" + mac + "&os=" + os + "&conv_time=" + System.currentTimeMillis() + "&event_type=" + 0;
+//        callBack = " http://ad.toutiao.com/track/activate/?" + "adid=" + adid + "&cid=" + cid + "&idfa=" + idfa + "&mac=" + mac + "&os=" + os + "&conv_time=" + System.currentTimeMillis() + "&event_type=" + 0;
+//        RestTemplate rest = new RestTemplate();
+//        rest.execute(callBack, HttpMethod.GET, (req) -> {
+//        }, (res) -> {
+//            return null;
+//        });
         return null;
     }
 

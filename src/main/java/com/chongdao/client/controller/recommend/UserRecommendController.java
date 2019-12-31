@@ -1,6 +1,7 @@
 package com.chongdao.client.controller.recommend;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.service.InsuranceTeamService;
 import com.chongdao.client.service.RecommendService;
 import com.chongdao.client.service.UserService;
 import com.chongdao.client.utils.LoginUserUtil;
@@ -23,6 +24,8 @@ public class UserRecommendController {
     private RecommendService recommendService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private InsuranceTeamService insuranceTeamService;
 
     /**
      * 生成推广链接
@@ -105,5 +108,75 @@ public class UserRecommendController {
     @PostMapping("getMyRecommenderInfo")
     public ResultResponse getMyRecommenderInfo(Integer userId) {
         return userService.getUserSettingInfo(userId);
+    }
+
+
+    ////////////////////////////组队/////////////////////////////////////
+
+    /**
+     * 注册并发起组队
+     * @param phone
+     * @param code
+     * @return
+     */
+    @PostMapping("signAndBuildInsuranceTeam")
+    public ResultResponse signAndBuildInsuranceTeam(String phone, String code) throws Exception {
+        return insuranceTeamService.signAndBuildInsuranceTeam(phone, code);
+    }
+
+    /**
+     * 访问组队分享页面
+     * @return
+     */
+    @PostMapping("visitRecommendUrl")
+    public ResultResponse visitRecommendUrl(Integer builderId) {
+        return insuranceTeamService.visitRecommendUrl(builderId);
+    }
+
+    /**
+     * 注册并参加组队
+     * @return
+     */
+    @PostMapping("visitRecommendUrl")
+    public ResultResponse signAndAttendInsuranceTeam(String phone, String code, Integer teamId) {
+        return insuranceTeamService.signAndAttendInsuranceTeam(phone, code, teamId);
+    }
+
+    /**
+     * 获取我待确认的组队
+     * @param userId
+     * @return
+     */
+    @PostMapping("getMyTodoAttend")
+    public ResultResponse getMyTodoAttend(Integer userId) {
+        return insuranceTeamService.getMyTodoAttend(userId);
+    }
+
+    /**
+     * 确认参加活动
+     * @param attenderId
+     */
+    @PostMapping("confirmAttend")
+    public ResultResponse confirmAttend(Integer attenderId) {
+        return insuranceTeamService.confirmAttend(attenderId);
+    }
+
+    /**
+     * 获取我的组队详情
+     * @param builderId
+     * @return
+     */
+    @PostMapping("getAttendDetail")
+    public ResultResponse getAttendDetail(Integer builderId) {
+        return insuranceTeamService.getAttendDetail(builderId);
+    }
+
+    /**
+     * 开奖
+     * @return
+     */
+    @PostMapping("systemLuckyDraw")
+    public ResultResponse systemLuckyDraw(Integer teamId) {
+        return insuranceTeamService.systemLuckyDraw(teamId);
     }
 }
