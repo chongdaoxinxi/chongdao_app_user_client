@@ -27,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description TODO
@@ -336,6 +333,41 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse getEffectedInsuranceOrderByUserId(Integer userId) {
         return ResultResponse.createBySuccess(insuranceOrderRepository.findByUserIdAndStatusGreaterThan(userId, 1));
+    }
+
+    @Override
+    public ResultResponse getMyOrderIsBuyInsurance(String orderNo) {
+        List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
+        if(list.size() > 0) {
+            return ResultResponse.createBySuccess(true);
+        }
+        return ResultResponse.createBySuccess(false);
+    }
+
+    @Override
+    public ResultResponse getMyPickupInsuranceOrderList(String orderNo) {
+        List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
+        List<String> real = new ArrayList<>();
+        if(list.size() > 0) {
+            OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+            if(orderInfo != null) {
+                Integer petCount = orderInfo.getPetCount();
+                Integer serviceType = orderInfo.getServiceType();
+                if(petCount != null && serviceType != null && petCount >= 1) {
+                    int time = 2;
+                    if(serviceType == 2) {
+                        //单程
+                        time = 1;
+                    }
+                    for(int i = 0; i < time*petCount; i++) {
+                        InsuranceOrder insuranceOrder = list.get(i);
+                        real.add(insuranceOrder.getPolicyCdxxImage());
+                    }
+                    return ResultResponse.createBySuccess(real);
+                }
+            }
+        }
+        return ResultResponse.createByErrorMessage("没查询到数据!");
     }
 
     /**

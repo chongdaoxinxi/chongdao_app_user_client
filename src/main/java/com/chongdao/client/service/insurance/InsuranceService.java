@@ -35,4 +35,8 @@ public interface InsuranceService {
     ResultResponse getInsuranceUserTodo(String token);
 
     ResultResponse getEffectedInsuranceOrderByUserId(Integer userId);
+
+    ResultResponse getMyOrderIsBuyInsurance(String orderNo);
+
+    ResultResponse getMyPickupInsuranceOrderList(String orderNo);
 }

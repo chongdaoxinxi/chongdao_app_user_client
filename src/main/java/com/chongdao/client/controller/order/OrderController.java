@@ -9,6 +9,7 @@ import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.OrderService;
 import com.chongdao.client.service.ServiceRuleService;
 import com.chongdao.client.service.SmsService;
+import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.OrderCommonVO;
 import com.chongdao.client.vo.OrderEvalVO;
@@ -43,6 +44,9 @@ public class OrderController {
 
     @Autowired
     private ServiceRuleService serviceRuleService;
+
+    @Autowired
+    private InsuranceService insuranceService;
 
 
 
@@ -191,5 +195,24 @@ public class OrderController {
     @PostMapping("getServiceRuleInfo")
     public ResultResponse getServiceRuleInfo(BigDecimal originServicePrice, Integer serviceType, Integer isService, String areaCode, BigDecimal serviceDistance) {
         return serviceRuleService.getServiceRuleInfo(originServicePrice, serviceType, isService, areaCode, serviceDistance);
+    }
+
+    /**
+     * 获取订单是否购买了运输险
+     * @param orderNo
+     * @return
+     */
+    @PostMapping("getMyOrderIsBuyInsurance")
+    public ResultResponse getMyOrderIsBuyInsurance(String orderNo) {
+        return insuranceService.getMyOrderIsBuyInsurance(orderNo);
+    }
+
+    /**
+     * 获取我的订单运输险列表
+     * @return
+     */
+    @PostMapping("getMyPickupInsuranceOrderList")
+    public ResultResponse getMyPickupInsuranceOrderList(String orderNo) {
+        return insuranceService.getMyPickupInsuranceOrderList(orderNo);
     }
 }

@@ -55,4 +55,15 @@ public class FastDFSController {
         }
         return uploadService.downloadFile(url, response);
     }
+
+    /**
+     * 下载运输险电子单证
+     * @param fileName
+     * @param response
+     * @return
+     */
+    @GetMapping("downloadPickupPolicy")
+    public ResultResponse downloadPickupPolicy(String fileName, HttpServletResponse response) {
+        return null;
+    }
 }
