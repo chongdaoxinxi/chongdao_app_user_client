@@ -137,7 +137,7 @@ public class UserRecommendController {
      * 注册并参加组队
      * @return
      */
-    @PostMapping("visitRecommendUrl")
+    @PostMapping("signAndAttendInsuranceTeam")
     public ResultResponse signAndAttendInsuranceTeam(String phone, String code, Integer teamId) {
         return insuranceTeamService.signAndAttendInsuranceTeam(phone, code, teamId);
     }

@@ -2,8 +2,10 @@ package com.chongdao.client.controller.shop;
 
 import com.chongdao.client.common.GuavaCache;
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.ShopSignInfo;
 import com.chongdao.client.service.GoodsService;
 import com.chongdao.client.service.ShopService;
+import com.chongdao.client.service.ShopSignService;
 import com.chongdao.client.utils.LoginUserUtil;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.github.pagehelper.PageInfo;
@@ -23,6 +25,8 @@ public class ShopController {
     @Autowired
     private GoodsService goodsService;
 
+    @Autowired
+    private ShopSignService shopSignService;
 
     /**
      * 首页(分页获取所有商铺)
@@ -172,4 +176,34 @@ public class ShopController {
         return shopService.queryConcernShopList(tokenVo.getUserId(),lng,lat);
     }
 
+    ///////////////////////////////////////商家入驻///////////////////////////////////////////
+
+    /**
+     * 申请商家入驻
+     * @param shopSignInfo
+     * @return
+     */
+    @PostMapping("applyShopSign")
+    public ResultResponse applyShopSign(@RequestBody ShopSignInfo shopSignInfo) {
+        return shopSignService.applyShopSign(shopSignInfo);
+    }
+
+    /**
+     * 获取店铺类型
+     * @return
+     */
+    @PostMapping("getShopType")
+    public ResultResponse getShopType() {
+        return shopSignService.getShopType();
+    }
+
+    /**
+     * 获取我的注册列表
+     * @param userId
+     * @return
+     */
+    @PostMapping("getMySignList")
+    public ResultResponse getMySignList(Integer userId) {
+        return shopSignService.getMySignList(userId);
+    }
 }
