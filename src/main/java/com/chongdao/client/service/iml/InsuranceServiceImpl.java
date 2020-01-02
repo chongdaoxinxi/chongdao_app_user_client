@@ -403,6 +403,23 @@ public class InsuranceServiceImpl implements InsuranceService {
         return ResultResponse.createByErrorMessage("没查询到数据!");
     }
 
+    @Override
+    public ResultResponse repairPickupOrder() {
+        List<InsuranceOrder> list = insuranceOrderRepository.findByInsuranceType(3);
+        Map<String, List<InsuranceOrder>> map = new HashMap<>();
+        for(InsuranceOrder order : list) {
+            String orderNo = order.getOrderNo();
+            List<InsuranceOrder> mapList = map.get(orderNo);
+            if(mapList == null || mapList.size() == 0) {
+                List<InsuranceOrder> mapList_ = new ArrayList<>();
+                mapList.add(order);
+            } else {
+                mapList.add(order);
+            }
+        }
+        return null;
+    }
+
     /**
      * 理赔金额待办
      */

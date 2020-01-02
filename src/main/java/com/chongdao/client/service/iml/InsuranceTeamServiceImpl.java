@@ -45,7 +45,7 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     public ResultResponse signAndBuildInsuranceTeam(String phone, String code) throws Exception {
         //检验验证码是否正确
         if (StringUtils.isNoneBlank(smsService.getSmsCode(phone))) {
-            if (!smsService.getSmsCode(phone).equals(code)) {
+            if (smsService.getSmsCode(phone).equals(code)) {
                 User u = signUser(phone);
                 return buildInsuranceTeam(u.getId());
             }
@@ -89,7 +89,7 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     public ResultResponse signAndAttendInsuranceTeam(String phone, String code, Integer teamId) {
         //检验验证码是否正确
         if (StringUtils.isNoneBlank(smsService.getSmsCode(phone))) {
-            if (!smsService.getSmsCode(phone).equals(code)) {
+            if (smsService.getSmsCode(phone).equals(code)) {
                 User u = signUser(phone);
                 return attendInsuranceTeam(teamId, u.getId());
             }

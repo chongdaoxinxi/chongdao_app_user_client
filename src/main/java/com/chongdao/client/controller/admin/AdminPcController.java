@@ -691,4 +691,9 @@ public class AdminPcController {
         System.out.println(InsuranceFeePaymentVoucherUtil.graphicsGeneration(pv));
         return null;
     }
+
+    @PostMapping("repairPickupOrder")
+    public ResultResponse repairPickupOrder() {
+        return null;
+    }
 }
