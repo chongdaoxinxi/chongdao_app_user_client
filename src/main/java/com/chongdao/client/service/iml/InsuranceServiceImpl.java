@@ -12,6 +12,7 @@ import com.chongdao.client.service.insurance.InsuranceExternalService;
 import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.InsuranceUUIDUtil;
 import com.chongdao.client.utils.LoginUserUtil;
+import com.chongdao.client.vo.PickupInsuranceVO;
 import com.chongdao.client.vo.ResultTokenVo;
 import com.chongdao.client.vo.UserInsuranceTodoVO;
 import com.github.pagehelper.PageHelper;
@@ -356,7 +357,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse getMyPickupInsuranceOrderList(String orderNo) {
         List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
-        List<String> real = new ArrayList<>();
+        List<PickupInsuranceVO> real = new ArrayList<>();
         if(list.size() > 0) {
             OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
             if(orderInfo != null) {
@@ -370,7 +371,13 @@ public class InsuranceServiceImpl implements InsuranceService {
                     }
                     for(int i = 0; i < time*petCount; i++) {
                         InsuranceOrder insuranceOrder = list.get(i);
-                        real.add(insuranceOrder.getPolicyCdxxImage());
+                        PickupInsuranceVO vo = new PickupInsuranceVO();
+                        vo.setOrderNo(insuranceOrder.getPolicyNo());
+                        vo.setPetName(insuranceOrder.getPetName());
+                        vo.setPetBreedName(insuranceOrder.getPetBreedName());
+                        vo.setPetAge(insuranceOrder.getPetAge());
+                        vo.setPolicyUrl(insuranceOrder.getPolicyCdxxImage());
+                        real.add(vo);
                     }
                     return ResultResponse.createBySuccess(real);
                 }
