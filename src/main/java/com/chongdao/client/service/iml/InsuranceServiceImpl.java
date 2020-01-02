@@ -79,6 +79,8 @@ public class InsuranceServiceImpl implements InsuranceService {
     private InsuranceFeeRecordMapper insuranceFeeRecordMapper;
     @Autowired
     private UserAddressRepository userAddressRepository;
+    @Autowired
+    private PetCardRepository petCardRepository;
 
     /**
      * 保存保单数据
@@ -178,7 +180,7 @@ public class InsuranceServiceImpl implements InsuranceService {
                     phone = userAddress.getPhone();
                 }
             }
-            InsuranceOrder order = setZcgInsuranceOrderParam(userName, phone);
+            InsuranceOrder order = setZcgInsuranceOrderParam(userName, phone, orderInfo.getPetId(), i);
             order.setOrderNo(orderInfo.getOrderNo());
             InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
             //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
@@ -191,7 +193,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     /**
      * 设置运输险订单参数
      */
-    private InsuranceOrder setZcgInsuranceOrderParam(String userName, String phone) {
+    private InsuranceOrder setZcgInsuranceOrderParam(String userName, String phone, String petId, Integer index) {
         InsuranceOrder order = new InsuranceOrder();
         //生成订单号
         order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID
@@ -213,6 +215,21 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setAddress(zcgMail);
         order.setInsuranceEffectTime(new Date());//保单开始时间
         order.setInsuranceFailureTime(new Date(System.currentTimeMillis() + 60 * 1000 * 60 * zcgSustainTime));//保单结束时间
+
+        //存入宠物相关信息
+        if(StringUtils.isNotBlank(petId)) {
+            String[] petIds = petId.split(",");
+            if(petIds != null) {
+               Integer petId_ = Integer.valueOf(petIds[index]);
+                PetCard petCard = petCardRepository.findById(petId_).orElse(null);
+                if(petCard != null) {
+                    order.setPetName(petCard.getName());
+                    order.setPetBreedName(petCard.getBreed());
+                    order.setPetBreedId(petCard.getBreedId());
+                    order.setPetAge(new BigDecimal(petCard.getAge()));
+                }
+            }
+        }
 
         //存入配送险相关信息
         order.setRationType(zcgRationType);
