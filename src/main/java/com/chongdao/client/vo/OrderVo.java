@@ -172,4 +172,6 @@ public class OrderVo {
     private String deliverUserPhone;
 
     private BigDecimal serviceDistance;//配送距离
+
+    private Integer isInsuranceEffect;//运输险是否有效
 }

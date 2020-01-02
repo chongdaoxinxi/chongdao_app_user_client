@@ -38,5 +38,7 @@ public interface InsuranceService {
 
     ResultResponse getMyOrderIsBuyInsurance(String orderNo);
 
+    boolean IsBuyInsurance(String orderNo);
+
     ResultResponse getMyPickupInsuranceOrderList(String orderNo);
 }

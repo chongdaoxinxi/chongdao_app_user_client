@@ -17,6 +17,7 @@ import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.mapper.OrderInfoVOMapper;
 import com.chongdao.client.repository.UserAddressRepository;
 import com.chongdao.client.service.*;
+import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.GenerateOrderNo;
@@ -67,6 +68,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private OrderService orderService;
     @Autowired
     private UserAddressRepository userAddressRepository;
+    @Autowired
+    private InsuranceService insuranceService;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -920,6 +923,13 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         }
         orderVo.setGoodsCount(goodsCount);
         orderVo.setOrderGoodsVoList(orderGoodsVoList);
+        //设置运输险是否生效字段
+        boolean flag = insuranceService.IsBuyInsurance(orderVo.getOrderNo());
+        if(flag) {
+            orderVo.setIsInsuranceEffect(1);
+        } else {
+            orderVo.setIsInsuranceEffect(-1);
+        }
         return orderVo;
     }
 

@@ -345,6 +345,15 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
+    public boolean IsBuyInsurance(String orderNo) {
+        List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
+        if(list.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public ResultResponse getMyPickupInsuranceOrderList(String orderNo) {
         List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
         List<String> real = new ArrayList<>();
