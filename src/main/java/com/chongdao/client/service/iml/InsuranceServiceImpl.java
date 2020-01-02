@@ -28,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -166,16 +169,16 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse insuranceZcg(OrderInfo orderInfo) throws IOException {
         Integer insuranceCount = orderInfo.getPetCount();//根据宠物数量来投保
-        for(int i = 0; i < insuranceCount; i++) {
+        for (int i = 0; i < insuranceCount; i++) {
             String userName = "";
             String phone = "";
             Integer receiveAddressId = orderInfo.getReceiveAddressId();
-            if(receiveAddressId == null) {
+            if (receiveAddressId == null) {
                 receiveAddressId = orderInfo.getDeliverAddressId();
             }
-            if(receiveAddressId != null) {
+            if (receiveAddressId != null) {
                 UserAddress userAddress = userAddressRepository.findById(receiveAddressId).orElse(null);
-                if(userAddress != null) {
+                if (userAddress != null) {
                     userName = userAddress.getUserName();
                     phone = userAddress.getPhone();
                 }
@@ -217,16 +220,19 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setInsuranceFailureTime(new Date(System.currentTimeMillis() + 60 * 1000 * 60 * zcgSustainTime));//保单结束时间
 
         //存入宠物相关信息
-        if(StringUtils.isNotBlank(petId)) {
+        if (StringUtils.isNotBlank(petId)) {
             String[] petIds = petId.split(",");
-            if(petIds != null) {
-               Integer petId_ = Integer.valueOf(petIds[index]);
+            if (petIds != null) {
+                Integer petId_ = Integer.valueOf(petIds[index]);
                 PetCard petCard = petCardRepository.findById(petId_).orElse(null);
-                if(petCard != null) {
+                if (petCard != null) {
                     order.setPetName(petCard.getName());
                     order.setPetBreedName(petCard.getBreed());
                     order.setPetBreedId(petCard.getBreedId());
-                    order.setPetAge(new BigDecimal(petCard.getAge()));
+                    Date birthDate = petCard.getBirthDate();
+                    LocalDate localDate = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    Period between = Period.between(LocalDate.now(), localDate);
+                    order.setPetAge(new BigDecimal((double)between.getMonths() / 12.0d));
                 }
             }
         }
@@ -243,6 +249,7 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     /**
      * 设置一些默认参数
+     *
      * @param order
      */
     private void setDefaultInsuranceOrderParam(InsuranceOrder order, Integer isSendMsg) {
@@ -273,7 +280,7 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResultResponse getInsuranceDataList(String token, Integer insuranceType, String userName, String phone, String insuranceOrderNo, Date start, Date end, Integer status, Integer pageNum, Integer pageSize) {
-        if(status != null && status == 99) {
+        if (status != null && status == 99) {
             status = null;
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -328,12 +335,12 @@ public class InsuranceServiceImpl implements InsuranceService {
     public ResultResponse getInsuranceUserTodo(String token) {
         ResultTokenVo tokenVo = LoginUserUtil.resultTokenVo(token);
         Integer userId = tokenVo.getUserId();
-        if(userId != null) {
+        if (userId != null) {
             Map resp = new HashMap<>();
             List<UserInsuranceTodoVO> claimsTodo = getClaimsTodo(userId);
             List<UserInsuranceTodoVO> chipTodo = getChipTodo(userId);
             List<UserInsuranceTodoVO> insuraneFeeTodo = getInsuraneFeeTodo(userId);
-            if(claimsTodo != null && claimsTodo.size() == 0 && chipTodo != null && chipTodo.size() == 0 && insuraneFeeTodo != null && insuraneFeeTodo.size() == 0) {
+            if (claimsTodo != null && claimsTodo.size() == 0 && chipTodo != null && chipTodo.size() == 0 && insuraneFeeTodo != null && insuraneFeeTodo.size() == 0) {
                 return ResultResponse.createBySuccessMessage("没有待办!");
             }
             //理赔金额待办
@@ -356,7 +363,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public ResultResponse getMyOrderIsBuyInsurance(String orderNo) {
         List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             return ResultResponse.createBySuccess(true);
         }
         return ResultResponse.createBySuccess(false);
@@ -365,7 +372,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     public boolean IsBuyInsurance(String orderNo) {
         List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             return true;
         }
         return false;
@@ -375,18 +382,18 @@ public class InsuranceServiceImpl implements InsuranceService {
     public ResultResponse getMyPickupInsuranceOrderList(String orderNo) {
         List<InsuranceOrder> list = insuranceOrderRepository.findByOrderNo(orderNo);
         List<PickupInsuranceVO> real = new ArrayList<>();
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
-            if(orderInfo != null) {
+            if (orderInfo != null) {
                 Integer petCount = orderInfo.getPetCount();
                 Integer serviceType = orderInfo.getServiceType();
-                if(petCount != null && serviceType != null && petCount >= 1) {
+                if (petCount != null && serviceType != null && petCount >= 1) {
                     int time = 2;
-                    if(serviceType == 2) {
+                    if (serviceType == 2) {
                         //单程
                         time = 1;
                     }
-                    for(int i = 0; i < time*petCount; i++) {
+                    for (int i = 0; i < time * petCount; i++) {
                         InsuranceOrder insuranceOrder = list.get(i);
                         PickupInsuranceVO vo = new PickupInsuranceVO();
                         vo.setOrderNo(insuranceOrder.getPolicyNo());
@@ -407,14 +414,51 @@ public class InsuranceServiceImpl implements InsuranceService {
     public ResultResponse repairPickupOrder() {
         List<InsuranceOrder> list = insuranceOrderRepository.findByInsuranceType(3);
         Map<String, List<InsuranceOrder>> map = new HashMap<>();
-        for(InsuranceOrder order : list) {
+        for (InsuranceOrder order : list) {
             String orderNo = order.getOrderNo();
             List<InsuranceOrder> mapList = map.get(orderNo);
-            if(mapList == null || mapList.size() == 0) {
+            if (mapList == null || mapList.size() == 0) {
                 List<InsuranceOrder> mapList_ = new ArrayList<>();
-                mapList.add(order);
+                mapList_.add(order);
+                map.put(orderNo, mapList_);
             } else {
                 mapList.add(order);
+            }
+        }
+        for (Map.Entry<String, List<InsuranceOrder>> entry : map.entrySet()) {
+            List<InsuranceOrder> ioList = entry.getValue();
+            String orderNo = entry.getKey();
+            OrderInfo orderInfo = orderInfoRepository.findByOrderNo(orderNo);
+            if(orderInfo == null) {
+                continue;
+            }
+            String petId = orderInfo.getPetId();
+            if (StringUtils.isNotBlank(petId)) {
+                String[] arr = petId.split(",");
+                if (arr != null && arr.length > 0) {
+                    if (arr.length == 1) {
+                        for (InsuranceOrder io : ioList) {
+                            PetCard petCard = petCardRepository.findById(Integer.valueOf(arr[0])).orElse(null);
+                            if (petCard != null) {
+                                io.setPetName(petCard.getName());
+                                Date birthDate = petCard.getBirthDate();
+                                LocalDate localDate = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                                Period between = Period.between(LocalDate.now(), localDate);
+                                io.setPetAge(new BigDecimal((double)between.getMonths() / 12.0d));
+                                io.setPetBreedName(petCard.getBreed());
+                                io.setPetBreedId(petCard.getBreedId());
+                                insuranceOrderRepository.save(io);
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < arr.length; i++) {
+                            PetCard petCard = petCardRepository.findById(Integer.valueOf(arr[i])).orElse(null);
+                            if (petCard != null) {
+                                System.out.println("orderNo:" + orderNo + ">>>>>>>>>petName:" + petCard.getName() + "petAge:" + petCard.getAge() + "petBreedName:" + petCard.getBreed() + "petBreedId:" + petCard.getBreedId());
+                            }
+                        }
+                    }
+                }
             }
         }
         return null;
@@ -423,7 +467,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     /**
      * 理赔金额待办
      */
-    private List<UserInsuranceTodoVO>  getClaimsTodo(Integer userId) {
+    private List<UserInsuranceTodoVO> getClaimsTodo(Integer userId) {
         return insuranceClaimsMapper.getUserTodoList(userId);
     }
 

@@ -121,7 +121,7 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         String url = RECOMMEND_URL + "?teamId=" + insuranceTeam.getId();
         insuranceTeam.setUrl(url);
         //根据url生成二维码图片, 并保存在服务器, 然后保存访问路径
-        String qrCodeUrl = QrCodeUtils.encode(url, "http://47.100.63.167/images/logo.jpg", "/static/images/", true);
+        String qrCodeUrl = QrCodeUtils.encode(url, "https://www.chongdaopet.cn/images/logo.png", "/static/images/", true);
         System.out.println("qrCodeUrl:" + qrCodeUrl);
         insuranceTeam.setQrCodeUrl("http://47.100.63.167/images/" + qrCodeUrl);
 
@@ -196,6 +196,18 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     }
 
     @Override
+    public ResultResponse systemAutoAddAttender(Integer teamId) {
+        InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
+        if(insuranceTeam != null) {
+            addRobot(insuranceTeam.getBuilderId(), teamId);//添加一个机器人
+            addRobot(insuranceTeam.getBuilderId(), teamId);//添加一个机器人
+            return ResultResponse.createBySuccess();
+        } else {
+            return ResultResponse.createByErrorMessage("无效的teamId");
+        }
+    }
+
+    @Override
     public ResultResponse getAttendDetail(Integer builderId) {
         InsuranceTeam insuranceTeam = insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 1);
         List<User> attendedUserList = new ArrayList<>();
@@ -206,18 +218,6 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         resp.put("attendedUserList", attendedUserList);//已经参加组队的用户
         resp.put("winAttenderList", getWinAttenderList());//已经获奖的用户(全平台)
         return ResultResponse.createBySuccess(resp);
-    }
-
-    @Override
-    public ResultResponse systemAutoAddAttender(Integer teamId) {
-        InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
-        if(insuranceTeam != null) {
-            addRobot(insuranceTeam.getBuilderId(), teamId);//添加一个机器人
-            addRobot(insuranceTeam.getBuilderId(), teamId);//添加一个机器人
-            return ResultResponse.createBySuccess();
-        } else {
-            return ResultResponse.createByErrorMessage("无效的teamId");
-        }
     }
 
     /**

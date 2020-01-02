@@ -8,6 +8,7 @@ import com.chongdao.client.repository.BrandRepository;
 import com.chongdao.client.repository.GoodsRepository;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.service.*;
+import com.chongdao.client.service.insurance.InsuranceService;
 import com.chongdao.client.utils.BigDecimalUtil;
 import com.chongdao.client.utils.DateTimeUtil;
 import com.chongdao.client.utils.InsuranceFeePaymentVoucherUtil;
@@ -74,6 +75,8 @@ public class AdminPcController {
     private GoodsRepository goodsRepository;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private InsuranceService insuranceService;
 
     /**
      * 确认退款完成
@@ -694,6 +697,6 @@ public class AdminPcController {
 
     @PostMapping("repairPickupOrder")
     public ResultResponse repairPickupOrder() {
-        return null;
+        return insuranceService.repairPickupOrder();
     }
 }
