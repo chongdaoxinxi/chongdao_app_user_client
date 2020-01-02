@@ -400,7 +400,7 @@ public class InsuranceServiceImpl implements InsuranceService {
                         vo.setPetName(insuranceOrder.getPetName());
                         vo.setPetBreedName(insuranceOrder.getPetBreedName());
                         vo.setPetAge(insuranceOrder.getPetAge());
-                        vo.setPolicyUrl(insuranceOrder.getPolicyCdxxImage());
+                        vo.setPolicyUrl("https://www.chongdaopet.cn/policy/" + insuranceOrder.getPolicyCdxxImage());
                         real.add(vo);
                     }
                     return ResultResponse.createBySuccess(real);

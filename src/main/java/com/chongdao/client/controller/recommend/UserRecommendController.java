@@ -143,6 +143,17 @@ public class UserRecommendController {
     }
 
     /**
+     * 在app中点击参加组队, 无需二次确认
+     * @param userId
+     * @param teamId
+     * @return
+     */
+    @PostMapping("attendInsuranceTeamInApp")
+    public ResultResponse attendInsuranceTeamInApp(Integer userId, Integer teamId) {
+        return insuranceTeamService.attendInsuranceTeamInApp(teamId, userId);
+    }
+
+    /**
      * 获取我待确认的组队
      * @param userId
      * @return

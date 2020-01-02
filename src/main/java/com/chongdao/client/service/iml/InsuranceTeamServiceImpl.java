@@ -148,6 +148,25 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     }
 
     @Override
+    public ResultResponse attendInsuranceTeamInApp(Integer teamId, Integer attenderId) {
+        InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
+        Integer builderId = insuranceTeam.getBuilderId();
+        InsuranceTeamAttender ita = new InsuranceTeamAttender();
+        ita.setTeamId(teamId);
+        ita.setBuilderId(builderId);
+        ita.setUserId(attenderId);
+        User user = userRepository.findById(attenderId).orElse(null);
+        if(user != null) {
+            ita.setName(user.getName());
+        }
+        ita.setCreateTime(new Date());
+        ita.setType(2);//加入者
+        ita.setIsWin(0);//待开奖
+        ita.setStatus(1);//待确认
+        return ResultResponse.createBySuccess(insuranceTeamAttenderRepository.save(ita));
+    }
+
+    @Override
     public ResultResponse getMyTodoAttend(Integer userId) {
         Date now = new Date();
         Date before = new Date(now.getTime() - EFFECT_TIME*60*60*1000);

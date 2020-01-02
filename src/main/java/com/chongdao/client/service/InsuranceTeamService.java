@@ -40,6 +40,14 @@ public interface InsuranceTeamService {
     ResultResponse attendInsuranceTeam(Integer teamId, Integer attenderId);
 
     /**
+     * app中点击参加组队, 无需二次确认
+     * @param teamId
+     * @param attenderId
+     * @return
+     */
+    ResultResponse attendInsuranceTeamInApp(Integer teamId, Integer attenderId);
+
+    /**
      * 获取我待确认的组队
      * @param userId
      * @return
