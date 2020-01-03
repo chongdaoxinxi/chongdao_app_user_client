@@ -179,7 +179,9 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
 
     @Override
     public ResultResponse getMyTodoBuild(Integer builderId) {
-        return ResultResponse.createBySuccess(insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 0));
+        List<InsuranceTeam> list = new ArrayList<>();
+        list.add(insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 0));
+        return ResultResponse.createBySuccess(list);
     }
 
     @Override

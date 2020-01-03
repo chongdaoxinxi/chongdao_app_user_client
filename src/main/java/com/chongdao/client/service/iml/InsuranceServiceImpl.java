@@ -158,6 +158,9 @@ public class InsuranceServiceImpl implements InsuranceService {
         }
 
         //设置一些默认参数
+        if(order.getIsPresent() == null) {
+            order.setIsPresent(-1);
+        }
         setDefaultInsuranceOrderParam(order, 1);
         InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
         //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单

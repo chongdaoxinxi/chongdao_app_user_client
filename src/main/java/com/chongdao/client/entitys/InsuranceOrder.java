@@ -102,6 +102,8 @@ public class InsuranceOrder implements Serializable {
     //分销
     private String recommendCode;//推广码
 
+    private Integer isPresent;//是否赠送, -1:否; 1:是;
+
     @Transient
     private String shopName;
 }
