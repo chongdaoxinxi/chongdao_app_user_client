@@ -205,12 +205,22 @@ public class UserRecommendController {
 
     /**
      * 获取我的组队详情
-     * @param builderId
+     * @param teamId
      * @return
      */
     @PostMapping("getAttendDetail")
-    public ResultResponse getAttendDetail(Integer builderId) {
-        return insuranceTeamService.getAttendDetail(builderId);
+    public ResultResponse getAttendDetail(Integer teamId) {
+        return insuranceTeamService.getAttendDetail(teamId);
+    }
+
+    /**
+     * 获取我的组队链接
+     * @param builderId
+     * @return
+     */
+    @PostMapping("getMyTeamUrl")
+    public ResultResponse getMyTeamUrl(Integer builderId) {
+        return insuranceTeamService.getMyTeamUrl(builderId);
     }
 
     /**

@@ -71,10 +71,17 @@ public interface InsuranceTeamService {
 
     /**
      * 获取我的组队详情
+     * @param teamId
+     * @return
+     */
+    ResultResponse getAttendDetail(Integer teamId);
+
+    /**
+     * 获取我的队伍链接
      * @param builderId
      * @return
      */
-    ResultResponse getAttendDetail(Integer builderId);
+    ResultResponse getMyTeamUrl(Integer builderId);
 
     /**
      * 系统自动填补组队人员(除开每第100/200/300...整数位队员所在队伍外, 均需要添加2个机器人, 且开奖都由这2个机器人中奖)

@@ -56,6 +56,10 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     @Override
     @Transactional
     public ResultResponse buildInsuranceTeam(Integer builderId) throws Exception {
+        InsuranceTeam old = insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 1);
+        if(old != null) {
+            return ResultResponse.createByErrorMessage("存在生效中的组队, 不能再次发起!");
+        }
         InsuranceTeam insuranceTeam = new InsuranceTeam();
         insuranceTeam.setBuilderId(builderId);
         User user = userRepository.findById(builderId).orElse(null);
@@ -240,16 +244,24 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     }
 
     @Override
-    public ResultResponse getAttendDetail(Integer builderId) {
-        InsuranceTeam insuranceTeam = insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 1);
+    public ResultResponse getAttendDetail(Integer teamId) {
+        List<Integer> userIdList = insuranceTeamAttenderRepository.getAttendedUserList(teamId);
         List<User> attendedUserList = new ArrayList<>();
-        if(insuranceTeam != null) {
-            attendedUserList = insuranceTeamAttenderRepository.getAttendedUserList(insuranceTeam.getId());
+        for(Integer id : userIdList) {
+            attendedUserList.add(userRepository.findById(id).orElse(null));
         }
         Map<String, Object> resp = new HashMap<>();
         resp.put("attendedUserList", attendedUserList);//已经参加组队的用户
         resp.put("winAttenderList", getWinAttenderList());//已经获奖的用户(全平台)
+        InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
+        resp.put("createTime", insuranceTeam.getCreateTime());//队伍创建时间
         return ResultResponse.createBySuccess(resp);
+    }
+
+    @Override
+    public ResultResponse getMyTeamUrl(Integer builderId) {
+        InsuranceTeam team = insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 1);
+        return ResultResponse.createBySuccess(team);
     }
 
     /**
@@ -313,6 +325,11 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
      * @return
      */
     private List<User> getWinAttenderList() {
-        return insuranceTeamAttenderRepository.getWinAttenderList();
+        List<Integer> userIdList = insuranceTeamAttenderRepository.getWinAttenderList();
+        List<User> userList = new ArrayList<>();
+        for(Integer id : userIdList) {
+            userList.add(userRepository.findById(id).orElse(null));
+        }
+        return userList;
     }
 }
