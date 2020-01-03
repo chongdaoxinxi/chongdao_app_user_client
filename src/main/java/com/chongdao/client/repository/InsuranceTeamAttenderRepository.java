@@ -34,4 +34,6 @@ public interface InsuranceTeamAttenderRepository extends JpaRepository<Insurance
     List<User> getAttendedUserList(Integer teamId);
 
     List<InsuranceTeamAttender> findByTeamId(Integer teamId);
+
+    InsuranceTeamAttender findByTeamIdAndUserId(Integer teamId, Integer userId);
 }

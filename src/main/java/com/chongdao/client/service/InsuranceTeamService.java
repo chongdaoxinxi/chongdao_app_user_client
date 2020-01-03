@@ -54,11 +54,20 @@ public interface InsuranceTeamService {
      */
     ResultResponse getMyTodoAttend(Integer userId);
 
+    ResultResponse getMyTodoBuild(Integer builderId);
+
     /**
      * 确认参加活动
      * @param attenderId
      */
-    ResultResponse confirmAttend(Integer attenderId);
+    ResultResponse confirmAttend(Integer attenderId, Integer teamId);
+
+    /**
+     * 确认发起组队
+     * @param teamId
+     * @return
+     */
+    ResultResponse confirmBuild(Integer teamId);
 
     /**
      * 获取我的组队详情

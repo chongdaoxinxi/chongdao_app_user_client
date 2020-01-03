@@ -114,7 +114,7 @@ public class UserRecommendController {
     ////////////////////////////组队/////////////////////////////////////
 
     /**
-     * 注册并发起组队
+     * 注册并发起组队, 需要二次确认
      * @param phone
      * @param code
      * @return
@@ -122,6 +122,17 @@ public class UserRecommendController {
     @PostMapping("signAndBuildInsuranceTeam")
     public ResultResponse signAndBuildInsuranceTeam(String phone, String code) throws Exception {
         return insuranceTeamService.signAndBuildInsuranceTeam(phone, code);
+    }
+
+    /**
+     * 在app中直接发起组队, 无需二次确认
+     * @param builderId
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("buildTeamInApp")
+    public ResultResponse buildTeamInApp(Integer builderId) throws Exception {
+        return insuranceTeamService.buildInsuranceTeam(builderId);
     }
 
     /**
@@ -154,7 +165,7 @@ public class UserRecommendController {
     }
 
     /**
-     * 获取我待确认的组队
+     * 获取我待确认的参与组队
      * @param userId
      * @return
      */
@@ -164,12 +175,32 @@ public class UserRecommendController {
     }
 
     /**
-     * 确认参加活动
+     * 获取我待确认的发起组队
+     * @param builderId
+     * @return
+     */
+    @PostMapping("getMyTodoBuild")
+    public ResultResponse getMyTodoBuild(Integer builderId) {
+        return insuranceTeamService.getMyTodoBuild(builderId);
+    }
+
+    /**
+     * 确认参加组队
      * @param attenderId
      */
     @PostMapping("confirmAttend")
-    public ResultResponse confirmAttend(Integer attenderId) {
-        return insuranceTeamService.confirmAttend(attenderId);
+    public ResultResponse confirmAttend(Integer attenderId, Integer teamId) {
+        return insuranceTeamService.confirmAttend(attenderId, teamId);
+    }
+
+    /**
+     * 确认发起组队
+     * @param teamId
+     * @return
+     */
+    @PostMapping("teamId")
+    public ResultResponse confirmBuild(Integer teamId) {
+        return insuranceTeamService.confirmBuild(teamId);
     }
 
     /**

@@ -35,6 +35,6 @@ public class InsuranceTeam implements Serializable {
     private String url;//分享url
     private String qrCodeUrl;//分享二维码地址
     private Integer visitTimes;//该分享链接被访问次数
-    private Integer status;//-1:已关闭, 1:正常运行
+    private Integer status;//-1:已关闭; 0:待确认; 1:正常运行
     private Date createTime;//创建时间
 }

@@ -174,15 +174,19 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     }
 
     @Override
+    public ResultResponse getMyTodoBuild(Integer builderId) {
+        return ResultResponse.createBySuccess(insuranceTeamRepository.findByBuilderIdAndStatus(builderId, 0));
+    }
+
+    @Override
     @Transactional
-    public ResultResponse confirmAttend(Integer teamAttendId) {
-        InsuranceTeamAttender insuranceTeamAttender = insuranceTeamAttenderRepository.findById(teamAttendId).orElse(null);
+    public ResultResponse confirmAttend(Integer attenderId, Integer teamId) {
+        InsuranceTeamAttender insuranceTeamAttender = insuranceTeamAttenderRepository.findByTeamIdAndUserId(teamId, attenderId);
         if(insuranceTeamAttender != null) {
             insuranceTeamAttender.setStatus(1);
             insuranceTeamAttender.setAttendTime(new Date());
             insuranceTeamAttenderRepository.save(insuranceTeamAttender);
             //确认是否需要添加机器人
-            Integer teamId = insuranceTeamAttender.getTeamId();
             List<InsuranceTeamAttender> list = insuranceTeamAttenderRepository.findByTeamId(teamId);
             if(list.size() == 6) {
                 //添加完第6个队员的时候, 检测是否需要添加机器人
@@ -195,6 +199,15 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
         } else {
             return ResultResponse.createByErrorMessage("无效的ID");
         }
+    }
+
+    @Override
+    @Transactional
+    public ResultResponse confirmBuild(Integer teamId) {
+        InsuranceTeam insuranceTeam = insuranceTeamRepository.findById(teamId).orElse(null);
+        insuranceTeam.setStatus(1);
+        insuranceTeamRepository.save(insuranceTeam);
+        return ResultResponse.createBySuccess();
     }
 
     private Boolean isNeedToAddRobot(List<InsuranceTeamAttender> list, Integer teamId) {
