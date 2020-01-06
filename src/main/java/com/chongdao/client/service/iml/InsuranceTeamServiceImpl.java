@@ -37,7 +37,7 @@ public class InsuranceTeamServiceImpl implements InsuranceTeamService {
     private SmsService smsService;
 
 
-    private final static String RECOMMEND_URL = "http://www.xxx.com/xxxx.html";//推广页面url
+    private final static String RECOMMEND_URL = "http://www.chongdaopet.cn/pintuan/baoxian/bx_index.html";//推广页面url
     private final static Integer EFFECT_TIME = 24;//组队有效期24小时
 
     @Override
