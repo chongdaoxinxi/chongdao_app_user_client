@@ -93,4 +93,15 @@ public class ShopManageController {
     public ResponseStatus downloadQrCodeImg(Integer shopId) {
         return null;
     }
+
+    /**
+     * 更改商家目标状态
+     * @param shopId
+     * @param targetStatus
+     * @return
+     */
+    @PostMapping("changeShopStopStatus")
+    public ResultResponse changeShopStopStatus(Integer shopId, Integer targetStatus) {
+        return shopManageService.changeShopStopStatus(shopId, targetStatus);
+    }
 }

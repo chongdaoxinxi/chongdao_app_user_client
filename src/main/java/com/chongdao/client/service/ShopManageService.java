@@ -22,4 +22,6 @@ public interface ShopManageService {
     ResultResponse saveShopConfig(Integer shopId, Byte isAutoAccept, Integer isInService, String phone);
 
     ResultResponse downloadQrCodeImg(Integer shopId);
+
+    ResultResponse changeShopStopStatus(Integer shopId, Integer targetStatus);
 }
