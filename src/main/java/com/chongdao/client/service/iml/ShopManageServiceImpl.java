@@ -130,7 +130,7 @@ public class ShopManageServiceImpl implements ShopManageService {
     @Override
     public ResultResponse changeShopStopStatus(Integer shopId, Integer targetStatus) {
         Shop shop = shopRepository.findById(shopId).orElse(null);
-        shop.setIsStop((byte)targetStatus.intValue());
+        shop.setStatus(targetStatus);
         shop.setUpdateTime(new Date());
         return ResultResponse.createBySuccess(shopRepository.save(shop));
     }
