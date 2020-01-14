@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @Description TODO
@@ -21,4 +22,6 @@ public class PickupInsuranceVO {
     private String petBreedName;//宠物品种名称
     private BigDecimal petAge;//宠物年龄
     private String policyUrl;//电子单证链接
+    private Date petBirthdate;
+    private String petIcon;
 }
