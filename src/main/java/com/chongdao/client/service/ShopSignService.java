@@ -22,4 +22,12 @@ public interface ShopSignService {
      * @return
      */
     ResultResponse getMySignList(Integer userId);
+
+    /**
+     * 审核入驻商家
+     * @param signShopId
+     * @param targetStatus
+     * @return
+     */
+    ResultResponse auditShopSign(Integer signShopId, Integer targetStatus);
 }

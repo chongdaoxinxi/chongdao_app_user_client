@@ -1,7 +1,9 @@
 package com.chongdao.client.service.iml;
 
 import com.chongdao.client.common.ResultResponse;
+import com.chongdao.client.entitys.Shop;
 import com.chongdao.client.entitys.ShopSignInfo;
+import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.ShopSignInfoRepository;
 import com.chongdao.client.service.ShopSignService;
 import com.chongdao.client.vo.ShopSignTypeVO;
@@ -9,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +27,8 @@ import java.util.List;
 public class ShopSignServiceImpl implements ShopSignService {
     @Autowired
     private ShopSignInfoRepository shopSignInfoRepository;
+    @Autowired
+    private ShopRepository shopRepository;
 
     /**
      * 申请商家入驻
@@ -31,6 +37,7 @@ public class ShopSignServiceImpl implements ShopSignService {
      * @return
      */
     @Override
+    @Transactional
     public ResultResponse applyShopSign(ShopSignInfo shopSignInfo) {
         ShopSignInfo ssi = new ShopSignInfo();
         BeanUtils.copyProperties(shopSignInfo, ssi);
@@ -56,5 +63,55 @@ public class ShopSignServiceImpl implements ShopSignService {
     @Override
     public ResultResponse getMySignList(Integer userId) {
         return ResultResponse.createBySuccess(shopSignInfoRepository.findByUserId(userId));
+    }
+
+    @Override
+    @Transactional
+    public ResultResponse auditShopSign(Integer signShopId, Integer targetStatus) {
+        ShopSignInfo shopSignInfo = shopSignInfoRepository.findById(signShopId).orElse(null);
+        if(shopSignInfo != null) {
+            shopSignInfo.setStatus(targetStatus);
+            shopSignInfo.setUpdateTime(new Date());
+            ShopSignInfo save = shopSignInfoRepository.save(shopSignInfo);
+            if(targetStatus == 1) {
+                //审核通过
+                Shop shop = typeInShopSignDataToShop(shopSignInfo);
+                Shop save1 = shopRepository.save(shop);
+                save.setShopId(save1.getId());
+                shopSignInfoRepository.save(save);
+            }
+        }
+        return ResultResponse.createBySuccess();
+    }
+
+    private Shop typeInShopSignDataToShop(ShopSignInfo shopSignInfo) {
+        Shop shop = new Shop();
+        shop.setShopName(shopSignInfo.getBranchName());
+        shop.setPhone(shopSignInfo.getAcceptPhone());
+        shop.setAccountName(shopSignInfo.getAcceptPhone());
+        shop.setPassword(shopSignInfo.getAcceptPhone());
+        shop.setAddress(shopSignInfo.getAddress());
+        shop.setAreaCode(shopSignInfo.getAreaCode());
+        shop.setAreaId(Integer.valueOf(shopSignInfo.getAreaId()));
+        shop.setType(shopSignInfo.getType());
+        shop.setLogo(shopSignInfo.getLogo());
+        shop.setCreateTime(new Date());
+        shop.setUpdateTime(new Date());
+
+        //////////////////////
+        shop.setMoney(new BigDecimal(0));
+        shop.setArriveShopOrderMoney(new BigDecimal(0));
+        shop.setCustomGoodOrderMoney(new BigDecimal(0));
+        shop.setCustomServiceOrderMoney(new BigDecimal(0));
+        shop.setInsuranceMoney(new BigDecimal(0));
+        shop.setRecommendMoney(new BigDecimal(0));
+        shop.setDiscount(0d);
+        shop.setGrade(0d);
+        shop.setIsAutoAccept((byte)-1);
+        shop.setIsStop((byte)-1);
+        shop.setStatus(1);
+        shop.setIsHot((byte)-1);
+        shop.setIsJoinCommonWeal((byte)-1);
+        return shop;
     }
 }

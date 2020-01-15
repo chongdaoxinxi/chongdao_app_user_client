@@ -566,6 +566,17 @@ public class AdminPcController {
     }
 
     /**
+     * 管理员审核商家入驻
+     * @param signShopId
+     * @param targetStatus
+     * @return
+     */
+    @PostMapping("auditShopSign")
+    public ResultResponse auditShopSign(Integer signShopId, Integer targetStatus) {
+        return null;
+    }
+
+    /**
      * 随机添加机器人订单
      * @return
      */
