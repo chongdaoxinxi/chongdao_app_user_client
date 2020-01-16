@@ -6,6 +6,7 @@ import com.chongdao.client.entitys.ShopSignInfo;
 import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.ShopSignInfoRepository;
 import com.chongdao.client.service.ShopSignService;
+import com.chongdao.client.utils.MD5Util;
 import com.chongdao.client.vo.ShopSignTypeVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -104,7 +105,7 @@ public class ShopSignServiceImpl implements ShopSignService {
         shop.setShopName(shopSignInfo.getBranchName());
         shop.setPhone(shopSignInfo.getAcceptPhone());
         shop.setAccountName(shopSignInfo.getAcceptPhone());
-        shop.setPassword(shopSignInfo.getAcceptPhone());
+        shop.setPassword(MD5Util.MD5("12345678"));
         shop.setAddress(shopSignInfo.getAddress());
         shop.setAreaCode(shopSignInfo.getAreaCode());
         if(StringUtils.isNotBlank(shopSignInfo.getAreaId())) {
