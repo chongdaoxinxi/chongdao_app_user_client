@@ -7,8 +7,12 @@ import com.chongdao.client.repository.ShopRepository;
 import com.chongdao.client.repository.ShopSignInfoRepository;
 import com.chongdao.client.service.ShopSignService;
 import com.chongdao.client.vo.ShopSignTypeVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -66,6 +70,17 @@ public class ShopSignServiceImpl implements ShopSignService {
     }
 
     @Override
+    public ResultResponse getSignList(Integer pageSize, Integer pageNum, String shopName) {
+        pageNum = pageNum - 1;
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "createTime");
+        if(StringUtils.isNotBlank(shopName)) {
+            shopName = "%" + shopName + "%";
+            return ResultResponse.createBySuccess(shopSignInfoRepository.findByNameLike(shopName, pageable));
+        }
+        return ResultResponse.createBySuccess(shopSignInfoRepository.findAll(pageable));
+    }
+
+    @Override
     @Transactional
     public ResultResponse auditShopSign(Integer signShopId, Integer targetStatus) {
         ShopSignInfo shopSignInfo = shopSignInfoRepository.findById(signShopId).orElse(null);
@@ -92,7 +107,9 @@ public class ShopSignServiceImpl implements ShopSignService {
         shop.setPassword(shopSignInfo.getAcceptPhone());
         shop.setAddress(shopSignInfo.getAddress());
         shop.setAreaCode(shopSignInfo.getAreaCode());
-        shop.setAreaId(Integer.valueOf(shopSignInfo.getAreaId()));
+        if(StringUtils.isNotBlank(shopSignInfo.getAreaId())) {
+            shop.setAreaId(Integer.valueOf(shopSignInfo.getAreaId()));
+        }
         shop.setType(shopSignInfo.getType());
         shop.setLogo(shopSignInfo.getLogo());
         shop.setCreateTime(new Date());

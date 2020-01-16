@@ -77,6 +77,8 @@ public class AdminPcController {
     private CouponService couponService;
     @Autowired
     private InsuranceService insuranceService;
+    @Autowired
+    private ShopSignService shopSignService;
 
     /**
      * 确认退款完成
@@ -566,6 +568,15 @@ public class AdminPcController {
     }
 
     /**
+     * 获取商家入驻列表
+     * @return
+     */
+    @PostMapping("getShopSignList")
+    public ResultResponse getShopSignList(Integer pageSize, Integer pageNum, String shopName) {
+        return shopSignService.getSignList(pageSize, pageNum, shopName);
+    }
+
+    /**
      * 管理员审核商家入驻
      * @param signShopId
      * @param targetStatus
@@ -573,7 +584,7 @@ public class AdminPcController {
      */
     @PostMapping("auditShopSign")
     public ResultResponse auditShopSign(Integer signShopId, Integer targetStatus) {
-        return null;
+        return shopSignService.auditShopSign(signShopId, targetStatus);
     }
 
     /**

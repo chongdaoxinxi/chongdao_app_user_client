@@ -24,6 +24,12 @@ public interface ShopSignService {
     ResultResponse getMySignList(Integer userId);
 
     /**
+     * 获取商家入驻申请列表
+     * @return
+     */
+    ResultResponse getSignList(Integer pageSize, Integer pageNum, String shopName);
+
+    /**
      * 审核入驻商家
      * @param signShopId
      * @param targetStatus
