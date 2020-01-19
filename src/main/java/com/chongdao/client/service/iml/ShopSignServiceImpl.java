@@ -102,7 +102,7 @@ public class ShopSignServiceImpl implements ShopSignService {
 
     private Shop typeInShopSignDataToShop(ShopSignInfo shopSignInfo) {
         Shop shop = new Shop();
-        shop.setShopName(shopSignInfo.getBranchName());
+        shop.setShopName(shopSignInfo.getName());
         shop.setPhone(shopSignInfo.getAcceptPhone());
         shop.setAccountName(shopSignInfo.getAcceptPhone());
         shop.setPassword(MD5Util.MD5("12345678"));
