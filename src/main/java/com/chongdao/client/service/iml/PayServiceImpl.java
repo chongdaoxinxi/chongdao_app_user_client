@@ -426,20 +426,20 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                 //生成支付凭证
                 insuranceFeeRecordService.generateInsuranceFeeRecordCertificate(insuranceFeeRecord.getId());
             }
-        }
-        //生成支付信息
-        try {
-            PayInfo payInfo = new PayInfo();
-            payInfo.setUserId(ifr.getUserId());
-            payInfo.setOrderNo(ifr.getOrderNo());
-            payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
-            payInfo.setPlatformNumber(tradeNo);
-            payInfo.setPlatformStatus(tradeStatus);
-            payInfo.setType(3);
-            payInfoRepository.save(payInfo);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+            //生成支付信息
+            try {
+                PayInfo payInfo = new PayInfo();
+                payInfo.setUserId(ifr.getUserId());
+                payInfo.setOrderNo(ifr.getOrderNo());
+                payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+                payInfo.setPlatformNumber(tradeNo);
+                payInfo.setPlatformStatus(tradeStatus);
+                payInfo.setType(3);
+                payInfoRepository.save(payInfo);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+            }
         }
         return ResultResponse.createBySuccess();
     }
@@ -541,20 +541,20 @@ public class PayServiceImpl extends CommonRepository implements PayService {
                     //通知商家接单
                     //TODO
                 }
-            }
-            //生成支付信息
-            try {
-                PayInfo payInfo = new PayInfo();
-                payInfo.setUserId(order.getUserId());
-                payInfo.setOrderNo(order.getOrderNo());
-                payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
-                payInfo.setPlatformNumber(tradeNo);
-                payInfo.setPlatformStatus(tradeStatus);
-                payInfo.setType(1);
-                payInfoRepository.save(payInfo);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+                //生成支付信息
+                try {
+                    PayInfo payInfo = new PayInfo();
+                    payInfo.setUserId(order.getUserId());
+                    payInfo.setOrderNo(order.getOrderNo());
+                    payInfo.setPayPlatform(PayPlatformEnum.ALI_PAY.getCode());
+                    payInfo.setPlatformNumber(tradeNo);
+                    payInfo.setPlatformStatus(tradeStatus);
+                    payInfo.setType(1);
+                    payInfoRepository.save(payInfo);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    log.error("【支付宝异步回调】支付信息生成失败: orderNo:{}", orderNo);
+                }
             }
         }
         return ResultResponse.createBySuccess();

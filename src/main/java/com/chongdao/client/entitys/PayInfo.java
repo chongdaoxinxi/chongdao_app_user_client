@@ -26,7 +26,7 @@ public class PayInfo {
 
     private String orderReNo;
 
-    private Integer payPlatform;
+    private Integer payPlatform;//支付平台:1.支付宝 2.微信
 
     private String platformNumber;
 
