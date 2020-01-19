@@ -84,6 +84,8 @@ public class InsuranceServiceImpl implements InsuranceService {
     private UserAddressRepository userAddressRepository;
     @Autowired
     private PetCardRepository petCardRepository;
+    @Autowired
+    private OrderPetInfoRepository orderPetInfoRepository;
 
     /**
      * 保存保单数据
@@ -171,8 +173,9 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResultResponse insuranceZcg(OrderInfo orderInfo) throws IOException {
-        Integer insuranceCount = orderInfo.getPetCount();//根据宠物数量来投保
-        for (int i = 0; i < insuranceCount; i++) {
+        String orderNo = orderInfo.getOrderNo();
+        List<OrderPetInfo> list = orderPetInfoRepository.findByOrderNo(orderNo);
+        for(OrderPetInfo opi : list) {
             String userName = "";
             String phone = "";
             Integer receiveAddressId = orderInfo.getReceiveAddressId();
@@ -186,20 +189,42 @@ public class InsuranceServiceImpl implements InsuranceService {
                     phone = userAddress.getPhone();
                 }
             }
-            InsuranceOrder order = setZcgInsuranceOrderParam(userName, phone, orderInfo.getPetId(), i);
+            InsuranceOrder order = setZcgInsuranceOrderParam(userName, phone, opi.getPetCardId());
             order.setOrderNo(orderInfo.getOrderNo());
             InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
             //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
             //请求外部接口, 生成保单
             insuranceExternalService.generateInsure(savedOrder);
         }
+//        Integer insuranceCount = orderInfo.getPetCount();//根据宠物数量来投保
+//        for (int i = 0; i < insuranceCount; i++) {
+//            String userName = "";
+//            String phone = "";
+//            Integer receiveAddressId = orderInfo.getReceiveAddressId();
+//            if (receiveAddressId == null) {
+//                receiveAddressId = orderInfo.getDeliverAddressId();
+//            }
+//            if (receiveAddressId != null) {
+//                UserAddress userAddress = userAddressRepository.findById(receiveAddressId).orElse(null);
+//                if (userAddress != null) {
+//                    userName = userAddress.getUserName();
+//                    phone = userAddress.getPhone();
+//                }
+//            }
+//            InsuranceOrder order = setZcgInsuranceOrderParam(userName, phone, orderInfo.getPetId(), i);
+//            order.setOrderNo(orderInfo.getOrderNo());
+//            InsuranceOrder savedOrder = insuranceOrderRepository.save(order);
+//            //如果要加入审核机制, 那么这里需要写一些处理逻辑, 区分是保存订单还是付款后的请求外部接口生成订单
+//            //请求外部接口, 生成保单
+//            insuranceExternalService.generateInsure(savedOrder);
+//        }
         return ResultResponse.createBySuccess();
     }
 
     /**
      * 设置运输险订单参数
      */
-    private InsuranceOrder setZcgInsuranceOrderParam(String userName, String phone, String petId, Integer index) {
+    private InsuranceOrder setZcgInsuranceOrderParam(String userName, String phone, Integer petId) {
         InsuranceOrder order = new InsuranceOrder();
         //生成订单号
         order.setInsuranceOrderNo(InsuranceUUIDUtil.generateUUID());//订单号设置为保险投保接口所需要的UUID
@@ -223,20 +248,16 @@ public class InsuranceServiceImpl implements InsuranceService {
         order.setInsuranceFailureTime(new Date(System.currentTimeMillis() + 60 * 1000 * 60 * zcgSustainTime));//保单结束时间
 
         //存入宠物相关信息
-        if (StringUtils.isNotBlank(petId)) {
-            String[] petIds = petId.split(",");
-            if (petIds != null) {
-                Integer petId_ = Integer.valueOf(petIds[index]);
-                PetCard petCard = petCardRepository.findById(petId_).orElse(null);
-                if (petCard != null) {
-                    order.setPetName(petCard.getName());
-                    order.setPetBreedName(petCard.getBreed());
-                    order.setPetBreedId(petCard.getBreedId());
-                    Date birthDate = petCard.getBirthDate();
-                    LocalDate localDate = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    Period between = Period.between(LocalDate.now(), localDate);
-                    order.setPetAge(new BigDecimal((double)between.getMonths() / 12.0d));
-                }
+        if (petId != null) {
+            PetCard petCard = petCardRepository.findById(petId).orElse(null);
+            if (petCard != null) {
+                order.setPetName(petCard.getName());
+                order.setPetBreedName(petCard.getBreed());
+                order.setPetBreedId(petCard.getBreedId());
+                Date birthDate = petCard.getBirthDate();
+                LocalDate localDate = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                Period between = Period.between(LocalDate.now(), localDate);
+                order.setPetAge(new BigDecimal((double)between.getMonths() / 12.0d));
             }
         }
 
