@@ -54,6 +54,13 @@ public class ShopApplyServiceImpl implements ShopApplyService {
     @Override
     public ResultResponse addShopApplyRecord(Integer shopId, BigDecimal applyMoney, String applyNote) {
         Shop s = shopRepository.findById(shopId).orElse(null);
+        BigDecimal money = s.getMoney();
+        if(money== null || money.compareTo(applyMoney) == 0) {
+            return ResultResponse.createByErrorMessage("余额不足!");
+        }
+        if(money != null && money.compareTo(applyMoney) < 0) {
+            return ResultResponse.createByErrorMessage("余额不足!");
+        }
         ShopApply sa = new ShopApply();
         sa.setShopId(s.getId());
         sa.setApplyMoney(applyMoney);
