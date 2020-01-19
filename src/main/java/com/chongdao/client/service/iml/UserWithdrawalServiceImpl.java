@@ -58,7 +58,7 @@ public class UserWithdrawalServiceImpl implements UserWithdrawalService {
         if (money == null || left == null) {
             return ResultResponse.createByErrorMessage("申请提现金额不能为null, 用户余额不能为null!");
         }
-        if (money.compareTo(left) > 1) {
+        if (money.compareTo(left) > 0) {
             return ResultResponse.createByErrorMessage("申请提现金额不能大于用户余额!");
         }
         //校验是否有正在审核中的提现
