@@ -15,6 +15,7 @@ import com.chongdao.client.enums.ResultEnum;
 import com.chongdao.client.exception.PetException;
 import com.chongdao.client.freight.FreightComputer;
 import com.chongdao.client.mapper.OrderInfoVOMapper;
+import com.chongdao.client.repository.OrderPetInfoRepository;
 import com.chongdao.client.repository.UserAddressRepository;
 import com.chongdao.client.service.*;
 import com.chongdao.client.service.insurance.InsuranceService;
@@ -70,6 +71,8 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
     private UserAddressRepository userAddressRepository;
     @Autowired
     private InsuranceService insuranceService;
+    @Autowired
+    private OrderPetInfoRepository orderPetInfoRepository;
 //    @Autowired
 //    private OrderFeignClient orderFeignClient;
 
@@ -105,7 +108,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         //宠物数量
         Integer petCount = 0;
         String petIds = "";
-        Set petIdSet = new HashSet<>();
+        Set<Integer> petIdSet = new HashSet<>();
         for (Carts cart : cartList) {
             goodsIds.add(cart.getGoodsId());
             OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -247,8 +250,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
                 if (orderCommonVO.getCardId() != null) { //配送券变为已使用
                     cpnUserRepository.updateUserCpnState(orderCommonVO.getCardId(), orderVo.getUserId());
                 }
-
-                return this.createOrder(orderVo, orderCommonVO);
+                return this.createOrder(orderVo, orderCommonVO, petIdSet);
             }
         }
         return ResultResponse.createBySuccess(orderVo);
@@ -798,7 +800,7 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
      */
 
     @Transactional
-    public ResultResponse createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO) {
+    public ResultResponse createOrder(OrderVo orderVo, OrderCommonVO orderCommonVO, Set<Integer> petIdSet) {
         //从购物车中获取数据
         List<Carts> cartList = cartsMapper.selectCheckedCartByUserId(orderVo.getUserId(), orderCommonVO.getShopId(), null);
 
@@ -826,6 +828,14 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
         orderDetailMapper.batchInsert(orderItemList);
         //清空购物车
         this.cleanCart(cartList);
+        //在这里保存订单的宠物卡片信息
+        for(Integer petId : petIdSet) {
+            OrderPetInfo opi = new OrderPetInfo();
+            opi.setOrderNo(order.getOrderNo());
+            opi.setPetCardId(petId);
+            opi.setCreateTime(new Date());
+            orderPetInfoRepository.save(opi);
+        }
         return ResultResponse.createBySuccess(order);
     }
 
