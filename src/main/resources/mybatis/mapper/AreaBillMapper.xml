@@ -45,8 +45,8 @@
         </if>
     </select>
 
-    <select id="getAreaAccontMoneyData" resultType="BigDecimal" parameterType="map">
-        select sum(ab.price) from area_bill ab where ab.area_code = #{areaCode}
+    <select id="getAreaAccountMoneyData" resultType="BigDecimal" parameterType="map">
+        select IFNULL(sum(ab.price), 0) from area_bill ab where ab.area_code = #{areaCode}
         <if test="type != null">
             and ab.type = #{type}
         </if>

@@ -13,5 +13,5 @@ public interface AreaBillMapper {
 
     List<AreaBill> getAreaBillByAreaCodeAndType(String areaCode, Integer type, Date startDate, Date endDate);
 
-    BigDecimal getAreaAccontMoneyData(String areaCode, Integer type);
+    BigDecimal getAreaAccountMoneyData(String areaCode, Integer type);
 }

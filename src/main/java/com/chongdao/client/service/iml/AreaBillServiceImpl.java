@@ -50,11 +50,11 @@ public class AreaBillServiceImpl implements AreaBillService {
         Management management = managementRepository.findById(managementId).orElse(null);
         if(management != null) {
             String areaCode = management.getAreaCode();
-            BigDecimal orderInMoney = areaBillMapper.getAreaAccontMoneyData(areaCode, 1);//订单消费入账
-            BigDecimal orderRefundMoney = areaBillMapper.getAreaAccontMoneyData(areaCode, 2);//订单消费退款
-            BigDecimal myWithdrawalMoney = areaBillMapper.getAreaAccontMoneyData(areaCode, 3);//我的提现
-            BigDecimal insuranceFeeMoney = areaBillMapper.getAreaAccontMoneyData(areaCode, 4);//医疗费用订单
-            BigDecimal reOrderMoney = areaBillMapper.getAreaAccontMoneyData(areaCode, 5);//追加订单
+            BigDecimal orderInMoney = areaBillMapper.getAreaAccountMoneyData(areaCode, 1);//订单消费入账
+            BigDecimal orderRefundMoney = areaBillMapper.getAreaAccountMoneyData(areaCode, 2);//订单消费退款
+            BigDecimal myWithdrawalMoney = areaBillMapper.getAreaAccountMoneyData(areaCode, 3);//我的提现
+            BigDecimal insuranceFeeMoney = areaBillMapper.getAreaAccountMoneyData(areaCode, 4);//医疗费用订单
+            BigDecimal reOrderMoney = areaBillMapper.getAreaAccountMoneyData(areaCode, 5);//追加订单
             BigDecimal inMoney = orderInMoney.add(insuranceFeeMoney).add(reOrderMoney);
             BigDecimal outMoney = orderRefundMoney.add(myWithdrawalMoney);
             Map resp = new HashMap<>();
