@@ -1,5 +1,6 @@
 package com.chongdao.client.entitys;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 public class AreaBill implements Serializable {
     private static final long serialVersionUID = 1L;
 

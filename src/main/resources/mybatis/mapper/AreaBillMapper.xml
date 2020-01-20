@@ -14,12 +14,41 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        ab.id, ab.shop_id, ab.order_id, ab.price, ab.note, ab.type, ab.create_time
+        ab.id, ab.shop_id, ab.order_id, ab.price, ab.note, ab.type, ab.area_code, ab.create_time
     </sql>
     <select id="getAreaBillByAreaCode" resultMap="BaseResultMap" parameterType="map">
         select
         <include refid="Base_Column_List"/>
         from area_bill ab
-        where ab.area_code = #{areaCode} and ab.create_time &gt; #{createDate} and ab.create_time &lt; #{endDate}
+        where ab.area_code = #{areaCode}
+        <if test="endDate != null">
+            and ab.create_time &lt; #{endDate}
+        </if>
+        <if test="type != null">
+            and ab.type = #{type}
+        </if>
+    </select>
+
+    <select id="getAreaBillByAreaCodeAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from area_bill ab
+        where ab.area_code = #{areaCode}
+        <if test="startDate != null">
+            and ab.create_time &gt; #{createDate}
+        </if>
+        <if test="endDate != null">
+            and ab.create_time &lt; #{endDate}
+        </if>
+        <if test="type != null">
+            and ab.type = #{type}
+        </if>
+    </select>
+
+    <select id="getAreaAccontMoneyData" resultType="BigDecimal" parameterType="map">
+        select sum(ab.price) from area_bill ab where ab.area_code = #{areaCode}
+        <if test="type != null">
+            and ab.type = #{type}
+        </if>
     </select>
 </mapper>

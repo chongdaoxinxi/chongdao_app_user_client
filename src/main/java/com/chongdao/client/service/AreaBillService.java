@@ -1,10 +1,11 @@
 package com.chongdao.client.service;
 
-import com.chongdao.client.entitys.AreaBill;
+import com.chongdao.client.common.ResultResponse;
 
 import java.util.Date;
-import java.util.List;
 
 public interface AreaBillService {
-    List<AreaBill> getAreaBillByManagementId(Integer managementId, String shopName, Date startDate, Date endDate, Integer pageNum, Integer pageSize);
+    ResultResponse getAreaBillByManagementId(Integer managementId, String shopName, Date startDate, Date endDate, Integer type, Integer pageNum, Integer pageSize);
+
+    ResultResponse getAreaAccountMoneyData(Integer managementId);
 }

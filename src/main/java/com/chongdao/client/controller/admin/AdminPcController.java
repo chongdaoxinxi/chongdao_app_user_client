@@ -79,6 +79,8 @@ public class AdminPcController {
     private InsuranceService insuranceService;
     @Autowired
     private ShopSignService shopSignService;
+    @Autowired
+    private AreaBillService areaBillService;
 
     /**
      * 确认退款完成
@@ -585,6 +587,26 @@ public class AdminPcController {
     @PostMapping("auditShopSign")
     public ResultResponse auditShopSign(Integer signShopId, Integer targetStatus) {
         return shopSignService.auditShopSign(signShopId, targetStatus);
+    }
+
+    /**
+     * 获取地区账户明细
+     * @param manageId
+     * @return
+     */
+    @PostMapping("getAreaAccountData")
+    public ResultResponse getAreaAccountData(Integer manageId, Date startDate, Date endDate, Integer type, Integer pageNum, Integer pageSize) {
+        return areaBillService.getAreaBillByManagementId(manageId, "", startDate, endDate, type, pageNum, pageSize);
+    }
+
+    /**
+     * 获取地区账户金额数据
+     * @param manageId
+     * @return
+     */
+    @PostMapping("getAreaAccountMoneyData")
+    public ResultResponse getAreaAccountMoneyData(Integer manageId) {
+        return areaBillService.getAreaAccountMoneyData(manageId);
     }
 
     /**
