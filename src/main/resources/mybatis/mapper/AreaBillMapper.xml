@@ -35,7 +35,7 @@
         from area_bill ab
         where ab.area_code = #{areaCode}
         <if test="startDate != null">
-            and ab.create_time &gt; #{createDate}
+            and ab.create_time &gt; #{startDate}
         </if>
         <if test="endDate != null">
             and ab.create_time &lt; #{endDate}
