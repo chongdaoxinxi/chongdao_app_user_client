@@ -275,11 +275,11 @@ public class OrderServiceImpl extends CommonRepository implements OrderService {
             //双程, 宠物数量*2 - 平台承担一只的往返运输险费用
             insurancePrice = singlePrice.multiply(new BigDecimal(petCount - 1)).multiply(new BigDecimal(2));
         }
-        orderVo.setInsurancePrice(insurancePrice);
         System.out.println("isByInsurance>>>>>>>>>>>>>>>>>" + isByInsurance);
         System.out.println("insurancePrice>>>>>>>>>>>>>>>>>" + insurancePrice);
         if (isByInsurance != null && isByInsurance == 1 && orderType != null && orderType == OrderStatusEnum.ORDER_CREATE.getStatus()) {
             //如果选择购买运费险(而且是创建订单不是预下单页面), 那么总价加上运费险的价格, 如果不购买则只做显示
+            orderVo.setInsurancePrice(insurancePrice);
             orderVo.setTotalPrice(totalPrice.add(insurancePrice));
             orderVo.setPayment(payment.add(insurancePrice));
             System.out.println("setTotalPrice>>>>>>>>>>>>>>>>>" + orderVo.getTotalPrice());

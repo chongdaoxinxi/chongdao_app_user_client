@@ -10,6 +10,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -46,6 +47,7 @@ public class AreaBillServiceImpl implements AreaBillService {
     }
 
     @Override
+    @Transactional
     public ResultResponse getAreaAccountMoneyData(Integer managementId) {
         Management management = managementRepository.findById(managementId).orElse(null);
         if(management != null) {
