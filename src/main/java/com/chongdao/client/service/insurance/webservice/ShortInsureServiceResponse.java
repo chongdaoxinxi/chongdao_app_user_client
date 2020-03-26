@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>shortInsureServiceResponse complex type�� Java �ࡣ
- * 
+ *
  * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
- * 
+ *
  * <pre>
  * &lt;complexType name="shortInsureServiceResponse">
  *   &lt;complexContent>
@@ -23,13 +23,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @SuppressWarnings("ALL")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "shortInsureServiceResponse", propOrder = {
-    "_return"
+        "_return"
 })
 public class ShortInsureServiceResponse {
 
@@ -38,11 +38,11 @@ public class ShortInsureServiceResponse {
 
     /**
      * ��ȡreturn���Ե�ֵ��
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getReturn() {
         return _return;
@@ -50,11 +50,11 @@ public class ShortInsureServiceResponse {
 
     /**
      * ����return���Ե�ֵ��
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setReturn(String value) {
         this._return = value;

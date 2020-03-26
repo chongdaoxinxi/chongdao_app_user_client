@@ -19,7 +19,7 @@ import javax.xml.namespace.QName;
  * type definitions, element declarations and model 
  * groups.  Factory methods for each of these are 
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -43,14 +43,14 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.chongdao.client.service.insurance.webservice
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link InsureServiceLianGongBaoResponse }
-     * 
+     *
      */
     public InsureServiceLianGongBaoResponse createInsureServiceLianGongBaoResponse() {
         return new InsureServiceLianGongBaoResponse();
@@ -58,7 +58,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TransitService }
-     * 
+     *
      */
     public TransitService createTransitService() {
         return new TransitService();
@@ -66,7 +66,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link NewInsureServiceResponse }
-     * 
+     *
      */
     public NewInsureServiceResponse createNewInsureServiceResponse() {
         return new NewInsureServiceResponse();
@@ -74,7 +74,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ModifyServiceResponse }
-     * 
+     *
      */
     public ModifyServiceResponse createModifyServiceResponse() {
         return new ModifyServiceResponse();
@@ -82,7 +82,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TransitServiceResponse }
-     * 
+     *
      */
     public TransitServiceResponse createTransitServiceResponse() {
         return new TransitServiceResponse();
@@ -90,7 +90,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ShortModifyService }
-     * 
+     *
      */
     public ShortModifyService createShortModifyService() {
         return new ShortModifyService();
@@ -98,7 +98,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link InsureServiceResponse }
-     * 
+     *
      */
     public InsureServiceResponse createInsureServiceResponse() {
         return new InsureServiceResponse();
@@ -106,7 +106,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ModifyService }
-     * 
+     *
      */
     public ModifyService createModifyService() {
         return new ModifyService();
@@ -114,7 +114,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ShortInsureServiceResponse }
-     * 
+     *
      */
     public ShortInsureServiceResponse createShortInsureServiceResponse() {
         return new ShortInsureServiceResponse();
@@ -122,7 +122,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ShortModifyServiceResponse }
-     * 
+     *
      */
     public ShortModifyServiceResponse createShortModifyServiceResponse() {
         return new ShortModifyServiceResponse();
@@ -130,7 +130,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PrintProofServiceResponse }
-     * 
+     *
      */
     public PrintProofServiceResponse createPrintProofServiceResponse() {
         return new PrintProofServiceResponse();
@@ -138,7 +138,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ShortInsureService }
-     * 
+     *
      */
     public ShortInsureService createShortInsureService() {
         return new ShortInsureService();
@@ -146,7 +146,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link InsureService }
-     * 
+     *
      */
     public InsureService createInsureService() {
         return new InsureService();
@@ -154,7 +154,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link NewInsureService }
-     * 
+     *
      */
     public NewInsureService createNewInsureService() {
         return new NewInsureService();
@@ -162,7 +162,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link InsureServiceLianGongBao }
-     * 
+     *
      */
     public InsureServiceLianGongBao createInsureServiceLianGongBao() {
         return new InsureServiceLianGongBao();
@@ -170,7 +170,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PrintProofService }
-     * 
+     *
      */
     public PrintProofService createPrintProofService() {
         return new PrintProofService();
@@ -178,7 +178,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link InsureServiceLianGongBaoResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "insureServiceLianGongBaoResponse")
     public JAXBElement<InsureServiceLianGongBaoResponse> createInsureServiceLianGongBaoResponse(InsureServiceLianGongBaoResponse value) {
@@ -187,7 +187,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TransitService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "transitService")
     public JAXBElement<TransitService> createTransitService(TransitService value) {
@@ -196,7 +196,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NewInsureServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "newInsureServiceResponse")
     public JAXBElement<NewInsureServiceResponse> createNewInsureServiceResponse(NewInsureServiceResponse value) {
@@ -205,7 +205,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ModifyServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "modifyServiceResponse")
     public JAXBElement<ModifyServiceResponse> createModifyServiceResponse(ModifyServiceResponse value) {
@@ -214,7 +214,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ShortModifyService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "shortModifyService")
     public JAXBElement<ShortModifyService> createShortModifyService(ShortModifyService value) {
@@ -223,7 +223,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TransitServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "transitServiceResponse")
     public JAXBElement<TransitServiceResponse> createTransitServiceResponse(TransitServiceResponse value) {
@@ -232,7 +232,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ModifyService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "modifyService")
     public JAXBElement<ModifyService> createModifyService(ModifyService value) {
@@ -241,7 +241,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ShortInsureServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "shortInsureServiceResponse")
     public JAXBElement<ShortInsureServiceResponse> createShortInsureServiceResponse(ShortInsureServiceResponse value) {
@@ -250,7 +250,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link InsureServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "insureServiceResponse")
     public JAXBElement<InsureServiceResponse> createInsureServiceResponse(InsureServiceResponse value) {
@@ -259,7 +259,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ShortModifyServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "shortModifyServiceResponse")
     public JAXBElement<ShortModifyServiceResponse> createShortModifyServiceResponse(ShortModifyServiceResponse value) {
@@ -268,7 +268,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link PrintProofServiceResponse }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "printProofServiceResponse")
     public JAXBElement<PrintProofServiceResponse> createPrintProofServiceResponse(PrintProofServiceResponse value) {
@@ -277,7 +277,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ShortInsureService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "shortInsureService")
     public JAXBElement<ShortInsureService> createShortInsureService(ShortInsureService value) {
@@ -286,7 +286,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link InsureService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "insureService")
     public JAXBElement<InsureService> createInsureService(InsureService value) {
@@ -295,7 +295,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NewInsureService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "newInsureService")
     public JAXBElement<NewInsureService> createNewInsureService(NewInsureService value) {
@@ -304,7 +304,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link InsureServiceLianGongBao }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "insureServiceLianGongBao")
     public JAXBElement<InsureServiceLianGongBao> createInsureServiceLianGongBao(InsureServiceLianGongBao value) {
@@ -313,7 +313,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link PrintProofService }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://webservice.ecooperation.epicc.com.cn/", name = "printProofService")
     public JAXBElement<PrintProofService> createPrintProofService(PrintProofService value) {

@@ -7,10 +7,10 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>printProofService complex typeµÄ Java Àà¡£
- * 
- * <p>ÒÔÏÂÄ£Ê½Æ¬¶ÎÖ¸¶¨°üº¬ÔÚ´ËÀàÖĞµÄÔ¤ÆÚÄÚÈİ¡£
- * 
+ * <p>printProofService complex typeçš„ Java ç±»ã€‚
+ *
+ * <p>ä»¥ä¸‹æ¨¡å¼ç‰‡æ®µæŒ‡å®šåŒ…å«åœ¨æ­¤ç±»ä¸­çš„é¢„æœŸå†…å®¹ã€‚
+ *
  * <pre>
  * &lt;complexType name="printProofService">
  *   &lt;complexContent>
@@ -23,13 +23,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "printProofService", propOrder = {
-    "interfaceNo",
-    "datas"
+        "interfaceNo",
+        "datas"
 })
 public class PrintProofService {
 
@@ -37,48 +37,48 @@ public class PrintProofService {
     protected String datas;
 
     /**
-     * »ñÈ¡interfaceNoÊôĞÔµÄÖµ¡£
-     * 
+     * è·å–interfaceNoå±æ€§çš„å€¼ã€‚
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getInterfaceNo() {
         return interfaceNo;
     }
 
     /**
-     * ÉèÖÃinterfaceNoÊôĞÔµÄÖµ¡£
-     * 
+     * è®¾ç½®interfaceNoå±æ€§çš„å€¼ã€‚
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setInterfaceNo(String value) {
         this.interfaceNo = value;
     }
 
     /**
-     * »ñÈ¡datasÊôĞÔµÄÖµ¡£
-     * 
+     * è·å–dataså±æ€§çš„å€¼ã€‚
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getDatas() {
         return datas;
     }
 
     /**
-     * ÉèÖÃdatasÊôĞÔµÄÖµ¡£
-     * 
+     * è®¾ç½®dataså±æ€§çš„å€¼ã€‚
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setDatas(String value) {
         this.datas = value;
