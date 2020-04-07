@@ -157,7 +157,7 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
     }
 
     @Override
-    public ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money) {
+    public ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money, String adminOpinion, String insuranceOpinion) {
         InsuranceClaims insuranceClaims = insuranceClaimsRepository.findById(claimsId).orElse(null);
         if(insuranceClaims != null) {
             insuranceClaims.setAuditStatus(targetStatus);
@@ -165,6 +165,8 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
                 insuranceClaims.setMoney(money);
             }
             insuranceClaims.setUpdateTime(new Date());
+            insuranceClaims.setAdminOpinion(adminOpinion);
+            insuranceClaims.setInsuranceOpinion(insuranceOpinion);
             insuranceClaimsRepository.save(insuranceClaims);
             return ResultResponse.createBySuccess();
         } else {
@@ -176,8 +178,8 @@ public class InsuranceClaimsServiceImpl implements InsuranceClaimsService {
     public ResultResponse addClaimsConfirmation(Integer claimsId, String fileName, String url) {
         InsuranceClaims insuranceClaims = insuranceClaimsRepository.findById(claimsId).orElse(null);
         if(insuranceClaims != null) {
-            insuranceClaims.setClaimsConfirmation(url);
-            insuranceClaims.setClaimsConfirmationFileName(fileName);
+//            insuranceClaims.setClaimsConfirmation(url);
+//            insuranceClaims.setClaimsConfirmationFileName(fileName);
             insuranceClaims.setUpdateTime(new Date());
             insuranceClaimsRepository.save(insuranceClaims);
             return ResultResponse.createBySuccess("理赔确认书上传成功!");

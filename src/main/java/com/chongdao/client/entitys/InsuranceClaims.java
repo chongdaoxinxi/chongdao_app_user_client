@@ -45,6 +45,8 @@ public class InsuranceClaims implements Serializable {
     private BigDecimal insuranceTotalFee;//医疗费用
     private Date createTime;
     private Date updateTime;
+    private String adminOpinion;
+    private String insuranceOpinion;
 
     @Transient
     private String insuranceOrderNo;//保险订单号

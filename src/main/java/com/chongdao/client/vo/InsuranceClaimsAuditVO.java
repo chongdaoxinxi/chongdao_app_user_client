@@ -42,4 +42,6 @@ public class InsuranceClaimsAuditVO {
     private String phone;
     private String claimsConfirmation;//理赔确认书
     private String claimsConfirmationFileName;//理赔确认书文件名
+    private String adminOpinion;
+    private String insuranceOpinion;
 }

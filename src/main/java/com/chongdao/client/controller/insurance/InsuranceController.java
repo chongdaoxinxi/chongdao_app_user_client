@@ -278,8 +278,8 @@ public class InsuranceController {
      * @return
      */
     @PostMapping("auditInsuranceClaims")
-    public ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money) {
-        return insuranceClaimsService.auditInsuranceClaims(claimsId, targetStatus, money);
+    public ResultResponse auditInsuranceClaims(Integer claimsId, Integer targetStatus, BigDecimal money, String adminOpinion, String insuranceOpinion) {
+        return insuranceClaimsService.auditInsuranceClaims(claimsId, targetStatus, money, adminOpinion, insuranceOpinion);
     }
 
     /**

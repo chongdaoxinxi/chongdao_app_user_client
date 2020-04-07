@@ -51,6 +51,8 @@
             <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="claims_confirmation" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="claims_confirmation_file_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="admin_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="insurance_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <resultMap id="UserInsuranceTodoVO" type="com.chongdao.client.vo.UserInsuranceTodoVO">
@@ -82,7 +84,7 @@
 
     <select id="getInsuranceClaimsDataList" resultMap="InsuranceClaimsAuditVO" parameterType="map">
         select
-        <include refid="Base_Column_List"/>, io.insurance_order_no, io.sum_amount, io.sum_premium, io.name, io.phone, ic.claims_confirmation, ic.claims_confirmation_file_name
+        <include refid="Base_Column_List"/>, io.insurance_order_no, io.sum_amount, io.sum_premium, io.name, io.phone, ic.claims_confirmation, ic.claims_confirmation_file_name, ic.admin_opinion, ic.insurance_opinion
         from insurance_claims ic
         left join insurance_order io on ic.medical_insurance_order_id = io.id
         where 1 = 1
