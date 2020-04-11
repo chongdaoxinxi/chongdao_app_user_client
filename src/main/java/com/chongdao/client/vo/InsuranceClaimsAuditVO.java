@@ -35,13 +35,13 @@ public class InsuranceClaimsAuditVO {
     private BigDecimal insuranceTotalFee;//医疗费用
     private Date createTime;
     private Date updateTime;
+    private String adminOpinion;
+    private String insuranceOpinion;
     private String insuranceOrderNo;//保险订单号
     private BigDecimal sumAmount;
     private BigDecimal sumPremium;
     private String name;
     private String phone;
-    private String claimsConfirmation;//理赔确认书
-    private String claimsConfirmationFileName;//理赔确认书文件名
-    private String adminOpinion;
-    private String insuranceOpinion;
+//    private String claimsConfirmation;//理赔确认书
+////    private String claimsConfirmationFileName;//理赔确认书文件名
 }

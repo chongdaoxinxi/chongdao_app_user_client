@@ -19,6 +19,8 @@
             <arg column="insurance_total_fee" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="admin_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="insurance_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="insurance_order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="pet_photo" jdbcType="VARCHAR" javaType="java.lang.String"/>
@@ -44,15 +46,13 @@
             <arg column="insurance_total_fee" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="admin_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="insurance_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="insurance_order_no" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="sum_amount" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="sum_premium" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
             <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
             <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="claims_confirmation" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="claims_confirmation_file_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="admin_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="insurance_opinion" jdbcType="VARCHAR" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
     <resultMap id="UserInsuranceTodoVO" type="com.chongdao.client.vo.UserInsuranceTodoVO">
@@ -65,11 +65,14 @@
         </constructor>
     </resultMap>
     <sql id="Base_Column_List">
-        ic.id, ic.medical_insurance_order_id, ic.diagnostic_proof, ic.cost_list, ic.pay_credentials, ic.other_materials, ic.pet_photo_flank, ic.pet_photo_front, ic.pet_photo_reverse, ic.bank_card_no, ic.bank_card_photo, ic.audit_status, ic.money, ic.insurance_total_fee, ic.create_time, ic.update_time
+        ic.id, ic.medical_insurance_order_id, ic.diagnostic_proof, ic.cost_list, ic.pay_credentials, ic.other_materials,
+ic.pet_photo_flank, ic.pet_photo_front, ic.pet_photo_reverse, ic.bank_card_no, ic.bank_card_photo,
+ic.audit_status, ic.money, ic.insurance_total_fee, ic.create_time, ic.update_time, ic.admin_opinion, ic.insurance_opinion
     </sql>
     <select id="getMyClaimsList" resultMap="BaseResultMap" parameterType="map">
         select
-        <include refid="Base_Column_List"/>, io.insurance_order_no, io.pet_name, io.pet_photo, io.pet_breed_name, io.pet_age
+        <include refid="Base_Column_List"/>, io.insurance_order_no, io.pet_name, io.pet_photo, io.pet_breed_name,
+        io.pet_age
         from insurance_claims ic
         left join insurance_order io on ic.medical_insurance_order_id = io.id
         where io.user_Id = #{userId}
@@ -84,18 +87,18 @@
 
     <select id="getInsuranceClaimsDataList" resultMap="InsuranceClaimsAuditVO" parameterType="map">
         select
-        <include refid="Base_Column_List"/>, io.insurance_order_no, io.sum_amount, io.sum_premium, io.name, io.phone, ic.claims_confirmation, ic.claims_confirmation_file_name, ic.admin_opinion, ic.insurance_opinion
+        <include refid="Base_Column_List"/>, io.insurance_order_no, io.sum_amount, io.sum_premium, io.name, io.phone
         from insurance_claims ic
         left join insurance_order io on ic.medical_insurance_order_id = io.id
         where 1 = 1
         <if test="insuranceType != null">
-           and io.insurance_type = #{insuranceType}
+            and io.insurance_type = #{insuranceType}
         </if>
         <if test="userName != null and userName != ''">
-           and io.name like concat('%', #{userName}, '%')
+            and io.name like concat('%', #{userName}, '%')
         </if>
         <if test="phone != null and phone != ''">
-           and io.phone like concat('%', #{phone}, '%')
+            and io.phone like concat('%', #{phone}, '%')
         </if>
         <if test="insuranceOrderNo != null and insuranceOrderNo != ''">
             and io.insurance_order_no like concat('%', #{insuranceOrderNo}, '%')
@@ -114,7 +117,8 @@
 
     <select id="getClaimsByInsuranceOrderId" resultMap="BaseResultMap" parameterType="map">
         select
-        <include refid="Base_Column_List"/>, io.insurance_order_no, io.pet_name, io.pet_photo, io.pet_breed_name, io.pet_age
+        <include refid="Base_Column_List"/>, io.insurance_order_no, io.pet_name, io.pet_photo, io.pet_breed_name,
+        io.pet_age
         from insurance_claims ic
         left join insurance_order io on ic.medical_insurance_order_id = io.id
         where ic.medical_insurance_order_id = #{insuranceOrderId}
